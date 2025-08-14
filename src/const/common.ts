@@ -1,0 +1,8 @@
+export const ITEM_STATES = {
+  SELECTED: 'S',
+  OPTIONAL: 'O',
+  EXCLUDED: 'X',
+  MANDATORY: 'M',
+  ALTERNATIVE: 'A',
+  EXCLUDED_SELECTED: 'XS',
+};

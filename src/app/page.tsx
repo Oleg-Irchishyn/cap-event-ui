@@ -1,17 +1,13 @@
-'use client'
+'use client';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
-  color: #BF4F74;
+  color: #bf4f74;
 `;
 
 export default function Page() {
-  return (
-    <Title>
-      Main Page
-    </Title>
-  );
+  return <Title>Main Page</Title>;
 }
