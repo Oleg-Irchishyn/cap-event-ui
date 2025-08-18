@@ -49,7 +49,7 @@ export const ErrorLabel = styled.div(({ theme }) => ({
 export const InputFiledWrapper = styled.div(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  height: '40px',
+  height: '32px',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -107,7 +107,7 @@ export const MultiSelectInputWrapper = styled.div({
 });
 
 export const SelectedInputLabel = styled.div(({ theme }) => ({
-  padding: '7px 4px 6px 8px',
+  padding: '4px 4px 4px 8px',
   overflow: 'hidden',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
@@ -129,7 +129,7 @@ export const ChevronButton = styled.button({
   appearance: 'none',
   transition: 'all .2s ease-in-out',
   cursor: 'pointer',
-  background: `transparent url(/icons/chevron-down.svg) no-repeat center center`,
+  background: `transparent url(icons/chevron-down.svg) no-repeat center center`,
 
   '&[data-is-open="true"]': {
     transform: 'rotate(180deg)',
@@ -190,53 +190,52 @@ export const ItemWrapper = styled.div<{ withdescription?: number }>(
   }),
 );
 
-export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })`
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
+export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
+  display: 'flex',
+  flexShrink: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '20px',
+  height: '20px',
+  marginRight: '10px',
 
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+  appearance: 'none',
+  borderRadius: '4px',
+  border: '1px solid #666769',
+  backgroundColor: '#ffffff',
 
-  appearance: none;
-  border-radius: 4px;
-  border: 1px solid #666769;
-  background-color: #ffffff;
+  cursor: 'pointer',
 
-  cursor: pointer;
+  '&::before': {
+    content: '""',
+    width: '10px',
+    height: '8px',
+    transform: 'scale(0)',
+    transition: '120ms transform ease-in-out',
+    backgroundSize: 'contain',
+    backgroundImage: 'url(icons/marker-icon.svg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+  },
 
-  &::before {
-    content: '';
-    width: 10px;
-    height: 8px;
-    transform: scale(0);
-    transition: 120ms transform ease-in-out;
-    background-size: contain;
-    background-image: url(/icons/marker-icon.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-  }
+  '&:checked::before': {
+    transform: 'scale(1)',
+  },
 
-  &:checked::before {
-    transform: scale(1);
-  }
+  '&:disabled::before': {
+    backgroundImage: 'url(icons/marker-icon-disabled.svg)',
+  },
 
-  &:disabled::before {
-    background-image: url(/icons/marker-icon-disabled.svg);
-  }
+  '&:focus-visible': {
+    outline: 'none',
+  },
 
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:disabled {
-    cursor: default;
-    background: #f0f1f1;
-    border: 1px solid #b7b7b8;
-  }
-`;
+  '&:disabled': {
+    cursor: 'default',
+    background: '#f0f1f1',
+    border: '1px solid #b7b7b8',
+  },
+});
 
 export const ItemLabel = styled.p<{ withdescription?: number }>(({ theme, withdescription }) => ({
   overflow: 'hidden',
@@ -308,25 +307,25 @@ const ControlsButton = styled.button`
   }
 `;
 
-export const SelectAllButton = styled(ControlsButton)`
-  background: transparent url(/icons/select-all.svg) no-repeat center center;
+export const SelectAllButton = styled(ControlsButton)({
+  background: `transparent url(icons/select-all.svg) no-repeat center center`,
 
-  &[data-is-disabled='true'] {
-    background: transparent url(/icons/select-all-disabled.svg) no-repeat center center;
-  }
-`;
+  '&[data-is-disabled="true"]': {
+    background: `transparent url(icons/select-all-disabled.svg) no-repeat center center`,
+  },
+});
 
-export const DeselectButton = styled(ControlsButton)`
-  background: transparent url(/icons/deselect-all.svg) no-repeat center center;
+export const DeselectButton = styled(ControlsButton)({
+  background: `transparent url(icons/deselect-all.svg) no-repeat center center`,
 
-  &[data-is-disabled='true'] {
-    background: transparent url(/icons/deselect-all-disabled.svg) no-repeat center center;
-  }
-`;
+  '&[data-is-disabled="true"]': {
+    background: `transparent url(icons/deselect-all-disabled.svg) no-repeat center center`,
+  },
+});
 
-export const AlternativeButton = styled(ControlsButton)`
-  background: transparent url(/icons/alt.svg) no-repeat center center;
-`;
+export const AlternativeButton = styled(ControlsButton)({
+  background: `transparent url(icons/alt.svg) no-repeat center center`,
+});
 
 export const SelectedInputWrapper = styled.div(({ theme }) => ({
   display: 'none',
@@ -344,28 +343,28 @@ export const SelectedInputWrapper = styled.div(({ theme }) => ({
 
 export const RemoveButton = styled.button(({ theme }) => ({
   width: '32px',
-  height: '32px',
+  height: '25px',
   border: 0,
   padding: 0,
   cursor: 'pointer',
   appearance: 'none',
-  background: `transparent url(/icons/cross.svg) no-repeat center center;`,
+  background: `transparent url(icons/cross.svg) no-repeat center center;`,
 
   '&[data-is-disabled="true"]': {
     cursor: 'default',
     backgroundImage: 'none',
-    mask: `url(/icons/cross.svg) no-repeat 50% 50%;`,
+    mask: `url(icons/cross.svg) no-repeat 50% 50%;`,
     backgroundColor: theme.colors.textDisabled,
   },
 }));
 
-export const HiddenOptions = styled.div`
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding-left: 28px;
-  visibility: hidden;
-  background: transparent url(/icons/three-dots.svg) no-repeat left 4px center;
-`;
+export const HiddenOptions = styled.div({
+  flexGrow: 0,
+  flexShrink: 0,
+  paddingLeft: '28px',
+  visibility: 'hidden',
+  background: 'transparent url(icons/three-dots.svg) no-repeat left 4px center',
+});
 
 export const HiddenOptionsCounter = styled.div(({ theme }) => ({
   padding: '6px',

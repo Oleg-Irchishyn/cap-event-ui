@@ -9,7 +9,7 @@ export const SearchWrapper = styled.div<{ width?: number }>(({ theme, width }) =
   background: theme.colors.white,
   border: `1px solid ${theme.colors.gray500}`,
   borderRadius: '4px',
-  padding: '7px 28px 5px 40px',
+  paddingLeft: '28px',
 
   '@media (max-width: 750px)': {
     width: '100%',
@@ -31,18 +31,14 @@ export const SearchInput = styled.input(({ theme }) => ({
   },
 }));
 
-export const SearchIcon = styled.img.attrs({
-  src: '/icons/search.svg',
-})({
+export const SearchIconContainer = styled.div({
   position: 'absolute',
-  top: '15px',
-  left: '15px',
-  width: '15px',
-  height: '15px',
+  top: '9px',
+  left: '10px',
 });
 
 export const ClearIcon = styled.img.attrs({
-  src: '/icons/cross.svg',
+  src: 'icons/cross.svg',
 })({
   position: 'absolute',
   top: '50%',

@@ -111,7 +111,7 @@ const Dropdown: FC<Props> = ({
         <FieldLabel>{label}</FieldLabel>
         {errorMessage && (
           <ErrorLabel>
-            <Image src="/icons/error-outline.svg" alt="error" width={15} height={15} />
+            <Image src="icons/error-outline.svg" alt="error" width={15} height={15} />
             {errorMessage}
           </ErrorLabel>
         )}

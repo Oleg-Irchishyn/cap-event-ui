@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { ClearIcon, SearchIcon, SearchInput, SearchWrapper } from './styles';
+import { ClearIcon, SearchIconContainer, SearchInput, SearchWrapper } from './styles';
+import Image from 'next/image';
 
 type SearchBoxProps = {
   testId: string;
@@ -25,7 +26,9 @@ const SearchBox: FC<SearchBoxProps> = ({
 
   return (
     <SearchWrapper data-testid={prepareDataTestId(testId, 'SearchBox')} width={width}>
-      <SearchIcon />
+      <SearchIconContainer>
+        <Image src="icons/search.svg" width={15} height={15} alt="search" />
+      </SearchIconContainer>
       <SearchInput
         data-testid={testId || 'search-block-input'}
         type="text"

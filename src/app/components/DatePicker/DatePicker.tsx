@@ -5,6 +5,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 import { FieldLabel, Wrapper } from '@/app/components/DatePicker/styles';
 import Image from 'next/image';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 type DatePickerProps = {
   width?: number;
@@ -15,6 +16,7 @@ type DatePickerProps = {
   setIsValidDate?: (value: boolean) => void;
   maxDate?: Dayjs;
   label?: string;
+  testId: string;
 };
 
 export const DatePicker: FC<DatePickerProps> = ({
@@ -26,9 +28,10 @@ export const DatePicker: FC<DatePickerProps> = ({
   minDate = dayjs(),
   setIsValidDate = () => {},
   maxDate = dayjs().add(11, 'years'),
+  testId,
 }) => (
-  <Wrapper>
-    <FieldLabel>{label}</FieldLabel>
+  <Wrapper data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}>
+    <FieldLabel data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}>{label}</FieldLabel>
 
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DesktopDatePicker
@@ -39,12 +42,14 @@ export const DatePicker: FC<DatePickerProps> = ({
         disabled={isDisabled}
         slots={{
           openPickerIcon: () => (
-            <Image src="/icons/calendar.svg" width={15} height={15} alt="calendar" />
+            <Image src="icons/calendar.svg" width={15} height={15} alt="calendar" />
           ),
         }}
         slotProps={{
           textField: {
-            size: 'small',
+            InputProps: {
+              sx: { height: '32px' },
+            },
             sx: {
               width,
               minWidth: '150px',

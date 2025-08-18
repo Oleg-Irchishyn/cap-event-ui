@@ -1,4 +1,4 @@
-import { ButtonContainer } from '@/app/cap-event/styles';
+import { ButtonContainer } from '@/app/new/styles';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 
 const ButtonsGroup = () => {

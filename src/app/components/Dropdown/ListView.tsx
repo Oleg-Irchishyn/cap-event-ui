@@ -34,7 +34,7 @@ const ListView: FC<ListViewProps> = ({
   itemClickHandler,
   checkbox,
   withSearch,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder,
   onSearchChangeHandler,
   searchText,
   withControls,

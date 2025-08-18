@@ -192,48 +192,21 @@ const GeneralSettings = () => {
   };
 
   const selectFundGroupHandler = (item: DropdownItemType) => {
-    const selectedFundGroups = fundGroups.filter(
+    const selectedFundGroup = fundGroups.find(
       (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,
     );
+    const isSameValueSelected = selectedFundGroup?.label === item.label;
+    if (isSameValueSelected) return;
 
-    if (selectedFundGroups.length < 3) {
-      const updatedValues = fundGroups.map((fundGroup) =>
-        fundGroup.label === item.label
-          ? { ...fundGroup, state: getMultiSelectItemState(fundGroup.state) }
-          : fundGroup,
-      );
+    const updatedValues = fundGroups.map((fundGroup) =>
+      fundGroup.label === item.label
+        ? { ...fundGroup, state: ITEM_STATES.SELECTED }
+        : { ...fundGroup, state: ITEM_STATES.OPTIONAL },
+    );
+    const updatedFundsValues = funds.map((fund) => ({ ...fund, state: ITEM_STATES.OPTIONAL }));
 
-      const updatedSelectedFundGroups = updatedValues.filter(
-        (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,
-      );
-
-      if (updatedSelectedFundGroups.length === 3) {
-        const listWithExcludedValues = updatedValues.map((fundGroup) =>
-          fundGroup.state === ITEM_STATES.OPTIONAL
-            ? { ...fundGroup, state: ITEM_STATES.EXCLUDED }
-            : fundGroup,
-        );
-
-        capEventSettingsStore.setFundGroups(listWithExcludedValues);
-        return;
-      }
-
-      capEventSettingsStore.setFundGroups(updatedValues);
-    }
-
-    if (item.state === ITEM_STATES.SELECTED) {
-      const updatedValues = fundGroups.map((fundGroup) =>
-        fundGroup.label === item.label
-          ? { ...fundGroup, state: getMultiSelectItemState(fundGroup.state) }
-          : {
-              ...fundGroup,
-              state:
-                fundGroup.state === ITEM_STATES.EXCLUDED ? ITEM_STATES.OPTIONAL : fundGroup.state,
-            },
-      );
-
-      capEventSettingsStore.setFundGroups(updatedValues);
-    }
+    capEventSettingsStore.setFundGroups(updatedValues);
+    capEventSettingsStore.setFunds(updatedFundsValues);
   };
 
   const selectFundsHandler = (item: DropdownItemType) => {
@@ -293,7 +266,7 @@ const GeneralSettings = () => {
           testId="event-type"
           withDescription
           items={eventTypes}
-          label="Event Type *"
+          label="Event Type*"
           placeholder="Select Event Type"
           selectHandler={selectEventTypeHandler}
           selectedItems={capEventSettingsStore.eventTypes.filter(
@@ -303,7 +276,7 @@ const GeneralSettings = () => {
         <Dropdown
           testId="template"
           withDescription
-          label="Template *"
+          label="Template*"
           items={templates}
           placeholder="Select Template"
           isDisabled={templates.length === 1}
@@ -313,24 +286,24 @@ const GeneralSettings = () => {
           )}
         />
         <Dropdown
-          testId={'fund-groups'}
+          testId="fund-groups"
           withSearch
-          label={'Fund Group *'}
+          label="Fund Group*"
           searchText={searchText}
           items={visibleFundGroups}
-          placeholder={'Select Fund Group'}
+          placeholder="Select Fund Group"
           onSearchChangeHandler={setSearchText}
           selectHandler={selectFundGroupHandler}
           selectedItems={fundGroups.filter((fundGroup) => fundGroup.state === ITEM_STATES.SELECTED)}
         />
         <Dropdown
-          testId={'first drop'}
+          testId="funds"
           checkbox
           withSearch
           withControls
           isMultiSelect
           withDescription
-          label={'Fund(s) *'}
+          label={'Fund(s)*'}
           items={visibleFunds}
           searchText={searchText}
           placeholder={'Select Fund(s)'}
@@ -346,7 +319,7 @@ const GeneralSettings = () => {
           }
         />
 
-        <DatePicker label="Notice Date *" onChange={handleNoticeDate} />
+        <DatePicker label="Notice Date*" onChange={handleNoticeDate} testId="GeneralSettings" />
       </DropdownWrapper>
     </Container>
   );

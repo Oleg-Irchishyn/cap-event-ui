@@ -1,7 +1,7 @@
 'use client';
 
-import GeneralSettings from '@/app/cap-event/GeneralSettings';
-import ButtonsGroup from '@/app/cap-event/ButtonsGroup';
+import GeneralSettings from '@/app/new/GeneralSettings';
+import ButtonsGroup from '@/app/new/ButtonsGroup';
 
 const CapEvent = () => {
   return (
