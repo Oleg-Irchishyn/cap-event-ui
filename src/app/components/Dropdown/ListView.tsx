@@ -4,7 +4,6 @@ import DropdownMenu from './DropdownMenu';
 import ListItem from './ListItem';
 import { ListViewContainer, ListViewWrapper, ScrollContainer } from './styles';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import { ITEM_STATES } from '@/const/common';
 
 type ListViewProps = {
   testId: string;

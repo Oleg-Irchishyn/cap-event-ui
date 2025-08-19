@@ -26,7 +26,6 @@ module.exports = {
     'linebreak-style': 'off',
     'no-undef': 'off',
     'max-len': [2, 200],
-    'end-of-line': 'off',
     'no-param-reassign': [
       'error',
       {

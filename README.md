@@ -1,13 +1,15 @@
 # Setup dev environment
 
-* Install Dependencies
-    ```
-    npm install
-   ```
+- Install Dependencies
 
-* Prepare env file:
+  ```
+  npm install
+  ```
+
+- Prepare env file:
+
   ```
   cp .env.template .env
   ```
 
-* run `next dev` for local development
+- run `next dev` for local development
