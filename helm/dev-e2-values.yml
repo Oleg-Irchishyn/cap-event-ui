@@ -1,0 +1,7 @@
+# Use this file to provide Dev-specific parameters
+ingress:
+  hostname: dev-e2.gen2fund.com
+
+envVars:
+  NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://dev-e2.gen2fund.com/cap-event-package
+  NEXT_PUBLIC_BACKEND_API: https://dev-e2.gen2fund.com/api/cap-event

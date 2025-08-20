@@ -1,0 +1,116 @@
+# FE Application
+# Pipeline to build and push to the ACR frontend docker image
+# Following workflows are supported:
+# PullRequest: run unit tests, build and push docker image
+# Schedule: check commit history, generate Changelog, build and push docker image, deploy to AKS
+# Manual: depending on parameters
+
+parameters:
+  - name: updateChangelog
+    displayName: Update Changelog?
+    type: string
+    default: nope
+    values:
+      - nope
+      - drop
+      - candidate
+      - minor
+  - name: buildImage
+    displayName: Build Image
+    type: boolean
+    default: true
+  - name: deployUAT
+    displayName: "[UAT] Deploy to UAT?"
+    type: boolean
+    default: false
+  - name: deployProd
+    displayName: "[Prod] Deploy to Prod?"
+    type: boolean
+    default: false
+  - name: isPreviewProd
+    displayName: "[Prod v1] Deploy to production as preview (/v1/)?"
+    type: boolean
+    default: false
+  - name: aksDeploy
+    displayName: Dev slot name
+    type: string
+    default: none
+    values:
+      - none
+      - dev
+      - dev-e0
+      - dev-e1
+      - dev-e2
+  - name: tag2Deploy
+    displayName: Image Tag for the AKS deployment (keep default to deploy just built image)
+    type: string
+    default: build-$(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+      - master
+      - release/*
+  paths:
+    exclude:
+      - CHANGELOG.md
+      - package.json
+      - package-lock.json
+      - helm/chart/Chart.yaml
+      - .env
+
+schedules:
+  - cron: "0 3 * * *"
+    displayName: Nightly build
+    branches:
+      include:
+        - master
+    always: false
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: pipeline-templates
+    - repository: wiki
+      type: git
+      name: Development.wiki
+
+variables:
+  - template: variables/common-variables.yml@templates
+    parameters:
+      updateChangelog: "${{ parameters.updateChangelog }}"
+      imageName: gen2apps/com.gen2fund.cap-event-ui
+      releaseName: "cap-event-ui"
+
+stages:
+  - template: stages/check_status.yml@templates
+  - template: stages/test.yml@templates
+    parameters:
+      testingSteps:
+        - task: UseNode@1
+          inputs:
+            version: '22.x'
+        - task: CmdLine@2
+          displayName: Run npm
+          condition: succeeded()
+          inputs:
+            workingDirectory: '$(Build.SourcesDirectory)'
+            script: |
+              npm install &&
+              npm run lint &&
+              npm run test &&
+              npm audit --omit dev
+  - template: stages/build.yml@templates
+    parameters:
+      buildImage: ${{ parameters.buildImage }}
+  - template: stages/deploy_dev.yml@templates
+    parameters:
+      aksDeploy: ${{ parameters.aksDeploy }}
+      tag2Deploy: ${{ parameters.tag2Deploy }}
+  - template: stages/deploy_prod.yml@templates
+    parameters:
+      deployUAT: ${{ parameters.deployUAT }}
+      deployProd: ${{ parameters.deployProd }}
+      isPreviewProd: ${{ parameters.isPreviewProd }}
+      tag2Deploy: ${{ parameters.tag2Deploy }}

@@ -1,0 +1,5 @@
+**/node_modules/*
+helm/*
+tests/*
+azure-pipelines.yml
+.version/*

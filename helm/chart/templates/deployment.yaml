@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}
+    tier: {{ .Chart.Name }}
+    build: {{ include "helper.BuildVersion" . | lower }}
+  name: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      tier: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        tier: {{ .Chart.Name }}
+        build: {{ include "helper.BuildVersion" . | lower }}
+    spec:
+      {{- if .Values.global.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecret }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 2000
+        runAsNonRoot: true
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.registry }}/{{ .Values.image.name }}:{{ include "helper.BuildVersion" . }}
+        imagePullPolicy: Always
+        env:
+        # Values from envVars
+        {{- range $k, $v := .Values.envVars }}
+        - name: {{ $k }}
+          value: '{{ $v }}'
+        {{- end }}
+        - name: NEXT_PUBLIC_BASE_PATH
+          value: {{ .Values.ingress.path | quote }}
+        resources:
+        {{- toYaml .Values.container.resources | nindent 10 }}
+        ports:
+        - containerPort: {{ .Values.envVars.SERVER_PORT }}
+        {{- if .Values.image.healthcheck }}
+        startupProbe:
+          httpGet:
+            path: {{ print .Values.ingress.path .Values.image.healthcheck }}
+            port: {{ .Values.envVars.SERVER_PORT }}
+            scheme: HTTP
+          failureThreshold: {{ .Values.container.startupProbe.failureThreshold | default 15 }}
+          periodSeconds: {{ .Values.container.startupProbe.periodSeconds | default 5 }}
+          timeoutSeconds: {{ .Values.container.startupProbe.timeoutSeconds | default 1 }}
+        livenessProbe:
+          httpGet:
+            path: {{ print .Values.ingress.path .Values.image.healthcheck }}
+            port: {{ .Values.envVars.SERVER_PORT }}
+            scheme: HTTP
+          failureThreshold: {{ .Values.container.livenessProbe.failureThreshold | default 4 }}
+          periodSeconds: {{ .Values.container.livenessProbe.periodSeconds | default 15 }}
+          timeoutSeconds: {{ .Values.container.livenessProbe.timeoutSeconds | default 1 }}
+        {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      restartPolicy: Always

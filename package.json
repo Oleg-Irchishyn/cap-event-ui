@@ -1,6 +1,6 @@
 {
   "name": "cap-call",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,14 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "drop": "npx standard-version --release-as patch",
+    "drop-manual": "npx standard-version --release-as patch --skip.commit --skip.tag",
+    "candidate": "npx standard-version --prerelease rc",
+    "candidate-manual": "npx standard-version --prerelease rc --skip.commit --skip.tag",
+    "release": "npx standard-version --release-as patch --prerelease release",
+    "release-manual": "npx standard-version --release-as patch --prerelease release --skip.commit --skip.tag",
+    "minor": "npx standard-version --release-as minor"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -46,5 +53,9 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui"
   }
 }
