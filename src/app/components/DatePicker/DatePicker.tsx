@@ -19,6 +19,8 @@ type DatePickerProps = {
   testId: string;
 };
 
+const pickerIcon = () => <Image src="icons/calendar.svg" width={15} height={15} alt="calendar" />;
+
 export const DatePicker: FC<DatePickerProps> = ({
   label,
   width = '100%',
@@ -29,35 +31,35 @@ export const DatePicker: FC<DatePickerProps> = ({
   setIsValidDate = () => {},
   maxDate = dayjs().add(11, 'years'),
   testId,
-}) => (
-  <Wrapper data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}>
-    <FieldLabel data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}>{label}</FieldLabel>
+}) => {
+  return (
+    <Wrapper data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}>
+      <FieldLabel data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}>
+        {label}
+      </FieldLabel>
 
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DesktopDatePicker
-        onChange={onChange}
-        minDate={minDate}
-        maxDate={maxDate}
-        value={defaultValue}
-        disabled={isDisabled}
-        slots={{
-          openPickerIcon: () => (
-            <Image src="icons/calendar.svg" width={15} height={15} alt="calendar" />
-          ),
-        }}
-        slotProps={{
-          textField: {
-            InputProps: {
-              sx: { height: '32px' },
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DesktopDatePicker
+          onChange={onChange}
+          minDate={minDate}
+          maxDate={maxDate}
+          value={defaultValue}
+          disabled={isDisabled}
+          slots={{ openPickerIcon: pickerIcon }}
+          slotProps={{
+            textField: {
+              InputProps: {
+                sx: { height: '32px' },
+              },
+              sx: {
+                width,
+                minWidth: '150px',
+              },
             },
-            sx: {
-              width,
-              minWidth: '150px',
-            },
-          },
-        }}
-        onError={(newError) => setIsValidDate(newError === null)}
-      />
-    </LocalizationProvider>
-  </Wrapper>
-);
+          }}
+          onError={(newError) => setIsValidDate(newError === null)}
+        />
+      </LocalizationProvider>
+    </Wrapper>
+  );
+};

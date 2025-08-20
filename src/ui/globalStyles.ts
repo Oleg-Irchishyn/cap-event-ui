@@ -18,32 +18,3 @@ export const theme: DefaultTheme = {
     border: '#666769',
   },
 };
-
-export const customScrollbarSCSS = `
-  ::-webkit-scrollbar {
-    width: 16px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #FFFFFF;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: #DDDDDD;
-    background-clip: content-box;
-    border: 4px solid transparent;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #999999;
-    background-clip: content-box;
-    border: 4px solid transparent;
-  }
-
-  ::-webkit-scrollbar-thumb:active {
-    background: #646464;
-    background-clip: content-box;
-    border: 4px solid transparent;
-  }
-`;

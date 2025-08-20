@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import { customScrollbarSCSS } from '@/ui/globalStyles';
-
 export const DropdownWrapper = styled.div(({ theme }) => ({
   position: 'relative',
   width: '100%',
@@ -153,7 +151,6 @@ export const ListViewWrapper = styled.div(({ theme }) => ({
 
 export const ListViewContainer = styled.div`
   position: relative;
-  ${customScrollbarSCSS},
 `;
 
 export const ScrollContainer = styled.div`
@@ -367,7 +364,7 @@ export const HiddenOptions = styled.div({
 });
 
 export const HiddenOptionsCounter = styled.div(({ theme }) => ({
-  padding: '6px',
+  padding: '5px',
   borderRadius: '4px',
   backgroundColor: theme.colors.gray100,
   color: theme.colors.textSecondary,
