@@ -17,6 +17,10 @@ declare module 'styled-components' {
       descriptionText: string;
       error: string;
       border: string;
+      pastelYellow: string;
+      skyBlue: string;
+      accentBlue: string;
+      alertError: string;
     };
   }
 }

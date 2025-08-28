@@ -2,6 +2,7 @@
 
 import GeneralSettings from '@/app/new/GeneralSettings';
 import ButtonsGroup from '@/app/new/ButtonsGroup';
+import Attachments from '@/app/new/attachments/Attachments';
 import CommentsField from '@/app/new/CommentsField';
 
 const CapEvent = () => {
@@ -9,6 +10,7 @@ const CapEvent = () => {
     <>
       <ButtonsGroup />
       <GeneralSettings />
+      <Attachments />
       <CommentsField />
     </>
   );

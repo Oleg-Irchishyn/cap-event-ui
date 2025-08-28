@@ -7,7 +7,7 @@ export const DropdownWrapper = styled.div(({ theme }) => ({
   minWidth: '120px',
   cursor: 'pointer',
 
-  fontSize: '16px',
+  fontSize: '14px',
   fontWeight: 400,
   lineHeight: '19px',
   fontStyle: 'normal',

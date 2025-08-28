@@ -16,5 +16,9 @@ export const theme: DefaultTheme = {
     descriptionText: '#838486',
     error: '#DA5151',
     border: '#666769',
+    pastelYellow: '255, 235, 183',
+    skyBlue: '#F8FCFF',
+    accentBlue: '#0067a3',
+    alertError: '#FEE2DF',
   },
 };

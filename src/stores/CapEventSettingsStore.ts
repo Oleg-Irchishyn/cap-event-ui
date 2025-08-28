@@ -7,6 +7,7 @@ class CapEventSettingsStore {
   fundGroups: DropdownItemType[] = [];
   funds: DropdownItemType[] = [];
   noticeDate: Date | null = null;
+  attachments: File[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -30,6 +31,10 @@ class CapEventSettingsStore {
 
   setNoticeDate(date: Date) {
     this.noticeDate = date;
+  }
+
+  setAttachments(attachments: File[]) {
+    this.attachments = attachments;
   }
 }
 

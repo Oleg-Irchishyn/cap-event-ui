@@ -62,6 +62,7 @@ export const TextAreaWrapper = styled.div({
 export const TextAreaLabel = styled.span(({ theme }) => ({
   fontSize: '14px',
   color: theme.colors.textSecondary,
+  marginBottom: '8px',
 }));
 
 export const TextArea = styled.textarea(({ theme }) => ({
