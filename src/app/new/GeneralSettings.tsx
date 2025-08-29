@@ -13,18 +13,18 @@ import { Title, Container, DropdownWrapper } from './styles';
 
 const EVENT_TYPE_MOCK = [
   {
-    label: 'Call',
-    description: 'Capital Call',
+    label: 'Capital Call',
+    description: 'Call',
     state: 'O',
   },
   {
-    label: 'Dist',
-    description: 'Distribution',
+    label: 'Distribution',
+    description: 'Dist',
     state: 'O',
   },
   {
-    label: 'Sub Cl',
-    description: 'Subsequent Closing ',
+    label: 'Subsequent Closing',
+    description: 'Sub Cl',
     state: 'O',
   },
 ];
@@ -37,92 +37,18 @@ const TEMPLATES_MOCK = [
   },
 ];
 
-const FUND_GROUPS = [
-  {
-    label: 'Fund group 1',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 2',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 3',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 4',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 5',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 6',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 7',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 8',
-    state: 'O',
-  },
-  {
-    label: 'Fund group 9',
-    state: 'O',
-  },
-];
+const tempId = Math.floor(10000 + Math.random() * 90000);
+const tempFundId = Math.floor(10000 + Math.random() * 80000);
 
-const FUNDS = [
-  {
-    label: 'Fund 1',
-    description: 'Fund group 1',
-    state: 'O',
-  },
-  {
-    label: 'Fund 1-1',
-    description: 'Fund group 1',
-    state: 'O',
-  },
-  {
-    label: 'Fund 2',
-    description: 'Fund group 2',
-    state: 'O',
-  },
-  {
-    label: 'Fund 3',
-    description: 'Fund group 4',
-    state: 'O',
-  },
-  {
-    label: 'Fund 4',
-    description: 'Fund group 5',
-    state: 'O',
-  },
-  {
-    label: 'Fund 5',
-    description: 'Fund group 6',
-    state: 'O',
-  },
-  {
-    label: 'Fund 6',
-    description: 'Fund group 7',
-    state: 'O',
-  },
-  {
-    label: 'Fund 7',
-    description: 'Fund group 8',
-    state: 'O',
-  },
-  {
-    label: 'Fund 8',
-    description: 'Fund group 9',
-    state: 'O',
-  },
-];
+const FUND_GROUPS = [...Array(9)].map((_, i) => ({
+  label: `${tempId}-${i + 1} - Fund group ${i + 1}`,
+  state: 'O',
+}));
+
+const FUNDS = [...Array(8)].map((_, i) => ({
+  label: `${tempFundId}-${i + 1} - Fund ${i + 1}`,
+  state: 'O',
+}));
 
 const getMultiSelectItemState = (state: string) => {
   if (state === ITEM_STATES.EXCLUDED) return ITEM_STATES.EXCLUDED;
