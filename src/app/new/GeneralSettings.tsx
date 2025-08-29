@@ -1,15 +1,16 @@
 'use client';
 
-import Dropdown from '@/app/components/Dropdown';
+import BackgroundContainer from '@/app/components/BackgroundContainer';
 import DatePicker from '@/app/components/DatePicker';
-import { useEffect, useMemo, useState } from 'react';
-import { ITEM_STATES } from '@/const/common';
+import Dropdown from '@/app/components/Dropdown';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import dayjs from 'dayjs';
-import { PickerValue } from '@mui/x-date-pickers/internals';
+import { ITEM_STATES } from '@/const/common';
 import { capEventSettingsStore } from '@/stores';
+import { PickerValue } from '@mui/x-date-pickers/internals';
+import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
-import { Title, Container, DropdownWrapper } from './styles';
+import { useEffect, useMemo, useState } from 'react';
+import { DropdownWrapper, Title } from './styles';
 
 const EVENT_TYPE_MOCK = [
   {
@@ -185,7 +186,7 @@ const GeneralSettings = () => {
   };
 
   return (
-    <Container>
+    <BackgroundContainer>
       <Title>General Settings</Title>
       <DropdownWrapper>
         <Dropdown
@@ -247,7 +248,7 @@ const GeneralSettings = () => {
 
         <DatePicker label="Notice Date*" onChange={handleNoticeDate} testId="GeneralSettings" />
       </DropdownWrapper>
-    </Container>
+    </BackgroundContainer>
   );
 };
 

@@ -4,7 +4,7 @@ export const ButtonContainer = styled.div({
   display: 'flex',
   gap: '8px',
   justifyContent: 'flex-end',
-  marginTop: '24px',
+  margin: '24px 16px 0 16px',
 });
 
 export const Title = styled.div(({ theme }) => ({
@@ -13,10 +13,6 @@ export const Title = styled.div(({ theme }) => ({
   fontWeight: 500,
   color: theme.colors.primary,
 }));
-
-export const Container = styled.div({
-  margin: '24px',
-});
 
 export const DropdownWrapper = styled.div({
   display: 'grid',
@@ -50,7 +46,6 @@ export const Wrapper = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-  margin: '24px',
 });
 
 export const TextAreaWrapper = styled.div({

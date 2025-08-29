@@ -11,6 +11,7 @@ declare module 'styled-components' {
       gray100: string;
       gray300: string;
       gray500: string;
+      lightGray: string;
       textDisabled: string;
       textPrimary: string;
       textSecondary: string;
