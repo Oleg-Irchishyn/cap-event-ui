@@ -40,7 +40,7 @@ const ListItem: FC<ListItemProps> = ({
       data-is-withbackground={withBackground}
       data-is-selected={item.state === SELECTED}
       data-is-disabled={item.state === EXCLUDED}
-      withdescription={withDescription ? 1 : 0}
+      $withdescription={withDescription ? 1 : 0}
       onClick={itemClickHandler(item)}
       onMouseEnter={item.state === EXCLUDED ? () => setShowTooltip(true) : undefined}
       onMouseLeave={() => setShowTooltip(false)}
@@ -66,7 +66,7 @@ const ListItem: FC<ListItemProps> = ({
           />
           <ItemLabel
             data-is-disabled={item.state === EXCLUDED}
-            withdescription={withDescription ? 1 : 0}
+            $withdescription={withDescription ? 1 : 0}
           >
             {item.label}
           </ItemLabel>

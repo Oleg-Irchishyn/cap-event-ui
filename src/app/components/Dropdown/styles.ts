@@ -159,12 +159,12 @@ export const ScrollContainer = styled.div`
   overflow-x: hidden;
 `;
 
-export const ItemWrapper = styled.div<{ withdescription?: number }>(
-  ({ theme, withdescription }) => ({
+export const ItemWrapper = styled.div<{ $withdescription?: number }>(
+  ({ theme, $withdescription }) => ({
     display: 'flex',
     alignItems: 'center',
-    justifyContent: withdescription ? 'space-between' : 'flex-start',
-    height: withdescription ? '48px' : '40px',
+    justifyContent: $withdescription ? 'space-between' : 'flex-start',
+    height: $withdescription ? '48px' : '40px',
     paddingLeft: '12px',
     cursor: 'pointer',
     backgroundColor: theme.colors.white,
@@ -234,10 +234,10 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
   },
 });
 
-export const ItemLabel = styled.p<{ withdescription?: number }>(({ theme, withdescription }) => ({
+export const ItemLabel = styled.p<{ $withdescription?: number }>(({ theme, $withdescription }) => ({
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  margin: withdescription ? '0' : '10px 0',
+  margin: $withdescription ? '0' : '10px 0',
   color: theme.colors.textPrimary,
 
   '&[data-is-disabled="true"]': {

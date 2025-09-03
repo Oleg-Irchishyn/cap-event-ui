@@ -130,7 +130,10 @@ const GeneralSettings = () => {
         ? { ...fundGroup, state: ITEM_STATES.SELECTED }
         : { ...fundGroup, state: ITEM_STATES.OPTIONAL },
     );
-    const updatedFundsValues = funds.map((fund) => ({ ...fund, state: ITEM_STATES.OPTIONAL }));
+    const updatedFundsValues = funds.map((fund) => ({
+      ...fund,
+      state: ITEM_STATES.OPTIONAL,
+    }));
 
     capEventSettingsStore.setFundGroups(updatedValues);
     capEventSettingsStore.setFunds(updatedFundsValues);
@@ -185,6 +188,11 @@ const GeneralSettings = () => {
     capEventSettingsStore.setFunds(updatedValues);
   };
 
+  const handleFundsDropdownOpenChange = (isOpen: boolean) => {
+    capEventSettingsStore.setEntitiesDropdownOpen(isOpen);
+    return true;
+  };
+
   return (
     <BackgroundContainer>
       <Title>General Settings</Title>
@@ -224,16 +232,16 @@ const GeneralSettings = () => {
           selectedItems={fundGroups.filter((fundGroup) => fundGroup.state === ITEM_STATES.SELECTED)}
         />
         <Dropdown
-          testId="funds"
+          testId="entities"
           checkbox
           withSearch
           withControls
           isMultiSelect
           withDescription
-          label={'Fund(s)*'}
+          label={'Entity(ies)*'}
           items={visibleFunds}
           searchText={searchText}
-          placeholder={'Select Fund(s)'}
+          placeholder={'Select Entity(ies)'}
           selectHandler={selectFundsHandler}
           deselectItem={deselectFundsHandler}
           onSearchChangeHandler={setSearchText}
@@ -241,6 +249,7 @@ const GeneralSettings = () => {
           onDeselectAllHandler={deselectAllFundsHandler}
           onSelectAlternativeClickHandler={alternativeSelectFundsHandler}
           selectedItems={funds.filter((fund) => fund.state === ITEM_STATES.SELECTED)}
+          onOpenChange={handleFundsDropdownOpenChange}
           isDisabled={
             !fundGroups.filter((fundGroup) => fundGroup.state === ITEM_STATES.SELECTED).length
           }

@@ -40,7 +40,7 @@ interface Props {
   onAdditionalFilterChange?: (item: DropdownItemType) => () => void;
   testId: string;
   isHideAlternativeButton?: boolean;
-  handleCloseDropdown?: () => boolean;
+  onOpenChange?: (isOpen: boolean) => boolean;
   errorMessage?: string;
   additionalFilters?: DropdownItemType[];
   excludedTooltipMessage?: string;
@@ -69,7 +69,7 @@ const Dropdown: FC<Props> = ({
   deselectItem,
   testId,
   isHideAlternativeButton = false,
-  handleCloseDropdown = () => true,
+  onOpenChange = () => true,
   errorMessage = '',
   additionalFilters,
   onAdditionalFilterChange,
@@ -78,30 +78,39 @@ const Dropdown: FC<Props> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const closeDropdown = () => {
+    const canCloseDropdown = onOpenChange(false);
+    if (canCloseDropdown) {
+      setIsOpen(false);
+    }
+    return canCloseDropdown;
+  };
+
+  const openDropdown = () => {
+    setIsOpen(true);
+    onOpenChange(true);
+  };
+
   useExternalElementClick(dropdownRef, () => {
     if (isOpen) {
-      const canCloseDropdown = handleCloseDropdown();
-      if (canCloseDropdown) {
-        setIsOpen(false);
-      }
+      closeDropdown();
     }
   }, [isOpen]);
 
   const openDropdownHandler = () => {
     if (isDisabled || isReadOnly) return;
     if (isOpen) {
-      const canCloseDropdown = handleCloseDropdown();
-      if (!canCloseDropdown) return;
+      closeDropdown();
+    } else {
+      openDropdown();
     }
-
-    setIsOpen((prevValue) => !prevValue);
   };
 
   const itemClickHandler = (item: DropdownItemType) => () => {
     selectHandler(item);
 
     if (!isMultiSelect) {
-      setIsOpen(false);
+      closeDropdown();
     }
   };
 

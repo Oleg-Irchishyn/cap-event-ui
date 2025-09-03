@@ -9,9 +9,20 @@ class CapEventSettingsStore {
   funds: DropdownItemType[] = [];
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
+  isEntitiesDropdownOpen: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  get isGeneralSettingsEmpty() {
+    return (
+      this.eventTypes.length === 0 ||
+      this.templates.length === 0 ||
+      this.fundGroups.length === 0 ||
+      this.funds.length === 0 ||
+      this.noticeDate === null
+    );
   }
 
   setEventTypes(types: DropdownItemType[]) {
@@ -43,6 +54,10 @@ class CapEventSettingsStore {
     if (item) {
       item.checked = !item.checked;
     }
+  }
+
+  setEntitiesDropdownOpen(isOpen: boolean) {
+    this.isEntitiesDropdownOpen = isOpen;
   }
 }
 
