@@ -1,29 +1,30 @@
-import { ChangeEvent, Dispatch, HTMLAttributes, Ref, SetStateAction, useState } from 'react';
+import { HTMLAttributes, Ref, useState } from 'react';
 import {
-  CustomCheckbox,
   DragIcon,
   FileListItem,
   FileName,
   FileNameWrapper,
   FileNumber,
   IconButton,
+  ItemCheckbox,
   TrashIcon,
 } from './styles';
+import { capEventSettingsStore } from '@/stores';
 
 export type ItemProps = HTMLAttributes<HTMLDivElement> & {
   id: string;
+  checked: boolean;
   fileNumber: number;
   withOpacity?: boolean;
   isDragging?: boolean;
   removeFile: (name: string) => void;
   fileName: string;
   ref?: Ref<HTMLDivElement>;
-  checkedFilesNumber: number;
-  setCheckedFilesNumber: Dispatch<SetStateAction<number>>;
 };
 
 const Item = ({
   id,
+  checked,
   withOpacity,
   isDragging,
   style,
@@ -31,25 +32,16 @@ const Item = ({
   removeFile,
   fileName,
   ref,
-  checkedFilesNumber,
-  setCheckedFilesNumber,
   ...props
 }: ItemProps) => {
   const [hovered, setHovered] = useState(false);
-  const [checked, setChecked] = useState(false);
 
   const filesWithCheckbox = ['pdf', 'docx'];
   const fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
   const fileExtension = fileName.split('.').at(-1);
 
-  const handleCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
-    if (e.target.checked) {
-      setCheckedFilesNumber(checkedFilesNumber + 1);
-      return;
-    }
-    setCheckedFilesNumber(checkedFilesNumber - 1);
-    return;
+  const handleCheckboxClick = () => {
+    capEventSettingsStore.toggleAttachmentCheckbox(id);
   };
 
   return (
@@ -62,10 +54,14 @@ const Item = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <DragIcon data-hovered={hovered} />
+      <DragIcon draggable={false} data-hovered={hovered} {...props} />
       {fileExtension && filesWithCheckbox.includes(fileExtension) && (
-        <CustomCheckbox
-          type="checkbox"
+        <ItemCheckbox
+          style={{
+            width: '16px',
+            height: '16px',
+          }}
+          checked={checked}
           onChange={handleCheckboxClick}
           title={checked ? 'Uncheck for deleting from Notices' : 'Check for adding to Notices'}
         />

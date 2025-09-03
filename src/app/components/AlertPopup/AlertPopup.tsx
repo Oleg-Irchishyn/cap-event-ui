@@ -7,6 +7,7 @@ import {
   CloseButton,
   ErrorIcon,
   ErrorSection,
+  FileName,
 } from './styles';
 
 type AlertStatus = 'error' | 'success';
@@ -29,6 +30,18 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
   isAlertOpen,
   handleAlertClose,
 }) => {
+  const renderFileName = (file: { fileName: string; fileSize?: number }, i: number) => {
+    if (file.fileSize) {
+      return (
+        <span key={i}>
+          <FileName>{file.fileName}</FileName>
+          {`- ${(file.fileSize / (1024 * 1024)).toFixed(2)} MB`}
+        </span>
+      );
+    }
+    return <FileName key={i}>{file.fileName}</FileName>;
+  };
+
   return (
     <>
       {isAlertOpen && (
@@ -39,10 +52,18 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
             <CloseButton onClick={handleAlertClose} />
           </AlertHeader>
           {errors &&
+            errors.length &&
             errors.map((error, i) => (
               <ErrorSection key={i}>
                 <AlertMessage>{error.message}</AlertMessage>
-                {error.details && <AlertMessage>{error.details}</AlertMessage>}
+                <AlertMessage>
+                  {`${error.details || ''}`}{' '}
+                  {error.files &&
+                    error.files.flatMap((file, index, arr) => [
+                      renderFileName(file, index),
+                      index < arr.length - 1 ? '; ' : null,
+                    ])}
+                </AlertMessage>
               </ErrorSection>
             ))}
         </AlertContainer>

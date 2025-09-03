@@ -8,7 +8,7 @@ import { capEventSettingsStore } from '@/stores';
 import EmptyFileArea from './EmptyFileArea';
 import FileList from './FileList';
 import AlertPopup from '@/app/components/AlertPopup/AlertPopup';
-import { DragNDropError } from './types';
+import { Attachment, DragNDropError } from './types';
 import { Title } from '../styles';
 import {
   AttachmentsCounter,
@@ -22,20 +22,21 @@ import BackgroundContainer from '@/app/components/BackgroundContainer';
 
 const Attachments: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
-  const [attachmentFiles, setAttachmentFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<DragNDropError[]>([]);
-  const [checkedFilesNumber, setCheckedFilesNumber] = useState(0);
+
+  const checkedFilesNumber = capEventSettingsStore.attachments.filter(
+    (file) => file.checked,
+  ).length;
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over?.id) {
-      setAttachmentFiles((items) => {
-        const oldIndex = items.findIndex((item) => item.name === active.id);
-        const newIndex = items.findIndex((item) => item.name === over.id);
+      const currentFileList = capEventSettingsStore.attachments;
+      const oldIndex = currentFileList.findIndex((item) => item.file.name === active.id);
+      const newIndex = currentFileList.findIndex((item) => item.file.name === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      capEventSettingsStore.setAttachments(arrayMove(currentFileList, oldIndex, newIndex));
     }
   }, []);
 
@@ -48,22 +49,28 @@ const Attachments: React.FC = () => {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setErrors([]);
-    setIsDragOver(false);
-    const files = e.dataTransfer.files;
-    const newFileList = [...attachmentFiles, ...files];
-
-    const validatedFileList = validateFiles(newFileList, setErrors);
-
-    setAttachmentFiles(validatedFileList);
+  const updatedFileList = (fileList: Attachment[]) => {
+    const validatedFileList = validateFiles(fileList, setErrors);
     capEventSettingsStore.setAttachments(validatedFileList);
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = e.dataTransfer.files;
+    const newFileList = [
+      ...capEventSettingsStore.attachments,
+      ...Array.from(files).map((file) => ({ file: file, checked: false })),
+    ];
+
+    updatedFileList(newFileList);
+  };
+
   const handleRemoveFile = (name: string) => {
-    const updatedFileList = attachmentFiles?.filter((file) => file.name !== name);
-    setAttachmentFiles(updatedFileList);
+    const updatedFileList = capEventSettingsStore.attachments.filter(
+      (attachment) => attachment.file.name !== name,
+    );
+    capEventSettingsStore.setAttachments(updatedFileList);
   };
 
   const handleAlertClose = () => {
@@ -75,12 +82,20 @@ const Attachments: React.FC = () => {
       <AttachmentsHeader>
         <AttachmentsHeaderGroup>
           <Title>Attachment(s)</Title>
-          <AttachmentsHint>
-            Select file(s) that have to be added to the Notices (only .DOCX and .PDF formats)
-          </AttachmentsHint>
+          {capEventSettingsStore.attachments.length ? (
+            <AttachmentsHint>
+              Select file(s) that have to be added to the Notices (only .DOCX and .PDF formats)
+            </AttachmentsHint>
+          ) : (
+            ''
+          )}
         </AttachmentsHeaderGroup>
         <AttachmentsHeaderGroup>
-          <AttachmentsCounter>{`Used ${attachmentFiles.length} out of 20 attachments, ${checkedFilesNumber} added to Notice`}</AttachmentsCounter>
+          {capEventSettingsStore.attachments.length ? (
+            <AttachmentsCounter>{`Used ${capEventSettingsStore.attachments.length} out of 20 attachments, ${checkedFilesNumber} added to Notice`}</AttachmentsCounter>
+          ) : (
+            ''
+          )}
         </AttachmentsHeaderGroup>
       </AttachmentsHeader>
 
@@ -89,22 +104,17 @@ const Attachments: React.FC = () => {
         data-is-drag-over={isDragOver}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        data-files-count={!!attachmentFiles.length}
+        data-files-count={!!capEventSettingsStore.attachments.length}
       >
-        {attachmentFiles.length ? (
+        {capEventSettingsStore.attachments.length ? (
           <FileList
             handleDragEnd={handleDragEnd}
-            attachmentFiles={attachmentFiles}
+            updatedFileList={updatedFileList}
             handleRemoveFile={handleRemoveFile}
-            setAttachmentFiles={setAttachmentFiles}
             checkedFilesNumber={checkedFilesNumber}
-            setCheckedFilesNumber={setCheckedFilesNumber}
           />
         ) : (
-          <EmptyFileArea
-            attachmentFiles={attachmentFiles}
-            setAttachmentFiles={setAttachmentFiles}
-          />
+          <EmptyFileArea updatedFileList={updatedFileList} />
         )}
 
         <AlertPopup

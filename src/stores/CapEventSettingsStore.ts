@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import { Attachment } from '@/app/new/attachments/types';
 
 class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
@@ -7,7 +8,7 @@ class CapEventSettingsStore {
   fundGroups: DropdownItemType[] = [];
   funds: DropdownItemType[] = [];
   noticeDate: Date | null = null;
-  attachments: File[] = [];
+  attachments: Attachment[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -33,8 +34,15 @@ class CapEventSettingsStore {
     this.noticeDate = date;
   }
 
-  setAttachments(attachments: File[]) {
+  setAttachments(attachments: Attachment[]) {
     this.attachments = attachments;
+  }
+
+  toggleAttachmentCheckbox(id: string) {
+    const item = this.attachments.find((att) => att.file.name === id);
+    if (item) {
+      item.checked = !item.checked;
+    }
   }
 }
 

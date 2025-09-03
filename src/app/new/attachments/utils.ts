@@ -1,45 +1,47 @@
 import { Dispatch, SetStateAction } from 'react';
 import { allowedFormats } from '@/const/allowedFileFormats';
-import { DragNDropError } from './types';
+import { Attachment, DragNDropError } from './types';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const validateFiles = (
-  initFileList: File[],
+  initFileList: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
 ) => {
+  setErrors([]);
   const filteredBySize = checkFileSizes(initFileList, setErrors);
   const filteredByFormat = checkFileFormats(filteredBySize, setErrors);
-  const filteredByNumber = checkFilesNumber(filteredByFormat, setErrors);
-  const filteredByUniqueName = checkDuplications(filteredByNumber, setErrors);
+  const filteredByUniqueName = checkDuplications(filteredByFormat, setErrors);
+  const filteredByNumber = checkFilesNumber(filteredByUniqueName, setErrors);
 
-  return filteredByUniqueName;
+  return filteredByNumber;
 };
 
 const checkFileSizes = (
-  fileList: File[],
+  attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
-): File[] => {
+): Attachment[] => {
   const bigFiles: { fileName: string; size: number }[] = [];
-  const smallFiles: File[] = [];
-  for (const file of fileList) {
-    if (file.size > MAX_FILE_SIZE_BYTES) {
+  const smallFiles: Attachment[] = [];
+  for (const attachment of attachments) {
+    if (attachment.file.size > MAX_FILE_SIZE_BYTES) {
       bigFiles.push({
-        fileName: file.name,
-        size: file.size,
+        fileName: attachment.file.name,
+        size: attachment.file.size,
       });
       continue;
     }
-    smallFiles.push(file);
+    smallFiles.push(attachment);
   }
   if (bigFiles.length) {
     setErrors((prev) => [
       ...prev,
       {
-        message: 'Maximum size limit per file: 5 MB',
-        details: bigFiles
-          .map((file) => `${file.fileName} - ${(file.size / (1024 * 1024)).toFixed(1)} MB`)
-          .join('; '),
+        message: 'Maximum size limit per file: 5 MB.',
+        files: bigFiles.map((file) => ({
+          fileName: file.fileName,
+          fileSize: file.size,
+        })),
       },
     ]);
   }
@@ -47,25 +49,27 @@ const checkFileSizes = (
 };
 
 const checkFileFormats = (
-  fileList: File[],
+  attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
-): File[] => {
+): Attachment[] => {
   const disallowedFiles: File[] = [];
-  const allowedFiles: File[] = [];
-  for (const file of fileList) {
-    const ext = file.name.split('.').pop();
+  const allowedFiles: Attachment[] = [];
+  for (const attachment of attachments) {
+    const ext = attachment.file.name.split('.').pop()?.toLowerCase();
     if (ext && !allowedFormats.has(ext)) {
-      disallowedFiles.push(file);
+      disallowedFiles.push(attachment.file);
       continue;
     }
-    allowedFiles.push(file);
+    allowedFiles.push(attachment);
   }
   if (disallowedFiles.length) {
     setErrors((prev) => [
       ...prev,
       {
-        message: 'Unsupported format(s)',
-        details: disallowedFiles.map((file) => file.name).join('; '),
+        message: 'Unsupported format(s).',
+        files: disallowedFiles.map((file) => ({
+          fileName: file.name,
+        })),
       },
     ]);
   }
@@ -73,39 +77,39 @@ const checkFileFormats = (
 };
 
 const checkFilesNumber = (
-  fileList: File[],
+  attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
-): File[] => {
-  if (fileList.length > 20) {
+): Attachment[] => {
+  if (attachments.length > 20) {
     setErrors((prev) => [
       ...prev,
       {
         message: 'Maximum upload limit: 20 files.',
-        details: `The following files were not uploaded: ${fileList
-          .slice(20)
-          .map((file) => file.name)
-          .join('; ')}`,
+        details: 'The following files were not uploaded: ',
+        files: attachments.slice(20).map((attachment) => ({
+          fileName: attachment.file.name,
+        })),
       },
     ]);
-    return fileList.slice(0, 20);
+    return attachments.slice(0, 20);
   }
-  return fileList;
+  return attachments;
 };
 
 const checkDuplications = (
-  fileList: File[],
+  attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
-): File[] => {
+): Attachment[] => {
   const seenFiles = new Set<string>();
   const duplications = new Set<string>();
-  const uniqueFiles: File[] = [];
+  const uniqueFiles: Attachment[] = [];
 
-  for (const file of fileList) {
-    if (seenFiles.has(file.name)) {
-      duplications.add(file.name);
+  for (const attachment of attachments) {
+    if (seenFiles.has(attachment.file.name)) {
+      duplications.add(attachment.file.name);
     } else {
-      seenFiles.add(file.name);
-      uniqueFiles.push(file);
+      seenFiles.add(attachment.file.name);
+      uniqueFiles.push(attachment);
     }
   }
 
@@ -113,8 +117,10 @@ const checkDuplications = (
     setErrors((prev) => [
       ...prev,
       {
-        message: 'Not unique file name(s)',
-        details: `${Array.from(duplications).join(', ')}`,
+        message: 'Not unique file name(s).',
+        files: Array.from(duplications).map((file) => ({
+          fileName: file,
+        })),
       },
     ]);
   }

@@ -1,14 +1,15 @@
 import styled from 'styled-components';
 
 export const AlertContainer = styled.div(({ theme }) => ({
-  position: 'absolute',
+  position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',
   minHeight: '110px',
   padding: '10px',
   borderRadius: '5px',
-  boxShadow: '5px 0px 5px black',
+  boxShadow: '0px 0px 5px black',
+  boxSizing: 'border-box',
   '&[data-status="error"]': {
     backgroundColor: theme.colors.alertError,
   },
@@ -37,6 +38,7 @@ export const AlertMessage = styled.div({
 
 export const FileName = styled.span({
   textDecoration: 'underline',
+  whiteSpace: 'nowrap',
 });
 
 export const ErrorIcon = styled.img.attrs({

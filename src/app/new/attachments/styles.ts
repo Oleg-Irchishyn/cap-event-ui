@@ -43,7 +43,7 @@ export const FileName = styled('span')({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  maxWidth: '180px',
+  maxWidth: '370px',
 });
 
 export const VisuallyHiddenInput = styled('input')({
@@ -90,7 +90,6 @@ export const DropAreaContainer = styled.div(({ theme }) => ({
   padding: '24px',
   border: `1px dashed ${theme.colors.gray500}`,
   borderRadius: '8px',
-  backgroundColor: theme.colors.white,
   textAlign: 'center',
   marginTop: '24px',
   '&[data-is-drag-over="true"]': {
@@ -111,6 +110,7 @@ export const FileListStyled = styled.div({
 });
 
 export const FileListItem = styled.div(({ theme }) => ({
+  fontSize: '14px',
   opacity: '1',
   transformOrigin: '50% 50%',
   borderRadius: '5px',
@@ -121,7 +121,6 @@ export const FileListItem = styled.div(({ theme }) => ({
   alignItems: 'center',
   flexShrink: '0',
   padding: '3px 15px 3px 0',
-  boxShadow: 'rgb(63 63 68 / 5%) 0px 0px 0px 1px, rgb(34 33 81 / 15%) 0px 1px 3px 0px',
   '&[data-hovered="true"]': {
     backgroundColor: `rgba(${theme.colors.pastelYellow}, 1)`,
   },
@@ -130,7 +129,6 @@ export const FileListItem = styled.div(({ theme }) => ({
   },
   '&[data-is-dragging="true"]': {
     cursor: 'grabbing',
-    boxShadow: 'rgb(63 63 68 / 5%) 0px 2px 0px 2px, rgb(34 33 81 / 15%) 0px 2px 3px 2px',
   },
 }));
 
@@ -145,11 +143,52 @@ export const IconButton = styled.button({
   },
 });
 
-export const CustomCheckbox = styled.input(({ theme }) => ({
-  accentColor: theme.colors.white,
-  width: '16px',
-  height: '16px',
-}));
+export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
+  display: 'flex',
+  flexShrink: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '20px',
+  height: '20px',
+  marginRight: '10px',
+
+  appearance: 'none',
+  borderRadius: '4px',
+  border: '1px solid #666769',
+  backgroundColor: '#ffffff',
+
+  cursor: 'pointer',
+
+  '&::before': {
+    content: '""',
+    width: '10px',
+    height: '8px',
+    transform: 'scale(0)',
+    transition: '120ms transform ease-in-out',
+    backgroundSize: 'contain',
+    backgroundImage: 'url(icons/marker-icon.svg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+  },
+
+  '&:checked::before': {
+    transform: 'scale(1)',
+  },
+
+  '&:disabled::before': {
+    backgroundImage: 'url(icons/marker-icon-disabled.svg)',
+  },
+
+  '&:focus-visible': {
+    outline: 'none',
+  },
+
+  '&:disabled': {
+    cursor: 'default',
+    background: '#f0f1f1',
+    border: '1px solid #b7b7b8',
+  },
+});
 
 // Icons
 
