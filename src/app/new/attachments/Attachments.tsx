@@ -9,7 +9,7 @@ import EmptyFileArea from './EmptyFileArea';
 import FileList from './FileList';
 import AlertPopup from '@/app/components/AlertPopup/AlertPopup';
 import { Attachment, DragNDropError } from './types';
-import { Title } from '../styles';
+import { Title, Container } from '../styles';
 import {
   AttachmentsCounter,
   AttachmentsHeader,
@@ -18,7 +18,6 @@ import {
   DropAreaContainer,
 } from './styles';
 import { validateFiles } from './utils';
-import BackgroundContainer from '@/app/components/BackgroundContainer';
 
 const Attachments: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -78,7 +77,7 @@ const Attachments: React.FC = () => {
   };
 
   return (
-    <BackgroundContainer>
+    <Container>
       <AttachmentsHeader>
         <AttachmentsHeaderGroup>
           <Title>Attachment(s)</Title>
@@ -124,7 +123,7 @@ const Attachments: React.FC = () => {
           handleAlertClose={handleAlertClose}
         />
       </DropAreaContainer>
-    </BackgroundContainer>
+    </Container>
   );
 };
 

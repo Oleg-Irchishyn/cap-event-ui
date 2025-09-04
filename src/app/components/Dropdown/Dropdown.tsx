@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import { useExternalElementClick } from '@/hooks/useExternalElementClick';
 
@@ -7,19 +7,19 @@ import ListView from './ListView';
 import { DropdownWrapper, ErrorLabel, FieldLabel, LabelContainer } from './styles';
 import Image from 'next/image';
 
-export type DropdownItemType = {
+export type DropdownItemType<T = object> = {
   label: string;
   displayName?: string;
   description?: string;
   state: string;
   id?: string;
   isDisabled?: boolean;
-};
+} & T;
 
-interface Props {
-  items: DropdownItemType[];
-  selectedItems: DropdownItemType[];
-  selectHandler: (item: DropdownItemType) => void;
+interface Props<T> {
+  items: DropdownItemType<T>[];
+  selectedItems: DropdownItemType<T>[];
+  selectHandler: (item: DropdownItemType<T>) => void;
   placeholder: string;
   isReadOnly?: boolean;
   isDisabled?: boolean;
@@ -36,17 +36,17 @@ interface Props {
   onSelectAlternativeClickHandler?: () => void;
   isSelectAllAvailable?: boolean;
   isDeselectAllAvailable?: boolean;
-  deselectItem?: (item: DropdownItemType) => () => void;
-  onAdditionalFilterChange?: (item: DropdownItemType) => () => void;
+  deselectItem?: (item: DropdownItemType<T>) => () => void;
+  onAdditionalFilterChange?: (item: DropdownItemType<T>) => () => void;
   testId: string;
   isHideAlternativeButton?: boolean;
   onOpenChange?: (isOpen: boolean) => boolean;
   errorMessage?: string;
-  additionalFilters?: DropdownItemType[];
+  additionalFilters?: DropdownItemType<T>[];
   excludedTooltipMessage?: string;
 }
 
-const Dropdown: FC<Props> = ({
+const Dropdown = <T,>({
   items,
   selectedItems,
   selectHandler = () => {},
@@ -74,7 +74,7 @@ const Dropdown: FC<Props> = ({
   additionalFilters,
   onAdditionalFilterChange,
   excludedTooltipMessage,
-}) => {
+}: Props<T>) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -106,7 +106,7 @@ const Dropdown: FC<Props> = ({
     }
   };
 
-  const itemClickHandler = (item: DropdownItemType) => () => {
+  const itemClickHandler = (item: DropdownItemType<T>) => () => {
     selectHandler(item);
 
     if (!isMultiSelect) {

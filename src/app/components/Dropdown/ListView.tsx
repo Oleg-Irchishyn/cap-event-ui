@@ -1,15 +1,15 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import DropdownMenu from './DropdownMenu';
 import ListItem from './ListItem';
 import { ListViewContainer, ListViewWrapper, ScrollContainer } from './styles';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 
-type ListViewProps = {
+type ListViewProps<T> = {
   testId: string;
-  items: DropdownItemType[];
-  itemClickHandler: (item: DropdownItemType) => () => void;
-  onAdditionalFilterChange?: (item: DropdownItemType) => () => void;
+  items: DropdownItemType<T>[];
+  itemClickHandler: (item: DropdownItemType<T>) => () => void;
+  onAdditionalFilterChange?: (item: DropdownItemType<T>) => () => void;
   checkbox: boolean;
   withSearch: boolean;
   searchPlaceholder?: string;
@@ -23,11 +23,11 @@ type ListViewProps = {
   isSelectAllAvailable: boolean;
   isDeselectAllAvailable: boolean;
   isHideAlternativeButton: boolean;
-  additionalFilters?: DropdownItemType[];
+  additionalFilters?: DropdownItemType<T>[];
   excludedTooltipMessage?: string;
 };
 
-const ListView: FC<ListViewProps> = ({
+const ListView = <T,>({
   testId = 'ListView',
   items,
   itemClickHandler,
@@ -47,7 +47,7 @@ const ListView: FC<ListViewProps> = ({
   additionalFilters,
   onAdditionalFilterChange,
   excludedTooltipMessage,
-}) => {
+}: ListViewProps<T>) => {
   useEffect(() => () => onSearchChangeHandler(''), []);
 
   return (

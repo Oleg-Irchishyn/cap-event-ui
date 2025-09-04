@@ -1,11 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import { FundGroupItem } from '@/types/types';
 import { Attachment } from '@/app/new/attachments/types';
 
 class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
   templates: DropdownItemType[] = [];
-  fundGroups: DropdownItemType[] = [];
+  fundGroups: DropdownItemType<FundGroupItem>[] = [];
   funds: DropdownItemType[] = [];
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
@@ -33,7 +34,7 @@ class CapEventSettingsStore {
     this.templates = templates;
   }
 
-  setFundGroups(fundGroups: DropdownItemType[]) {
+  setFundGroups(fundGroups: DropdownItemType<FundGroupItem>[]) {
     this.fundGroups = fundGroups;
   }
 

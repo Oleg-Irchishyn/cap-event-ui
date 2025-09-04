@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
@@ -24,19 +24,19 @@ export const prepareArrayRefs = (): [ref: HTMLDivElement[], (element: HTMLDivEle
   return [refs, (element) => element && refs.push(element)];
 };
 
-interface Props {
+interface Props<T> {
   isOpen: boolean;
   isError: boolean;
   isReadOnly: boolean;
   isDisabled: boolean;
   placeholder: string;
-  selectedItems: DropdownItemType[];
+  selectedItems: DropdownItemType<T>[];
   isMultiSelect: boolean;
-  onDeselectItemClickHandler?: (item: DropdownItemType, isDisabled?: boolean) => () => void;
+  onDeselectItemClickHandler?: (item: DropdownItemType<T>, isDisabled?: boolean) => () => void;
   openDropdownHandler: () => void;
   testId: string;
 }
-const DropdownInputField: FC<Props> = ({
+const DropdownInputField = <T,>({
   isOpen,
   isError,
   isReadOnly,
@@ -47,7 +47,7 @@ const DropdownInputField: FC<Props> = ({
   onDeselectItemClickHandler = () => () => {},
   openDropdownHandler,
   testId = 'dropdown-input',
-}) => {
+}: Props<T>) => {
   const multiselectRef = useRef<HTMLDivElement>(null);
   const truncatedLabelRef = useRef<(HTMLDivElement | null)[]>([]);
   const hiddenOptionsCountRef = useRef<HTMLDivElement>(null);

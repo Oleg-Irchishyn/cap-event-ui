@@ -14,6 +14,13 @@ export const Title = styled.div(({ theme }) => ({
   color: theme.colors.primary,
 }));
 
+export const Container = styled.div(({ theme }) => ({
+  backgroundColor: theme.colors.lightGray,
+  borderRadius: '16px',
+  margin: '24px 16px 0 16px',
+  padding: '24px',
+}));
+
 export const DropdownWrapper = styled.div({
   display: 'grid',
   gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',

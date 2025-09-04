@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { ITEM_STATES } from '@/const/common';
 
@@ -15,23 +15,23 @@ import Tooltip from '@/app/components/Tooltip';
 
 const { SELECTED, EXCLUDED } = ITEM_STATES;
 
-type ListItemProps = {
-  item: DropdownItemType;
+type ListItemProps<T> = {
+  item: DropdownItemType<T>;
   checkbox: boolean;
-  itemClickHandler: (item: DropdownItemType) => () => void;
+  itemClickHandler: (item: DropdownItemType<T>) => () => void;
   withDescription?: boolean;
   withBackground?: boolean;
   excludedTooltipMessage?: string;
 };
 
-const ListItem: FC<ListItemProps> = ({
+const ListItem = <T,>({
   item,
   checkbox,
   itemClickHandler,
   withDescription = false,
   withBackground = true,
   excludedTooltipMessage = '',
-}) => {
+}: ListItemProps<T>) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const labelRef = useRef<HTMLDivElement>(null);
 

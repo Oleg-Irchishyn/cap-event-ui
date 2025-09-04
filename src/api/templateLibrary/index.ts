@@ -1,14 +1,16 @@
 import { TemplateLibraryServer } from '@/api/java';
 
-interface TemplateLibrary {
-  id: number;
+export interface TemplateLibrary {
+  id: string;
   boxId: string;
   name: string;
 }
 
-export const getTemplates = async () => {
+export const getTemplates = async (sponsorId: string, eventTypeId: string) => {
   try {
-    const { data } = await TemplateLibraryServer.get<TemplateLibrary[]>('templates');
+    const { data } = await TemplateLibraryServer.get<TemplateLibrary[]>('templates/metadata', {
+      params: { sponsorId, eventTypeId },
+    });
     return data;
   } catch (error) {
     if (error instanceof Error) {

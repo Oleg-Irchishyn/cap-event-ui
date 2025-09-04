@@ -11,6 +11,11 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo, useState } from 'react';
 import { DropdownWrapper, Title } from './styles';
+import { CapEventPackageApi, FundsPackageApi, TemplateLibraryApi } from '@/api';
+import { EventType } from '@/api/capEventPackage';
+import { Funds } from '@/api/fundsPackage';
+import { TemplateLibrary } from '@/api/templateLibrary';
+import { FundGroupItem } from '@/types/types';
 
 const EVENT_TYPE_MOCK = [
   {
@@ -42,14 +47,50 @@ const tempId = Math.floor(10000 + Math.random() * 90000);
 const tempFundId = Math.floor(10000 + Math.random() * 80000);
 
 const FUND_GROUPS = [...Array(9)].map((_, i) => ({
+  fundGroupId: i,
   label: `${tempId}-${i + 1} - Fund group ${i + 1}`,
   state: 'O',
+  id: 1,
+  fundGroupName: 'aaa',
 }));
 
 const FUNDS = [...Array(8)].map((_, i) => ({
   label: `${tempFundId}-${i + 1} - Fund ${i + 1}`,
   state: 'O',
 }));
+
+const prepareEventType = (eventTypes: EventType[]) => {
+  return eventTypes?.map((eventType) => ({
+    ...eventType,
+    state: ITEM_STATES.OPTIONAL,
+    label: eventType.name,
+    description: eventType.abbreviation,
+  }));
+};
+
+const prepareFundGroups = (fundGroups: FundGroupItem[]) => {
+  return fundGroups?.map((fundGroup) => ({
+    ...fundGroup,
+    state: ITEM_STATES.OPTIONAL,
+    label: `${fundGroup.fundGroupId} - ${fundGroup.fundGroupName}`,
+  }));
+};
+
+const prepareFunds = (funds: Funds[]) => {
+  return funds?.map((fund) => ({
+    ...fund,
+    state: ITEM_STATES.OPTIONAL,
+    label: `${fund.fundId} - ${fund.fundName}`,
+  }));
+};
+
+const prepareTemplates = (templates: TemplateLibrary[]) => {
+  return templates?.map((template) => ({
+    ...template,
+    state: ITEM_STATES.OPTIONAL,
+    label: template.name,
+  }));
+};
 
 const getMultiSelectItemState = (state: string) => {
   if (state === ITEM_STATES.EXCLUDED) return ITEM_STATES.EXCLUDED;
@@ -59,7 +100,7 @@ const getMultiSelectItemState = (state: string) => {
   return ITEM_STATES.OPTIONAL;
 };
 
-const filterBySearch = (items: DropdownItemType[], searchText: string) => {
+const filterBySearch = <T,>(items: DropdownItemType<T>[], searchText: string) => {
   const search = searchText.toLowerCase();
 
   return items.filter(
@@ -74,23 +115,42 @@ const filterBySearch = (items: DropdownItemType[], searchText: string) => {
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    capEventSettingsStore.setEventTypes(EVENT_TYPE_MOCK);
-    capEventSettingsStore.setFundGroups(FUND_GROUPS);
-    capEventSettingsStore.setFunds(FUNDS);
+  const getEventType = async () => {
+    const eventTypes = await CapEventPackageApi.getEventTypes();
+    const fundGroups = await FundsPackageApi.getFundGroups();
+    const preparedFundGroups = fundGroups ? prepareFundGroups(fundGroups) : FUND_GROUPS;
+    const finalEventTypes = eventTypes ? prepareEventType(eventTypes) : EVENT_TYPE_MOCK;
+    capEventSettingsStore.setEventTypes(finalEventTypes);
+    capEventSettingsStore.setFundGroups(preparedFundGroups);
+  };
 
-    if (TEMPLATES_MOCK.length === 1) {
-      const preSelectedTemplate = [{ ...TEMPLATES_MOCK[0], state: ITEM_STATES.SELECTED }];
+  const updateFunds = async (id: number) => {
+    const fundsRelatedToGroup = await FundsPackageApi.getFunds(id);
+    const updatedFundsValues = fundsRelatedToGroup ? prepareFunds(fundsRelatedToGroup) : FUNDS;
+
+    capEventSettingsStore.setFunds(updatedFundsValues);
+  };
+
+  const getTemplates = async (eventTypeId: string) => {
+    const templates = await TemplateLibraryApi.getTemplates('Golden Image DEV', eventTypeId);
+    const preparedTemplates = templates ? prepareTemplates(templates) : TEMPLATES_MOCK;
+
+    if (preparedTemplates.length === 1) {
+      const preSelectedTemplate = [{ ...preparedTemplates[0], state: ITEM_STATES.SELECTED }];
       capEventSettingsStore.setTemplates(preSelectedTemplate);
     } else {
-      capEventSettingsStore.setTemplates(TEMPLATES_MOCK);
+      capEventSettingsStore.setTemplates(preparedTemplates);
     }
+  };
+
+  useEffect(() => {
+    getEventType();
   }, []);
 
   const { eventTypes, templates, fundGroups, funds } = capEventSettingsStore;
 
-  const visibleFundGroups = useMemo(
-    () => filterBySearch(fundGroups, searchText),
+  const visibleFundGroups: DropdownItemType<FundGroupItem>[] = useMemo(
+    () => filterBySearch<FundGroupItem>(fundGroups, searchText),
     [fundGroups, searchText],
   );
 
@@ -107,6 +167,7 @@ const GeneralSettings = () => {
         : { ...eventType, state: ITEM_STATES.OPTIONAL },
     );
     capEventSettingsStore.setEventTypes(updatedValues);
+    getTemplates(item.id || '');
   };
 
   const selectTemplateHandler = (item: DropdownItemType) => {
@@ -118,7 +179,7 @@ const GeneralSettings = () => {
     capEventSettingsStore.setTemplates(updatedValues);
   };
 
-  const selectFundGroupHandler = (item: DropdownItemType) => {
+  const selectFundGroupHandler = (item: DropdownItemType<FundGroupItem>) => {
     const selectedFundGroup = fundGroups.find(
       (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,
     );
@@ -137,6 +198,8 @@ const GeneralSettings = () => {
 
     capEventSettingsStore.setFundGroups(updatedValues);
     capEventSettingsStore.setFunds(updatedFundsValues);
+
+    updateFunds(item.fundGroupId);
   };
 
   const selectFundsHandler = (item: DropdownItemType) => {
@@ -214,13 +277,18 @@ const GeneralSettings = () => {
           label="Template*"
           items={templates}
           placeholder="Select Template"
-          isDisabled={templates.length === 1}
+          isDisabled={
+            templates.length === 1 ||
+            capEventSettingsStore.eventTypes.filter(
+              (eventTypes) => eventTypes.state === ITEM_STATES.SELECTED,
+            ).length === 0
+          }
           selectHandler={selectTemplateHandler}
           selectedItems={capEventSettingsStore.templates.filter(
             (template) => template.state === ITEM_STATES.SELECTED,
           )}
         />
-        <Dropdown
+        <Dropdown<FundGroupItem>
           testId="fund-groups"
           withSearch
           label="Fund Group*"

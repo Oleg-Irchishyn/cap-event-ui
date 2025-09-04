@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
@@ -16,7 +16,7 @@ import {
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import ListItem from '@/app/components/Dropdown/ListItem';
 
-type DropdownMenuProps = {
+type DropdownMenuProps<T> = {
   testId: string;
   controlsLabel?: string;
   withControls: boolean;
@@ -30,11 +30,11 @@ type DropdownMenuProps = {
   isDeselectAllAvailable: boolean;
   onSelectAlternativeClickHandler?: () => void;
   isHideAlternativeButton: boolean;
-  additionalFilters?: DropdownItemType[];
-  onAdditionalFilterChange?: (item: DropdownItemType) => () => void;
+  additionalFilters?: DropdownItemType<T>[];
+  onAdditionalFilterChange?: (item: DropdownItemType<T>) => () => void;
 };
 
-const DropdownMenu: FC<DropdownMenuProps> = ({
+const DropdownMenu = <T,>({
   testId,
   controlsLabel,
   withControls,
@@ -50,7 +50,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({
   isHideAlternativeButton,
   additionalFilters,
   onAdditionalFilterChange = () => () => {},
-}) => (
+}: DropdownMenuProps<T>) => (
   <>
     {withSearch && (
       <SearchContainer data-testid={prepareDataTestId(testId, 'Search')}>
