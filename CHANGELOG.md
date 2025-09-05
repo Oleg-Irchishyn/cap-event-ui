@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.5&targetVersion=GTv0.0.6) (2025-09-05)
+
+
+### Features
+
+* add event types endpoint ([a0a66cf](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a0a66cf4e9a2b0beb34f4815a77028553904c2fa))
+
 ### [0.0.5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.4&targetVersion=GTv0.0.5) (2025-09-04)
 
 
