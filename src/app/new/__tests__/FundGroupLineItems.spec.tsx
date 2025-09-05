@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
-import FundGroupLineItems from '@/app/new/FundGroupLineItems';
+import FundGroupLineItems from '@/app/new/LineItems/FundGroupLineItems';
 import { theme } from '@/ui/globalStyles';
 
 jest.mock('@/app/components/BackgroundContainer', () => {

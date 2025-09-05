@@ -6,9 +6,8 @@ export const useExternalElementClick = (
   dependencies: boolean[] = [],
 ) => {
   const handleClick = (e: Event) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    if (ref?.current?.contains(e.target)) {
+    const target = e.target as Node;
+    if (ref?.current?.contains(target)) {
       return;
     }
 

@@ -21,5 +21,6 @@ export const theme: DefaultTheme = {
     skyBlue: '#F8FCFF',
     accentBlue: '#0067a3',
     alertError: '#FEE2DF',
+    accentGreen: '#039344',
   },
 };

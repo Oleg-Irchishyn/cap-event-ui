@@ -1,5 +1,5 @@
 import BackgroundContainer from '@/app/components/BackgroundContainer';
-import { Title } from './styles';
+import { Title } from '../styles';
 
 const FundGroupLineItems = () => {
   return (

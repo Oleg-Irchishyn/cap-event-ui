@@ -1,0 +1,55 @@
+
+
+/* Remove outer/inner borders */
+.ag-theme-alpine .ag-root-wrapper,
+.ag-theme-alpine .ag-root,
+.ag-theme-alpine .ag-header,
+.ag-theme-alpine .ag-header-viewport,
+.ag-theme-alpine .ag-body-viewport,
+.ag-theme-alpine .ag-body-vertical-scroll,
+.ag-theme-alpine .ag-body-horizontal-scroll {
+  border: none !important;
+}
+
+.ag-theme-alpine {
+    --ag-cell-horizontal-padding: 8px
+}
+
+.ag-theme-alpine .ag-header,
+.ag-theme-alpine .ag-header-viewport {
+    border-bottom: 1px solid #F9F9F9 !important;
+    background-color: inherit !important;
+}
+
+.ag-theme-alpine .ag-header-cell-label {
+    color: #666769;
+    font-weight: 400;
+}
+
+/* Remove row/cell borders */
+.ag-theme-alpine .ag-row,
+.ag-theme-alpine .ag-cell {
+  border: none !important;
+}
+
+.ag-theme-alpine .ag-layout-auto-height .ag-center-cols-viewport {
+    min-height: 40px !important;
+}
+
+.ag-theme-alpine .ag-row-selected::before {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.ag-header-cell-text {
+    font-weight: 500;
+}
+
+.custom-header {
+    .ag-header-cell-label {
+        justify-content: flex-end;
+    }
+}
+.ag-cell-edit-wrapper, .ag-cell-editor, .ag-cell-wrapper, :where(.ag-cell-editor) .ag-input-field-input, :where(.ag-cell-editor) .ag-wrapper {
+    text-align: end;
+}

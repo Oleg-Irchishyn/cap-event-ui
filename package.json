@@ -19,12 +19,14 @@
     "minor": "npx standard-version --release-as minor"
   },
   "dependencies": {
+    "@dnd-kit/sortable": "^10.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.0",
     "@mui/styled-engine-sc": "^7.3.0",
     "@mui/x-date-pickers": "^8.9.2",
-    "@dnd-kit/sortable": "^10.0.0",
+    "ag-grid-community": "^34.1.2",
+    "ag-grid-react": "^34.1.2",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
     "mobx": "^6.13.7",

@@ -257,7 +257,7 @@ const GeneralSettings = () => {
   };
 
   return (
-    <BackgroundContainer>
+    <BackgroundContainer testId="general-settings">
       <Title>General Settings</Title>
       <DropdownWrapper>
         <Dropdown

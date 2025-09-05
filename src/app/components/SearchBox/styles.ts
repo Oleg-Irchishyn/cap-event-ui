@@ -33,7 +33,7 @@ export const SearchInput = styled.input(({ theme }) => ({
 
 export const SearchIconContainer = styled.div({
   position: 'absolute',
-  top: '9px',
+  top: '8px',
   left: '10px',
 });
 

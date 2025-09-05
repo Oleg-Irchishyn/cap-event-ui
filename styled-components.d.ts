@@ -22,6 +22,7 @@ declare module 'styled-components' {
       skyBlue: string;
       accentBlue: string;
       alertError: string;
+      accentGreen: string;
     };
   }
 }

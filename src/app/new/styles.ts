@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Image from 'next/image';
 
 export const ButtonContainer = styled.div({
   display: 'flex',
@@ -86,4 +87,31 @@ export const TextArea = styled.textarea(({ theme }) => ({
   '&:focus': {
     border: `1px solid ${theme.colors.primary}`,
   },
+}));
+
+export const Label = styled.span(({ theme }) => ({
+  fontSize: '14px',
+  color: theme.colors.primary,
+}));
+
+export const SubLabel = styled.span(({ theme }) => ({
+  fontSize: '14px',
+  color: theme.colors.textPrimary,
+}));
+
+export const ChevronIcon = styled.img.attrs({
+  src: 'icons/chevron-down-secondary.svg',
+})({
+  transition: 'all .2s ease-in-out',
+
+  '&[data-is-open="true"]': {
+    transform: 'rotate(180deg)',
+  },
+});
+
+export const CellPlaceholder = styled.span(({ theme }) => ({
+  fontSize: '14px',
+  color: theme.colors.textDisabled,
+  fontStyle: 'italic',
+  fontWeight: 400,
 }));

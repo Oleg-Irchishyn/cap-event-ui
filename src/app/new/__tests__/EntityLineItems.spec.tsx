@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
-import EntityLineItems from '@/app/new/EntityLineItems';
+import EntityLineItems from '@/app/new/LineItems/EntityLineItems';
 import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';

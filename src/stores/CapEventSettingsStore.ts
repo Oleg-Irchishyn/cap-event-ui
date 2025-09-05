@@ -2,6 +2,10 @@ import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { FundGroupItem } from '@/types/types';
 import { Attachment } from '@/app/new/attachments/types';
+import { LineItemRow } from '@/app/new/LineItems/types';
+import { ITEM_STATES } from '@/const/common';
+
+const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
@@ -11,17 +15,24 @@ class CapEventSettingsStore {
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
   isEntitiesDropdownOpen: boolean = false;
+  fundGroupsLineItem: LineItemRow[] = [];
+  entitiesLineItem = new Map<string, LineItemRow[]>();
 
   constructor() {
     makeAutoObservable(this);
   }
 
   get isGeneralSettingsEmpty() {
+    const selectedEventTypes = this.eventTypes.filter(selectedFilterCallback);
+    const selectedTemplates = this.templates.filter(selectedFilterCallback);
+    const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
+    const selectedFunds = this.funds.filter(selectedFilterCallback);
+
     return (
-      this.eventTypes.length === 0 ||
-      this.templates.length === 0 ||
-      this.fundGroups.length === 0 ||
-      this.funds.length === 0 ||
+      selectedEventTypes.length === 0 ||
+      selectedTemplates.length === 0 ||
+      selectedFundGroups.length === 0 ||
+      selectedFunds.length === 0 ||
       this.noticeDate === null
     );
   }
@@ -59,6 +70,14 @@ class CapEventSettingsStore {
 
   setEntitiesDropdownOpen(isOpen: boolean) {
     this.isEntitiesDropdownOpen = isOpen;
+  }
+
+  setFundGroupsLineItem(data: LineItemRow[]) {
+    this.fundGroupsLineItem = data;
+  }
+
+  setEntitiesLineItem(key: string, data: LineItemRow[]) {
+    this.entitiesLineItem.set(key, data);
   }
 }
 
