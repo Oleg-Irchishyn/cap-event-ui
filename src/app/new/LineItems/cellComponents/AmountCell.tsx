@@ -88,6 +88,7 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
       value={inputValue}
       onChange={handleChange}
       placeholder="Enter Amount"
+      autoComplete="off"
     />
   );
 };

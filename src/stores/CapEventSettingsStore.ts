@@ -4,6 +4,8 @@ import { FundGroupItem } from '@/types/types';
 import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
+import { ReferenceDataApi } from '@/api';
+import { Accounts } from '@/api/referenceData';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -17,9 +19,12 @@ class CapEventSettingsStore {
   isEntitiesDropdownOpen: boolean = false;
   fundGroupsLineItem: LineItemRow[] = [];
   entitiesLineItem = new Map<string, LineItemRow[]>();
+  accounts: Accounts[] = [];
 
   constructor() {
     makeAutoObservable(this);
+
+    this.fetchAccounts();
   }
 
   get isGeneralSettingsEmpty() {
@@ -35,6 +40,10 @@ class CapEventSettingsStore {
       selectedFunds.length === 0 ||
       this.noticeDate === null
     );
+  }
+
+  *fetchAccounts() {
+    this.accounts = yield ReferenceDataApi.getAccounts('Golden Image DEV');
   }
 
   setEventTypes(types: DropdownItemType[]) {

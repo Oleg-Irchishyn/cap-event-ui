@@ -1,8 +1,6 @@
-export interface LineItemRow {
+import { Accounts } from '@/api/referenceData';
+
+export type LineItemRow = {
   id: string;
-  category: string;
-  reason: string;
-  description: string;
-  insideCMNT: string;
   amount: number;
-}
+} & Omit<Accounts, 'accountNo'>;

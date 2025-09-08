@@ -16,8 +16,8 @@ const CommentsField = () => {
   const [value, setValue] = useState('');
 
   return (
-    <BackgroundContainer>
-      <Wrapper>
+    <BackgroundContainer testId="comments-background">
+      <Wrapper data-testid="comments-wrapper">
         <Title>Comments</Title>
         <TextAreaWrapper>
           <TextAreaLabel>Comment Text Area</TextAreaLabel>

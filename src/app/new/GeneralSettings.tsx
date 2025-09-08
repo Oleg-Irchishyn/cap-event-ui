@@ -11,9 +11,9 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo, useState } from 'react';
 import { DropdownWrapper, Title } from './styles';
-import { CapEventPackageApi, FundsPackageApi, TemplateLibraryApi } from '@/api';
+import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
 import { EventType } from '@/api/capEventPackage';
-import { Funds } from '@/api/fundsPackage';
+import { Funds } from '@/api/referenceData';
 import { TemplateLibrary } from '@/api/templateLibrary';
 import { FundGroupItem } from '@/types/types';
 
@@ -117,7 +117,7 @@ const GeneralSettings = () => {
 
   const getEventType = async () => {
     const eventTypes = await CapEventPackageApi.getEventTypes();
-    const fundGroups = await FundsPackageApi.getFundGroups();
+    const fundGroups = await ReferenceDataApi.getFundGroups();
     const preparedFundGroups = fundGroups ? prepareFundGroups(fundGroups) : FUND_GROUPS;
     const finalEventTypes = eventTypes ? prepareEventType(eventTypes) : EVENT_TYPE_MOCK;
     capEventSettingsStore.setEventTypes(finalEventTypes);
@@ -125,7 +125,7 @@ const GeneralSettings = () => {
   };
 
   const updateFunds = async (id: number) => {
-    const fundsRelatedToGroup = await FundsPackageApi.getFunds(id);
+    const fundsRelatedToGroup = await ReferenceDataApi.getFunds(id);
     const updatedFundsValues = fundsRelatedToGroup ? prepareFunds(fundsRelatedToGroup) : FUNDS;
 
     capEventSettingsStore.setFunds(updatedFundsValues);

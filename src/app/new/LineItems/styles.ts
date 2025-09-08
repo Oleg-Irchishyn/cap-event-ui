@@ -38,12 +38,6 @@ export const ControlButton = styled.div(({ theme }) => ({
   },
 }));
 
-export const TableWrapper = styled.div({
-  width: '100%',
-  marginTop: '24px',
-  marginBottom: '16px',
-});
-
 export const AmountInput = styled.input(({ theme }) => ({
   width: '100%',
   height: '100%',

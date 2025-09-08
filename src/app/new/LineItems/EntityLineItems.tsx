@@ -5,7 +5,7 @@ import { ITEM_STATES } from '@/const/common';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import EntityCapitalDetailsPanel from '@/app/new/fundCapitalDetailsPanel/EntityCapitalDetailsPanel';
 import { Title } from '../styles';
-import Table from '@/app/new/LineItems/ConfigurationTable';
+import AccountsTable from '@/app/new/LineItems/AccountsTable';
 
 const EntityLineItems = () => {
   const entitiesSnapshotRef = useRef(capEventSettingsStore.funds);
@@ -39,7 +39,8 @@ const EntityLineItems = () => {
           entityLabel={fund.label}
           entityName={fund.displayName}
         />
-        <Table
+        <AccountsTable
+          testId="accounts-table"
           level="entity"
           entityKey={fund.label}
           setDataToStoreCallback={(key, data) =>
@@ -56,7 +57,7 @@ const EntityLineItems = () => {
       {!capEventSettingsStore.isGeneralSettingsEmpty ? (
         renderFundCapitalDetailsPanel()
       ) : (
-        <Table isDisabled />
+        <AccountsTable testId="accounts-table-placeholder" isDisabled />
       )}
     </BackgroundContainer>
   );
