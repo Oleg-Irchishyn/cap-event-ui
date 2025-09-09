@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.7&targetVersion=GTv0.0.8) (2025-09-09)
+
+
+### Features
+
+* add accounts endpoint ([6ea0002](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6ea00023dae75cb35dfa6c87fd2e07a0156b931c))
+
 ### [0.0.7](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.6&targetVersion=GTv0.0.7) (2025-09-06)
 
 
