@@ -16,9 +16,9 @@ describe('CapEventSettingsStore', () => {
 
   it('should set funds', () => {
     const mockFunds = mockDropdownValue('Funds');
-    store.setFunds(mockFunds);
+    store.setFundEntities(mockFunds);
 
-    expect(store.funds).toStrictEqual(mockFunds);
+    expect(store.fundEntities).toStrictEqual(mockFunds);
   });
 
   it('should set eventTypes', () => {
@@ -36,7 +36,14 @@ describe('CapEventSettingsStore', () => {
   });
 
   it('should set fund groups', () => {
-    const mockFundGroup = mockDropdownValue('Fund Group');
+    const mockFundGroup = [
+      {
+        label: 'Group 1',
+        state: 'O',
+        name: 'Name',
+        id: '1',
+      },
+    ];
     store.setFundGroups(mockFundGroup);
 
     expect(store.fundGroups).toStrictEqual(mockFundGroup);

@@ -8,20 +8,22 @@ import { Title } from '../styles';
 import AccountsTable from '@/app/new/LineItems/AccountsTable';
 
 const EntityLineItems = () => {
-  const entitiesSnapshotRef = useRef(capEventSettingsStore.funds);
+  const entitiesSnapshotRef = useRef(capEventSettingsStore.fundEntities);
   const wasDropdownOpenRef = useRef(capEventSettingsStore.isEntitiesDropdownOpen);
 
   const isDropdownOpen = capEventSettingsStore.isEntitiesDropdownOpen;
 
   if (!isDropdownOpen && wasDropdownOpenRef.current) {
-    entitiesSnapshotRef.current = capEventSettingsStore.funds;
+    entitiesSnapshotRef.current = capEventSettingsStore.fundEntities;
   } else if (!isDropdownOpen) {
-    entitiesSnapshotRef.current = capEventSettingsStore.funds;
+    entitiesSnapshotRef.current = capEventSettingsStore.fundEntities;
   }
 
   wasDropdownOpenRef.current = isDropdownOpen;
 
-  const entitiesToUse = isDropdownOpen ? entitiesSnapshotRef.current : capEventSettingsStore.funds;
+  const entitiesToUse = isDropdownOpen
+    ? entitiesSnapshotRef.current
+    : capEventSettingsStore.fundEntities;
 
   const selectedEntities = entitiesToUse
     .filter((entity) => entity.state === ITEM_STATES.SELECTED)

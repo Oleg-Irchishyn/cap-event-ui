@@ -6,21 +6,24 @@ import EntityLineItems from '@/app/new/LineItems/EntityLineItems';
 import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
+import { Accounts } from '@/api/referenceData';
 
 interface MockStore {
-  funds: Array<{
+  fundEntities: Array<{
     id?: string;
     label: string;
     displayName?: string;
     state: string;
   }>;
+  accounts: Accounts[];
   _isGeneralSettingsEmpty: boolean;
   isGeneralSettingsEmpty: boolean;
 }
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
-    funds: [],
+    fundEntities: [],
+    accounts: [],
     _isGeneralSettingsEmpty: true,
     get isGeneralSettingsEmpty() {
       return this._isGeneralSettingsEmpty;
@@ -68,7 +71,7 @@ const mockCapEventSettingsStore = capEventSettingsStore as unknown as MockStore;
 describe('EntityLineItems', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockCapEventSettingsStore.funds = [];
+    mockCapEventSettingsStore.fundEntities = [];
     mockCapEventSettingsStore._isGeneralSettingsEmpty = true;
   });
 
@@ -106,7 +109,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -140,7 +143,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -160,7 +163,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -193,7 +196,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -224,7 +227,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -252,7 +255,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -293,7 +296,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);
@@ -320,7 +323,7 @@ describe('EntityLineItems', () => {
         },
       ];
 
-      mockCapEventSettingsStore.funds = mockFunds;
+      mockCapEventSettingsStore.fundEntities = mockFunds;
       mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
 
       renderWithTheme(<EntityLineItems />);

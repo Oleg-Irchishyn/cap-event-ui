@@ -46,6 +46,10 @@ const prepareNewRow = (): LineItemRow => {
   };
 };
 
+const hasAllValues = <T extends object>(obj: T) => {
+  return Object.values(obj).every(Boolean);
+};
+
 type Props =
   | {
       isDisabled?: false;
@@ -69,7 +73,10 @@ const AccountsTable: FC<Props> = ({
   level,
   testId,
 }) => {
-  const accounts = useMemo(() => capEventSettingsStore.accounts || [], []);
+  const accounts = useMemo(
+    () => capEventSettingsStore.accounts.filter((account) => hasAllValues(account)) || [],
+    [],
+  );
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const [rowData, setRowData] = useState<LineItemRow[]>([prepareNewRow()]);
 
@@ -143,7 +150,7 @@ const AccountsTable: FC<Props> = ({
             selectedReason,
             AccountFields.defaultDescription,
           );
-          return { options: possibleValues };
+          return { options: possibleValues, withAddingFromSearch: true };
         }
 
         case AccountFields.insideCommitment: {
@@ -170,22 +177,51 @@ const AccountsTable: FC<Props> = ({
 
   const onCellValueChanged = useCallback(
     (params: CellValueChangedEvent) => {
-      const { data, colDef, newValue } = params;
+      const { data, colDef, newValue, rowIndex } = params;
       const fieldName = colDef.field || '-';
 
       setRowData((prev) => {
         const updatedData = prev.map((row) => {
           if (row.id === data.id) {
             const updatedRow = { ...row, [fieldName]: newValue };
+            const cellKeysToBlock = [];
 
             // If capitalCategory changed, also clear dependent fields
             if (fieldName === AccountFields.capitalCategory) {
-              updatedRow.callDistributionReason = '';
               updatedRow.defaultDescription = '';
               updatedRow.insideCommitment = '';
 
-              const rowId = String(params.rowIndex);
-              const cellKeysToBlock = [getCellKey(rowId, '2'), getCellKey(rowId, '3')];
+              const reasons = getReasons(newValue);
+
+              if (reasons?.length === 1) {
+                updatedRow.callDistributionReason = reasons[0];
+                cellKeysToBlock.push(getCellKey(String(rowIndex), '1'));
+
+                const descriptions = getBySelectedCategoryAndReason(
+                  newValue,
+                  reasons[0],
+                  AccountFields.defaultDescription,
+                );
+
+                if (descriptions.length === 1) {
+                  updatedRow.defaultDescription = descriptions[0];
+                  cellKeysToBlock.push(getCellKey(String(rowIndex), '2'));
+                }
+
+                const commitments = getBySelectedCategoryAndReason(
+                  newValue,
+                  reasons[0],
+                  AccountFields.insideCommitment,
+                );
+
+                if (commitments.length === 1) {
+                  updatedRow.insideCommitment = commitments[0];
+                  cellKeysToBlock.push(getCellKey(String(rowIndex), '3'));
+                }
+              } else {
+                updatedRow.callDistributionReason = '';
+              }
+
               cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
             }
 
@@ -194,8 +230,28 @@ const AccountsTable: FC<Props> = ({
               updatedRow.defaultDescription = '';
               updatedRow.insideCommitment = '';
 
-              const rowId = String(params.rowIndex);
-              const cellKeysToBlock = [getCellKey(rowId, '3')];
+              const descriptions = getBySelectedCategoryAndReason(
+                updatedRow.capitalCategory,
+                newValue,
+                AccountFields.defaultDescription,
+              );
+
+              if (descriptions.length === 1) {
+                updatedRow.defaultDescription = descriptions[0];
+                cellKeysToBlock.push(getCellKey(String(rowIndex), '2'));
+              }
+
+              const commitments = getBySelectedCategoryAndReason(
+                updatedRow.capitalCategory,
+                newValue,
+                AccountFields.insideCommitment,
+              );
+
+              if (commitments.length === 1) {
+                updatedRow.insideCommitment = commitments[0];
+                cellKeysToBlock.push(getCellKey(String(rowIndex), '3'));
+              }
+
               cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
             }
 
@@ -214,7 +270,7 @@ const AccountsTable: FC<Props> = ({
       const key = getCellKey(rowId, String(nextColumnId));
       editableCellRef.current[key] = true;
     },
-    [entityKey, setDataToStoreCallback],
+    [entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
   );
 
   const isDataChanged = true;

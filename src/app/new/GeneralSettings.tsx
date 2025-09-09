@@ -13,9 +13,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { DropdownWrapper, Title } from './styles';
 import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
 import { EventType } from '@/api/capEventPackage';
-import { Funds } from '@/api/referenceData';
+import { FundEntities, FundGroups } from '@/api/referenceData';
 import { TemplateLibrary } from '@/api/templateLibrary';
-import { FundGroupItem } from '@/types/types';
 
 const EVENT_TYPE_MOCK = [
   {
@@ -47,11 +46,10 @@ const tempId = Math.floor(10000 + Math.random() * 90000);
 const tempFundId = Math.floor(10000 + Math.random() * 80000);
 
 const FUND_GROUPS = [...Array(9)].map((_, i) => ({
-  fundGroupId: i,
   label: `${tempId}-${i + 1} - Fund group ${i + 1}`,
   state: 'O',
-  id: 1,
-  fundGroupName: 'aaa',
+  id: 'aaa',
+  name: `${i + 1}`,
 }));
 
 const FUNDS = [...Array(8)].map((_, i) => ({
@@ -68,19 +66,19 @@ const prepareEventType = (eventTypes: EventType[]) => {
   }));
 };
 
-const prepareFundGroups = (fundGroups: FundGroupItem[]) => {
+const prepareFundGroups = (fundGroups: FundGroups[]) => {
   return fundGroups?.map((fundGroup) => ({
     ...fundGroup,
     state: ITEM_STATES.OPTIONAL,
-    label: `${fundGroup.fundGroupId} - ${fundGroup.fundGroupName}`,
+    label: `${fundGroup.id} - ${fundGroup.name}`,
   }));
 };
 
-const prepareFunds = (funds: Funds[]) => {
+const prepareFundEntities = (funds: FundEntities[]) => {
   return funds?.map((fund) => ({
     ...fund,
     state: ITEM_STATES.OPTIONAL,
-    label: `${fund.fundId} - ${fund.fundName}`,
+    label: `${fund.id} - ${fund.name}`,
   }));
 };
 
@@ -115,20 +113,22 @@ const filterBySearch = <T,>(items: DropdownItemType<T>[], searchText: string) =>
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
 
-  const getEventType = async () => {
+  const initFetch = async () => {
     const eventTypes = await CapEventPackageApi.getEventTypes();
-    const fundGroups = await ReferenceDataApi.getFundGroups();
+    const fundGroups = await ReferenceDataApi.getFundGroups('Golden Image DEV');
     const preparedFundGroups = fundGroups ? prepareFundGroups(fundGroups) : FUND_GROUPS;
     const finalEventTypes = eventTypes ? prepareEventType(eventTypes) : EVENT_TYPE_MOCK;
     capEventSettingsStore.setEventTypes(finalEventTypes);
     capEventSettingsStore.setFundGroups(preparedFundGroups);
   };
 
-  const updateFunds = async (id: number) => {
-    const fundsRelatedToGroup = await ReferenceDataApi.getFunds(id);
-    const updatedFundsValues = fundsRelatedToGroup ? prepareFunds(fundsRelatedToGroup) : FUNDS;
+  const updateFundEntities = async (id: string) => {
+    const entitiesRelatedToGroup = await ReferenceDataApi.getEntities(id);
+    const updatedFundsValues = entitiesRelatedToGroup
+      ? prepareFundEntities(entitiesRelatedToGroup)
+      : FUNDS;
 
-    capEventSettingsStore.setFunds(updatedFundsValues);
+    capEventSettingsStore.setFundEntities(updatedFundsValues);
   };
 
   const getTemplates = async (eventTypeId: string) => {
@@ -144,17 +144,20 @@ const GeneralSettings = () => {
   };
 
   useEffect(() => {
-    getEventType();
+    initFetch();
   }, []);
 
-  const { eventTypes, templates, fundGroups, funds } = capEventSettingsStore;
+  const { eventTypes, templates, fundGroups, fundEntities } = capEventSettingsStore;
 
-  const visibleFundGroups: DropdownItemType<FundGroupItem>[] = useMemo(
-    () => filterBySearch<FundGroupItem>(fundGroups, searchText),
+  const visibleFundGroups: DropdownItemType<FundGroups>[] = useMemo(
+    () => filterBySearch<FundGroups>(fundGroups, searchText),
     [fundGroups, searchText],
   );
 
-  const visibleFunds = useMemo(() => filterBySearch(funds, searchText), [funds, searchText]);
+  const visibleFunds = useMemo(
+    () => filterBySearch(fundEntities, searchText),
+    [fundEntities, searchText],
+  );
 
   const handleNoticeDate = (item: PickerValue) => {
     capEventSettingsStore.setNoticeDate(dayjs(item).toDate());
@@ -179,7 +182,7 @@ const GeneralSettings = () => {
     capEventSettingsStore.setTemplates(updatedValues);
   };
 
-  const selectFundGroupHandler = (item: DropdownItemType<FundGroupItem>) => {
+  const selectFundGroupHandler = (item: DropdownItemType<FundGroups>) => {
     const selectedFundGroup = fundGroups.find(
       (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,
     );
@@ -191,46 +194,40 @@ const GeneralSettings = () => {
         ? { ...fundGroup, state: ITEM_STATES.SELECTED }
         : { ...fundGroup, state: ITEM_STATES.OPTIONAL },
     );
-    const updatedFundsValues = funds.map((fund) => ({
-      ...fund,
-      state: ITEM_STATES.OPTIONAL,
-    }));
-
     capEventSettingsStore.setFundGroups(updatedValues);
-    capEventSettingsStore.setFunds(updatedFundsValues);
 
-    updateFunds(item.fundGroupId);
+    updateFundEntities(item.id);
   };
 
   const selectFundsHandler = (item: DropdownItemType) => {
-    const updatedValues = funds.map((fund) =>
+    const updatedValues = fundEntities.map((fund) =>
       fund.label === item.label ? { ...fund, state: getMultiSelectItemState(fund.state) } : fund,
     );
 
-    capEventSettingsStore.setFunds(updatedValues);
+    capEventSettingsStore.setFundEntities(updatedValues);
   };
 
   const selectAllFundsHandler = () => {
     const visibleFundsLabels = visibleFunds.map((fund) => fund.label);
-    const updatedValues = funds.map((fund) =>
+    const updatedValues = fundEntities.map((fund) =>
       visibleFundsLabels.includes(fund.label) ? { ...fund, state: ITEM_STATES.SELECTED } : fund,
     );
 
-    capEventSettingsStore.setFunds(updatedValues);
+    capEventSettingsStore.setFundEntities(updatedValues);
   };
 
   const deselectAllFundsHandler = () => {
     const visibleFundsLabels = visibleFunds.map((fund) => fund.label);
-    const updatedValues = funds.map((fund) =>
+    const updatedValues = fundEntities.map((fund) =>
       visibleFundsLabels.includes(fund.label) ? { ...fund, state: ITEM_STATES.OPTIONAL } : fund,
     );
 
-    capEventSettingsStore.setFunds(updatedValues);
+    capEventSettingsStore.setFundEntities(updatedValues);
   };
 
   const alternativeSelectFundsHandler = () => {
     const visibleFundsLabels = visibleFunds.map((fund) => fund.label);
-    const updatedValues = funds.map((fund) =>
+    const updatedValues = fundEntities.map((fund) =>
       visibleFundsLabels.includes(fund.label)
         ? {
             ...fund,
@@ -240,15 +237,15 @@ const GeneralSettings = () => {
         : fund,
     );
 
-    capEventSettingsStore.setFunds(updatedValues);
+    capEventSettingsStore.setFundEntities(updatedValues);
   };
 
   const deselectFundsHandler = (item: DropdownItemType) => () => {
-    const updatedValues = funds.map((fund) =>
+    const updatedValues = fundEntities.map((fund) =>
       item.label === fund.label ? { ...fund, state: ITEM_STATES.OPTIONAL } : fund,
     );
 
-    capEventSettingsStore.setFunds(updatedValues);
+    capEventSettingsStore.setFundEntities(updatedValues);
   };
 
   const handleFundsDropdownOpenChange = (isOpen: boolean) => {
@@ -288,7 +285,7 @@ const GeneralSettings = () => {
             (template) => template.state === ITEM_STATES.SELECTED,
           )}
         />
-        <Dropdown<FundGroupItem>
+        <Dropdown<FundGroups>
           testId="fund-groups"
           withSearch
           label="Fund Group*"
@@ -316,7 +313,7 @@ const GeneralSettings = () => {
           onSelectAllHandler={selectAllFundsHandler}
           onDeselectAllHandler={deselectAllFundsHandler}
           onSelectAlternativeClickHandler={alternativeSelectFundsHandler}
-          selectedItems={funds.filter((fund) => fund.state === ITEM_STATES.SELECTED)}
+          selectedItems={fundEntities.filter((fund) => fund.state === ITEM_STATES.SELECTED)}
           onOpenChange={handleFundsDropdownOpenChange}
           isDisabled={
             !fundGroups.filter((fundGroup) => fundGroup.state === ITEM_STATES.SELECTED).length

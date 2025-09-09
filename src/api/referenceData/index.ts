@@ -1,14 +1,17 @@
 import { ReferenceDataServer } from '@/api/java';
 
 export interface FundGroups {
-  id: number;
-  fundGroupId: number;
-  fundGroupName: string;
+  id: string;
+  name: string;
 }
 
-export const getFundGroups = async () => {
+export const getFundGroups = async (sponsorId: string) => {
   try {
-    const { data } = await ReferenceDataServer.get<FundGroups[]>('/fund-groups');
+    const { data } = await ReferenceDataServer.get<FundGroups[]>('/fund-groups/search', {
+      params: {
+        sponsorId,
+      },
+    });
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -19,22 +22,23 @@ export const getFundGroups = async () => {
   return null;
 };
 
-export interface Funds {
-  id: number;
-  fundId: string;
-  fundGroupId: string;
-  fundName: string;
+export interface FundEntities {
+  id: string;
+  name: string;
 }
 
-export const getFunds = async (fundGroupId: number) => {
+export const getEntities = async (fundGroupId: string) => {
   try {
-    const { data } = await ReferenceDataServer.get<Funds[]>('/funds', {
-      params: { fundGroupId },
-    });
+    const { data } = await ReferenceDataServer.get<FundEntities[]>(
+      `/fund-groups/${fundGroupId}/entities`,
+      {
+        params: { fundGroupId },
+      },
+    );
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`${error.message}. Error getting funds`);
+      console.error(`${error.message}. Error getting entities`);
     }
   }
 

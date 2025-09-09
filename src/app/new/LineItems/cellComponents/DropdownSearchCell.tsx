@@ -31,6 +31,7 @@ export const DropdownSearchCell = (props: ICellRendererParams) => {
       : props.colDef?.cellEditorParams) || {};
 
   const options = params.options;
+  const withSearch = options.length > 3;
   const canAddValueFromSearch = params.withAddingFromSearch;
   const placeholder = `Select ${props.colDef?.headerName}`;
 
@@ -147,14 +148,16 @@ export const DropdownSearchCell = (props: ICellRendererParams) => {
               width: dropdownWidth,
             }}
           >
-            <SearchWrapper>
-              <SearchBox
-                testId="search"
-                searchText={searchValue}
-                searchCallback={setSearchValue}
-                clearCallbackHandler={() => setSearchValue('')}
-              />
-            </SearchWrapper>
+            {withSearch && (
+              <SearchWrapper>
+                <SearchBox
+                  testId="search"
+                  searchText={searchValue}
+                  searchCallback={setSearchValue}
+                  clearCallbackHandler={() => setSearchValue('')}
+                />
+              </SearchWrapper>
+            )}
 
             <OptionsWrapper>
               {filteredOptions.length > 0 ? (

@@ -1,19 +1,18 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import { FundGroupItem } from '@/types/types';
 import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { ReferenceDataApi } from '@/api';
-import { Accounts } from '@/api/referenceData';
+import { Accounts, FundGroups } from '@/api/referenceData';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
   templates: DropdownItemType[] = [];
-  fundGroups: DropdownItemType<FundGroupItem>[] = [];
-  funds: DropdownItemType[] = [];
+  fundGroups: DropdownItemType<FundGroups>[] = [];
+  fundEntities: DropdownItemType[] = [];
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
   isEntitiesDropdownOpen: boolean = false;
@@ -31,7 +30,7 @@ class CapEventSettingsStore {
     const selectedEventTypes = this.eventTypes.filter(selectedFilterCallback);
     const selectedTemplates = this.templates.filter(selectedFilterCallback);
     const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
-    const selectedFunds = this.funds.filter(selectedFilterCallback);
+    const selectedFunds = this.fundEntities.filter(selectedFilterCallback);
 
     return (
       selectedEventTypes.length === 0 ||
@@ -54,12 +53,12 @@ class CapEventSettingsStore {
     this.templates = templates;
   }
 
-  setFundGroups(fundGroups: DropdownItemType<FundGroupItem>[]) {
+  setFundGroups(fundGroups: DropdownItemType<FundGroups>[]) {
     this.fundGroups = fundGroups;
   }
 
-  setFunds(funds: DropdownItemType[]) {
-    this.funds = funds;
+  setFundEntities(fundEntities: DropdownItemType[]) {
+    this.fundEntities = fundEntities;
   }
 
   setNoticeDate(date: Date) {
