@@ -27,12 +27,20 @@ export interface FundEntities {
   name: string;
 }
 
-export const getEntities = async (fundGroupId: string) => {
+export const getEntities = async (
+  fundGroupId: string,
+  statuses = ['ACTIVE'],
+  typesToExclude = ['ADMIN', 'ELIMINATION'],
+) => {
   try {
     const { data } = await ReferenceDataServer.get<FundEntities[]>(
       `/fund-groups/${fundGroupId}/entities`,
       {
-        params: { fundGroupId },
+        params: {
+          fundGroupId,
+          statuses: statuses.join(','),
+          typesToExclude: typesToExclude.join(','),
+        },
       },
     );
     return data;

@@ -179,12 +179,12 @@ const AccountsTable: FC<Props> = ({
     (params: CellValueChangedEvent) => {
       const { data, colDef, newValue, rowIndex } = params;
       const fieldName = colDef.field || '-';
+      const cellKeysToUnBlock: string[] = [];
 
       setRowData((prev) => {
         const updatedData = prev.map((row) => {
           if (row.id === data.id) {
             const updatedRow = { ...row, [fieldName]: newValue };
-            const cellKeysToBlock = [];
 
             // If capitalCategory changed, also clear dependent fields
             if (fieldName === AccountFields.capitalCategory) {
@@ -195,7 +195,7 @@ const AccountsTable: FC<Props> = ({
 
               if (reasons?.length === 1) {
                 updatedRow.callDistributionReason = reasons[0];
-                cellKeysToBlock.push(getCellKey(String(rowIndex), '1'));
+                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '1'));
 
                 const descriptions = getBySelectedCategoryAndReason(
                   newValue,
@@ -205,7 +205,7 @@ const AccountsTable: FC<Props> = ({
 
                 if (descriptions.length === 1) {
                   updatedRow.defaultDescription = descriptions[0];
-                  cellKeysToBlock.push(getCellKey(String(rowIndex), '2'));
+                  cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
                 }
 
                 const commitments = getBySelectedCategoryAndReason(
@@ -216,13 +216,11 @@ const AccountsTable: FC<Props> = ({
 
                 if (commitments.length === 1) {
                   updatedRow.insideCommitment = commitments[0];
-                  cellKeysToBlock.push(getCellKey(String(rowIndex), '3'));
+                  cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
                 }
               } else {
                 updatedRow.callDistributionReason = '';
               }
-
-              cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
             }
 
             // If callDistReason changed, also clear dependent fields
@@ -238,7 +236,7 @@ const AccountsTable: FC<Props> = ({
 
               if (descriptions.length === 1) {
                 updatedRow.defaultDescription = descriptions[0];
-                cellKeysToBlock.push(getCellKey(String(rowIndex), '2'));
+                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
               }
 
               const commitments = getBySelectedCategoryAndReason(
@@ -249,10 +247,8 @@ const AccountsTable: FC<Props> = ({
 
               if (commitments.length === 1) {
                 updatedRow.insideCommitment = commitments[0];
-                cellKeysToBlock.push(getCellKey(String(rowIndex), '3'));
+                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
               }
-
-              cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
             }
 
             return updatedRow;
@@ -269,6 +265,7 @@ const AccountsTable: FC<Props> = ({
       const nextColumnId = Number(params.column.getColId()) + 1;
       const key = getCellKey(rowId, String(nextColumnId));
       editableCellRef.current[key] = true;
+      cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
     },
     [entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
   );
