@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.8&targetVersion=GTv0.0.9) (2025-09-10)
+
+
+### Bug Fixes
+
+* entity endpoint adjust ([f0ff69d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f0ff69d69bd7cba70b3c4a3f440e7ac46d7c8c4c))
+
 ### [0.0.8](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.7&targetVersion=GTv0.0.8) (2025-09-09)
 
 
