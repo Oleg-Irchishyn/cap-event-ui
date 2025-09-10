@@ -180,6 +180,7 @@ const AccountsTable: FC<Props> = ({
       const { data, colDef, newValue, rowIndex } = params;
       const fieldName = colDef.field || '-';
       const cellKeysToUnBlock: string[] = [];
+      const cellKeysToBlock: string[] = [];
 
       setRowData((prev) => {
         const updatedData = prev.map((row) => {
@@ -220,6 +221,10 @@ const AccountsTable: FC<Props> = ({
                 }
               } else {
                 updatedRow.callDistributionReason = '';
+                cellKeysToBlock.push(
+                  getCellKey(String(rowIndex), '2'),
+                  getCellKey(String(rowIndex), '3'),
+                );
               }
             }
 
@@ -265,6 +270,7 @@ const AccountsTable: FC<Props> = ({
       const nextColumnId = Number(params.column.getColId()) + 1;
       const key = getCellKey(rowId, String(nextColumnId));
       editableCellRef.current[key] = true;
+      cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
     },
     [entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],

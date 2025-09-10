@@ -1,4 +1,5 @@
 import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -54,5 +55,38 @@ describe('CapEventSettingsStore', () => {
     store.setNoticeDate(date);
 
     expect(store.noticeDate).toStrictEqual(date);
+  });
+
+  it('should set foundGroupsLineItems', () => {
+    const lineItems: LineItemRow[] = [
+      {
+        id: '1',
+        amount: 10,
+        capitalCategory: 'Dist',
+        callDistributionReason: 'Reason',
+        defaultDescription: 'Desc',
+        insideCommitment: 'Yes',
+      },
+    ];
+    store.setFundGroupsLineItem(lineItems);
+
+    expect(store.fundGroupsLineItem).toStrictEqual(lineItems);
+  });
+
+  it('should set entitiesLineItem', () => {
+    const lineItems: LineItemRow[] = [
+      {
+        id: '1',
+        amount: 10,
+        capitalCategory: 'Dist',
+        callDistributionReason: 'Reason',
+        defaultDescription: 'Desc',
+        insideCommitment: 'Yes',
+      },
+    ];
+    const entityKey = 'entity-123';
+    store.setEntitiesLineItem(entityKey, lineItems);
+
+    expect(store.entitiesLineItem.get(entityKey)).toStrictEqual(lineItems);
   });
 });

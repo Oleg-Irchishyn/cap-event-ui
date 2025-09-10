@@ -1,6 +1,7 @@
 import { ICellRendererParams } from 'ag-grid-community';
 import React, { KeyboardEventHandler, useEffect, useState, FC } from 'react';
 import { AmountInput } from '@/app/new/LineItems/styles';
+import { formatNumberToAmount } from '@/utils/formatNumberToAmount';
 
 export const AmountCell: FC<ICellRendererParams> = (props) => {
   const [inputValue, setInputValue] = useState('');
@@ -19,10 +20,7 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
     if (numValue === null) return '';
     if (numValue === 0) return '';
 
-    const formValue = numValue.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const formValue = formatNumberToAmount(numValue);
 
     return `$${formValue}`;
   };
