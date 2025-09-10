@@ -74,7 +74,7 @@ const AccountsTable: FC<Props> = ({
   testId,
 }) => {
   const accounts = useMemo(
-    () => capEventSettingsStore.accounts.filter((account) => hasAllValues(account)) || [],
+    () => capEventSettingsStore.accounts?.filter((account) => hasAllValues(account)) || [],
     [],
   );
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });

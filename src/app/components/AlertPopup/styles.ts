@@ -10,6 +10,8 @@ export const AlertContainer = styled.div(({ theme }) => ({
   borderRadius: '5px',
   boxShadow: '0px 0px 5px black',
   boxSizing: 'border-box',
+  zIndex: 10,
+
   '&[data-status="error"]': {
     backgroundColor: theme.colors.alertError,
   },

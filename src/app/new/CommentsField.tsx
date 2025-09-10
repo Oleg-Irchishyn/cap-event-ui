@@ -27,7 +27,7 @@ const CommentsField = () => {
             </Counter>
             <TextArea
               name="comment"
-              rows={10}
+              rows={5}
               value={value}
               placeholder="Enter text"
               maxLength={MAX_SYMBOLS_COUNT}

@@ -141,7 +141,7 @@ export const ChevronButton = styled.button({
 export const ListViewWrapper = styled.div(({ theme }) => ({
   position: 'absolute',
   width: '100%',
-  top: '46px',
+  top: '36px',
   overflow: 'hidden',
   borderRadius: '4px',
   backgroundColor: theme.colors.white,

@@ -9,16 +9,18 @@
 .ag-theme-alpine .ag-body-vertical-scroll,
 .ag-theme-alpine .ag-body-horizontal-scroll {
   border: none !important;
+  font-size: 14px;
 }
 
 .ag-theme-alpine {
-    --ag-cell-horizontal-padding: 8px
+    --ag-cell-horizontal-padding: 8px;
 }
 
 .ag-theme-alpine .ag-header,
 .ag-theme-alpine .ag-header-viewport {
     border-bottom: 1px solid #F9F9F9 !important;
     background-color: inherit !important;
+    font-family: var(--font-ibm-plex-sans), Arial sans-serif;
 }
 
 .ag-theme-alpine .ag-header-cell-label {
