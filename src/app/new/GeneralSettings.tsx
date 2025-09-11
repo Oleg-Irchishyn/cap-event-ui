@@ -5,9 +5,11 @@ import DatePicker from '@/app/components/DatePicker';
 import Dropdown from '@/app/components/Dropdown';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { ITEM_STATES } from '@/const/common';
-import { capEventSettingsStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { PickerValue } from '@mui/x-date-pickers/internals';
+import Image from 'next/image';
 import dayjs from 'dayjs';
+import { parseValidDate } from '@/utils/datePickerUtils';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo, useState } from 'react';
 import { DropdownWrapper, Title } from './styles';
@@ -48,13 +50,15 @@ const tempFundId = Math.floor(10000 + Math.random() * 80000);
 const FUND_GROUPS = [...Array(9)].map((_, i) => ({
   label: `${tempId}-${i + 1} - Fund group ${i + 1}`,
   state: 'O',
-  id: 'aaa',
+  id: 'FG001',
   name: `${i + 1}`,
 }));
 
 const FUNDS = [...Array(8)].map((_, i) => ({
   label: `${tempFundId}-${i + 1} - Fund ${i + 1}`,
   state: 'O',
+  dueDateDays: parseFloat('2.00').toString(),
+  dueDateType: 'Calendar Days',
 }));
 
 const prepareEventType = (eventTypes: EventType[]) => {
@@ -69,6 +73,7 @@ const prepareEventType = (eventTypes: EventType[]) => {
 const prepareFundGroups = (fundGroups: FundGroups[]) => {
   return fundGroups?.map((fundGroup) => ({
     ...fundGroup,
+    id: fundGroup.id.toString(),
     state: ITEM_STATES.OPTIONAL,
     label: `${fundGroup.id} - ${fundGroup.name}`,
   }));
@@ -77,8 +82,10 @@ const prepareFundGroups = (fundGroups: FundGroups[]) => {
 const prepareFundEntities = (funds: FundEntities[]) => {
   return funds?.map((fund) => ({
     ...fund,
+    id: fund.id.toString(),
     state: ITEM_STATES.OPTIONAL,
     label: `${fund.id} - ${fund.name}`,
+    dueDateDays: parseFloat(fund.dueDateDays).toString(),
   }));
 };
 
@@ -109,6 +116,8 @@ const filterBySearch = <T,>(items: DropdownItemType<T>[], searchText: string) =>
       item.id?.toLowerCase().includes(search),
   );
 };
+
+const pickerIcon = () => <Image src="icons/calendar.svg" width={15} height={15} alt="calendar" />;
 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
@@ -160,7 +169,14 @@ const GeneralSettings = () => {
   );
 
   const handleNoticeDate = (item: PickerValue) => {
-    capEventSettingsStore.setNoticeDate(dayjs(item).toDate());
+    const parsed = parseValidDate(item);
+    if (parsed === null) {
+      entityDatesStore.clearGeneralNoticeDate();
+      return;
+    }
+
+    entityDatesStore.setNoticeDate(parsed);
+    entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
   };
 
   const selectEventTypeHandler = (item: DropdownItemType) => {
@@ -320,7 +336,21 @@ const GeneralSettings = () => {
           }
         />
 
-        <DatePicker label="Notice Date*" onChange={handleNoticeDate} testId="GeneralSettings" />
+        <DatePicker
+          label="Notice Date*"
+          onChange={handleNoticeDate}
+          maxDate={dayjs().add(1, 'months')}
+          defaultValue={
+            entityDatesStore.hasDifferentDates
+              ? null
+              : entityDatesStore.noticeDate
+                ? dayjs(entityDatesStore.noticeDate)
+                : null
+          }
+          pickerIcon={pickerIcon}
+          format={entityDatesStore.hasDifferentDates ? '[Different Dates]' : undefined}
+          testId="GeneralSettings"
+        />
       </DropdownWrapper>
     </BackgroundContainer>
   );

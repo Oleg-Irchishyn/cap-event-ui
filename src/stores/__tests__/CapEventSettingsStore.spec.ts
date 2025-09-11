@@ -50,13 +50,6 @@ describe('CapEventSettingsStore', () => {
     expect(store.fundGroups).toStrictEqual(mockFundGroup);
   });
 
-  it('should set notice date', () => {
-    const date = new Date('10/10/2020');
-    store.setNoticeDate(date);
-
-    expect(store.noticeDate).toStrictEqual(date);
-  });
-
   it('should set foundGroupsLineItems', () => {
     const lineItems: LineItemRow[] = [
       {

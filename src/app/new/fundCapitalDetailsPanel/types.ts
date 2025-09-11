@@ -9,3 +9,12 @@ export interface DetailsReadOnlyInfoProps {
   description: string;
   testId?: string;
 }
+
+type DateType = 'notice' | 'due';
+
+export interface DetailsDateProps {
+  entityLabel: string;
+  dateType: DateType;
+  testId?: string;
+  onDateChange?: (date: Date) => void;
+}

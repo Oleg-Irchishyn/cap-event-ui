@@ -4,11 +4,11 @@ import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import EntityLineItems from '@/app/new/LineItems/EntityLineItems';
 import { theme } from '@/ui/globalStyles';
-import { capEventSettingsStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
 import { Accounts } from '@/api/referenceData';
 
-interface MockStore {
+interface MockCapEventStore {
   fundEntities: Array<{
     id?: string;
     label: string;
@@ -17,7 +17,12 @@ interface MockStore {
   }>;
   accounts: Accounts[];
   _isGeneralSettingsEmpty: boolean;
-  isGeneralSettingsEmpty: boolean;
+  isGeneralSettingsEmpty: (noticeDate: Date | null, hasDifferentDates: boolean) => boolean;
+}
+
+interface MockEntityDatesStore {
+  noticeDate: Date | null;
+  hasDifferentDates: boolean;
 }
 
 jest.mock('@/stores', () => ({
@@ -25,12 +30,13 @@ jest.mock('@/stores', () => ({
     fundEntities: [],
     accounts: [],
     _isGeneralSettingsEmpty: true,
-    get isGeneralSettingsEmpty() {
+    isGeneralSettingsEmpty: function () {
       return this._isGeneralSettingsEmpty;
     },
-    set isGeneralSettingsEmpty(value) {
-      this._isGeneralSettingsEmpty = value;
-    },
+  },
+  entityDatesStore: {
+    noticeDate: null,
+    hasDifferentDates: false,
   },
 }));
 
@@ -66,13 +72,16 @@ const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
-const mockCapEventSettingsStore = capEventSettingsStore as unknown as MockStore;
+const mockCapEventSettingsStore = capEventSettingsStore as unknown as MockCapEventStore;
+const mockEntityDatesStore = entityDatesStore as unknown as MockEntityDatesStore;
 
 describe('EntityLineItems', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCapEventSettingsStore.fundEntities = [];
     mockCapEventSettingsStore._isGeneralSettingsEmpty = true;
+    mockEntityDatesStore.noticeDate = null;
+    mockEntityDatesStore.hasDifferentDates = false;
   });
 
   describe('Rendering', () => {

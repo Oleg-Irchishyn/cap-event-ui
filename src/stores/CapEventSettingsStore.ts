@@ -26,7 +26,7 @@ class CapEventSettingsStore {
     this.fetchAccounts();
   }
 
-  get isGeneralSettingsEmpty() {
+  isGeneralSettingsEmpty(noticeDate: Date | null, hasDifferentDates: boolean) {
     const selectedEventTypes = this.eventTypes.filter(selectedFilterCallback);
     const selectedTemplates = this.templates.filter(selectedFilterCallback);
     const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
@@ -37,7 +37,7 @@ class CapEventSettingsStore {
       selectedTemplates.length === 0 ||
       selectedFundGroups.length === 0 ||
       selectedFunds.length === 0 ||
-      this.noticeDate === null
+      (noticeDate === null && !hasDifferentDates)
     );
   }
 

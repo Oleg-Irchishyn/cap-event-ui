@@ -25,6 +25,8 @@ export const getFundGroups = async (sponsorId: string) => {
 export interface FundEntities {
   id: string;
   name: string;
+  dueDateDays: string;
+  dueDateType: string;
 }
 
 export const getEntities = async (

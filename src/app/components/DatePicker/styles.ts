@@ -5,9 +5,11 @@ export const Wrapper = styled.div({
   flexDirection: 'column',
 });
 
-export const FieldLabel = styled.div(({ theme }) => ({
-  color: theme.colors.textSecondary,
-  lineHeight: '21px',
-  marginBottom: '2px',
-  fontSize: '14px',
-}));
+export const FieldLabel = styled.div<{ $color: string; $margin: string }>(
+  ({ $color, $margin }) => `
+   color: ${$color};
+   line-height: 21px;
+   margin: ${$margin};
+   font-size: 14px;
+`,
+);

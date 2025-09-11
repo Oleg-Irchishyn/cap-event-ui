@@ -1,6 +1,6 @@
 import { Fragment, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
-import { capEventSettingsStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import EntityCapitalDetailsPanel from '@/app/new/fundCapitalDetailsPanel/EntityCapitalDetailsPanel';
@@ -56,7 +56,10 @@ const EntityLineItems = () => {
   return (
     <BackgroundContainer testId="entity-line-items">
       <Title>Capital Event Line Items - Entity Level</Title>
-      {!capEventSettingsStore.isGeneralSettingsEmpty ? (
+      {!capEventSettingsStore.isGeneralSettingsEmpty(
+        entityDatesStore.noticeDate,
+        entityDatesStore.hasDifferentDates,
+      ) ? (
         renderFundCapitalDetailsPanel()
       ) : (
         <AccountsTable testId="accounts-table-placeholder" isDisabled />

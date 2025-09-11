@@ -1,21 +1,35 @@
 import React, { FC } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DateValidationError, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { theme } from '@/ui/globalStyles';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 import { FieldLabel, Wrapper } from '@/app/components/DatePicker/styles';
-import Image from 'next/image';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+const defaultTheme = createTheme({
   typography: {
     fontFamily: `"IBM Plex Sans", "Arial" sans-serif`,
   },
 });
 
-type DatePickerProps = {
+type DatePickerStyleProps = {
   width?: number;
+  minWidth?: string;
+  maxWidth?: string;
+  inputHeight?: string;
+  inputWidth?: string;
+  inputPadding?: string;
+  inputFontWeight?: string;
+  labelColor?: string;
+  labelMargin?: string;
+  margin?: string;
+  borderColor?: string;
+  backgroundColor?: string;
+};
+
+type DatePickerProps = DatePickerStyleProps & {
   isDisabled?: boolean;
   defaultValue?: PickerValue;
   onChange: (value: PickerValue) => void;
@@ -24,25 +38,50 @@ type DatePickerProps = {
   maxDate?: Dayjs;
   label?: string;
   testId: string;
+  pickerIcon?: () => React.ReactNode;
+  format?: string;
 };
-
-const pickerIcon = () => <Image src="icons/calendar.svg" width={15} height={15} alt="calendar" />;
 
 export const DatePicker: FC<DatePickerProps> = ({
   label,
-  width = '100%',
   isDisabled = false,
   defaultValue,
   onChange = () => {},
   minDate = dayjs(),
   setIsValidDate = () => {},
-  maxDate = dayjs().add(1, 'months'),
+  maxDate,
   testId,
+  pickerIcon,
+  format,
+  ...styleProps
 }) => {
+  const {
+    width = '100%',
+    inputHeight = '32px',
+    inputWidth = 'auto',
+    inputPadding = '0 14px',
+    inputFontWeight = '400',
+    maxWidth = 'auto',
+    minWidth = '150px',
+    labelColor = theme.colors.textSecondary,
+    labelMargin = '0 0 2px 0',
+    margin = '0',
+    borderColor = theme.colors.gray500,
+    backgroundColor = theme.colors.white,
+  } = styleProps;
+
+  const onSetIsValidDate = (newError: DateValidationError) => {
+    setIsValidDate(newError === null);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
       <Wrapper data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}>
-        <FieldLabel data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}>
+        <FieldLabel
+          $color={labelColor}
+          $margin={labelMargin}
+          data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}
+        >
           {label}
         </FieldLabel>
 
@@ -53,19 +92,40 @@ export const DatePicker: FC<DatePickerProps> = ({
             maxDate={maxDate}
             value={defaultValue}
             disabled={isDisabled}
+            format={format}
             slots={{ openPickerIcon: pickerIcon }}
             slotProps={{
               textField: {
                 InputProps: {
-                  sx: { height: '32px', fontSize: '14px', backgroundColor: 'white' },
+                  sx: {
+                    height: inputHeight,
+                    fontSize: '14px',
+                    color: theme.colors.textPrimary,
+                    fontWeight: inputFontWeight,
+                    width: inputWidth,
+                    padding: inputPadding,
+                    backgroundColor,
+                  },
                 },
                 sx: {
                   width,
-                  minWidth: '150px',
+                  minWidth,
+                  maxWidth,
+                  margin,
+                  '& fieldset': {
+                    borderColor: borderColor,
+                    borderWidth: '1px',
+                  },
+                  '& .MuiInputAdornment-root': {
+                    marginLeft: 0,
+                  },
+                  '& button': {
+                    padding: '3px',
+                  },
                 },
               },
             }}
-            onError={(newError) => setIsValidDate(newError === null)}
+            onError={onSetIsValidDate}
           />
         </LocalizationProvider>
       </Wrapper>
