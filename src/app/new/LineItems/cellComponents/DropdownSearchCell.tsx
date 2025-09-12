@@ -15,15 +15,19 @@ import {
 import { ChevronIcon } from '@/app/new/styles';
 import { createPortal } from 'react-dom';
 import SearchBox from '@/app/components/SearchBox';
+import { observer } from 'mobx-react-lite';
+import { capEventSettingsStore } from '@/stores';
 
-export const DropdownSearchCell = (props: ICellRendererParams) => {
+export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedValue, setSelectedValue] = useState(props.value || '');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-  const [userInputs, setUserInputs] = useState<string[]>([]);
+
+  const cellKey = `${props.node?.id || 'unknown'}-${props.colDef?.colId || 'unknown'}`;
+  const userInputs = capEventSettingsStore.getUserInputs(cellKey);
 
   const params =
     (typeof props.colDef?.cellEditorParams === 'function'
@@ -31,8 +35,8 @@ export const DropdownSearchCell = (props: ICellRendererParams) => {
       : props.colDef?.cellEditorParams) || {};
 
   const options = params.options;
-  const withSearch = options.length > 3;
   const canAddValueFromSearch = params.withAddingFromSearch;
+  const withSearch = canAddValueFromSearch || options.length > 3;
   const placeholder = `Select ${props.colDef?.headerName}`;
 
   const filteredOptions = [...options, ...userInputs].filter((option) =>
@@ -123,7 +127,7 @@ export const DropdownSearchCell = (props: ICellRendererParams) => {
   const dropdownWidth = triggerRef?.current?.getBoundingClientRect().width || 'auto';
 
   const handleAddSearchValue = () => {
-    setUserInputs((prev) => [...prev, searchValue]);
+    capEventSettingsStore.addUserInput(cellKey, searchValue);
   };
 
   return (
@@ -184,4 +188,4 @@ export const DropdownSearchCell = (props: ICellRendererParams) => {
         )}
     </DropdownContainer>
   );
-};
+});

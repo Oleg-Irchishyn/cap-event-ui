@@ -19,6 +19,7 @@ class CapEventSettingsStore {
   fundGroupsLineItem: LineItemRow[] = [];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Accounts[] = [];
+  userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
   constructor() {
     makeAutoObservable(this);
@@ -86,6 +87,21 @@ class CapEventSettingsStore {
 
   setEntitiesLineItem(key: string, data: LineItemRow[]) {
     this.entitiesLineItem.set(key, data);
+  }
+
+  getUserInputs(cellKey: string): string[] {
+    return this.userInputs.get(cellKey) || [];
+  }
+
+  addUserInput(cellKey: string, input: string) {
+    const currentInputs = this.userInputs.get(cellKey) || [];
+    if (!currentInputs.includes(input)) {
+      this.userInputs.set(cellKey, [...currentInputs, input]);
+    }
+  }
+
+  clearUserInputs(cellKey: string) {
+    this.userInputs.delete(cellKey);
   }
 }
 
