@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.11](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.10&targetVersion=GTv0.0.11) (2025-09-12)
+
+
+### Features
+
+* [TASK-4830]: [FE] Implement notice date/due date per fund ([417d345](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/417d345630672f8612a32a80e5f71e2776a33f69)), closes [#4830](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/4830) [#4995](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/4995)
+
 ### [0.0.10](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.9&targetVersion=GTv0.0.10) (2025-09-11)
 
 
