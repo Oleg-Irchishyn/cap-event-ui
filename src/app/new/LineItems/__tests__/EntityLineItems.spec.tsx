@@ -7,6 +7,7 @@ import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
 import { Accounts } from '@/api/referenceData';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 interface MockCapEventStore {
   fundEntities: Array<{
@@ -15,6 +16,11 @@ interface MockCapEventStore {
     displayName?: string;
     state: string;
   }>;
+  eventTypes: Array<{ label: string; state: string }>;
+  templates: Array<{ label: string; state: string }>;
+  fundGroups: Array<{ label: string; state: string }>;
+  isEntitiesDropdownOpen: boolean;
+  setEntitiesLineItem: (key: string, data: LineItemRow[]) => void;
   accounts: Accounts[];
   _isGeneralSettingsEmpty: boolean;
   isGeneralSettingsEmpty: (noticeDate: Date | null, hasDifferentDates: boolean) => boolean;
@@ -28,6 +34,11 @@ interface MockEntityDatesStore {
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     fundEntities: [],
+    eventTypes: [],
+    templates: [],
+    fundGroups: [],
+    isEntitiesDropdownOpen: false,
+    setEntitiesLineItem: jest.fn(),
     accounts: [],
     _isGeneralSettingsEmpty: true,
     isGeneralSettingsEmpty: function () {
@@ -79,6 +90,10 @@ describe('EntityLineItems', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCapEventSettingsStore.fundEntities = [];
+    mockCapEventSettingsStore.eventTypes = [];
+    mockCapEventSettingsStore.templates = [];
+    mockCapEventSettingsStore.fundGroups = [];
+    mockCapEventSettingsStore.isEntitiesDropdownOpen = false;
     mockCapEventSettingsStore._isGeneralSettingsEmpty = true;
     mockEntityDatesStore.noticeDate = null;
     mockEntityDatesStore.hasDifferentDates = false;
@@ -119,7 +134,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -153,7 +171,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -173,7 +194,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -206,7 +230,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -237,7 +264,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -265,7 +295,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -306,7 +339,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 
@@ -333,7 +369,10 @@ describe('EntityLineItems', () => {
       ];
 
       mockCapEventSettingsStore.fundEntities = mockFunds;
-      mockCapEventSettingsStore._isGeneralSettingsEmpty = false;
+      mockCapEventSettingsStore.eventTypes = [{ label: 'ET1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.templates = [{ label: 'T1', state: ITEM_STATES.SELECTED }];
+      mockCapEventSettingsStore.fundGroups = [{ label: 'FG1', state: ITEM_STATES.SELECTED }];
+      mockEntityDatesStore.noticeDate = new Date();
 
       renderWithTheme(<EntityLineItems />);
 

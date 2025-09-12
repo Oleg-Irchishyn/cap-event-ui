@@ -85,6 +85,12 @@ class EntityDatesStore {
     this.hasDifferentDates = false;
   }
 
+  resetAllDates() {
+    this.noticeDate = null;
+    this.entityDates = {};
+    this.hasDifferentDates = false;
+  }
+
   updateEntityDatesFromGeneral(funds: DropdownItemType[]) {
     if (this.noticeDate && funds && Array.isArray(funds)) {
       funds

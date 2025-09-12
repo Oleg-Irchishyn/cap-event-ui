@@ -33,6 +33,30 @@ const EntityLineItems = () => {
       return nameA.localeCompare(nameB);
     });
 
+  const isGeneralSettingsEmptyForRender = () => {
+    const selectedEventTypes = capEventSettingsStore.eventTypes.filter(
+      (item) => item.state === ITEM_STATES.SELECTED,
+    );
+
+    const selectedTemplates = capEventSettingsStore.templates.filter(
+      (item) => item.state === ITEM_STATES.SELECTED,
+    );
+
+    const selectedFundGroups = capEventSettingsStore.fundGroups.filter(
+      (item) => item.state === ITEM_STATES.SELECTED,
+    );
+
+    const selectedFundsForRender = selectedEntities;
+
+    return (
+      selectedEventTypes.length === 0 ||
+      selectedTemplates.length === 0 ||
+      selectedFundGroups.length === 0 ||
+      selectedFundsForRender.length === 0 ||
+      (entityDatesStore.noticeDate === null && !entityDatesStore.hasDifferentDates)
+    );
+  };
+
   const renderFundCapitalDetailsPanel = () => {
     return selectedEntities?.map((fund) => (
       <Fragment key={fund.label}>
@@ -56,10 +80,7 @@ const EntityLineItems = () => {
   return (
     <BackgroundContainer testId="entity-line-items">
       <Title>Capital Event Line Items - Entity Level</Title>
-      {!capEventSettingsStore.isGeneralSettingsEmpty(
-        entityDatesStore.noticeDate,
-        entityDatesStore.hasDifferentDates,
-      ) ? (
+      {!isGeneralSettingsEmptyForRender() ? (
         renderFundCapitalDetailsPanel()
       ) : (
         <AccountsTable testId="accounts-table-placeholder" isDisabled />
