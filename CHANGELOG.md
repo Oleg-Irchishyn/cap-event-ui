@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.12](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.11&targetVersion=GTv0.0.12) (2025-09-13)
+
+
+### Features
+
+* [TASK-4843]: [FE] Unit tests ([708b740](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/708b740ca1cbb9d861e72d5c1b153ddb40cdee6e)), closes [#4834](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/4834)
+
+
+### Bug Fixes
+
+* adding value from search ([7ed1e34](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/7ed1e34187217c4ef0473f371324dc5b6faba8a1))
+
 ### [0.0.11](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.10&targetVersion=GTv0.0.11) (2025-09-12)
 
 
