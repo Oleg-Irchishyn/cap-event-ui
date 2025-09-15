@@ -35,7 +35,7 @@ export const datePickerStyles = {
   inputHeight: '24px',
   inputPadding: '0',
   inputFontWeight: '500',
-  maxWidth: '97px',
+  maxWidth: '105px',
   minWidth: 'auto',
   margin: '0 8px 0 0',
   borderColor: 'transparent !important',
