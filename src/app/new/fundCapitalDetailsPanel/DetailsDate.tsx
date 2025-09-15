@@ -20,7 +20,7 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
   const finalTestId = testId || defaultTestId;
 
   const pickerIcon = () => (
-    <Image src="icons/calendar-black.svg" width={15} height={15} alt="calendar" />
+    <Image src="icons/calendar-black.svg" width={20} height={20} alt="calendar" />
   );
 
   useEffect(() => {
@@ -75,6 +75,9 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     if (dateType === DATE_TYPES.NOTICE) {
       return dayjs().add(1, 'months');
     }
+    if (dateType === DATE_TYPES.DUE) {
+      return entityNoticeDate ? dayjs(entityNoticeDate).add(1, 'months') : undefined;
+    }
   };
 
   const getMinDate = () => {
@@ -87,16 +90,19 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     return dateType === DATE_TYPES.NOTICE ? 'Notice Date' : 'Due Date';
   };
 
+  const defaultValue = currentDate ? dayjs(currentDate) : null;
+
   return (
     <DatePicker
       label={getLabel()}
       onChange={handleDateChange}
-      defaultValue={currentDate ? dayjs(currentDate) : null}
+      defaultValue={defaultValue}
       minDate={getMinDate()}
       maxDate={getMaxDate()}
       testId={finalTestId}
       pickerIcon={pickerIcon}
       {...datePickerStyles}
+      maxWidth={defaultValue === null ? '115px' : datePickerStyles.maxWidth}
     />
   );
 };

@@ -5,6 +5,7 @@ export const PanelContainer = styled.div({
   display: 'flex',
   gap: '24px',
   justifyContent: 'flex-start',
+  alignItems: 'baseline',
   margin: '24px 0 0 0',
 });
 
@@ -34,7 +35,7 @@ export const datePickerStyles = {
   inputHeight: '24px',
   inputPadding: '0',
   inputFontWeight: '500',
-  maxWidth: '91px',
+  maxWidth: '97px',
   minWidth: 'auto',
   margin: '0 8px 0 0',
   borderColor: 'transparent !important',

@@ -119,8 +119,11 @@ export const DatePicker: FC<DatePickerProps> = ({
                   '& .MuiInputAdornment-root': {
                     marginLeft: 0,
                   },
+                  '& .MuiPickersSectionList-root': {
+                    padding: '5px 0',
+                  },
                   '& button': {
-                    padding: '3px',
+                    padding: '0 8px',
                   },
                 },
               },
