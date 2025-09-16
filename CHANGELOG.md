@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.13](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.12&targetVersion=GTv0.0.13) (2025-09-16)
+
+
+### Features
+
+* [TASK-4843]: [FE] Unit Tests ([77ee5e5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/77ee5e5f5ef8022d4cba0dcff5dc9117154f607e))
+
+
+### Bug Fixes
+
+* [\Issue-4843]: [FE] increased width of selected DetailsDate Datepicker ([378ccea](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/378ccea12c5675def81e84d0d1a1af87f2a9b13e))
+
 ### [0.0.12](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.11&targetVersion=GTv0.0.12) (2025-09-13)
 
 
