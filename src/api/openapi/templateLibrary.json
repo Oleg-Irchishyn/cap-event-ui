@@ -1,0 +1,254 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Template Library API",
+    "description": "API for Template Library. This library provides access to operations related to templates.",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Template",
+      "description": "Templates related operations"
+    }
+  ],
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "v1 API base path"
+    }
+  ],
+  "paths": {
+    "/templates/metadata": {
+      "get": {
+        "tags": ["Template"],
+        "summary": "Get standard templates metadata",
+        "description": "This endpoint retrieves a list of template metadata based on sponsor ID and event type ID.",
+        "operationId": "getStandardTemplatesMetadata",
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the sponsor"
+          },
+          {
+            "name": "eventTypeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the event type in UUID format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of template metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateMetadata"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 101,
+                    "box_id": "template-box-001",
+                    "name": "Standard Distribution Template"
+                  },
+                  {
+                    "id": 102,
+                    "box_id": "template-box-002",
+                    "name": "Capital Call Template"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "BAD_REQUEST",
+                  "message": "Missing required parameter: sponsorId or eventTypeId",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-12345-abc"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access templates for this sponsor",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No templates found for the specified criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "NOT_FOUND",
+                  "message": "No templates found for the given sponsorId and eventTypeId",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-67890-def"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity - validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Invalid parameter values provided",
+                  "details": [
+                    {
+                      "field": "eventTypeId",
+                      "reason": "INVALID_VALUE",
+                      "message": "eventTypeId must be a positive integer"
+                    }
+                  ],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-validation-001"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error retrieving template metadata from database",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TemplateMetadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique id for the template in UUID format"
+          },
+          "box_id": {
+            "type": "string",
+            "description": "Internal Box id of template in UUID format"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the template"
+          }
+        },
+        "required": [
+          "id",
+          "box_id",
+          "name"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Object that represents errors details",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": ["VALIDATION_ERROR", "NOT_FOUND", "INTERNAL_SERVER_ERROR", "UNAUTHORIZED", "FORBIDDEN", "BAD_REQUEST"],
+            "description": "Error reason code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "title": "ErrorDetail",
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Array of error details"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Error timestamp"
+          },
+          "requestId": {
+            "type": "string",
+            "description": "Request id"
+          }
+        },
+        "required": ["reason", "message", "details", "timestamp", "requestId"]
+      }
+    }
+  }
+}

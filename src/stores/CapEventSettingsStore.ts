@@ -3,22 +3,22 @@ import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
+import { Account, FundGroup } from '@/clients/ReferenceData';
 import { ReferenceDataApi } from '@/api';
-import { Accounts, FundGroups } from '@/api/referenceData';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
   templates: DropdownItemType[] = [];
-  fundGroups: DropdownItemType<FundGroups>[] = [];
+  fundGroups: DropdownItemType<FundGroup>[] = [];
   fundEntities: DropdownItemType[] = [];
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
   isEntitiesDropdownOpen: boolean = false;
   fundGroupsLineItem: LineItemRow[] = [];
   entitiesLineItem = new Map<string, LineItemRow[]>();
-  accounts: Accounts[] = [];
+  accounts: Account[] = [];
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
   constructor() {
@@ -43,7 +43,7 @@ class CapEventSettingsStore {
   }
 
   *fetchAccounts() {
-    this.accounts = yield ReferenceDataApi.getAccounts('Golden Image DEV');
+    this.accounts = yield ReferenceDataApi.accounts.getAccounts('Golden Image DEV');
   }
 
   setEventTypes(types: DropdownItemType[]) {
@@ -54,7 +54,7 @@ class CapEventSettingsStore {
     this.templates = templates;
   }
 
-  setFundGroups(fundGroups: DropdownItemType<FundGroups>[]) {
+  setFundGroups(fundGroups: DropdownItemType<FundGroup>[]) {
     this.fundGroups = fundGroups;
   }
 

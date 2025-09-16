@@ -9,13 +9,13 @@ import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownS
 import { AmountCell } from '@/app/new/LineItems/cellComponents/AmountCell';
 import { capEventSettingsStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
-import { Accounts } from '@/api/referenceData';
 import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/styles';
 import Image from 'next/image';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { observer } from 'mobx-react-lite';
 import './cellComponents/grid-styles.css';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import { Account } from '@/clients/ReferenceData';
 
 const AccountFields = {
   capitalCategory: 'capitalCategory',
@@ -124,9 +124,9 @@ const AccountsTable: FC<Props> = ({
               (account) =>
                 account.capitalCategory === selectedCategory &&
                 account.callDistributionReason === selectedReason &&
-                account[keyValueToReturn as keyof Accounts],
+                account[keyValueToReturn as keyof Account],
             )
-            .map((account) => account[keyValueToReturn as keyof Accounts]),
+            .map((account) => account[keyValueToReturn as keyof Account]),
         ),
       );
     },
@@ -194,7 +194,7 @@ const AccountsTable: FC<Props> = ({
 
               const reasons = getReasons(newValue);
 
-              if (reasons?.length === 1) {
+              if (reasons?.length === 1 && reasons[0]) {
                 updatedRow.callDistributionReason = reasons[0];
                 cellKeysToUnBlock.push(getCellKey(String(rowIndex), '1'));
 
@@ -204,7 +204,7 @@ const AccountsTable: FC<Props> = ({
                   AccountFields.defaultDescription,
                 );
 
-                if (descriptions.length === 1) {
+                if (descriptions.length === 1 && descriptions[0]) {
                   updatedRow.defaultDescription = descriptions[0];
                   cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
                 }
@@ -215,7 +215,7 @@ const AccountsTable: FC<Props> = ({
                   AccountFields.insideCommitment,
                 );
 
-                if (commitments.length === 1) {
+                if (commitments.length === 1 && commitments[0]) {
                   updatedRow.insideCommitment = commitments[0];
                   cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
                 }
@@ -229,7 +229,7 @@ const AccountsTable: FC<Props> = ({
             }
 
             // If callDistReason changed, also clear dependent fields
-            if (fieldName === AccountFields.callDistributionReason) {
+            if (fieldName === AccountFields.callDistributionReason && updatedRow.capitalCategory) {
               updatedRow.defaultDescription = '';
               updatedRow.insideCommitment = '';
 
@@ -239,7 +239,7 @@ const AccountsTable: FC<Props> = ({
                 AccountFields.defaultDescription,
               );
 
-              if (descriptions.length === 1) {
+              if (descriptions.length === 1 && descriptions[0]) {
                 updatedRow.defaultDescription = descriptions[0];
                 cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
               }
@@ -250,7 +250,7 @@ const AccountsTable: FC<Props> = ({
                 AccountFields.insideCommitment,
               );
 
-              if (commitments.length === 1) {
+              if (commitments.length === 1 && commitments[0]) {
                 updatedRow.insideCommitment = commitments[0];
                 cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
               }

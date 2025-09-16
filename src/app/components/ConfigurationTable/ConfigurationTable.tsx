@@ -33,6 +33,7 @@ const ConfigurationTable: FC<Props> = ({ columnDefs, rowData, onCellValueChanged
       filter: false,
       floatingFilter: false,
       suppressSizeToFit: false,
+      suppressMovable: true,
     }),
     [],
   );

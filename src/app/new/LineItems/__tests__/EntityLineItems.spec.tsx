@@ -6,8 +6,8 @@ import EntityLineItems from '@/app/new/LineItems/EntityLineItems';
 import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
-import { Accounts } from '@/api/referenceData';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { Account } from '@/clients/ReferenceData';
 
 interface MockCapEventStore {
   fundEntities: Array<{
@@ -21,7 +21,7 @@ interface MockCapEventStore {
   fundGroups: Array<{ label: string; state: string }>;
   isEntitiesDropdownOpen: boolean;
   setEntitiesLineItem: (key: string, data: LineItemRow[]) => void;
-  accounts: Accounts[];
+  accounts: Account[];
   _isGeneralSettingsEmpty: boolean;
   isGeneralSettingsEmpty: (noticeDate: Date | null, hasDifferentDates: boolean) => boolean;
 }

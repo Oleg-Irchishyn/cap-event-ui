@@ -1,0 +1,501 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Reference Data API",
+    "version": "v1",
+    "description": "API for retrieving reference data"
+  },
+  "tags": [
+    {
+      "name": "Entities",
+      "description": "Operations related to retrieving the entities"
+    },
+    {
+      "name": "FundGroups",
+      "description": "Operations related to retrieving the fund groups"
+    },
+    {
+      "name": "Accounts",
+      "description": "Operations related to GL Accounts"
+    }
+  ],
+  "servers": [
+    {
+      "url": "/api/v1/reference-data",
+      "description": "v1 API base path"
+    }
+  ],
+  "paths": {
+    "/fund-groups/search": {
+      "get": {
+        "tags": [
+          "FundGroups"
+        ],
+        "summary": "Search fund groups by sponsor ID",
+        "operationId": "searchFundGroupsBySponsor",
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sponsor ID used to filter fund groups"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of fund groups found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FundGroup"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "FG001",
+                        "name": "Global Equity"
+                      },
+                      {
+                        "id": "FG002",
+                        "name": "Fixed Income"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No fund groups found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fund-groups/{fundGroupId}/entities": {
+      "get": {
+        "tags": [
+          "Entities"
+        ],
+        "summary": "Get entities by fund group ID",
+        "operationId": "getEntitiesByFundGroup",
+        "parameters": [
+          {
+            "name": "fundGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Filter by entity statuses"
+          },
+          {
+            "name": "typesToExclude",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Exclude specific entity types"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of entities found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Entity"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "F001",
+                        "name": "Global Growth",
+                        "dueDateDays": "2",
+                        "dueDateType": "Business Days"
+                      },
+                      {
+                        "id": "F002",
+                        "name": "Bond Index",
+                        "dueDateDays": "5",
+                        "dueDateType": "Calendar Days"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No entities found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "summary": "Retrieve list of accounts",
+        "operationId": "getAccounts",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sponsor ID which accounts to retrieve"
+          },
+          {
+            "name": "fsGroupings",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Financial Groupings to include"
+          },
+          {
+            "name": "capitalCategories",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Capital Categories to exclude"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "accountNo": "1234-PL",
+                        "capitalCategory": "Cont - Other",
+                        "callDistributionReason": "Other",
+                        "defaultDescription": "Description for Other",
+                        "insideCommitment": "YES"
+                      },
+                      {
+                        "accountNo": "567-GL",
+                        "capitalCategory": "Cont - Investments",
+                        "callDistributionReason": "Investments",
+                        "defaultDescription": "Description for Other",
+                        "insideCommitment": "NO"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No resourse found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FundGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "FG001"
+          },
+          "name": {
+            "type": "string",
+            "example": "Global Equity"
+          }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "F001"
+          },
+          "name": {
+            "type": "string",
+            "example": "International Growth Fund"
+          },
+          "dueDateDays": {
+            "type": "string"
+          },
+          "dueDateType": {
+            "type": "string"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountNo": {
+            "type": "string"
+          },
+          "capitalCategory": {
+            "type": "string"
+          },
+          "callDistributionReason": {
+            "type": "string"
+          },
+          "defaultDescription": {
+            "type": "string"
+          },
+          "insideCommitment": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response with message",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "VALIDATION_ERROR",
+              "RESOURCE_NOT_FOUND",
+              "INTERNAL_SERVER_ERROR",
+              "ACCESS_DENIED"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "title": "ErrorDetail",
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "PrincipalHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "principal"
+      },
+      "ClientIdHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "client_id"
+      },
+      "ClientSecretHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "client_secret"
+      }
+    }
+  },
+  "security": [
+    {
+      "PrincipalHeader": [],
+      "ClientIdHeader": [],
+      "ClientSecretHeader": []
+    }
+  ]
+}

@@ -11,12 +11,12 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 import { parseValidDate } from '@/utils/datePickerUtils';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DropdownWrapper, Title } from './styles';
-import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
-import { EventType } from '@/api/capEventPackage';
-import { FundEntities, FundGroups } from '@/api/referenceData';
-import { TemplateLibrary } from '@/api/templateLibrary';
+import { CapEventPackageApi, TemplateLibraryApi, ReferenceDataApi } from '@/api';
+import { Entity, FundGroup } from '@/clients/ReferenceData';
+import { CapEventType } from '@/clients/CapEventPackage';
+import { TemplateMetadata } from '@/clients/TemplateLibrary';
 
 const EVENT_TYPE_MOCK = [
   {
@@ -61,35 +61,35 @@ const FUNDS = [...Array(8)].map((_, i) => ({
   dueDateType: 'Calendar Days',
 }));
 
-const prepareEventType = (eventTypes: EventType[]) => {
+const prepareEventType = (eventTypes: CapEventType[]) => {
   return eventTypes?.map((eventType) => ({
     ...eventType,
     state: ITEM_STATES.OPTIONAL,
-    label: eventType.name,
+    label: eventType.name || '',
     description: eventType.abbreviation,
   }));
 };
 
-const prepareFundGroups = (fundGroups: FundGroups[]) => {
+const prepareFundGroups = (fundGroups: FundGroup[]) => {
   return fundGroups?.map((fundGroup) => ({
     ...fundGroup,
-    id: fundGroup.id.toString(),
+    id: fundGroup.id?.toString(),
     state: ITEM_STATES.OPTIONAL,
     label: `${fundGroup.id} - ${fundGroup.name}`,
   }));
 };
 
-const prepareFundEntities = (funds: FundEntities[]) => {
+const prepareFundEntities = (funds: Entity[]) => {
   return funds?.map((fund) => ({
     ...fund,
-    id: fund.id.toString(),
+    id: fund.id?.toString(),
     state: ITEM_STATES.OPTIONAL,
     label: `${fund.id} - ${fund.name}`,
-    dueDateDays: parseFloat(fund.dueDateDays).toString(),
+    dueDateDays: parseFloat(fund?.dueDateDays || '').toString(),
   }));
 };
 
-const prepareTemplates = (templates: TemplateLibrary[]) => {
+const prepareTemplates = (templates: TemplateMetadata[]) => {
   return templates?.map((template) => ({
     ...template,
     state: ITEM_STATES.OPTIONAL,
@@ -122,27 +122,58 @@ const pickerIcon = () => <Image src="icons/calendar.svg" width={20} height={20} 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
 
-  const initFetch = async () => {
-    const eventTypes = await CapEventPackageApi.getEventTypes();
-    const fundGroups = await ReferenceDataApi.getFundGroups('Golden Image DEV');
-    const preparedFundGroups = fundGroups ? prepareFundGroups(fundGroups) : FUND_GROUPS;
-    const finalEventTypes = eventTypes ? prepareEventType(eventTypes) : EVENT_TYPE_MOCK;
-    capEventSettingsStore.setEventTypes(finalEventTypes);
-    capEventSettingsStore.setFundGroups(preparedFundGroups);
+  const getEventTypes = async () => {
+    try {
+      const eventTypes = await CapEventPackageApi.default.getCapEventTypes();
+      capEventSettingsStore.setEventTypes(prepareEventType(eventTypes));
+    } catch (error) {
+      console.error(error);
+      capEventSettingsStore.setEventTypes(EVENT_TYPE_MOCK);
+    }
   };
 
-  const updateFundEntities = async (id: string) => {
-    const entitiesRelatedToGroup = await ReferenceDataApi.getEntities(id);
-    const updatedFundsValues = entitiesRelatedToGroup
-      ? prepareFundEntities(entitiesRelatedToGroup)
-      : FUNDS;
+  const getFundGroups = async () => {
+    try {
+      const fundGroups =
+        await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor('Golden Image DEV');
+      capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
+    } catch (error) {
+      console.error(error);
+      capEventSettingsStore.setFundGroups(FUND_GROUPS);
+    }
+  };
 
-    capEventSettingsStore.setFundEntities(updatedFundsValues);
+  const initFetch = useCallback(() => {
+    getEventTypes();
+    getFundGroups();
+  }, []);
+
+  const updateFundEntities = async (id: string) => {
+    try {
+      const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
+        id,
+        ['ACTIVE'],
+        ['ADMIN', 'ELIMINATION'],
+      );
+      capEventSettingsStore.setFundEntities(prepareFundEntities(entitiesRelatedToGroup));
+    } catch (error) {
+      console.error(error);
+      capEventSettingsStore.setFundEntities(FUNDS);
+    }
   };
 
   const getTemplates = async (eventTypeId: string) => {
-    const templates = await TemplateLibraryApi.getTemplates('Golden Image DEV', eventTypeId);
-    const preparedTemplates = templates ? prepareTemplates(templates) : TEMPLATES_MOCK;
+    let preparedTemplates;
+    try {
+      const templates = await TemplateLibraryApi.template.getStandardTemplatesMetadata(
+        'Golden Image DEV',
+        eventTypeId,
+      );
+      preparedTemplates = prepareTemplates(templates);
+    } catch (error) {
+      console.error(error);
+      preparedTemplates = TEMPLATES_MOCK;
+    }
 
     if (preparedTemplates.length === 1) {
       const preSelectedTemplate = [{ ...preparedTemplates[0], state: ITEM_STATES.SELECTED }];
@@ -154,12 +185,12 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     initFetch();
-  }, []);
+  }, [initFetch]);
 
   const { eventTypes, templates, fundGroups, fundEntities } = capEventSettingsStore;
 
-  const visibleFundGroups: DropdownItemType<FundGroups>[] = useMemo(
-    () => filterBySearch<FundGroups>(fundGroups, searchText),
+  const visibleFundGroups: DropdownItemType<FundGroup>[] = useMemo(
+    () => filterBySearch<FundGroup>(fundGroups, searchText),
     [fundGroups, searchText],
   );
 
@@ -198,7 +229,7 @@ const GeneralSettings = () => {
     capEventSettingsStore.setTemplates(updatedValues);
   };
 
-  const selectFundGroupHandler = (item: DropdownItemType<FundGroups>) => {
+  const selectFundGroupHandler = (item: DropdownItemType<FundGroup>) => {
     // reset dates when fund group changes to ensure DatePicker shows placeholder
     entityDatesStore.resetAllDates();
     const selectedFundGroup = fundGroups.find(
@@ -214,7 +245,9 @@ const GeneralSettings = () => {
     );
     capEventSettingsStore.setFundGroups(updatedValues);
 
-    updateFundEntities(item.id);
+    if (item.id) {
+      updateFundEntities(item.id);
+    }
   };
 
   const selectFundsHandler = (item: DropdownItemType) => {
@@ -303,7 +336,7 @@ const GeneralSettings = () => {
             (template) => template.state === ITEM_STATES.SELECTED,
           )}
         />
-        <Dropdown<FundGroups>
+        <Dropdown<FundGroup>
           testId="fund-groups"
           withSearch
           label="Fund Group*"

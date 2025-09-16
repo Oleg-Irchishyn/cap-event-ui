@@ -1,6 +1,6 @@
-import { Accounts } from '@/api/referenceData';
+import { Account } from '@/clients/ReferenceData';
 
 export type LineItemRow = {
   id: string;
   amount: number;
-} & Omit<Accounts, 'accountNo'>;
+} & Omit<Account, 'accountNo'>;

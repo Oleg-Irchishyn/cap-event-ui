@@ -16,7 +16,8 @@
     "candidate-manual": "npx standard-version --prerelease rc --skip.commit --skip.tag",
     "release": "npx standard-version --release-as patch --prerelease release",
     "release-manual": "npx standard-version --release-as patch --prerelease release --skip.commit --skip.tag",
-    "minor": "npx standard-version --release-as minor"
+    "minor": "npx standard-version --release-as minor",
+    "generate:api": "node scripts/generate-apis.ts"
   },
   "dependencies": {
     "@dnd-kit/sortable": "^10.0.0",
@@ -53,6 +54,8 @@
     "eslint-plugin-prettier": "^5.5.3",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "openapi-typescript": "^7.9.1",
+    "openapi-typescript-codegen": "^0.29.0",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5"
