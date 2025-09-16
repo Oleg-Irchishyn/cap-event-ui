@@ -18,12 +18,14 @@ import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
 import { Account } from '@/clients/ReferenceData';
+import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
 
 const AccountFields = {
   capitalCategory: 'capitalCategory',
   callDistributionReason: 'callDistributionReason',
   defaultDescription: 'defaultDescription',
   insideCommitment: 'insideCommitment',
+  investment: 'investment',
   amount: 'amount',
 };
 
@@ -32,8 +34,28 @@ const AccountFieldTitles = {
   [AccountFields.callDistributionReason]: 'Call/Distribution Reason',
   [AccountFields.defaultDescription]: 'Call Line Description',
   [AccountFields.insideCommitment]: 'Inside CMNT',
+  [AccountFields.investment]: 'Investment',
   [AccountFields.amount]: 'Amount',
 };
+
+const AccountFiledIds = {
+  [AccountFields.capitalCategory]: '0',
+  [AccountFields.callDistributionReason]: '1',
+  [AccountFields.defaultDescription]: '2',
+  [AccountFields.insideCommitment]: '3',
+  [AccountFields.investment]: '4',
+  [AccountFields.amount]: '5',
+};
+
+const investmentMandatoryCategories = [
+  'Cont - Investments',
+  'Cont - ROE',
+  'Cont – ROC',
+  'Dist – ROC',
+  'Dist - Income',
+  'Dist - Gain',
+  'Dist – Dividend',
+];
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -188,11 +210,25 @@ const AccountsTable: FC<Props> = ({
             updatedRow.defaultDescription = '';
             updatedRow.insideCommitment = '';
 
+            if (investmentMandatoryCategories.includes(newValue)) {
+              updatedRow.investment = '';
+              cellKeysToUnBlock.push(
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.investment]),
+              );
+            } else {
+              updatedRow.investment = ' ';
+              cellKeysToBlock.push(
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.investment]),
+              );
+            }
+
             const reasons = getReasons(newValue);
 
             if (reasons?.length === 1 && reasons[0]) {
               updatedRow.callDistributionReason = reasons[0];
-              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '1'));
+              cellKeysToUnBlock.push(
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.callDistributionReason]),
+              );
 
               const descriptions = getBySelectedCategoryAndReason(
                 newValue,
@@ -202,7 +238,9 @@ const AccountsTable: FC<Props> = ({
 
               if (descriptions.length === 1 && descriptions[0]) {
                 updatedRow.defaultDescription = descriptions[0];
-                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
+                cellKeysToUnBlock.push(
+                  getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
+                );
               }
 
               const commitments = getBySelectedCategoryAndReason(
@@ -213,13 +251,15 @@ const AccountsTable: FC<Props> = ({
 
               if (commitments.length === 1 && commitments[0]) {
                 updatedRow.insideCommitment = commitments[0];
-                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
+                cellKeysToUnBlock.push(
+                  getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
+                );
               }
             } else {
               updatedRow.callDistributionReason = '';
               cellKeysToBlock.push(
-                getCellKey(String(rowIndex), '2'),
-                getCellKey(String(rowIndex), '3'),
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
               );
             }
           }
@@ -237,7 +277,9 @@ const AccountsTable: FC<Props> = ({
 
             if (descriptions.length === 1 && descriptions[0]) {
               updatedRow.defaultDescription = descriptions[0];
-              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
+              cellKeysToUnBlock.push(
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
+              );
             }
 
             const commitments = getBySelectedCategoryAndReason(
@@ -248,7 +290,9 @@ const AccountsTable: FC<Props> = ({
 
             if (commitments.length === 1 && commitments[0]) {
               updatedRow.insideCommitment = commitments[0];
-              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
+              cellKeysToUnBlock.push(
+                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
+              );
             }
           }
           return updatedRow;
@@ -332,7 +376,7 @@ const AccountsTable: FC<Props> = ({
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
-        colId: '0',
+        colId: AccountFiledIds[AccountFields.capitalCategory],
         headerName: AccountFieldTitles[AccountFields.capitalCategory],
         field: AccountFields.capitalCategory,
         cellRenderer: DropdownSearchCell,
@@ -343,7 +387,7 @@ const AccountsTable: FC<Props> = ({
         cellStyle: { padding: '0px' },
       },
       {
-        colId: '1',
+        colId: AccountFiledIds[AccountFields.callDistributionReason],
         headerName: AccountFieldTitles[AccountFields.callDistributionReason],
         field: AccountFields.callDistributionReason,
         cellRenderer: DropdownSearchCell,
@@ -355,7 +399,7 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.callDistributionReason),
       },
       {
-        colId: '2',
+        colId: AccountFiledIds[AccountFields.defaultDescription],
         headerName: AccountFieldTitles[AccountFields.defaultDescription],
         field: AccountFields.defaultDescription,
         editable: editableCallback,
@@ -367,7 +411,7 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.defaultDescription),
       },
       {
-        colId: '3',
+        colId: AccountFiledIds[AccountFields.insideCommitment],
         headerName: AccountFieldTitles[AccountFields.insideCommitment],
         field: AccountFields.insideCommitment,
         editable: editableCallback,
@@ -379,7 +423,17 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.insideCommitment),
       },
       {
-        colId: '4',
+        colId: AccountFiledIds[AccountFields.investment],
+        headerName: AccountFieldTitles[AccountFields.investment],
+        field: AccountFields.investment,
+        editable: editableCallback,
+        flex: 1,
+        cellRenderer: InvestmentDropdown,
+        cellEditor: InvestmentDropdown,
+        cellStyle: { padding: '0px' },
+      },
+      {
+        colId: AccountFiledIds[AccountFields.amount],
         headerName: AccountFieldTitles[AccountFields.amount],
         field: AccountFields.amount,
         cellRenderer: AmountCell,

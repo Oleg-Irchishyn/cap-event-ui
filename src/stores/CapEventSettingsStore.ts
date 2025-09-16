@@ -4,28 +4,36 @@ import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup } from '@/clients/ReferenceData';
-import { ReferenceDataApi } from '@/api';
 import { prepareNewRow } from '@/utils/prepareNewRow';
+import { CapEventPackageApi, ReferenceDataApi } from '@/api';
+import { Investment } from '@/clients/CapEventPackage';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
+  // General settings
   eventTypes: DropdownItemType[] = [];
   templates: DropdownItemType[] = [];
   fundGroups: DropdownItemType<FundGroup>[] = [];
   fundEntities: DropdownItemType[] = [];
   noticeDate: Date | null = null;
-  attachments: Attachment[] = [];
   isEntitiesDropdownOpen: boolean = false;
+
+  attachments: Attachment[] = [];
+
+  // Line Items
   fundGroupsLineItem: LineItemRow[] = [prepareNewRow()];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
+  investments: Investment[] = [];
+  // user inputs in line item table dropdown
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
   constructor() {
     makeAutoObservable(this);
 
     this.fetchAccounts();
+    this.fetchInvestments();
   }
 
   isGeneralSettingsEmpty(noticeDate: Date | null, hasDifferentDates: boolean) {
@@ -59,7 +67,21 @@ class CapEventSettingsStore {
   }
 
   *fetchAccounts() {
-    this.accounts = yield ReferenceDataApi.accounts.getAccounts('Golden Image DEV');
+    try {
+      this.accounts = yield ReferenceDataApi.accounts.getAccounts('Golden Image DEV');
+    } catch (error) {
+      console.error(error);
+      this.accounts = [];
+    }
+  }
+
+  *fetchInvestments() {
+    try {
+      this.investments = yield CapEventPackageApi.default.getInvestments();
+    } catch (error) {
+      console.error(error);
+      this.investments = [];
+    }
   }
 
   setEventTypes(types: DropdownItemType[]) {

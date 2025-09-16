@@ -7,6 +7,7 @@ export const prepareNewRow = (): LineItemRow => {
     callDistributionReason: '',
     defaultDescription: '',
     insideCommitment: '',
+    investment: '',
     amount: 0,
   };
 };

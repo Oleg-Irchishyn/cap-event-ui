@@ -72,17 +72,6 @@ export const ApplyText = styled.div(({ theme }) => ({
   },
 }));
 
-export const TableTitleWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'space-between',
-});
-
-export const TotalAmount = styled.div(({ theme }) => ({
-  color: theme.colors.textPrimary,
-  fontSize: '16px',
-  fontWeight: 500,
-}));
-
 export const AddNewOption = styled.div({
   display: 'flex',
   justifyContent: 'center',
@@ -151,4 +140,19 @@ export const AltView = styled.div(({ theme }) => ({
   color: theme.colors.textSecondary,
   fontSize: '14px',
   fontStyle: 'italic',
+}));
+
+export const InvestmentOptionWrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+});
+
+export const InvestmentLabel = styled.div(({ theme }) => ({
+  color: theme.colors.textPrimary,
+}));
+
+export const InvestmentSubLabel = styled.div(({ theme }) => ({
+  color: theme.colors.textDisabled,
+  fontSize: '12px',
 }));
