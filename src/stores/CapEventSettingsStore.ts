@@ -5,6 +5,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup } from '@/clients/ReferenceData';
 import { ReferenceDataApi } from '@/api';
+import { prepareNewRow } from '@/utils/prepareNewRow';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -16,7 +17,7 @@ class CapEventSettingsStore {
   noticeDate: Date | null = null;
   attachments: Attachment[] = [];
   isEntitiesDropdownOpen: boolean = false;
-  fundGroupsLineItem: LineItemRow[] = [];
+  fundGroupsLineItem: LineItemRow[] = [prepareNewRow()];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
@@ -40,6 +41,21 @@ class CapEventSettingsStore {
       selectedFunds.length === 0 ||
       (noticeDate === null && !hasDifferentDates)
     );
+  }
+
+  get isFundGroupLineItemsFilled() {
+    return (
+      !!this.fundGroupsLineItem.length &&
+      this.fundGroupsLineItem.every((item) =>
+        Object.values(item).every(
+          (value) => value !== null && value !== undefined && value !== '' && value !== 0,
+        ),
+      )
+    );
+  }
+
+  get hasMultipleEntitiesChosen() {
+    return this.fundEntities.filter(selectedFilterCallback).length > 1;
   }
 
   *fetchAccounts() {
@@ -85,8 +101,28 @@ class CapEventSettingsStore {
     this.fundGroupsLineItem = data;
   }
 
-  setEntitiesLineItem(key: string, data: LineItemRow[]) {
-    this.entitiesLineItem.set(key, data);
+  setEntitiesLineItem(key: string, data: LineItemRow[], apply?: boolean) {
+    if (!apply) {
+      this.entitiesLineItem.set(key, data);
+      return;
+    }
+    const entitiesLineItems = this.entitiesLineItem.get(key);
+    const entityManualItems: LineItemRow[] = [];
+
+    if (entitiesLineItems) {
+      for (let i = 0; i < entitiesLineItems?.length; i++) {
+        let checker = false;
+        for (let j = 0; j < data.length; j++) {
+          if (entitiesLineItems[i].id !== data[j].inheritedId) continue;
+          checker = true;
+        }
+        if (!checker) {
+          entityManualItems.push(entitiesLineItems[i]);
+        }
+      }
+    }
+
+    this.entitiesLineItem.set(key, [...data, ...entityManualItems]);
   }
 
   getUserInputs(cellKey: string): string[] {

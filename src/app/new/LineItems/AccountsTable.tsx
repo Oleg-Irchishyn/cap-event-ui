@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useMemo, useRef } from 'react';
 import {
   CellValueChangedEvent,
   ColDef,
@@ -15,6 +15,8 @@ import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { observer } from 'mobx-react-lite';
 import './cellComponents/grid-styles.css';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import { prepareNewRow } from '@/utils/prepareNewRow';
+import { ITEM_STATES } from '@/const/common';
 import { Account } from '@/clients/ReferenceData';
 
 const AccountFields = {
@@ -35,17 +37,6 @@ const AccountFieldTitles = {
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
-const prepareNewRow = (): LineItemRow => {
-  return {
-    id: Date.now().toString(),
-    capitalCategory: '',
-    callDistributionReason: '',
-    defaultDescription: '',
-    insideCommitment: '',
-    amount: 0,
-  };
-};
-
 const hasAllValues = <T extends object>(obj: T) => {
   return Object.values(obj).every(Boolean);
 };
@@ -57,6 +48,7 @@ type Props =
       entityKey: string;
       setDataToStoreCallback: (key: string, data: LineItemRow[]) => void;
       testId: string;
+      lineItems: LineItemRow[];
     }
   | {
       isDisabled: true;
@@ -64,6 +56,7 @@ type Props =
       entityKey?: string;
       setDataToStoreCallback?: (key: string, data: LineItemRow[]) => void;
       testId: string;
+      lineItems?: LineItemRow[];
     };
 
 const AccountsTable: FC<Props> = ({
@@ -72,13 +65,13 @@ const AccountsTable: FC<Props> = ({
   entityKey,
   level,
   testId,
+  lineItems = [prepareNewRow()],
 }) => {
   const accounts = useMemo(
     () => capEventSettingsStore.accounts?.filter((account) => hasAllValues(account)) || [],
-    [],
+    [capEventSettingsStore.accounts],
   );
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
-  const [rowData, setRowData] = useState<LineItemRow[]>([prepareNewRow()]);
 
   const getCategories = () => {
     return Array.from(new Set(accounts.map((account) => account.capitalCategory)));
@@ -89,10 +82,14 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (isDisabled) return false;
+      if (params.data.inheritedId) return false;
       if (requireEdit) return true;
 
       const columnId = params.column?.getColId() || '';
       const rowId = params.node.id || '';
+
+      if (!params.data.inheritedId && columnId === '0') return true;
+
       const key = getCellKey(rowId, columnId);
       return editableCellRef.current[key];
     },
@@ -135,8 +132,8 @@ const AccountsTable: FC<Props> = ({
 
   const cellEditorsParamsCallback = useCallback(
     (params: ICellEditorParams, key: string) => {
-      const selectedCategory = params.data.capitalCategory;
-      const selectedReason = params.data.callDistributionReason;
+      const selectedCategory = params.data?.capitalCategory;
+      const selectedReason = params.data?.callDistributionReason;
 
       switch (key) {
         case AccountFields.callDistributionReason: {
@@ -168,12 +165,12 @@ const AccountsTable: FC<Props> = ({
 
   const addNewRow = useCallback(() => {
     const newRow = prepareNewRow();
-    const rowId = String(rowData.length);
+    const rowId = String(lineItems.length);
     const key = getCellKey(rowId, '0');
     editableCellRef.current[key] = true;
 
-    setRowData((prev) => [...prev, newRow]);
-  }, [rowData.length]);
+    setDataToStoreCallback?.(entityKey || '-', [...lineItems, newRow]);
+  }, [lineItems, entityKey, setDataToStoreCallback]);
 
   const onCellValueChanged = useCallback(
     (params: CellValueChangedEvent) => {
@@ -182,60 +179,24 @@ const AccountsTable: FC<Props> = ({
       const cellKeysToUnBlock: string[] = [];
       const cellKeysToBlock: string[] = [];
 
-      setRowData((prev) => {
-        const updatedData = prev.map((row) => {
-          if (row.id === data.id) {
-            const updatedRow = { ...row, [fieldName]: newValue };
+      const updatedData = lineItems.map((row) => {
+        if (row.id === data.id) {
+          const updatedRow = { ...row, [fieldName]: newValue };
 
-            // If capitalCategory changed, also clear dependent fields
-            if (fieldName === AccountFields.capitalCategory) {
-              updatedRow.defaultDescription = '';
-              updatedRow.insideCommitment = '';
+          // If capitalCategory changed, also clear dependent fields
+          if (fieldName === AccountFields.capitalCategory) {
+            updatedRow.defaultDescription = '';
+            updatedRow.insideCommitment = '';
 
-              const reasons = getReasons(newValue);
+            const reasons = getReasons(newValue);
 
-              if (reasons?.length === 1 && reasons[0]) {
-                updatedRow.callDistributionReason = reasons[0];
-                cellKeysToUnBlock.push(getCellKey(String(rowIndex), '1'));
-
-                const descriptions = getBySelectedCategoryAndReason(
-                  newValue,
-                  reasons[0],
-                  AccountFields.defaultDescription,
-                );
-
-                if (descriptions.length === 1 && descriptions[0]) {
-                  updatedRow.defaultDescription = descriptions[0];
-                  cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
-                }
-
-                const commitments = getBySelectedCategoryAndReason(
-                  newValue,
-                  reasons[0],
-                  AccountFields.insideCommitment,
-                );
-
-                if (commitments.length === 1 && commitments[0]) {
-                  updatedRow.insideCommitment = commitments[0];
-                  cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
-                }
-              } else {
-                updatedRow.callDistributionReason = '';
-                cellKeysToBlock.push(
-                  getCellKey(String(rowIndex), '2'),
-                  getCellKey(String(rowIndex), '3'),
-                );
-              }
-            }
-
-            // If callDistReason changed, also clear dependent fields
-            if (fieldName === AccountFields.callDistributionReason && updatedRow.capitalCategory) {
-              updatedRow.defaultDescription = '';
-              updatedRow.insideCommitment = '';
+            if (reasons?.length === 1 && reasons[0]) {
+              updatedRow.callDistributionReason = reasons[0];
+              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '1'));
 
               const descriptions = getBySelectedCategoryAndReason(
-                updatedRow.capitalCategory,
                 newValue,
+                reasons[0],
                 AccountFields.defaultDescription,
               );
 
@@ -245,8 +206,8 @@ const AccountsTable: FC<Props> = ({
               }
 
               const commitments = getBySelectedCategoryAndReason(
-                updatedRow.capitalCategory,
                 newValue,
+                reasons[0],
                 AccountFields.insideCommitment,
               );
 
@@ -254,17 +215,49 @@ const AccountsTable: FC<Props> = ({
                 updatedRow.insideCommitment = commitments[0];
                 cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
               }
+            } else {
+              updatedRow.callDistributionReason = '';
+              cellKeysToBlock.push(
+                getCellKey(String(rowIndex), '2'),
+                getCellKey(String(rowIndex), '3'),
+              );
+            }
+          }
+
+          // If callDistReason changed, also clear dependent fields
+          if (fieldName === AccountFields.callDistributionReason && updatedRow.capitalCategory) {
+            updatedRow.defaultDescription = '';
+            updatedRow.insideCommitment = '';
+
+            const descriptions = getBySelectedCategoryAndReason(
+              updatedRow.capitalCategory,
+              newValue,
+              AccountFields.defaultDescription,
+            );
+
+            if (descriptions.length === 1 && descriptions[0]) {
+              updatedRow.defaultDescription = descriptions[0];
+              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '2'));
             }
 
-            return updatedRow;
-          }
-          return row;
-        });
+            const commitments = getBySelectedCategoryAndReason(
+              updatedRow.capitalCategory,
+              newValue,
+              AccountFields.insideCommitment,
+            );
 
-        // Call the callback with the updated data
-        setDataToStoreCallback?.(entityKey || '-', updatedData);
-        return updatedData;
+            if (commitments.length === 1 && commitments[0]) {
+              updatedRow.insideCommitment = commitments[0];
+              cellKeysToUnBlock.push(getCellKey(String(rowIndex), '3'));
+            }
+          }
+          return updatedRow;
+        }
+        return row;
       });
+
+      // Call the callback with the updated data
+      setDataToStoreCallback?.(entityKey || '-', updatedData);
 
       const rowId = params.node.id || '';
       const nextColumnId = Number(params.column.getColId()) + 1;
@@ -273,10 +266,27 @@ const AccountsTable: FC<Props> = ({
       cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
     },
-    [entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
+    [lineItems, entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
   );
 
-  const isDataChanged = true;
+  const applyFundGroupChanges = () => {
+    if (!capEventSettingsStore.isFundGroupLineItemsFilled) return;
+
+    const selectedEntities = capEventSettingsStore.fundEntities.filter(
+      (entity) => entity.state === ITEM_STATES.SELECTED,
+    );
+
+    selectedEntities.forEach((entity) => {
+      capEventSettingsStore.setEntitiesLineItem(
+        entity.label,
+        capEventSettingsStore.fundGroupsLineItem.map((fgLineItem) => ({
+          ...fgLineItem,
+          inheritedId: fgLineItem.id,
+        })),
+        true,
+      );
+    });
+  };
 
   const TableFooter = (
     <TableControls>
@@ -297,18 +307,23 @@ const AccountsTable: FC<Props> = ({
       {level === 'group' && (
         <ControlButton
           data-testid={prepareDataTestId('apply', testId, entityKey)}
-          data-is-disabled={isDisabled}
-          data-is-clickable={isDataChanged}
-          onClick={isDataChanged ? addNewRow : () => {}}
+          data-is-disabled={!capEventSettingsStore.isFundGroupLineItemsFilled}
+          onClick={applyFundGroupChanges}
         >
           <Image
-            src={isDataChanged ? 'icons/checkmark-green.svg' : 'icons/checkmark.svg'}
+            src={
+              capEventSettingsStore.isFundGroupLineItemsFilled
+                ? 'icons/checkmark-green.svg'
+                : 'icons/checkmark.svg'
+            }
             alt="checkmark"
             width={13}
             height={13}
             priority={true}
           />
-          <ApplyText data-is-active={isDataChanged}>Apply</ApplyText>
+          <ApplyText data-is-disabled={!capEventSettingsStore.isFundGroupLineItemsFilled}>
+            Apply
+          </ApplyText>
         </ControlButton>
       )}
     </TableControls>
@@ -382,7 +397,7 @@ const AccountsTable: FC<Props> = ({
       <ConfigurationTable
         testId={testId}
         columnDefs={columnDefs}
-        rowData={rowData}
+        rowData={lineItems || []}
         onCellValueChanged={onCellValueChanged}
       />
       {TableFooter}

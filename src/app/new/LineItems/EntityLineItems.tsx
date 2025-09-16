@@ -6,6 +6,7 @@ import BackgroundContainer from '@/app/components/BackgroundContainer';
 import EntityCapitalDetailsPanel from '@/app/new/fundCapitalDetailsPanel/EntityCapitalDetailsPanel';
 import { Title } from '../styles';
 import AccountsTable from '@/app/new/LineItems/AccountsTable';
+import { prepareNewRow } from '@/utils/prepareNewRow';
 
 const EntityLineItems = () => {
   const entitiesSnapshotRef = useRef(capEventSettingsStore.fundEntities);
@@ -69,9 +70,10 @@ const EntityLineItems = () => {
           testId="accounts-table"
           level="entity"
           entityKey={fund.label}
-          setDataToStoreCallback={(key, data) =>
-            capEventSettingsStore.setEntitiesLineItem(key, data)
-          }
+          setDataToStoreCallback={(key, data) => {
+            capEventSettingsStore.setEntitiesLineItem(key, data);
+          }}
+          lineItems={capEventSettingsStore.entitiesLineItem.get(fund.label) || [prepareNewRow()]}
         />
       </Fragment>
     ));

@@ -10,6 +10,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     accounts: [],
+    isFundGroupLineItemsFilled: true,
   },
 }));
 
@@ -98,6 +99,7 @@ describe('AccountsTable', () => {
     level: 'entity',
     entityKey: 'test-entity',
     setDataToStoreCallback: jest.fn(),
+    lineItems: [],
   };
 
   beforeEach(() => {
@@ -112,7 +114,10 @@ describe('AccountsTable', () => {
       const addButton = screen.getByTestId('add-new-row-test-accounts-table-test-entity');
       fireEvent.click(addButton);
 
-      expect(screen.getByTestId('row-data')).toHaveTextContent('2'); // Two rows now
+      expect(defaultProps.setDataToStoreCallback).toHaveBeenCalledTimes(1);
+      const call = (defaultProps.setDataToStoreCallback as jest.Mock).mock.calls[0];
+      expect(call[0]).toBe('test-entity');
+      expect(call[1]).toHaveLength(1);
     });
 
     it('should not add new row when disabled', () => {
@@ -126,7 +131,7 @@ describe('AccountsTable', () => {
       const addButton = screen.getByTestId('add-new-row-test-accounts-table-test-entity');
       fireEvent.click(addButton);
 
-      expect(screen.getByTestId('row-data')).toHaveTextContent('1'); // Still one row
+      expect(defaultProps.setDataToStoreCallback).not.toHaveBeenCalled();
     });
 
     it('should show correct button state when disabled', () => {
@@ -170,7 +175,7 @@ describe('AccountsTable', () => {
       renderWithTheme(<AccountsTable {...props} />);
 
       const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
-      expect(applyButton).toHaveAttribute('data-is-clickable', 'true');
+      expect(applyButton).toHaveAttribute('data-is-disabled', 'false');
     });
   });
 

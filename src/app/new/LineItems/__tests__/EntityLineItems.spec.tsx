@@ -21,6 +21,7 @@ interface MockCapEventStore {
   fundGroups: Array<{ label: string; state: string }>;
   isEntitiesDropdownOpen: boolean;
   setEntitiesLineItem: (key: string, data: LineItemRow[]) => void;
+  entitiesLineItem: Map<string, LineItemRow[]>;
   accounts: Account[];
   _isGeneralSettingsEmpty: boolean;
   isGeneralSettingsEmpty: (noticeDate: Date | null, hasDifferentDates: boolean) => boolean;
@@ -39,6 +40,7 @@ jest.mock('@/stores', () => ({
     fundGroups: [],
     isEntitiesDropdownOpen: false,
     setEntitiesLineItem: jest.fn(),
+    entitiesLineItem: new Map(),
     accounts: [],
     _isGeneralSettingsEmpty: true,
     isGeneralSettingsEmpty: function () {
@@ -94,6 +96,7 @@ describe('EntityLineItems', () => {
     mockCapEventSettingsStore.templates = [];
     mockCapEventSettingsStore.fundGroups = [];
     mockCapEventSettingsStore.isEntitiesDropdownOpen = false;
+    mockCapEventSettingsStore.entitiesLineItem = new Map();
     mockCapEventSettingsStore._isGeneralSettingsEmpty = true;
     mockEntityDatesStore.noticeDate = null;
     mockEntityDatesStore.hasDifferentDates = false;

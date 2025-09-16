@@ -57,7 +57,10 @@ describe('FundGroupLineItems', () => {
       const title = screen.getByText('Capital Event Line Items - Fund Group Level');
       expect(container).toContainElement(title);
 
-      expect(container.children).toHaveLength(1);
+      const tableWrapper = screen.getByTestId('table-wrapper-fund-group-account-table');
+      expect(container).toContainElement(tableWrapper);
+
+      expect(container.children).toHaveLength(3);
     });
   });
 

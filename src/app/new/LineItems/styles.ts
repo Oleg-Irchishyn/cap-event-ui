@@ -28,10 +28,6 @@ export const ControlButton = styled.div(({ theme }) => ({
   fontSize: '14px',
   fontWeight: 400,
 
-  '&[data-is-clickable="false"]': {
-    cursor: 'default',
-  },
-
   '&[data-is-disabled="true"]': {
     color: theme.colors.textDisabled,
     cursor: 'default',
@@ -68,10 +64,11 @@ export const ApplyText = styled.div(({ theme }) => ({
   display: 'flex',
   fontSize: '14px',
   fontWeight: 400,
-  color: theme.colors.textSecondary,
+  color: theme.colors.accentGreen,
 
-  '&[data-is-active="true"]': {
-    color: theme.colors.accentGreen,
+  '&[data-is-disabled="true"]': {
+    color: theme.colors.textDisabled,
+    cursor: 'default',
   },
 }));
 
