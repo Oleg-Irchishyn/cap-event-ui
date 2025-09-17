@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.14](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.13&targetVersion=GTv0.0.14) (2025-09-17)
+
+
+### Features
+
+* add investment column ([484650c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/484650cf74f6759748f1f656a8e6f291f2db7174))
+* add openapi ([050cfd6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/050cfd69db84e08a9912e239fed9e84238ea1e03))
+
 ### [0.0.13](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.12&targetVersion=GTv0.0.13) (2025-09-16)
 
 
