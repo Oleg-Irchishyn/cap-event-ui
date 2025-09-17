@@ -373,6 +373,84 @@
           }
         }
       }
+    },
+    "/investments": {
+      "get": {
+        "summary": "Retrieve list of investments",
+        "operationId": "getInvestments",
+        "tags": [
+          "Investments"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of investments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Investment" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "inv-12345-abcd-6789-ef01-234567890123",
+                        "name": "Real Estate Fund A",
+                        "title": "Premium Real Estate Investment Fund",
+                        "type": "real_estate"
+                      },
+                      {
+                        "id": "inv-98765-dcba-4321-ef01-876543210987",
+                        "name": "Tech Growth Fund",
+                        "title": "Technology Growth Investment Fund",
+                        "type": "equity"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "folderId",
+                    "reason": "INVALID_VALUE",
+                    "message": "size must be between 1 and 2147483647"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -426,6 +504,27 @@
           },
           "insideCommitment": {
             "type": "string"
+          }
+        }
+      },
+      "Investment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the investment"
+          },
+          "name": {
+            "type": "string",
+            "description": "Short name of the investment"
+          },
+          "title": {
+            "type": "string",
+            "description": "Full descriptive title of the investment"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the investment"
           }
         }
       },

@@ -12,6 +12,5 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { CapEventType } from './models/CapEventType';
 export { ErrorResponse } from './models/ErrorResponse';
-export type { Investment } from './models/Investment';
 
 export { DefaultService } from './services/DefaultService';

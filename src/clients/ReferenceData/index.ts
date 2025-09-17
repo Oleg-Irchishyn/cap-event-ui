@@ -14,7 +14,9 @@ export type { Account } from './models/Account';
 export type { Entity } from './models/Entity';
 export { ErrorResponse } from './models/ErrorResponse';
 export type { FundGroup } from './models/FundGroup';
+export type { Investment } from './models/Investment';
 
 export { AccountsService } from './services/AccountsService';
 export { EntitiesService } from './services/EntitiesService';
 export { FundGroupsService } from './services/FundGroupsService';
+export { InvestmentsService } from './services/InvestmentsService';

@@ -3,10 +3,9 @@ import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
-import { Account, FundGroup } from '@/clients/ReferenceData';
+import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
-import { CapEventPackageApi, ReferenceDataApi } from '@/api';
-import { Investment } from '@/clients/CapEventPackage';
+import { ReferenceDataApi } from '@/api';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -77,7 +76,7 @@ class CapEventSettingsStore {
 
   *fetchInvestments() {
     try {
-      this.investments = yield CapEventPackageApi.default.getInvestments();
+      this.investments = yield ReferenceDataApi.investments.getInvestments();
     } catch (error) {
       console.error(error);
       this.investments = [];
