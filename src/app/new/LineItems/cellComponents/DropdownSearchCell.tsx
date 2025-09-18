@@ -1,8 +1,9 @@
 import { EditableCallbackParams, ICellRendererParams } from 'ag-grid-community';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useExternalElementClick } from '@/hooks/useExternalElementClick';
 import {
-  AddNewOption,
+  AddLabel,
+  AddNewOptionWrapper,
   AltView,
   DropdownContainer,
   DropdownMenu,
@@ -17,6 +18,8 @@ import { createPortal } from 'react-dom';
 import SearchBox from '@/app/components/SearchBox';
 import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore } from '@/stores';
+import Image from 'next/image';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +29,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
-  const cellKey = `${props.node?.id || 'unknown'}-${props.colDef?.colId || 'unknown'}`;
+  const cellKey = `${props.data?.id || 'unknown'}-${props.colDef?.colId || 'unknown'}`;
   const userInputs = capEventSettingsStore.getUserInputs(cellKey);
 
   const params =
@@ -37,16 +40,21 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const options = params.options;
   const canAddValueFromSearch = params.withAddingFromSearch;
   const withSearch = canAddValueFromSearch || options.length > 3;
-  const placeholder = `Select ${props.colDef?.headerName}`;
+  const headerName = props.colDef?.headerName;
+  const placeholder = `Select ${headerName}`;
+  const searchPlaceholder = params.searchPlaceholder;
 
   const filteredOptions = [...options, ...userInputs].filter((option) =>
     option.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
-  const isCellEditable =
-    typeof props.colDef?.editable === 'function'
-      ? props.colDef?.editable(props as EditableCallbackParams)
-      : props.colDef?.editable;
+  const isCellEditable = useMemo(
+    () =>
+      typeof props.colDef?.editable === 'function'
+        ? props.colDef?.editable(props as EditableCallbackParams)
+        : props.colDef?.editable,
+    [props],
+  );
 
   const handleSelect = (value: string) => {
     setSelectedValue(value);
@@ -78,16 +86,12 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   };
   useExternalElementClick(dropdownRef, handleClickOutside, [isOpen]);
 
-  // Update selected value when props change
-  useEffect(() => {
-    setSelectedValue(props.value || '');
-  }, [props.value]);
-
   const updateDropdownPosition = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const dropdownHeight = Math.min(options.length * 32 + 60, 260); // +60 for search input
+      const searchHeight = withSearch ? 60 : 10;
+      const dropdownHeight = Math.min(options.length * 38 + searchHeight, 260);
       const indentation = 6;
 
       // Check if dropdown should appear above or below
@@ -127,12 +131,21 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const dropdownWidth = triggerRef?.current?.getBoundingClientRect().width || 'auto';
 
   const handleAddSearchValue = () => {
+    setSearchValue('');
     capEventSettingsStore.addUserInput(cellKey, searchValue);
   };
+
+  const AddNewItem = (
+    <AddNewOptionWrapper onClick={handleAddSearchValue}>
+      <Image src="icons/plus.svg" alt="plus" width={13} height={13} priority={true} />
+      <AddLabel>Add</AddLabel> “{searchValue}”
+    </AddNewOptionWrapper>
+  );
 
   return (
     <DropdownContainer>
       <DropdownWrapper
+        data-testid={prepareDataTestId('dropdown-cell', headerName)}
         data-is-open={isOpen}
         data-is-clickable={isCellEditable}
         ref={triggerRef}
@@ -157,6 +170,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
                 <SearchBox
                   testId="search"
                   searchText={searchValue}
+                  placeholder={searchPlaceholder}
                   searchCallback={setSearchValue}
                   clearCallbackHandler={() => setSearchValue('')}
                 />
@@ -165,22 +179,22 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
 
             <OptionsWrapper>
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option) => (
-                  <Option
-                    key={option}
-                    onClick={() => handleSelect(option)}
-                    data-is-selected={option === selectedValue}
-                  >
-                    {option}
-                  </Option>
+                filteredOptions.map((option, index) => (
+                  <Fragment key={option}>
+                    {searchValue && canAddValueFromSearch && index === 0 && AddNewItem}
+                    <Option
+                      data-testid={option}
+                      onClick={() => handleSelect(option)}
+                      data-is-selected={option === selectedValue}
+                    >
+                      {option}
+                    </Option>
+                  </Fragment>
                 ))
+              ) : searchValue && canAddValueFromSearch ? (
+                AddNewItem
               ) : (
-                <AltView>
-                  No options found
-                  {searchValue && canAddValueFromSearch && (
-                    <AddNewOption onClick={handleAddSearchValue}>Add item</AddNewOption>
-                  )}
-                </AltView>
+                <AltView>No options found</AltView>
               )}
             </OptionsWrapper>
           </DropdownMenu>,

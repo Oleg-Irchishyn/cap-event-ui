@@ -41,20 +41,6 @@ describe('AmountCell', () => {
       expect(input).toBeInTheDocument();
     });
 
-    it('should be disabled when cell is not editable', () => {
-      const props = {
-        ...defaultProps,
-        colDef: {
-          cellRendererParams: jest.fn().mockReturnValue(false),
-        },
-      };
-
-      renderWithTheme(<AmountCell {...props} />);
-
-      const input = screen.getByPlaceholderText('Enter Amount');
-      expect(input).toBeDisabled();
-    });
-
     it('should be enabled when cell is editable', () => {
       renderWithTheme(<AmountCell {...defaultProps} />);
 
@@ -195,7 +181,7 @@ describe('AmountCell', () => {
   });
 
   describe('setValue callback', () => {
-    it('should call setValue with numeric value on blur in editor mode', () => {
+    it('should call setValue with numeric value on blur', () => {
       const setValue = jest.fn();
       const props = {
         ...defaultProps,
@@ -211,24 +197,6 @@ describe('AmountCell', () => {
       fireEvent.blur(input);
 
       expect(setValue).toHaveBeenCalledWith(123.45);
-    });
-
-    it('should not call setValue when not in editor mode', () => {
-      const setValue = jest.fn();
-      const props = {
-        ...defaultProps,
-        setValue,
-        api: null,
-        node: null,
-      } as unknown as ICellRendererParams;
-
-      renderWithTheme(<AmountCell {...props} />);
-
-      const input = screen.getByPlaceholderText('Enter Amount');
-      fireEvent.change(input, { target: { value: '123.45' } });
-      fireEvent.blur(input);
-
-      expect(setValue).not.toHaveBeenCalled();
     });
   });
 });

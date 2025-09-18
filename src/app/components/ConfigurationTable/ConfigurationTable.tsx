@@ -49,15 +49,18 @@ const ConfigurationTable: FC<Props> = ({ columnDefs, rowData, onCellValueChanged
         defaultColDef={defaultColDef}
         onCellValueChanged={onCellValueChanged}
         rowSelection="multiple"
-        animateRows={true}
         pagination={false}
         suppressPaginationPanel={true}
         domLayout="autoHeight"
         suppressHorizontalScroll={false}
-        suppressColumnVirtualisation={false}
-        suppressRowVirtualisation={false}
+        suppressColumnVirtualisation={true}
+        suppressRowVirtualisation={true}
         rowHeight={40}
         headerHeight={40}
+        getRowId={(params) => {
+          const data = params.data as { id?: string };
+          return data.id || `row-${JSON.stringify(params.data).slice(0, 10)}`;
+        }}
       />
     </TableWrapper>
   );

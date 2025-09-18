@@ -108,11 +108,11 @@ const AccountsTable: FC<Props> = ({
       if (requireEdit) return true;
 
       const columnId = params.column?.getColId() || '';
-      const rowId = params.node.id || '';
+      const rowId = params.data.id || '';
+      const key = getCellKey(rowId, columnId);
 
       if (!params.data.inheritedId && columnId === '0') return true;
 
-      const key = getCellKey(rowId, columnId);
       return editableCellRef.current[key];
     },
     [isDisabled],
@@ -169,7 +169,11 @@ const AccountsTable: FC<Props> = ({
             selectedReason,
             AccountFields.defaultDescription,
           );
-          return { options: possibleValues, withAddingFromSearch: true };
+          return {
+            options: possibleValues,
+            withAddingFromSearch: true,
+            searchPlaceholder: 'Search or Add New',
+          };
         }
 
         case AccountFields.insideCommitment: {
@@ -187,8 +191,7 @@ const AccountsTable: FC<Props> = ({
 
   const addNewRow = useCallback(() => {
     const newRow = prepareNewRow();
-    const rowId = String(lineItems.length);
-    const key = getCellKey(rowId, '0');
+    const key = getCellKey(newRow.id, '0');
     editableCellRef.current[key] = true;
 
     setDataToStoreCallback?.(entityKey || '-', [...lineItems, newRow]);
@@ -196,7 +199,7 @@ const AccountsTable: FC<Props> = ({
 
   const onCellValueChanged = useCallback(
     (params: CellValueChangedEvent) => {
-      const { data, colDef, newValue, rowIndex } = params;
+      const { data, colDef, newValue } = params;
       const fieldName = colDef.field || '-';
       const cellKeysToUnBlock: string[] = [];
       const cellKeysToBlock: string[] = [];
@@ -213,13 +216,11 @@ const AccountsTable: FC<Props> = ({
             if (investmentMandatoryCategories.includes(newValue)) {
               updatedRow.investment = '';
               cellKeysToUnBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.investment]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.investment]),
               );
             } else {
               updatedRow.investment = ' ';
-              cellKeysToBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.investment]),
-              );
+              cellKeysToBlock.push(getCellKey(data.id, AccountFiledIds[AccountFields.investment]));
             }
 
             const reasons = getReasons(newValue);
@@ -227,7 +228,7 @@ const AccountsTable: FC<Props> = ({
             if (reasons?.length === 1 && reasons[0]) {
               updatedRow.callDistributionReason = reasons[0];
               cellKeysToUnBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.callDistributionReason]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.callDistributionReason]),
               );
 
               const descriptions = getBySelectedCategoryAndReason(
@@ -239,7 +240,7 @@ const AccountsTable: FC<Props> = ({
               if (descriptions.length === 1 && descriptions[0]) {
                 updatedRow.defaultDescription = descriptions[0];
                 cellKeysToUnBlock.push(
-                  getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
+                  getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
                 );
               }
 
@@ -252,14 +253,14 @@ const AccountsTable: FC<Props> = ({
               if (commitments.length === 1 && commitments[0]) {
                 updatedRow.insideCommitment = commitments[0];
                 cellKeysToUnBlock.push(
-                  getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
+                  getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
                 );
               }
             } else {
               updatedRow.callDistributionReason = '';
               cellKeysToBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
               );
             }
           }
@@ -278,7 +279,7 @@ const AccountsTable: FC<Props> = ({
             if (descriptions.length === 1 && descriptions[0]) {
               updatedRow.defaultDescription = descriptions[0];
               cellKeysToUnBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.defaultDescription]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
               );
             }
 
@@ -291,7 +292,7 @@ const AccountsTable: FC<Props> = ({
             if (commitments.length === 1 && commitments[0]) {
               updatedRow.insideCommitment = commitments[0];
               cellKeysToUnBlock.push(
-                getCellKey(String(rowIndex), AccountFiledIds[AccountFields.insideCommitment]),
+                getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
               );
             }
           }
@@ -303,9 +304,8 @@ const AccountsTable: FC<Props> = ({
       // Call the callback with the updated data
       setDataToStoreCallback?.(entityKey || '-', updatedData);
 
-      const rowId = params.node.id || '';
       const nextColumnId = Number(params.column.getColId()) + 1;
-      const key = getCellKey(rowId, String(nextColumnId));
+      const key = getCellKey(data.id, String(nextColumnId));
       editableCellRef.current[key] = true;
       cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
@@ -440,7 +440,6 @@ const AccountsTable: FC<Props> = ({
         editable: false,
         flex: 1,
         headerClass: 'custom-header',
-        cellRendererParams: (params: EditableCallbackParams) => editableCallback(params, true),
       },
     ],
     [categoryOptions, editableCallback, cellEditorsParamsCallback],

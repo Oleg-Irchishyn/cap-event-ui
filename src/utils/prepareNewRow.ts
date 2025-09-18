@@ -1,8 +1,10 @@
 import { LineItemRow } from '@/app/new/LineItems/types';
 
+let rowIdCounter = 0;
+
 export const prepareNewRow = (): LineItemRow => {
   return {
-    id: Date.now().toString(),
+    id: `row-${++rowIdCounter}-${Date.now()}`,
     capitalCategory: '',
     callDistributionReason: '',
     defaultDescription: '',

@@ -21,7 +21,7 @@ const SearchBox: FC<SearchBoxProps> = ({
   clearCallbackHandler = () => {},
 }) => {
   const searchHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    searchCallback(event.target.value.toLowerCase());
+    searchCallback(event.target.value);
   };
 
   return (

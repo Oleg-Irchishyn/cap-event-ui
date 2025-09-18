@@ -72,12 +72,23 @@ export const ApplyText = styled.div(({ theme }) => ({
   },
 }));
 
-export const AddNewOption = styled.div({
+export const AddNewOptionWrapper = styled.div(({ theme }) => ({
   display: 'flex',
-  justifyContent: 'center',
-  margin: '10px',
+  alignItems: 'center',
+  padding: '10px',
   cursor: 'pointer',
-});
+  fontSize: '14px',
+  gap: '4px',
+
+  '&:hover': {
+    backgroundColor: theme.colors.gray100,
+  },
+}));
+
+export const AddLabel = styled.div(({ theme }) => ({
+  display: 'flex',
+  color: theme.colors.textDisabled,
+}));
 
 export const DropdownContainer = styled.div({
   position: 'relative',

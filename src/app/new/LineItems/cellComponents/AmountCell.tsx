@@ -1,18 +1,18 @@
-import { ICellRendererParams } from 'ag-grid-community';
-import React, { KeyboardEventHandler, useEffect, useState, FC } from 'react';
+import { ICellRendererParams, EditableCallbackParams } from 'ag-grid-community';
+import React, { KeyboardEventHandler, useEffect, useState, FC, useMemo } from 'react';
 import { AmountInput } from '@/app/new/LineItems/styles';
 import { formatNumberToAmount } from '@/utils/formatNumberToAmount';
 
 export const AmountCell: FC<ICellRendererParams> = (props) => {
   const [inputValue, setInputValue] = useState('');
 
-  // Check if we're in editor mode by looking for editor-specific props
-  const isEditorMode = !!(props.api && props.node);
-
-  const isCellEditable =
-    typeof props.colDef?.cellRendererParams === 'function'
-      ? props.colDef?.cellRendererParams(props)
-      : true;
+  const isCellEditable = useMemo(
+    () =>
+      typeof props.colDef?.editable === 'function'
+        ? props.colDef?.editable(props as EditableCallbackParams)
+        : true,
+    [props],
+  );
 
   const formatValue = (value: number | string) => {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
@@ -20,14 +20,16 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
     if (numValue === null) return '';
     if (numValue === 0) return '';
 
-    const formValue = formatNumberToAmount(numValue);
+    const formValue = formatNumberToAmount(Math.abs(numValue));
+    const isNegative = numValue < 0;
 
-    return `$${formValue}`;
+    return isNegative ? `($${formValue})` : `$${formValue}`;
   };
 
   useEffect(() => {
     if (props.value !== undefined) {
-      setInputValue(formatValue(props.value));
+      const formattedValue = formatValue(props.value);
+      setInputValue(formattedValue);
     }
   }, [props.value]);
 
@@ -40,7 +42,14 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
   };
 
   const handleFocus = () => {
-    const value = inputValue[0] === '$' ? inputValue.slice(1) : inputValue;
+    // Handle both $123 and ($123) formats
+    let value = inputValue;
+    if (inputValue.startsWith('$')) {
+      value = inputValue.slice(1);
+    } else if (inputValue.startsWith('($') && inputValue.endsWith(')')) {
+      value = '-' + inputValue.slice(2, -1);
+    }
+
     const numValue = parseFloat(value.replace(/,/g, ''));
     // Only convert to number string if it's a valid number, otherwise keep the raw input
     if (!isNaN(numValue)) {
@@ -52,18 +61,25 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
   };
 
   const handleBlur = () => {
-    const value = inputValue[0] === '$' ? inputValue.slice(1) : inputValue;
+    // Handle both $123 and ($123) formats
+    let value = inputValue;
+    if (inputValue.startsWith('$')) {
+      value = inputValue.slice(1);
+    } else if (inputValue.startsWith('($') && inputValue.endsWith(')')) {
+      value = '-' + inputValue.slice(2, -1);
+    }
+
     const numValue = parseFloat(value.replace(/,/g, ''));
 
     if (value === '' || value === '-' || isNaN(numValue)) {
       // Show empty string to display placeholder instead of $0.00
       setInputValue('');
-      if (props.setValue && !isEditorMode) {
+      if (props.setValue) {
         props.setValue(0);
       }
     } else {
       setInputValue(formatValue(numValue));
-      if (props.setValue && isEditorMode) {
+      if (props.setValue) {
         props.setValue(numValue);
       }
     }
@@ -71,6 +87,7 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.nativeEvent.key === 'Enter') {
+      e.preventDefault();
       handleBlur();
     }
   };
