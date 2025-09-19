@@ -440,6 +440,7 @@ const AccountsTable: FC<Props> = ({
         editable: false,
         flex: 1,
         headerClass: 'custom-header',
+        suppressKeyboardEvent: () => true,
       },
     ],
     [categoryOptions, editableCallback, cellEditorsParamsCallback],
@@ -449,6 +450,7 @@ const AccountsTable: FC<Props> = ({
     <>
       <ConfigurationTable
         testId={testId}
+        isDisabled={isDisabled}
         columnDefs={columnDefs}
         rowData={lineItems || []}
         onCellValueChanged={onCellValueChanged}

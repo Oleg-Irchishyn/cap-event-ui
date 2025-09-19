@@ -23,9 +23,16 @@ type Props = {
   rowData: unknown[];
   onCellValueChanged: (e: CellValueChangedEvent) => void;
   testId: string;
+  isDisabled?: boolean;
 };
 
-const ConfigurationTable: FC<Props> = ({ columnDefs, rowData, onCellValueChanged, testId }) => {
+const ConfigurationTable: FC<Props> = ({
+  columnDefs,
+  rowData,
+  onCellValueChanged,
+  testId,
+  isDisabled,
+}) => {
   const defaultColDef = useMemo(
     () => ({
       resizable: false,
@@ -41,7 +48,7 @@ const ConfigurationTable: FC<Props> = ({ columnDefs, rowData, onCellValueChanged
   return (
     <TableWrapper
       data-testid={prepareDataTestId('table-wrapper', testId)}
-      className="ag-theme-alpine"
+      className={`ag-theme-alpine  ${isDisabled ? 'grid-disabled' : ''}`}
     >
       <AgGridReact
         columnDefs={columnDefs}
