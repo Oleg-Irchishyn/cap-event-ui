@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.16](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.15&targetVersion=GTv0.0.16) (2025-09-19)
+
+
+### Bug Fixes
+
+* table enhancement ([5331bd5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5331bd52c512562d21ea9cde7c7775ade6f2c0bb))
+
 ### [0.0.15](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.14&targetVersion=GTv0.0.15) (2025-09-18)
 
 
