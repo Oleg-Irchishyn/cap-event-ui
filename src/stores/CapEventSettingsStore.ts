@@ -25,6 +25,7 @@ class CapEventSettingsStore {
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
   investments: Investment[] = [];
+  areInvestmentsLoading: boolean = false;
   // user inputs in line item table dropdown
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
@@ -76,10 +77,13 @@ class CapEventSettingsStore {
 
   *fetchInvestments() {
     try {
+      this.areInvestmentsLoading = true;
       this.investments = yield ReferenceDataApi.investments.getInvestments();
     } catch (error) {
       console.error(error);
       this.investments = [];
+    } finally {
+      this.areInvestmentsLoading = false;
     }
   }
 

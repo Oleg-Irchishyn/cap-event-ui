@@ -6,12 +6,15 @@ import {
   DropdownContainer,
   DropdownMenu,
   DropdownWrapper,
+  InvestmentDropdownButton,
   InvestmentLabel,
   InvestmentOptionWrapper,
   InvestmentSubLabel,
   Label,
+  Loader,
   Option,
   OptionsWrapper,
+  RefreshIcon,
   SearchWrapper,
 } from '@/app/new/LineItems/styles';
 import { ChevronIcon } from '@/app/new/styles';
@@ -109,6 +112,10 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
     }
   }, [options.length]);
 
+  const refreshInvestments = () => {
+    capEventSettingsStore.fetchInvestments();
+  };
+
   useEffect(() => {
     document.addEventListener('scroll', updateDropdownPosition);
     document.addEventListener('resize', updateDropdownPosition);
@@ -157,6 +164,19 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                 />
               </SearchWrapper>
             )}
+
+            <InvestmentDropdownButton
+              onClick={refreshInvestments}
+              data-is-loading={capEventSettingsStore.areInvestmentsLoading}
+            >
+              {capEventSettingsStore.areInvestmentsLoading ? (
+                <Loader />
+              ) : (
+                <>
+                  <RefreshIcon /> Refresh List
+                </>
+              )}
+            </InvestmentDropdownButton>
 
             <OptionsWrapper>
               {filteredOptions.length > 0 ? (

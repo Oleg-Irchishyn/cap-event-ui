@@ -1,4 +1,9 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const spin = keyframes({
+  from: { transform: 'rotate(0deg)' },
+  to: { transform: 'rotate(360deg)' },
+});
 
 export const DropdownWrapper = styled.div(({ theme }) => ({
   cursor: 'default',
@@ -118,7 +123,7 @@ export const DropdownMenu = styled.div(({ theme }) => ({
   maxHeight: '250px',
   overflow: 'hidden',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-  marginTop: '2px',
+  marginTop: '4px',
 }));
 
 export const SearchWrapper = styled.div(({ theme }) => ({
@@ -167,3 +172,41 @@ export const InvestmentSubLabel = styled.div(({ theme }) => ({
   color: theme.colors.textDisabled,
   fontSize: '12px',
 }));
+
+export const InvestmentDropdownButton = styled.div(({ theme }) => ({
+  padding: '12px',
+  cursor: 'pointer',
+  fontSize: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  borderBottom: `1px solid ${theme.colors.gray300}`,
+  textDecoration: 'none',
+  '&:hover': {
+    backgroundColor: theme.colors.gray100,
+  },
+
+  '&[data-is-loading="true"]': {
+    justifyContent: 'center',
+  },
+}));
+
+export const RefreshIcon = styled.img.attrs({
+  src: 'icons/refresh-icon.svg',
+})({
+  width: '15px',
+  height: '15px',
+  marginRight: '10px',
+});
+
+export const Loader = styled.span`
+  width: 16px;
+  height: 16px;
+  border: 3px solid ${({ theme }) => theme.colors.gray500};
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: ${css`
+    ${spin} 1s linear infinite
+  `};
+`;
