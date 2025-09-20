@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.17](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.16&targetVersion=GTv0.0.17) (2025-09-20)
+
+
+### Bug Fixes
+
+* table ui hover with disable state ([d0e56b6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d0e56b6935eb67c28fa2613ae499df35a036f45f))
+
 ### [0.0.16](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.15&targetVersion=GTv0.0.16) (2025-09-19)
 
 
