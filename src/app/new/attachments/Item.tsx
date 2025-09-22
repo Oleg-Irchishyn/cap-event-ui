@@ -1,4 +1,4 @@
-import { HTMLAttributes, Ref, useState } from 'react';
+import { HTMLAttributes, Ref, useEffect, useRef, useState } from 'react';
 import {
   DragIcon,
   FileListItem,
@@ -35,6 +35,9 @@ const Item = ({
   ...props
 }: ItemProps) => {
   const [hovered, setHovered] = useState(false);
+  const [isNameOverflowing, setIsNameOverflowing] = useState(false);
+
+  const spanRef = useRef<HTMLSpanElement>(null);
 
   const filesWithCheckbox = ['pdf', 'docx'];
   const fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
@@ -43,6 +46,12 @@ const Item = ({
   const handleCheckboxClick = () => {
     capEventSettingsStore.toggleAttachmentCheckbox(id);
   };
+
+  useEffect(() => {
+    if (spanRef.current) {
+      setIsNameOverflowing(spanRef.current.scrollWidth > spanRef.current.clientWidth);
+    }
+  }, [fileNameWithoutExtension]);
 
   return (
     <FileListItem
@@ -68,7 +77,11 @@ const Item = ({
       )}
       <FileNumber>{fileNumber}</FileNumber>
       <FileNameWrapper>
-        <FileName {...props} title={fileNameWithoutExtension}>
+        <FileName
+          {...props}
+          ref={spanRef}
+          title={isNameOverflowing ? fileNameWithoutExtension : undefined}
+        >
           {fileNameWithoutExtension}
         </FileName>
         {'.' + fileExtension}

@@ -77,7 +77,7 @@ const Attachments: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Container data-testid="attachments">
       <AttachmentsHeader>
         <AttachmentsHeaderGroup>
           <Title>Attachment(s)</Title>
@@ -91,7 +91,7 @@ const Attachments: React.FC = () => {
         </AttachmentsHeaderGroup>
         <AttachmentsHeaderGroup>
           {capEventSettingsStore.attachments.length ? (
-            <AttachmentsCounter>{`Used ${capEventSettingsStore.attachments.length} out of 20 attachments, ${checkedFilesNumber} added to Notice`}</AttachmentsCounter>
+            <AttachmentsCounter>{`Used ${capEventSettingsStore.attachments.length} of 20 attachments, ${checkedFilesNumber} added to Notices`}</AttachmentsCounter>
           ) : (
             ''
           )}

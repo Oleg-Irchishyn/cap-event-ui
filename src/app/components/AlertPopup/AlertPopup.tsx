@@ -35,7 +35,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
       return (
         <span key={i}>
           <FileName>{file.fileName}</FileName>
-          {`- ${(file.fileSize / (1024 * 1024)).toFixed(2)} MB`}
+          {` - ${(file.fileSize / (1024 * 1024)).toFixed(2)} MB`}
         </span>
       );
     }

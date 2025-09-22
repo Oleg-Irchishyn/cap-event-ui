@@ -43,7 +43,7 @@ export const FileName = styled('span')({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  maxWidth: '370px',
+  maxWidth: '516px',
 });
 
 export const VisuallyHiddenInput = styled('input')({
