@@ -101,6 +101,261 @@
           }
         }
       }
+    },
+    "/cap-events": {
+      "post": {
+        "summary": "Process capital event",
+        "operationId": "process",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEventProcessRequest"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "sponsorId": "SPONSOR123",
+                    "capEventTypeId": "657475ed-b745-41d3-a864-463847900129",
+                    "templateId": "987654ed-b745-41d3-a864-463847900456",
+                    "capEventEntityLineItems": [
+                      {
+                        "id": "111111ed-b745-41d3-a864-463847900001",
+                        "entity": {
+                          "id": "ENTITY001",
+                          "name": "Sample Entity LP"
+                        },
+                        "noticeDate": "2024-12-01",
+                        "dueDate": "2024-12-15",
+                        "capEventLineItems": [
+                          {
+                            "id": "222222ed-b745-41d3-a864-463847900002",
+                            "account": {
+                              "accountNo": "ACC123456",
+                              "category": "Capital Call",
+                              "reason": "Quarterly Capital Call",
+                              "description": "Q4 2024 Capital Call for Portfolio Investment",
+                              "insideCmnt": "Internal processing note"
+                            },
+                            "investment": {
+                              "title": "Technology Fund I",
+                              "name": "Tech Fund LP Investment",
+                              "id": "INV001",
+                              "type": "Private Equity"
+                            },
+                            "allocationBasisId": "D-LPCMNT",
+                            "amount": 1000000.00
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of capital event line items with investor entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEventLineItemResponse" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "capEventLineItemId": "222222ed-b745-41d3-a864-463847900002",
+                        "entity": {
+                          "id": "ENTITY001",
+                          "name": "Sample Entity LP"
+                        },
+                        "account": {
+                          "accountNo": "ACC123456",
+                          "category": "Capital Call",
+                          "reason": "Quarterly Capital Call",
+                          "description": "Q4 2024 Capital Call for Portfolio Investment",
+                          "insideCmnt": "Internal processing note"
+                        },
+                        "investment": {
+                          "title": "Technology Fund I",
+                          "name": "Tech Fund LP Investment",
+                          "id": "INV001",
+                          "type": "Private Equity"
+                        },
+                        "plInvestorEntries": [
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "ABC Pension Fund",
+                            "classID": "Class A",
+                            "additionalInvestorType": "Institutional",
+                            "customerId": "CUST001",
+                            "customerName": "ABC Pension Fund LLC",
+                            "department": "Private Equity",
+                            "commitment": 5000000.00,
+                            "investedCapital": 2500000.00,
+                            "unfunded": 2500000.00,
+                            "managementFee": 50000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 250000.00,
+                            "originalAmount": 250000.00,
+                            "allocatedAmount": 250000.00,
+                            "allocatedAmountNotRounded": 250000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "New York",
+                            "dataPoints": "Q4-2024",
+                            "isTotal": 0
+                          },
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "XYZ Family Office",
+                            "classID": "Class B",
+                            "additionalInvestorType": "Private Wealth",
+                            "customerId": "CUST002",
+                            "customerName": "XYZ Family Office Ltd",
+                            "department": "Alternative Investments",
+                            "commitment": 2000000.00,
+                            "investedCapital": 1000000.00,
+                            "unfunded": 1000000.00,
+                            "managementFee": 20000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 100000.00,
+                            "originalAmount": 100000.00,
+                            "allocatedAmount": 100000.00,
+                            "allocatedAmountNotRounded": 100000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "California",
+                            "dataPoints": "Q4-2024",
+                            "isTotal": 0
+                          }
+                        ]
+                      },
+                      {
+                        "capEventLineItemId": "333333ed-b745-41d3-a864-463847900003",
+                        "entity": {
+                          "id": "ENTITY002",
+                          "name": "Another Entity LP"
+                        },
+                        "account": {
+                          "accountNo": "ACC789012",
+                          "category": "Capital Call",
+                          "reason": "Second Quarter Capital Call",
+                          "description": "Q2 2024 Capital Call for Alternative Investment",
+                          "insideCmnt": "Second processing note"
+                        },
+                        "investment": {
+                          "title": "Healthcare Fund II",
+                          "name": "Healthcare LP Investment",
+                          "id": "INV002",
+                          "type": "Healthcare"
+                        },
+                        "plInvestorEntries": [
+                          {
+                            "optOut": false,
+                            "readOnly": false,
+                            "rounded": true,
+                            "investor": "DEF Endowment",
+                            "classID": "Class A",
+                            "additionalInvestorType": "Educational",
+                            "customerId": "CUST003",
+                            "customerName": "DEF University Endowment",
+                            "department": "Investment Office",
+                            "commitment": 3000000.00,
+                            "investedCapital": 1500000.00,
+                            "unfunded": 1500000.00,
+                            "managementFee": 30000.00,
+                            "managementFeePercentage": 2.0,
+                            "amount": 150000.00,
+                            "originalAmount": 150000.00,
+                            "allocatedAmount": 150000.00,
+                            "allocatedAmountNotRounded": 150000.00,
+                            "isTransferEntry": false,
+                            "trType": 1,
+                            "hasZeroCtb": false,
+                            "investorToRound": true,
+                            "location": "Massachusetts",
+                            "dataPoints": "Q4-2024",
+                            "isTotal": 0
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -158,6 +413,223 @@
           "requestId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "CapEventProcessRequest": {
+        "type": "object",
+        "properties": {
+          "sponsorId": {
+            "type": "string"
+          },
+          "capEventTypeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "templateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "capEventEntityLineItems": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CapEventEntityLineItem" }
+          }
+        }
+      },
+      "CapEventEntityLineItem": {
+        "type": "object",
+        "required": ["entity", "dueDate"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "capEventLineItems": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+          }
+        }
+      },
+      "CapEventLineItem": {
+        "type": "object",
+        "required": ["account", "investment", "amount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "account": {
+            "$ref": "#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/Investment"
+          },
+          "allocationBasisId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "Investment": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountNo": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "insideCmnt": {
+            "type": "string"
+          }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CapEventLineItemResponse": {
+        "type": "object",
+        "properties": {
+          "capEventLineItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "account": {
+            "$ref": "#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/Investment"
+          },
+          "plInvestorEntries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvestorEntry" }
+          }
+        }
+      },
+      "InvestorEntry": {
+        "type": "object",
+        "properties": {
+          "optOut": {
+            "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
+          },
+          "rounded": {
+            "type": "boolean"
+          },
+          "investor": {
+            "type": "string"
+          },
+          "classID": {
+            "type": "string"
+          },
+          "additionalInvestorType": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "commitment": {
+            "type": "number"
+          },
+          "investedCapital": {
+            "type": "number"
+          },
+          "unfunded": {
+            "type": "number"
+          },
+          "managementFee": {
+            "type": "number"
+          },
+          "managementFeePercentage": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "originalAmount": {
+            "type": "number"
+          },
+          "allocatedAmount": {
+            "type": "number"
+          },
+          "allocatedAmountNotRounded": {
+            "type": "number"
+          },
+          "isTransferEntry": {
+            "type": "boolean"
+          },
+          "trType": {
+            "type": "integer"
+          },
+          "hasZeroCtb": {
+            "type": "boolean"
+          },
+          "investorToRound": {
+            "type": "boolean"
+          },
+          "location": {
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "string"
+          },
+          "isTotal": {
+            "type": "integer"
           }
         }
       }

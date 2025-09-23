@@ -60,3 +60,28 @@
 .ag-cell-edit-wrapper, .ag-cell-editor, .ag-cell-wrapper, :where(.ag-cell-editor) .ag-input-field-input, :where(.ag-cell-editor) .ag-wrapper {
     text-align: end;
 }
+
+.ag-skeleton-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center; 
+  justify-content: flex-start;
+}
+
+.ag-skeleton-bar {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f2f3f5 25%, #e9ebee 37%, #f2f3f5 63%);
+  background-size: 400% 100%;
+  animation: ag-skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes ag-skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

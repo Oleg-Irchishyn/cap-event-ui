@@ -1,7 +1,12 @@
+'use client';
+
 import { ButtonContainer } from '@/app/new/styles';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
+import { useRouter } from 'next/navigation';
 
 const ButtonsGroup = () => {
+  const router = useRouter();
+
   return (
     <ButtonContainer>
       <Button
@@ -39,6 +44,14 @@ const ButtonsGroup = () => {
         buttonTheme={BUTTON_THEMES.primary}
       >
         Continue
+      </Button>
+      <Button
+        testId="allocation-distribution"
+        width="auto"
+        onClick={() => router.push('/new/allocation-distribution')}
+        buttonTheme={BUTTON_THEMES.secondary}
+      >
+        Allocation Distribution
       </Button>
     </ButtonContainer>
   );

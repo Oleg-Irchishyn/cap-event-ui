@@ -230,7 +230,6 @@ const GeneralSettings = () => {
   };
 
   const selectFundGroupHandler = (item: DropdownItemType<FundGroup>) => {
-    // reset dates when fund group changes to ensure DatePicker shows placeholder
     entityDatesStore.resetAllDates();
     const selectedFundGroup = fundGroups.find(
       (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,

@@ -1,0 +1,65 @@
+{
+  "sponsorId": "SPONSOR123",
+  "capEventTypeId": "657475ed-b745-41d3-a864-463847900129",
+  "templateId": "987654ed-b745-41d3-a864-463847900456",
+  "capEventEntityLineItems": [
+      {
+          "id": "111111ed-b745-41d3-a864-463847900001",
+          "entity": {
+              "id": "1100-01",
+              "name": "Sample Entity LP"
+          },
+          "noticeDate": "2024-12-01",
+          "dueDate": "2025-09-30",
+          "capEventLineItems": [
+              {
+                  "id": "222222ed-b745-41d3-a864-463847900002",
+                  "account": {
+                      "accountNo": "1000",
+                      "category": "Capital Call",
+                      "reason": "Quarterly Capital Call",
+                      "description": "Q4 2024 Capital Call for Portfolio Investment",
+                      "insideCmnt": "Internal processing note"
+                  },
+                  "investment": {
+                      "title": "Technology Fund I",
+                      "name": "Tech Fund LP Investment",
+                      "id": "",
+                      "type": "Private Equity"
+                  },
+                  "allocationBasisId": "commitment",
+                  "amount": -100
+              }
+          ]
+      },
+      {
+          "id": "111111ed-b745-41d3-a864-463847900001",
+          "entity": {
+              "id": "1100-01",
+              "name": "Sample Entity LP"
+          },
+          "noticeDate": "2024-12-01",
+          "dueDate": "2025-09-30",
+          "capEventLineItems": [
+              {
+                  "id": "222222ed-b745-41d3-a864-463847900002",
+                  "account": {
+                      "accountNo": "4010",
+                      "category": "Capital Call",
+                      "reason": "Quarterly Capital Call",
+                      "description": "Q4 2024 Capital Call for Portfolio Investment",
+                      "insideCmnt": "Internal processing note"
+                  },
+                  "investment": {
+                      "title": "Technology Fund I",
+                      "name": "Tech Fund LP Investment",
+                      "id": "",
+                      "type": "Private Equity"
+                  },
+                  "allocationBasisId": "commitment",
+                  "amount": 100
+              }
+          ]
+      }
+  ]
+}

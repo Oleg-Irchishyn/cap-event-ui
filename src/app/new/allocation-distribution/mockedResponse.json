@@ -1,0 +1,127 @@
+[
+  {
+    "capEventLineItemId": "222222ed-b745-41d3-a864-463847900002",
+    "entity": {
+      "id": "ENTITY001",
+      "name": "Sample Entity LP"
+    },
+    "account": {
+      "accountNo": "ACC123456",
+      "category": "Capital Call",
+      "reason": "Quarterly Capital Call",
+      "description": "Q4 2024 Capital Call for Portfolio Investment",
+      "insideCmnt": "Internal processing note"
+    },
+    "investment": {
+      "title": "Technology Fund I",
+      "name": "Tech Fund LP Investment",
+      "id": "INV001",
+      "type": "Private Equity"
+    },
+    "plInvestorEntries": [
+      {
+        "optOut": false,
+        "readOnly": false,
+        "rounded": true,
+        "investor": "ABC Pension Fund",
+        "classID": "Class A",
+        "additionalInvestorType": "Institutional",
+        "customerId": "CUST001",
+        "customerName": "ABC Pension Fund LLC",
+        "department": "Private Equity",
+        "commitment": 5000000,
+        "investedCapital": 2500000,
+        "unfunded": 2500000,
+        "managementFee": 50000,
+        "managementFeePercentage": 2,
+        "amount": 250000,
+        "originalAmount": 250000,
+        "allocatedAmount": 250000,
+        "allocatedAmountNotRounded": 250000,
+        "isTransferEntry": false,
+        "trType": 1,
+        "hasZeroCtb": false,
+        "investorToRound": true,
+        "location": "New York",
+        "dataPoints": "Q4-2024",
+        "isTotal": 0
+      },
+      {
+        "optOut": false,
+        "readOnly": false,
+        "rounded": true,
+        "investor": "XYZ Family Office",
+        "classID": "Class B",
+        "additionalInvestorType": "Private Wealth",
+        "customerId": "CUST002",
+        "customerName": "XYZ Family Office Ltd",
+        "department": "Alternative Investments",
+        "commitment": 2000000,
+        "investedCapital": 1000000,
+        "unfunded": 1000000,
+        "managementFee": 20000,
+        "managementFeePercentage": 2,
+        "amount": 100000,
+        "originalAmount": 100000,
+        "allocatedAmount": 100000,
+        "allocatedAmountNotRounded": 100000,
+        "isTransferEntry": false,
+        "trType": 1,
+        "hasZeroCtb": false,
+        "investorToRound": true,
+        "location": "California",
+        "dataPoints": "Q4-2024",
+        "isTotal": 0
+      }
+    ]
+  },
+  {
+    "capEventLineItemId": "333333ed-b745-41d3-a864-463847900003",
+    "entity": {
+      "id": "ENTITY002",
+      "name": "Another Entity LP"
+    },
+    "account": {
+      "accountNo": "ACC789012",
+      "category": "Capital Call",
+      "reason": "Second Quarter Capital Call",
+      "description": "Q2 2024 Capital Call for Alternative Investment",
+      "insideCmnt": "Second processing note"
+    },
+    "investment": {
+      "title": "Healthcare Fund II",
+      "name": "Healthcare LP Investment",
+      "id": "INV002",
+      "type": "Healthcare"
+    },
+    "plInvestorEntries": [
+      {
+        "optOut": false,
+        "readOnly": false,
+        "rounded": true,
+        "investor": "DEF Endowment",
+        "classID": "Class A",
+        "additionalInvestorType": "Educational",
+        "customerId": "CUST003",
+        "customerName": "DEF University Endowment",
+        "department": "Investment Office",
+        "commitment": 3000000,
+        "investedCapital": 1500000,
+        "unfunded": 1500000,
+        "managementFee": 30000,
+        "managementFeePercentage": 2,
+        "amount": 150000,
+        "originalAmount": 150000,
+        "allocatedAmount": 150000,
+        "allocatedAmountNotRounded": 150000,
+        "isTransferEntry": false,
+        "trType": 1,
+        "hasZeroCtb": false,
+        "investorToRound": true,
+        "location": "Massachusetts",
+        "dataPoints": "Q4-2024",
+        "isTotal": 0
+      }
+    ]
+  }
+]

@@ -13,7 +13,7 @@ import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/sty
 import Image from 'next/image';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { observer } from 'mobx-react-lite';
-import './cellComponents/grid-styles.css';
+import '@/app/new/grid-styles.css';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';

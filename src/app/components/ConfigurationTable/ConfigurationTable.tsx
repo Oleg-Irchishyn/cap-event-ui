@@ -1,12 +1,14 @@
 'use client';
 
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AgGridReact } from 'ag-grid-react';
 import {
   AllCommunityModule,
   CellValueChangedEvent,
   ColDef,
+  GridApi,
+  GridReadyEvent,
   ModuleRegistry,
   provideGlobalGridOptions,
   themeAlpine,
@@ -21,9 +23,11 @@ provideGlobalGridOptions({ theme: themeAlpine });
 type Props = {
   columnDefs: ColDef[];
   rowData: unknown[];
-  onCellValueChanged: (e: CellValueChangedEvent) => void;
+  onCellValueChanged?: (e: CellValueChangedEvent) => void;
   testId: string;
   isDisabled?: boolean;
+  noRowsText?: string;
+  isLoading?: boolean;
 };
 
 const ConfigurationTable: FC<Props> = ({
@@ -32,6 +36,8 @@ const ConfigurationTable: FC<Props> = ({
   onCellValueChanged,
   testId,
   isDisabled,
+  noRowsText,
+  isLoading,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -45,6 +51,29 @@ const ConfigurationTable: FC<Props> = ({
     [],
   );
 
+  const localeText = useMemo(
+    () => ({
+      noRowsToShow: noRowsText ?? 'No Data to display',
+    }),
+    [noRowsText],
+  );
+
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+  useEffect(() => {
+    if (!gridApi) return;
+    const isEmpty = !rowData || (Array.isArray(rowData) && rowData.length === 0);
+    if (isEmpty) {
+      if (isLoading) {
+        gridApi.hideOverlay();
+      } else {
+        gridApi.showNoRowsOverlay();
+      }
+      return;
+    }
+    gridApi.hideOverlay();
+  }, [gridApi, isLoading, rowData]);
+
   return (
     <TableWrapper
       data-testid={prepareDataTestId('table-wrapper', testId)}
@@ -55,6 +84,7 @@ const ConfigurationTable: FC<Props> = ({
         rowData={rowData}
         defaultColDef={defaultColDef}
         onCellValueChanged={onCellValueChanged}
+        localeText={localeText}
         rowSelection="multiple"
         pagination={false}
         suppressPaginationPanel={true}
@@ -64,6 +94,9 @@ const ConfigurationTable: FC<Props> = ({
         suppressRowVirtualisation={true}
         rowHeight={40}
         headerHeight={40}
+        onGridReady={(params: GridReadyEvent) => {
+          setGridApi(params.api);
+        }}
         getRowId={(params) => {
           const data = params.data as { id?: string };
           return data.id || `row-${JSON.stringify(params.data).slice(0, 10)}`;
