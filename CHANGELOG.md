@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.19](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.18&targetVersion=GTv0.0.19) (2025-09-24)
+
+
+### Features
+
+* [TASK-5079]: [FE] Create page with input that accepts Intake Sheet JSON ([9e305a9](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9e305a983d82e88ed56fd87a80426d035fae58a3)), closes [#5253](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5253) [#5254](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5254) [#5395](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5395) [#5399](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5399) [#5400](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5400)
+
 ### [0.0.18](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.17&targetVersion=GTv0.0.18) (2025-09-23)
 
 
