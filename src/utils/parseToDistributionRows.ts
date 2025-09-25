@@ -21,6 +21,7 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
       description,
       investmentTitle,
       investmentName,
+      dataPoints: inv.dataPoints,
       allocatedAmount: inv.allocatedAmount || 0,
     }));
   });

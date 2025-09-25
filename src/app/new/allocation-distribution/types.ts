@@ -1,9 +1,13 @@
+import { ChangeEvent } from 'react';
+import { RowClickedEvent } from 'ag-grid-community';
+
 type DistributionRow = {
   id?: string;
   investor: string;
   entityId: string;
   entityName: string;
   description: string;
+  dataPoints?: string;
   investmentTitle?: string;
   investmentName?: string;
   allocatedAmount: number;
@@ -13,6 +17,7 @@ interface DistributionTableProps {
   rows: DistributionRow[];
   testId?: string;
   isLoading?: boolean;
+  onRowClicked?: (e: RowClickedEvent) => void;
 }
 
 interface DistributionJsonUploadButtonProps {
@@ -24,7 +29,7 @@ interface DistributionJsonUploadButtonProps {
 
 interface DistributionJsonParseFieldProps {
   payload: string;
-  onSetPayload: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onSetPayload: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   testId?: string;
 }
 

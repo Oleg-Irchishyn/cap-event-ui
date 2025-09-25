@@ -28,6 +28,10 @@
     font-weight: 400;
 }
 
+.ag-theme-alpine .clickable-row {
+    cursor: pointer;
+}
+
 /* Remove row/cell borders */
 .ag-theme-alpine .ag-row,
 .ag-theme-alpine .ag-cell {
@@ -43,10 +47,15 @@
     background-image: none !important;
 }
 
+.ag-theme-alpine .ag-row-hover::before {
+    background-color: #F8FCFF !important;
+    background-image: none !important;
+}
+
 .grid-disabled .ag-row-hover::before {
         background-color: transparent !important;
         background-image: none !important;
-    }
+}
 
 .ag-header-cell-text {
     font-weight: 500;
@@ -65,7 +74,7 @@
   height: 100%;
   width: 100%;
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: flex-start;
 }
 

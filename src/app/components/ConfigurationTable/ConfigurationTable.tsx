@@ -11,6 +11,7 @@ import {
   GridReadyEvent,
   ModuleRegistry,
   provideGlobalGridOptions,
+  RowClickedEvent,
   themeAlpine,
 } from 'ag-grid-community';
 
@@ -28,6 +29,7 @@ type Props = {
   isDisabled?: boolean;
   noRowsText?: string;
   isLoading?: boolean;
+  onRowClicked?: (e: RowClickedEvent) => void;
 };
 
 const ConfigurationTable: FC<Props> = ({
@@ -38,6 +40,7 @@ const ConfigurationTable: FC<Props> = ({
   isDisabled,
   noRowsText,
   isLoading,
+  onRowClicked,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -84,6 +87,8 @@ const ConfigurationTable: FC<Props> = ({
         rowData={rowData}
         defaultColDef={defaultColDef}
         onCellValueChanged={onCellValueChanged}
+        onRowClicked={onRowClicked}
+        rowClass={onRowClicked ? 'clickable-row' : ''}
         localeText={localeText}
         rowSelection="multiple"
         pagination={false}

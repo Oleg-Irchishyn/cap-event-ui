@@ -11,6 +11,7 @@ const DistributionTable: FC<DistributionTableProps> = ({
   rows,
   testId = 'distribution-table',
   isLoading = false,
+  onRowClicked,
 }) => {
   const columnDefs = useMemo(() => getDistributionColumnDefs(isLoading), [isLoading]);
 
@@ -41,6 +42,7 @@ const DistributionTable: FC<DistributionTableProps> = ({
       rowData={displayRows}
       isLoading={isLoading}
       noRowsText="No Data to display"
+      onRowClicked={onRowClicked}
     />
   );
 };

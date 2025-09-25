@@ -31,6 +31,7 @@ const CommentsField = () => {
               value={value}
               placeholder="Enter text"
               maxLength={MAX_SYMBOLS_COUNT}
+              style={{ maxHeight: '250px' }}
               onChange={(e) => setValue(e.target.value)}
             />
           </TextAreaContainer>
