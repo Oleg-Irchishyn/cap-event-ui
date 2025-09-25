@@ -85,7 +85,7 @@ const EntityLineItems = () => {
       {!isGeneralSettingsEmptyForRender() ? (
         renderFundCapitalDetailsPanel()
       ) : (
-        <AccountsTable testId="accounts-table-placeholder" isDisabled />
+        <AccountsTable testId="accounts-table-placeholder" level="entity" isDisabled />
       )}
     </BackgroundContainer>
   );

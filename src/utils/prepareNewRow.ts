@@ -11,5 +11,6 @@ export const prepareNewRow = (): LineItemRow => {
     insideCommitment: '',
     investment: '',
     amount: 0,
+    allocationBasis: '',
   };
 };

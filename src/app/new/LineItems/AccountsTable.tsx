@@ -27,6 +27,7 @@ const AccountFields = {
   insideCommitment: 'insideCommitment',
   investment: 'investment',
   amount: 'amount',
+  allocationBasis: 'allocationBasis',
 };
 
 const AccountFieldTitles = {
@@ -36,6 +37,7 @@ const AccountFieldTitles = {
   [AccountFields.insideCommitment]: 'Inside CMNT',
   [AccountFields.investment]: 'Investment',
   [AccountFields.amount]: 'Amount',
+  [AccountFields.allocationBasis]: 'Allocation Basis',
 };
 
 const AccountFiledIds = {
@@ -44,7 +46,8 @@ const AccountFiledIds = {
   [AccountFields.defaultDescription]: '2',
   [AccountFields.insideCommitment]: '3',
   [AccountFields.investment]: '4',
-  [AccountFields.amount]: '5',
+  [AccountFields.allocationBasis]: '5',
+  [AccountFields.amount]: '6',
 };
 
 const investmentMandatoryCategories = [
@@ -212,6 +215,7 @@ const AccountsTable: FC<Props> = ({
           if (fieldName === AccountFields.capitalCategory) {
             updatedRow.defaultDescription = '';
             updatedRow.insideCommitment = '';
+            updatedRow.allocationBasis = '';
 
             if (investmentMandatoryCategories.includes(newValue)) {
               updatedRow.investment = '';
@@ -222,6 +226,10 @@ const AccountsTable: FC<Props> = ({
               updatedRow.investment = ' ';
               cellKeysToBlock.push(getCellKey(data.id, AccountFiledIds[AccountFields.investment]));
             }
+
+            cellKeysToUnBlock.push(
+              getCellKey(data.id, AccountFiledIds[AccountFields.allocationBasis]),
+            );
 
             const reasons = getReasons(newValue);
 
@@ -431,6 +439,25 @@ const AccountsTable: FC<Props> = ({
         cellRenderer: InvestmentDropdown,
         cellEditor: InvestmentDropdown,
         cellStyle: { padding: '0px' },
+      },
+      {
+        colId: AccountFiledIds[AccountFields.allocationBasis],
+        headerName: AccountFieldTitles[AccountFields.allocationBasis],
+        field: AccountFields.allocationBasis,
+        cellRenderer: DropdownSearchCell,
+        cellEditor: DropdownSearchCell,
+        editable: editableCallback,
+        flex: 1,
+        cellStyle: { padding: '0px' },
+        cellEditorParams: {
+          options: [
+            'Commitment',
+            'Contribution Deal',
+            'Contribution All',
+            'Unfunded',
+            'Contribution Deal Parent',
+          ],
+        },
       },
       {
         colId: AccountFiledIds[AccountFields.amount],
