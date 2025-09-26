@@ -164,8 +164,16 @@ export const InvestmentOptionWrapper = styled.div({
   gap: '4px',
 });
 
+export const InvestmentTitleWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+});
+
 export const InvestmentLabel = styled.div(({ theme }) => ({
   color: theme.colors.textPrimary,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }));
 
 export const InvestmentSubLabel = styled.div(({ theme }) => ({
@@ -210,7 +218,7 @@ export const Loader = styled.span`
   `};
 `;
 
-export const InvestmentNewItemButtonWrapper = styled.a({
+export const LinkButtonWrapper = styled.a({
   textDecoration: 'none',
   color: 'inherit',
 
@@ -244,4 +252,14 @@ export const PlusIcon = styled.img.attrs({
   width: '14px',
   height: '14px',
   marginRight: '10px',
+});
+
+export const RedirectIcon = styled.img.attrs({
+  src: 'icons/link.svg',
+})({
+  width: '12px',
+  height: '12px',
+  padding: '2px',
+  marginLeft: '8px',
+  cursor: 'pointer',
 });

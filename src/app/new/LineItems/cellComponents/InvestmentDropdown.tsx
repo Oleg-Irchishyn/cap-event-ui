@@ -9,16 +9,18 @@ import {
   InvestmentRefreshButton,
   InvestmentLabel,
   InvestmentNewItemButton,
-  InvestmentNewItemButtonWrapper,
   InvestmentOptionWrapper,
   InvestmentSubLabel,
+  InvestmentTitleWrapper,
   Label,
   Loader,
   Option,
   OptionsWrapper,
+  RedirectIcon,
   PlusIcon,
   RefreshIcon,
   SearchWrapper,
+  LinkButtonWrapper,
 } from '@/app/new/LineItems/styles';
 import { ChevronIcon } from '@/app/new/styles';
 import { createPortal } from 'react-dom';
@@ -183,14 +185,14 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
               )}
             </InvestmentRefreshButton>
 
-            <InvestmentNewItemButtonWrapper
-              href={generateIntacctLink(capEventSettingsStore.sessionId)}
+            <LinkButtonWrapper
+              href={generateIntacctLink(capEventSettingsStore.sessionId, 'view')}
               target="_blank"
             >
               <InvestmentNewItemButton>
                 <PlusIcon /> Add New Item
               </InvestmentNewItemButton>
-            </InvestmentNewItemButtonWrapper>
+            </LinkButtonWrapper>
 
             <OptionsWrapper>
               {filteredOptions.length > 0 ? (
@@ -203,7 +205,19 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                       data-is-selected={label === selectedValue}
                     >
                       <InvestmentOptionWrapper>
-                        <InvestmentLabel>{label}</InvestmentLabel>
+                        <InvestmentTitleWrapper>
+                          <InvestmentLabel>{label}</InvestmentLabel>
+                          <LinkButtonWrapper
+                            href={generateIntacctLink(
+                              capEventSettingsStore.sessionId,
+                              'edit',
+                              option.id,
+                            )}
+                            target="_blank"
+                          >
+                            <RedirectIcon />
+                          </LinkButtonWrapper>
+                        </InvestmentTitleWrapper>
                         <InvestmentSubLabel>Id: {option.id}</InvestmentSubLabel>
                         <InvestmentSubLabel>{option.type}</InvestmentSubLabel>
                       </InvestmentOptionWrapper>
