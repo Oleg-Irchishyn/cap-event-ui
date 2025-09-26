@@ -173,13 +173,12 @@ export const InvestmentSubLabel = styled.div(({ theme }) => ({
   fontSize: '12px',
 }));
 
-export const InvestmentDropdownButton = styled.div(({ theme }) => ({
+export const InvestmentRefreshButton = styled.div(({ theme }) => ({
   padding: '12px',
   cursor: 'pointer',
   fontSize: '14px',
   display: 'flex',
   alignItems: 'center',
-  borderBottom: `1px solid ${theme.colors.gray300}`,
   textDecoration: 'none',
   '&:hover': {
     backgroundColor: theme.colors.gray100,
@@ -210,3 +209,39 @@ export const Loader = styled.span`
     ${spin} 1s linear infinite
   `};
 `;
+
+export const InvestmentNewItemButtonWrapper = styled.a({
+  textDecoration: 'none',
+  color: 'inherit',
+
+  '&:visited': {
+    color: 'inherit',
+  },
+
+  '&:hover': {
+    color: 'inherit',
+    textDecoration: 'none',
+  },
+});
+
+export const InvestmentNewItemButton = styled.div(({ theme }) => ({
+  padding: '12px',
+  cursor: 'pointer',
+  fontSize: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  borderBottom: `1px solid ${theme.colors.gray300}`,
+  textDecoration: 'none',
+
+  '&:hover': {
+    backgroundColor: theme.colors.gray100,
+  },
+}));
+
+export const PlusIcon = styled.img.attrs({
+  src: 'icons/plus.svg',
+})({
+  width: '14px',
+  height: '14px',
+  marginRight: '10px',
+});

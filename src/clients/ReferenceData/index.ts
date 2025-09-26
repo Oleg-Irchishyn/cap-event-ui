@@ -20,3 +20,4 @@ export { AccountsService } from './services/AccountsService';
 export { EntitiesService } from './services/EntitiesService';
 export { FundGroupsService } from './services/FundGroupsService';
 export { InvestmentsService } from './services/InvestmentsService';
+export { SessionService } from './services/SessionService';

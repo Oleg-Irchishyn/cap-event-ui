@@ -17,6 +17,10 @@
     {
       "name": "Accounts",
       "description": "Operations related to GL Accounts"
+    },
+    {
+      "name": "Session",
+      "description": "Operation to retrieve a session ID"
     }
   ],
   "servers": [
@@ -426,6 +430,73 @@
                     "reason": "INVALID_VALUE",
                     "message": "size must be between 1 and 2147483647"
                   },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+     "/session": {
+      "get": {
+        "summary": "Retrieve session id",
+        "operationId": "getSessionId",
+        "tags": [
+          "Session"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in":"query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {}
+              }
+            }
+          },
+          "404": {
+            "description": "No entities found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
                   "timestamp": "2025-08-20T11:13:13.012739700Z",
                   "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
                 }

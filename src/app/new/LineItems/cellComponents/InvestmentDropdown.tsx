@@ -6,14 +6,17 @@ import {
   DropdownContainer,
   DropdownMenu,
   DropdownWrapper,
-  InvestmentDropdownButton,
+  InvestmentRefreshButton,
   InvestmentLabel,
+  InvestmentNewItemButton,
+  InvestmentNewItemButtonWrapper,
   InvestmentOptionWrapper,
   InvestmentSubLabel,
   Label,
   Loader,
   Option,
   OptionsWrapper,
+  PlusIcon,
   RefreshIcon,
   SearchWrapper,
 } from '@/app/new/LineItems/styles';
@@ -22,11 +25,13 @@ import { createPortal } from 'react-dom';
 import SearchBox from '@/app/components/SearchBox';
 import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore } from '@/stores';
+import { generateIntacctLink } from '@/utils/generateIntacctLink';
 
 export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedValue, setSelectedValue] = useState(props.value || '');
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
@@ -165,7 +170,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
               </SearchWrapper>
             )}
 
-            <InvestmentDropdownButton
+            <InvestmentRefreshButton
               onClick={refreshInvestments}
               data-is-loading={capEventSettingsStore.areInvestmentsLoading}
             >
@@ -176,7 +181,16 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                   <RefreshIcon /> Refresh List
                 </>
               )}
-            </InvestmentDropdownButton>
+            </InvestmentRefreshButton>
+
+            <InvestmentNewItemButtonWrapper
+              href={generateIntacctLink(capEventSettingsStore.sessionId)}
+              target="_blank"
+            >
+              <InvestmentNewItemButton>
+                <PlusIcon /> Add New Item
+              </InvestmentNewItemButton>
+            </InvestmentNewItemButtonWrapper>
 
             <OptionsWrapper>
               {filteredOptions.length > 0 ? (

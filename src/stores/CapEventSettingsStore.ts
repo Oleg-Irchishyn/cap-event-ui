@@ -29,11 +29,14 @@ class CapEventSettingsStore {
   // user inputs in line item table dropdown
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
+  sessionId: string = '';
+
   constructor() {
     makeAutoObservable(this);
 
     this.fetchAccounts();
     this.fetchInvestments();
+    this.fetchSessionId();
   }
 
   isGeneralSettingsEmpty(noticeDate: Date | null, hasDifferentDates: boolean) {
@@ -84,6 +87,15 @@ class CapEventSettingsStore {
       this.investments = [];
     } finally {
       this.areInvestmentsLoading = false;
+    }
+  }
+
+  *fetchSessionId() {
+    try {
+      this.sessionId = yield ReferenceDataApi.session.getSessionId(this.sessionId);
+    } catch (error) {
+      console.error(error);
+      this.sessionId = '';
     }
   }
 
