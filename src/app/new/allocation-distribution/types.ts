@@ -11,6 +11,7 @@ type DistributionRow = {
   investmentTitle?: string;
   investmentName?: string;
   allocatedAmount: number;
+  isAggregated?: boolean;
 };
 
 interface DistributionTableProps {

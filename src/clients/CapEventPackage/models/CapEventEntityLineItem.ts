@@ -9,6 +9,6 @@ export type CapEventEntityLineItem = {
     entity: Entity;
     noticeDate?: string;
     dueDate: string;
-    capEventLineItems?: Array<CapEventLineItem>;
+    capEventLineItems: Array<CapEventLineItem>;
 };
 

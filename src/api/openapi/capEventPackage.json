@@ -144,7 +144,7 @@
                               "id": "INV001",
                               "type": "Private Equity"
                             },
-                            "allocationBasisId": "D-LPCMNT",
+                            "allocationBasis": "commitment",
                             "amount": 1000000.00
                           }
                         ]
@@ -213,7 +213,7 @@
                             "investorToRound": true,
                             "location": "New York",
                             "dataPoints": "Q4-2024",
-                            "isTotal": 0
+                            "isAggregated": false
                           },
                           {
                             "optOut": false,
@@ -240,7 +240,7 @@
                             "investorToRound": true,
                             "location": "California",
                             "dataPoints": "Q4-2024",
-                            "isTotal": 0
+                            "isAggregated": false
                           }
                         ]
                       },
@@ -289,7 +289,7 @@
                             "investorToRound": true,
                             "location": "Massachusetts",
                             "dataPoints": "Q4-2024",
-                            "isTotal": 0
+                            "isAggregated": false
                           }
                         ]
                       }
@@ -384,7 +384,7 @@
         "properties": {
           "reason": {
             "type": "string",
-            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR"]
+            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR"]
           },
           "message": {
             "type": "string"
@@ -418,6 +418,7 @@
       },
       "CapEventProcessRequest": {
         "type": "object",
+        "required": ["capEventEntityLineItems"],
         "properties": {
           "sponsorId": {
             "type": "string"
@@ -438,7 +439,7 @@
       },
       "CapEventEntityLineItem": {
         "type": "object",
-        "required": ["entity", "dueDate"],
+        "required": ["entity", "dueDate", "capEventLineItems"],
         "properties": {
           "id": {
             "type": "string",
@@ -463,7 +464,7 @@
       },
       "CapEventLineItem": {
         "type": "object",
-        "required": ["account", "investment", "amount"],
+        "required": ["account", "investment", "allocationBasis", "amount"],
         "properties": {
           "id": {
             "type": "string",
@@ -475,7 +476,7 @@
           "investment": {
             "$ref": "#/components/schemas/Investment"
           },
-          "allocationBasisId": {
+          "allocationBasis": {
             "type": "string"
           },
           "amount": {
@@ -485,6 +486,7 @@
       },
       "Investment": {
         "type": "object",
+        "required": ["id"],
         "properties": {
           "title": {
             "type": "string"
@@ -502,6 +504,7 @@
       },
       "Account": {
         "type": "object",
+        "required": ["accountNo"],
         "properties": {
           "accountNo": {
             "type": "string"
@@ -522,6 +525,7 @@
       },
       "Entity": {
         "type": "object",
+        "required": ["id"],
         "properties": {
           "id": {
             "type": "string"
@@ -628,11 +632,12 @@
           "dataPoints": {
             "type": "string"
           },
-          "isTotal": {
-            "type": "integer"
+          "isAggregated": {
+            "type": "boolean"
           }
         }
       }
     }
   }
 }
+ 

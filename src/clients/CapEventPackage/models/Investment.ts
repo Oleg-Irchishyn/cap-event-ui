@@ -5,7 +5,7 @@
 export type Investment = {
     title?: string;
     name?: string;
-    id?: string;
+    id: string;
     type?: string;
 };
 

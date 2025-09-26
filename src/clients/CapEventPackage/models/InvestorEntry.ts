@@ -27,6 +27,6 @@ export type InvestorEntry = {
     investorToRound?: boolean;
     location?: string;
     dataPoints?: string;
-    isTotal?: number;
+    isAggregated?: boolean;
 };
 

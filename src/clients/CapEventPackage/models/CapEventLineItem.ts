@@ -8,7 +8,7 @@ export type CapEventLineItem = {
     id?: string;
     account: Account;
     investment: Investment;
-    allocationBasisId?: string;
+    allocationBasis: string;
     amount: number;
 };
 

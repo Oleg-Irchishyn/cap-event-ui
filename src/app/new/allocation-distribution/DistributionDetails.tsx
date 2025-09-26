@@ -6,7 +6,6 @@ import BackgroundContainer from '@/app/components/BackgroundContainer';
 import DistributionJsonParseField from '@/app/new/allocation-distribution/DistributionJsonParseField';
 import DistributionJsonUploadButton from '@/app/new/allocation-distribution/DistributionJsonUploadButton';
 import DistributionTable from '@/app/new/allocation-distribution/DistributionTable';
-import mockedResponse from '@/app/new/allocation-distribution/mockedResponse.json';
 import { Title, Wrapper } from '@/app/new/styles';
 import { CapEventProcessRequest } from '@/clients/CapEventPackage';
 import { useToast } from '@/providers/ToastProvider';
@@ -40,7 +39,7 @@ const DistributionDetails = () => {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Upload failed. Please try again.';
       toast.error(message);
-      setRows(parseToDistributionRows(mockedResponse));
+      setRows([]);
     } finally {
       setIsLoading(false);
     }

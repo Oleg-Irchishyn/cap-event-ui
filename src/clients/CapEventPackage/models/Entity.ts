@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Entity = {
-    id?: string;
+    id: string;
     name?: string;
 };
 

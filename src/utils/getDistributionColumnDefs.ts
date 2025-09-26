@@ -22,6 +22,9 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     sort: 'asc',
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
+    cellStyle: (params) => {
+      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
+    },
   },
   {
     headerName: ENTITY_NAME_HEADER,
@@ -35,6 +38,9 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     sortable: true,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 70 } } : undefined,
+    cellStyle: (params) => {
+      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
+    },
   },
   {
     headerName: DESCRIPTION_HEADER,
@@ -43,6 +49,9 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     sortable: false,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 85 } } : undefined,
+    cellStyle: (params) => {
+      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
+    },
   },
   {
     headerName: INVESTMENT_HEADER,
@@ -56,6 +65,9 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     sortable: false,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
+    cellStyle: (params) => {
+      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
+    },
   },
   {
     headerName: AMOUNT_HEADER,
@@ -69,5 +81,8 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+    cellStyle: (params) => {
+      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
+    },
   },
 ];

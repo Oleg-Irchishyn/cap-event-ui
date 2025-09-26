@@ -76,6 +76,6 @@ describe('DistributionDetails', () => {
     fireEvent.click(uploadBtn);
 
     await waitFor(() => expect(toast.error).toHaveBeenCalled());
-    expect(Number(screen.getByTestId('rows-count').textContent || '0')).toBeGreaterThan(0);
+    expect(Number(screen.getByTestId('rows-count').textContent || '0')).toBe(0);
   });
 });

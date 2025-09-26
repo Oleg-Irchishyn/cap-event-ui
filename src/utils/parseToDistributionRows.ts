@@ -3,7 +3,7 @@ import { CapEventLineItemResponse, InvestorEntry } from '@/clients/CapEventPacka
 
 export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
   const array = (Array.isArray(items) ? items : []) as CapEventLineItemResponse[];
-  return array.flatMap((item) => {
+  return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';
     const entityName = item?.entity?.name ?? '';
     const description = item?.account?.description ?? '';
@@ -14,7 +14,7 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
       ? (item.plInvestorEntries as InvestorEntry[])
       : [];
     return entries.map((inv, idx: number) => ({
-      id: `${lineItemId}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
+      id: `${lineItemId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
       investor: inv.investor || '',
       entityId,
       entityName,
@@ -23,6 +23,7 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
       investmentName,
       dataPoints: inv.dataPoints,
       allocatedAmount: inv.allocatedAmount || 0,
+      isAggregated: inv.isAggregated || false,
     }));
   });
 };
