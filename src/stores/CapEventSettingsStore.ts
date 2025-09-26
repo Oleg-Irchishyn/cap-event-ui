@@ -6,6 +6,7 @@ import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ReferenceDataApi } from '@/api';
+import { AccountFields, investmentMandatoryCategories } from '@/app/new/LineItems/const';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -58,9 +59,15 @@ class CapEventSettingsStore {
     return (
       !!this.fundGroupsLineItem.length &&
       this.fundGroupsLineItem.every((item) =>
-        Object.values(item).every(
-          (value) => value !== null && value !== undefined && value !== '' && value !== 0,
-        ),
+        Object.entries(item).every(([key, value]) => {
+          if (
+            key === AccountFields.investment &&
+            !investmentMandatoryCategories.includes(item.capitalCategory || '')
+          ) {
+            return true;
+          }
+          return value !== null && value !== undefined && value !== '' && value !== 0;
+        }),
       )
     );
   }

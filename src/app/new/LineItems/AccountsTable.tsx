@@ -19,46 +19,7 @@ import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
 import { Account } from '@/clients/ReferenceData';
 import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
-
-const AccountFields = {
-  capitalCategory: 'capitalCategory',
-  callDistributionReason: 'callDistributionReason',
-  defaultDescription: 'defaultDescription',
-  insideCommitment: 'insideCommitment',
-  investment: 'investment',
-  amount: 'amount',
-  allocationBasis: 'allocationBasis',
-};
-
-const AccountFieldTitles = {
-  [AccountFields.capitalCategory]: 'Category',
-  [AccountFields.callDistributionReason]: 'Call/Distribution Reason',
-  [AccountFields.defaultDescription]: 'Call Line Description',
-  [AccountFields.insideCommitment]: 'Inside CMNT',
-  [AccountFields.investment]: 'Investment',
-  [AccountFields.amount]: 'Amount',
-  [AccountFields.allocationBasis]: 'Allocation Basis',
-};
-
-const AccountFiledIds = {
-  [AccountFields.capitalCategory]: '0',
-  [AccountFields.callDistributionReason]: '1',
-  [AccountFields.defaultDescription]: '2',
-  [AccountFields.insideCommitment]: '3',
-  [AccountFields.investment]: '4',
-  [AccountFields.allocationBasis]: '5',
-  [AccountFields.amount]: '6',
-};
-
-const investmentMandatoryCategories = [
-  'Cont - Investments',
-  'Cont - ROE',
-  'Cont – ROC',
-  'Dist – ROC',
-  'Dist - Income',
-  'Dist - Gain',
-  'Dist – Dividend',
-];
+import { AccountFields, AccountFiledIds, AccountFieldTitles } from '@/app/new/LineItems/const';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -217,16 +178,7 @@ const AccountsTable: FC<Props> = ({
             updatedRow.insideCommitment = '';
             updatedRow.allocationBasis = '';
 
-            if (investmentMandatoryCategories.includes(newValue)) {
-              updatedRow.investment = '';
-              cellKeysToUnBlock.push(
-                getCellKey(data.id, AccountFiledIds[AccountFields.investment]),
-              );
-            } else {
-              updatedRow.investment = ' ';
-              cellKeysToBlock.push(getCellKey(data.id, AccountFiledIds[AccountFields.investment]));
-            }
-
+            cellKeysToUnBlock.push(getCellKey(data.id, AccountFiledIds[AccountFields.investment]));
             cellKeysToUnBlock.push(
               getCellKey(data.id, AccountFiledIds[AccountFields.allocationBasis]),
             );
