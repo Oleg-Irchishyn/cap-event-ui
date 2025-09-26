@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.21](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.20&targetVersion=GTv0.0.21) (2025-09-26)
+
+
+### Features
+
+* add modal per investor ([f30a691](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f30a69103989e6a7757220f0278a6c3f7b2f8d0a))
+
 ### [0.0.20](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.19&targetVersion=GTv0.0.20) (2025-09-25)
 
 
