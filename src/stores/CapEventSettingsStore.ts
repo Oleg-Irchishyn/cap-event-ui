@@ -71,7 +71,11 @@ class CapEventSettingsStore {
 
   *fetchAccounts() {
     try {
-      this.accounts = yield ReferenceDataApi.accounts.getAccounts('Golden Image DEV');
+      this.accounts = yield ReferenceDataApi.accounts.getAccounts(
+        'Golden Image DEV',
+        ['Capital'],
+        ['Cont-Management-fees'],
+      );
     } catch (error) {
       console.error(error);
       this.accounts = [];
