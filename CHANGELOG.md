@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.22](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.21&targetVersion=GTv0.0.22) (2025-09-27)
+
+
+### Features
+
+* created Add New Item btn in Investment dropdown ([61d8e10](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/61d8e10685bc2005812245e73bd556b92554c4d6))
+* redirect to edit investment ([6833a95](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6833a9599e1b9d16bc421cfd67421e5e26957480))
+
+
+### Bug Fixes
+
+* [Issue-5079]: [FE] : allocation-distribution-json-improvements ([6b5af04](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6b5af0470aaf9d7bb3decd999149271171b4e067))
+* adjust get accounts endpoint ([d905a91](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d905a9172e9cbf8f9c2ecbda522cf4dfd500b3bc))
+* made investment column as optional ([5169c77](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5169c77f1137420c910aec36375fe38325ab768a))
+
 ### [0.0.21](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.20&targetVersion=GTv0.0.21) (2025-09-26)
 
 
