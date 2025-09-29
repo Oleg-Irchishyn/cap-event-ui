@@ -33,6 +33,7 @@ const DistributionDetails = () => {
     }
 
     try {
+      setRows([]);
       setIsLoading(true);
       const response = await CapEventPackageApi.default.process(requestPayload);
       setRows(parseToDistributionRows(response));
