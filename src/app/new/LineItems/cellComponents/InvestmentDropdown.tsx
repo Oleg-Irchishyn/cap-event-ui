@@ -147,7 +147,9 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
         ref={triggerRef}
         onClick={handleToggle}
       >
-        <Label data-is-placeholder={!selectedValue}>{selectedValue || placeholder}</Label>
+        <Label data-is-placeholder={!selectedValue} data-is-inherited={!!props.data?.inheritedId}>
+          {selectedValue || placeholder}
+        </Label>
         {isCellEditable && <ChevronIcon data-is-open={isOpen} />}
       </DropdownWrapper>
 

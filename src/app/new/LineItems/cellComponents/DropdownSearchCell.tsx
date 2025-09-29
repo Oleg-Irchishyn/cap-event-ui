@@ -20,6 +20,7 @@ import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore } from '@/stores';
 import Image from 'next/image';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import { AccountFields } from '../const';
 
 export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -151,7 +152,14 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
         ref={triggerRef}
         onClick={handleToggle}
       >
-        <Label data-is-placeholder={!selectedValue}>{selectedValue || placeholder}</Label>
+        <Label
+          data-is-placeholder={!selectedValue}
+          data-is-inherited={
+            !!props.data?.inheritedId && props.colDef?.field !== AccountFields.allocationBasis
+          }
+        >
+          {selectedValue || placeholder}
+        </Label>
         {isCellEditable && <ChevronIcon data-is-open={isOpen} />}
       </DropdownWrapper>
 

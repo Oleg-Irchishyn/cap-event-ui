@@ -68,6 +68,7 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (isDisabled) return false;
+      if (level === 'entity' && params.colDef.field === AccountFields.allocationBasis) return true;
       if (params.data.inheritedId) return false;
       if (requireEdit) return true;
 
