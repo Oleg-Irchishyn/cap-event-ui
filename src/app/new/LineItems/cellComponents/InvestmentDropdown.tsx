@@ -159,6 +159,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
               top: dropdownPosition.top,
               left: dropdownPosition.left,
               width: dropdownWidth,
+              maxHeight: '350px',
             }}
           >
             {withSearch && (
