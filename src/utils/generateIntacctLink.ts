@@ -26,9 +26,9 @@ const linkConfigs: Record<IntacctLinkType, LinkConfig> = {
 };
 
 function buildDotParams(params: Record<string, string | number | undefined>) {
-  return (
-    `?` + Object.entries(params).map(([key, value]) => `.${key}=${encodeURIComponent(value ?? '')}`)
-  );
+  return Object.entries(params)
+    .map(([key, value]) => `.${key}=${encodeURIComponent(value ?? '')}`)
+    .join('&');
 }
 
 export function generateIntacctLink(
