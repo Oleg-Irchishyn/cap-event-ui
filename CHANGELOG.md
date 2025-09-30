@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.23](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.22&targetVersion=GTv0.0.23) (2025-09-30)
+
+
+### Bug Fixes
+
+* adjust inv dd height ([ebea10b](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ebea10b3ec8f4c703eecb46353c4cd1d2b77c2cb))
+* corrected intacct link ([14e865b](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/14e865bbcf20bb9c4c0df113931115814596cb40))
+* greyed out row if it's inherited ([d60cea1](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d60cea1a2e3557d32ce2c80f3584f7136c998a46))
+* outdated fields ([0badf5f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0badf5f529021f8a063da215121603d9006aa8ac))
+
 ### [0.0.22](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.21&targetVersion=GTv0.0.22) (2025-09-27)
 
 
