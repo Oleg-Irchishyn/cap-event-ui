@@ -52,6 +52,10 @@
     background-image: none !important;
 }
 
+.ag-icon-grip:before {
+    mask-image: url('/cap-event/icons/drag-icon.svg');
+}
+
 .grid-disabled .ag-row-hover::before {
         background-color: transparent !important;
         background-image: none !important;

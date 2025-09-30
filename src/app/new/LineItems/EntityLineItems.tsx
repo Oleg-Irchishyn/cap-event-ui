@@ -7,6 +7,8 @@ import EntityCapitalDetailsPanel from '@/app/new/fundCapitalDetailsPanel/EntityC
 import { Title } from '../styles';
 import AccountsTable from '@/app/new/LineItems/AccountsTable';
 import { prepareNewRow } from '@/utils/prepareNewRow';
+import { DragStoppedEvent } from 'ag-grid-community';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 const EntityLineItems = () => {
   const entitiesSnapshotRef = useRef(capEventSettingsStore.fundEntities);
@@ -47,15 +49,19 @@ const EntityLineItems = () => {
       (item) => item.state === ITEM_STATES.SELECTED,
     );
 
-    const selectedFundsForRender = selectedEntities;
-
     return (
       selectedEventTypes.length === 0 ||
       selectedTemplates.length === 0 ||
       selectedFundGroups.length === 0 ||
-      selectedFundsForRender.length === 0 ||
+      selectedEntities.length === 0 ||
       (entityDatesStore.noticeDate === null && !entityDatesStore.hasDifferentDates)
     );
+  };
+
+  const onDragStopped = (entityKey: string) => (e: DragStoppedEvent) => {
+    const newValue: LineItemRow[] = [];
+    e.api.forEachNode((node) => newValue.push(node.data));
+    capEventSettingsStore.setEntitiesLineItem(entityKey, newValue);
   };
 
   const renderFundCapitalDetailsPanel = () => {
@@ -70,6 +76,7 @@ const EntityLineItems = () => {
           testId="accounts-table"
           level="entity"
           entityKey={fund.label}
+          onDragStopped={onDragStopped(fund.label)}
           setDataToStoreCallback={(key, data) => {
             capEventSettingsStore.setEntitiesLineItem(key, data);
           }}

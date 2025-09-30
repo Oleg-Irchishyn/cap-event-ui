@@ -11,6 +11,7 @@ jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     accounts: [],
     isFundGroupLineItemsFilled: true,
+    isFundGroupLineItemsChanged: true,
   },
 }));
 

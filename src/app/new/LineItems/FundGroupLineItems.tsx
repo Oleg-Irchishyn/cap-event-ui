@@ -3,8 +3,16 @@ import { Title } from '../styles';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { observer } from 'mobx-react-lite';
 import AccountsTable from './AccountsTable';
+import { DragStoppedEvent } from 'ag-grid-community';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 const FundGroupLineItems = () => {
+  const onDragStopped = (e: DragStoppedEvent) => {
+    const newValue: LineItemRow[] = [];
+    e.api.forEachNode((node) => newValue.push(node.data));
+    capEventSettingsStore.setFundGroupsLineItem(newValue);
+  };
+
   return (
     <BackgroundContainer testId="fund-group-line-items">
       <Title>Capital Event Line Items - Fund Group Level</Title>
@@ -23,6 +31,7 @@ const FundGroupLineItems = () => {
         <AccountsTable
           testId="fund-group-account-table"
           level="group"
+          onDragStopped={onDragStopped}
           setDataToStoreCallback={(entityKey, data) => {
             capEventSettingsStore.setFundGroupsLineItem(data);
           }}

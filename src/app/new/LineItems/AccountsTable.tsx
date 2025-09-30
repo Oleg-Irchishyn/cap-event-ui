@@ -4,6 +4,7 @@ import {
   ColDef,
   EditableCallbackParams,
   ICellEditorParams,
+  DragStoppedEvent,
 } from 'ag-grid-community';
 import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownSearchCell';
 import { AmountCell } from '@/app/new/LineItems/cellComponents/AmountCell';
@@ -35,6 +36,7 @@ type Props =
       setDataToStoreCallback: (key: string, data: LineItemRow[]) => void;
       testId: string;
       lineItems: LineItemRow[];
+      onDragStopped?: (e: DragStoppedEvent) => void;
     }
   | {
       isDisabled: true;
@@ -43,6 +45,7 @@ type Props =
       setDataToStoreCallback?: (key: string, data: LineItemRow[]) => void;
       testId: string;
       lineItems?: LineItemRow[];
+      onDragStopped?: (e: DragStoppedEvent) => void;
     };
 
 const AccountsTable: FC<Props> = ({
@@ -52,6 +55,7 @@ const AccountsTable: FC<Props> = ({
   level,
   testId,
   lineItems = [prepareNewRow()],
+  onDragStopped,
 }) => {
   const accounts = useMemo(
     () => capEventSettingsStore.accounts?.filter((account) => hasAllValues(account)) || [],
@@ -274,8 +278,13 @@ const AccountsTable: FC<Props> = ({
     [lineItems, entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
   );
 
+  const isApplyButtonDisabled =
+    !capEventSettingsStore.isFundGroupLineItemsFilled ||
+    !capEventSettingsStore.isFundGroupLineItemsChanged;
+
   const applyFundGroupChanges = () => {
-    if (!capEventSettingsStore.isFundGroupLineItemsFilled) return;
+    if (isApplyButtonDisabled) return;
+    capEventSettingsStore.setFundGroupsStateAfterApply();
 
     const selectedEntities = capEventSettingsStore.fundEntities.filter(
       (entity) => entity.state === ITEM_STATES.SELECTED,
@@ -312,30 +321,38 @@ const AccountsTable: FC<Props> = ({
       {level === 'group' && (
         <ControlButton
           data-testid={prepareDataTestId('apply', testId, entityKey)}
-          data-is-disabled={!capEventSettingsStore.isFundGroupLineItemsFilled}
+          data-is-disabled={isApplyButtonDisabled}
           onClick={applyFundGroupChanges}
         >
           <Image
-            src={
-              capEventSettingsStore.isFundGroupLineItemsFilled
-                ? 'icons/checkmark-green.svg'
-                : 'icons/checkmark.svg'
-            }
+            src={isApplyButtonDisabled ? 'icons/checkmark.svg' : 'icons/checkmark-green.svg'}
             alt="checkmark"
             width={13}
             height={13}
             priority={true}
           />
-          <ApplyText data-is-disabled={!capEventSettingsStore.isFundGroupLineItemsFilled}>
-            Apply
-          </ApplyText>
+          <ApplyText data-is-disabled={isApplyButtonDisabled}>Apply</ApplyText>
         </ControlButton>
       )}
     </TableControls>
   );
 
+  const isMultiLineItems = lineItems.length > 1;
+
   const columnDefs = useMemo<ColDef[]>(
     () => [
+      ...(isMultiLineItems
+        ? [
+            {
+              headerName: '',
+              field: 'drag',
+              rowDrag: true,
+              flex: 1,
+              maxWidth: 15,
+              cellStyle: { padding: '0px' },
+            },
+          ]
+        : []),
       {
         colId: AccountFiledIds[AccountFields.capitalCategory],
         headerName: AccountFieldTitles[AccountFields.capitalCategory],
@@ -417,13 +434,13 @@ const AccountsTable: FC<Props> = ({
         headerName: AccountFieldTitles[AccountFields.amount],
         field: AccountFields.amount,
         cellRenderer: AmountCell,
-        editable: false,
+        editable: editableCallback,
         flex: 1,
         headerClass: 'custom-header',
         suppressKeyboardEvent: () => true,
       },
     ],
-    [categoryOptions, editableCallback, cellEditorsParamsCallback],
+    [isMultiLineItems, editableCallback, categoryOptions, cellEditorsParamsCallback],
   );
 
   return (
@@ -434,6 +451,7 @@ const AccountsTable: FC<Props> = ({
         columnDefs={columnDefs}
         rowData={lineItems || []}
         onCellValueChanged={onCellValueChanged}
+        onDragStopped={onDragStopped}
       />
       {TableFooter}
     </>

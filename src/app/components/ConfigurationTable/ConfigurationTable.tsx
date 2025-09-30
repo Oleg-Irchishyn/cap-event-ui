@@ -13,6 +13,7 @@ import {
   provideGlobalGridOptions,
   RowClickedEvent,
   themeAlpine,
+  DragStoppedEvent,
 } from 'ag-grid-community';
 
 import { TableWrapper } from './styles';
@@ -30,6 +31,7 @@ type Props = {
   noRowsText?: string;
   isLoading?: boolean;
   onRowClicked?: (e: RowClickedEvent) => void;
+  onDragStopped?: (e: DragStoppedEvent) => void;
 };
 
 const ConfigurationTable: FC<Props> = ({
@@ -41,6 +43,7 @@ const ConfigurationTable: FC<Props> = ({
   noRowsText,
   isLoading,
   onRowClicked,
+  onDragStopped,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -97,6 +100,9 @@ const ConfigurationTable: FC<Props> = ({
         suppressHorizontalScroll={false}
         suppressColumnVirtualisation={true}
         suppressRowVirtualisation={true}
+        rowDragManaged={true}
+        animateRows={true}
+        onDragStopped={onDragStopped}
         rowHeight={40}
         headerHeight={40}
         onGridReady={(params: GridReadyEvent) => {

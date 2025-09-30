@@ -23,6 +23,7 @@ class CapEventSettingsStore {
 
   // Line Items
   fundGroupsLineItem: LineItemRow[] = [prepareNewRow()];
+  fundGroupsStateAfterApply: LineItemRow[] = [];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
   investments: Investment[] = [];
@@ -69,6 +70,26 @@ class CapEventSettingsStore {
           return value !== null && value !== undefined && value !== '' && value !== 0;
         }),
       )
+    );
+  }
+
+  get isFundGroupLineItemsChanged() {
+    const { fundGroupsLineItem, fundGroupsStateAfterApply } = this;
+
+    return (
+      fundGroupsLineItem.length !== fundGroupsStateAfterApply.length ||
+      fundGroupsLineItem.some((item, index) => {
+        const stateItem = fundGroupsStateAfterApply[index];
+        return (
+          !stateItem ||
+          item.amount !== stateItem.amount ||
+          item.investment !== stateItem.investment ||
+          item.allocationBasis !== stateItem.allocationBasis ||
+          item.capitalCategory !== stateItem.capitalCategory ||
+          item.defaultDescription !== stateItem.defaultDescription ||
+          item.callDistributionReason !== stateItem.callDistributionReason
+        );
+      })
     );
   }
 
@@ -120,6 +141,10 @@ class CapEventSettingsStore {
 
   setFundGroups(fundGroups: DropdownItemType<FundGroup>[]) {
     this.fundGroups = fundGroups;
+  }
+
+  setFundGroupsStateAfterApply() {
+    this.fundGroupsStateAfterApply = this.fundGroupsLineItem.map((item) => ({ ...item }));
   }
 
   setFundEntities(fundEntities: DropdownItemType[]) {
