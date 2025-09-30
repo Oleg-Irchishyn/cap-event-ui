@@ -1,9 +1,20 @@
-type IntacctLinkType = 'edit' | 'view';
+type IntacctLinkType = 'edit' | 'view' | 'entity';
 
 interface LinkConfig {
   path: string;
-  params: (args: { sessionId: string; investmentId?: string }) => Record<string, string | number>;
+  params: (args: {
+    sessionId: string;
+    investmentId?: string;
+    entityId?: string;
+  }) => Record<string, string | number>;
 }
+
+type GenerateIntacctLinkTypes = {
+  sessionId: string;
+  type: IntacctLinkType;
+  investmentId?: string;
+  entityId?: string;
+};
 
 const linkConfigs: Record<IntacctLinkType, LinkConfig> = {
   view: {
@@ -11,6 +22,16 @@ const linkConfigs: Record<IntacctLinkType, LinkConfig> = {
     params: ({ sessionId }) => ({
       sess: sessionId,
       op: 11,
+    }),
+  },
+  entity: {
+    path: '/editor.phtml',
+    params: ({ sessionId, entityId }) => ({
+      sess: sessionId,
+      do: 'view',
+      r: entityId ?? '',
+      it: 'locationentity',
+      op: 2154,
     }),
   },
   edit: {
@@ -31,15 +52,16 @@ function buildDotParams(params: Record<string, string | number | undefined>) {
     .join('&');
 }
 
-export function generateIntacctLink(
-  sessionId: string = '',
-  type: IntacctLinkType,
-  investmentId?: string,
-): string {
+export const generateIntacctLink = ({
+  sessionId,
+  type,
+  investmentId,
+  entityId,
+}: GenerateIntacctLinkTypes): string => {
   const config = linkConfigs[type];
   const baseUrl = process.env.NEXT_PUBLIC_INTACCT_HOSTNAME;
 
-  const query = buildDotParams(config.params({ sessionId, investmentId })).toString();
+  const query = buildDotParams(config.params({ sessionId, investmentId, entityId })).toString();
 
   return `${baseUrl}/ia/acct${config.path}?${query}`;
-}
+};

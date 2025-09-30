@@ -10,10 +10,15 @@ const EntityCapitalDetailsPanel: FC<EntityCapitalDetailsPanelProps> = ({
   entityLabel,
   entityName,
   testId = 'panel-container',
+  entityId = '',
 }) => {
   return (
     <PanelContainer data-testid={prepareDataTestId(testId)}>
-      <DetailsReadOnlyInfo title="Entity" description={entityLabel ?? entityName} />
+      <DetailsReadOnlyInfo
+        title="Entity"
+        description={entityLabel ?? entityName}
+        entityId={entityId}
+      />
       <DetailsDate entityLabel={entityLabel} dateType="notice" testId={`${testId}-notice-date`} />
       <DetailsDate entityLabel={entityLabel} dateType="due" testId={`${testId}-due-date`} />
     </PanelContainer>

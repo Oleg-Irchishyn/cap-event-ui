@@ -71,6 +71,7 @@ const EntityLineItems = () => {
           key={`${fund.id}_${fund.label}`}
           entityLabel={fund.label}
           entityName={fund.displayName}
+          entityId={fund.id}
         />
         <AccountsTable
           testId="accounts-table"

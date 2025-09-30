@@ -16,11 +16,13 @@ export const PanelItem = styled.div({
   alignItems: 'flex-start',
 });
 
-export const PanelItemTitle = styled.h2(({ theme }) => ({
+export const PanelItemTitle = styled.div(({ theme }) => ({
   fontSize: '14px',
   fontWeight: 400,
   margin: '0 0 8px 0',
   color: theme.colors.accentBlue,
+  display: 'flex',
+  alignItems: 'baseline',
 }));
 
 export const PanelItemDescription = styled.span(({ theme }) => ({
@@ -41,3 +43,9 @@ export const datePickerStyles = {
   borderColor: 'transparent !important',
   backgroundColor: 'transparent',
 };
+
+export const PressableWrapper = styled.div({
+  display: 'flex',
+  marginLeft: '7px',
+  cursor: 'pointer',
+});

@@ -49,13 +49,13 @@ describe('DetailsReadOnlyInfo', () => {
     expect(screen.getByText(descriptionWithSpecialChars)).toBeInTheDocument();
   });
 
-  it('should render title as h2 element and maintain correct structure', () => {
+  it('should render title as div element and maintain correct structure', () => {
     renderWithTheme(<DetailsReadOnlyInfo {...defaultProps} />);
 
-    const title = screen.getByRole('heading', { level: 2 });
+    const title = screen.getByText('Test Title');
     const description = screen.getByText('Test Description');
 
-    expect(title).toHaveTextContent('Test Title');
+    expect(title.tagName.toLowerCase()).toBe('div');
     expect(description.tagName.toLowerCase()).toBe('span');
     expect(title.compareDocumentPosition(description)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });

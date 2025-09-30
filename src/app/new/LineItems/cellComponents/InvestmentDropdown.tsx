@@ -189,7 +189,10 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
             </InvestmentRefreshButton>
 
             <LinkButtonWrapper
-              href={generateIntacctLink(capEventSettingsStore.sessionId, 'view')}
+              href={generateIntacctLink({
+                sessionId: capEventSettingsStore.sessionId,
+                type: 'view',
+              })}
               target="_blank"
             >
               <InvestmentNewItemButton>
@@ -211,11 +214,11 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                         <InvestmentTitleWrapper>
                           <InvestmentLabel>{label}</InvestmentLabel>
                           <LinkButtonWrapper
-                            href={generateIntacctLink(
-                              capEventSettingsStore.sessionId,
-                              'edit',
-                              option.id,
-                            )}
+                            href={generateIntacctLink({
+                              sessionId: capEventSettingsStore.sessionId,
+                              type: 'edit',
+                              investmentId: option.id,
+                            })}
                             target="_blank"
                           >
                             <RedirectIcon />
