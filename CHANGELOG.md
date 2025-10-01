@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.24](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.23&targetVersion=GTv0.0.24) (2025-10-01)
+
+
+### Features
+
+* add entity redirect ([2495cd5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2495cd520716a9f0de0287f97424d431a91d72a0))
+* table reordering ([6063e3e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6063e3e87dea9eab9be12b3c1fc1c871253935b6))
+
 ### [0.0.23](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.22&targetVersion=GTv0.0.23) (2025-09-30)
 
 
