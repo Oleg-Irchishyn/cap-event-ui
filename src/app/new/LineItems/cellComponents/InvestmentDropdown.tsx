@@ -214,6 +214,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                         <InvestmentTitleWrapper>
                           <InvestmentLabel>{label}</InvestmentLabel>
                           <LinkButtonWrapper
+                            title="Redirect to Investment's profile in Intacct"
                             href={generateIntacctLink({
                               sessionId: capEventSettingsStore.sessionId,
                               type: 'edit',
