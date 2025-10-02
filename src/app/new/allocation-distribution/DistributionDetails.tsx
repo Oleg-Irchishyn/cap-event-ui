@@ -2,7 +2,9 @@
 
 import { useState, ChangeEvent } from 'react';
 import { CapEventPackageApi } from '@/api';
+import { RowClickedEvent } from 'ag-grid-community';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
+import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
 import DistributionJsonParseField from '@/app/new/allocation-distribution/DistributionJsonParseField';
 import DistributionJsonUploadButton from '@/app/new/allocation-distribution/DistributionJsonUploadButton';
 import DistributionTable from '@/app/new/allocation-distribution/DistributionTable';
@@ -12,8 +14,6 @@ import { useToast } from '@/providers/ToastProvider';
 import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { DistributionRow } from './types';
-import { RowClickedEvent } from 'ag-grid-community';
-import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
 
 const DistributionDetails = () => {
   const toast = useToast();

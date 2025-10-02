@@ -6,24 +6,28 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
   return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';
     const entityName = item?.entity?.name ?? '';
-    const description = item?.account?.description ?? '';
-    const investmentTitle = item?.investment?.title ?? '';
-    const investmentName = item?.investment?.name ?? '';
-    const lineItemId = item?.capEventLineItemId ?? '';
     const entries: InvestorEntry[] = Array.isArray(item && item.plInvestorEntries)
       ? (item.plInvestorEntries as InvestorEntry[])
       : [];
-    return entries.map((inv, idx: number) => ({
-      id: `${lineItemId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
-      investor: inv.investor || '',
-      entityId,
-      entityName,
-      description,
-      investmentTitle,
-      investmentName,
-      dataPoints: inv.dataPoints,
-      allocatedAmount: inv.allocatedAmount || 0,
-      isAggregated: inv.isAggregated || false,
-    }));
+    return entries.map((inv, idx: number) => {
+      // Account and investment information is stored within each InvestorEntry
+      // For aggregated entries, these fields are null
+      const description = inv.account?.description ?? '';
+      const investmentTitle = inv.investment?.title ?? '';
+      const investmentName = inv.investment?.name ?? '';
+
+      return {
+        id: `${entityId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
+        investor: inv.investor || '',
+        entityId,
+        entityName,
+        description,
+        investmentTitle,
+        investmentName,
+        dataPoints: inv.dataPoints,
+        allocatedAmount: inv.allocatedAmount || 0,
+        isAggregated: inv.isAggregated || false,
+      };
+    });
   });
 };

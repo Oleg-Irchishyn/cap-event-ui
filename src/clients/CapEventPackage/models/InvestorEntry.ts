@@ -2,7 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Account } from './Account';
+import type { Investment } from './Investment';
 export type InvestorEntry = {
+    account?: Account;
+    investment?: Investment;
     optOut?: boolean;
     readOnly?: boolean;
     rounded?: boolean;

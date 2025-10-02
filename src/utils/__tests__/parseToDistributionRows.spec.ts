@@ -11,13 +11,24 @@ describe('parseToDistributionRows', () => {
   test('maps entries to DistributionRow with composed id and fallbacks', () => {
     const input = [
       {
-        capEventLineItemId: 'LINE1',
         entity: { id: 'E1', name: 'Entity One' },
-        account: { description: 'Account Desc' },
-        investment: { title: 'Investment T', name: 'Investment N' },
         plInvestorEntries: [
-          { customerId: 'C1', investor: 'INV1', allocatedAmount: 100, isAggregated: true },
-          { customerId: 'C2', investor: '', allocatedAmount: undefined, isAggregated: false },
+          {
+            customerId: 'C1',
+            investor: 'INV1',
+            allocatedAmount: 100,
+            isAggregated: true,
+            account: { description: 'Account Desc' },
+            investment: { title: 'Investment T', name: 'Investment N' },
+          },
+          {
+            customerId: 'C2',
+            investor: '',
+            allocatedAmount: undefined,
+            isAggregated: false,
+            account: null,
+            investment: null,
+          },
         ],
       },
     ];
@@ -26,7 +37,7 @@ describe('parseToDistributionRows', () => {
     expect(rows).toHaveLength(2);
 
     expect(rows[0]).toEqual({
-      id: 'LINE1-0-C1-INV1-0',
+      id: 'E1-0-C1-INV1-0',
       investor: 'INV1',
       entityId: 'E1',
       entityName: 'Entity One',
@@ -39,13 +50,13 @@ describe('parseToDistributionRows', () => {
     });
 
     expect(rows[1]).toEqual({
-      id: 'LINE1-0-C2--1',
+      id: 'E1-0-C2--1',
       investor: '',
       entityId: 'E1',
       entityName: 'Entity One',
-      description: 'Account Desc',
-      investmentTitle: 'Investment T',
-      investmentName: 'Investment N',
+      description: '',
+      investmentTitle: '',
+      investmentName: '',
       dataPoints: undefined,
       allocatedAmount: 0,
       isAggregated: false,
@@ -55,16 +66,15 @@ describe('parseToDistributionRows', () => {
   test('handles missing nested fields gracefully', () => {
     const input = [
       {
-        capEventLineItemId: undefined,
         entity: undefined,
-        account: undefined,
-        investment: undefined,
         plInvestorEntries: [
           {
             customerId: undefined,
             investor: undefined,
             allocatedAmount: undefined,
             isAggregated: undefined,
+            account: undefined,
+            investment: undefined,
           },
         ],
       },
@@ -87,14 +97,31 @@ describe('parseToDistributionRows', () => {
   test('handles isAggregated field correctly', () => {
     const input = [
       {
-        capEventLineItemId: 'LINE1',
         entity: { id: 'E1', name: 'Entity One' },
-        account: { description: 'Account Desc' },
-        investment: { title: 'Investment T', name: 'Investment N' },
         plInvestorEntries: [
-          { customerId: 'C1', investor: 'INV1', allocatedAmount: 100, isAggregated: true },
-          { customerId: 'C2', investor: 'INV2', allocatedAmount: 200, isAggregated: false },
-          { customerId: 'C3', investor: 'INV3', allocatedAmount: 300 }, // missing isAggregated
+          {
+            customerId: 'C1',
+            investor: 'INV1',
+            allocatedAmount: 100,
+            isAggregated: true,
+            account: { description: 'Account Desc' },
+            investment: { title: 'Investment T', name: 'Investment N' },
+          },
+          {
+            customerId: 'C2',
+            investor: 'INV2',
+            allocatedAmount: 200,
+            isAggregated: false,
+            account: { description: 'Account Desc' },
+            investment: { title: 'Investment T', name: 'Investment N' },
+          },
+          {
+            customerId: 'C3',
+            investor: 'INV3',
+            allocatedAmount: 300,
+            account: { description: 'Account Desc' },
+            investment: { title: 'Investment T', name: 'Investment N' },
+          }, // missing isAggregated
         ],
       },
     ];

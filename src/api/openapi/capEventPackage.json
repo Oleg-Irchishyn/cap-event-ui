@@ -538,18 +538,8 @@
       "CapEventLineItemResponse": {
         "type": "object",
         "properties": {
-          "capEventLineItemId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "entity": {
             "$ref": "#/components/schemas/Entity"
-          },
-          "account": {
-            "$ref": "#/components/schemas/Account"
-          },
-          "investment": {
-            "$ref": "#/components/schemas/Investment"
           },
           "plInvestorEntries": {
             "type": "array",
@@ -560,6 +550,12 @@
       "InvestorEntry": {
         "type": "object",
         "properties": {
+          "account": {
+            "$ref": "#/components/schemas/Account"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/Investment"
+          },
           "optOut": {
             "type": "boolean"
           },
@@ -640,4 +636,3 @@
     }
   }
 }
- 
