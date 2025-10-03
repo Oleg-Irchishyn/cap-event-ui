@@ -20,7 +20,7 @@ export const AccountFieldTitles = {
   [AccountFields.actions]: 'Actions',
 };
 
-export const AccountFiledIds = {
+export const AccountFieldIds = {
   [AccountFields.capitalCategory]: '0',
   [AccountFields.callDistributionReason]: '1',
   [AccountFields.defaultDescription]: '2',
@@ -44,3 +44,5 @@ export const LineItemTypes = {
   group: 'group',
   entity: 'entity',
 };
+
+export const USER_PROVIDED_OPTION = 'User-Provided';

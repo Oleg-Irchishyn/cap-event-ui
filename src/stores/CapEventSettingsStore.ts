@@ -6,7 +6,11 @@ import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ReferenceDataApi } from '@/api';
-import { AccountFields, investmentMandatoryCategories } from '@/app/new/LineItems/const';
+import {
+  AccountFields,
+  investmentMandatoryCategories,
+  USER_PROVIDED_OPTION,
+} from '@/app/new/LineItems/const';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -67,6 +71,11 @@ class CapEventSettingsStore {
           ) {
             return true;
           }
+
+          if (key === AccountFields.amount && item.allocationBasis === USER_PROVIDED_OPTION) {
+            return true;
+          }
+
           return value !== null && value !== undefined && value !== '' && value !== 0;
         }),
       )
@@ -80,9 +89,11 @@ class CapEventSettingsStore {
       fundGroupsLineItem.length !== fundGroupsStateAfterApply.length ||
       fundGroupsLineItem.some((item, index) => {
         const stateItem = fundGroupsStateAfterApply[index];
+        const amountCheckBasedOnBasis =
+          item.allocationBasis === USER_PROVIDED_OPTION ? false : item.amount !== stateItem.amount;
         return (
           !stateItem ||
-          item.amount !== stateItem.amount ||
+          amountCheckBasedOnBasis ||
           item.investment !== stateItem.investment ||
           item.allocationBasis !== stateItem.allocationBasis ||
           item.capitalCategory !== stateItem.capitalCategory ||

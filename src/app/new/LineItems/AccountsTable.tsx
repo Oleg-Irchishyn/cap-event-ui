@@ -20,8 +20,22 @@ import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
 import { Account } from '@/clients/ReferenceData';
 import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
-import { AccountFields, AccountFiledIds, AccountFieldTitles } from '@/app/new/LineItems/const';
+import {
+  AccountFields,
+  AccountFieldIds,
+  AccountFieldTitles,
+  USER_PROVIDED_OPTION,
+  LineItemTypes,
+} from '@/app/new/LineItems/const';
 import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
+
+const ALLOCATION_BASIS_MOCK_OPTIONS = [
+  'Commitment',
+  'Contribution Deal',
+  'Contribution All',
+  'Unfunded',
+  'Contribution Deal Parent',
+];
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -73,7 +87,18 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (isDisabled) return false;
-      if (level === 'entity' && params.colDef.field === AccountFields.allocationBasis) return true;
+      if (level === 'entity') {
+        if (params.colDef.field === AccountFields.allocationBasis) return true;
+
+        const parentFundGroup = capEventSettingsStore.fundGroupsLineItem.find(
+          (lineItem) => lineItem.id === params.data.inheritedId,
+        );
+        if (
+          params.colDef.field === AccountFields.amount &&
+          parentFundGroup?.allocationBasis === USER_PROVIDED_OPTION
+        )
+          return true;
+      }
       if (params.data.inheritedId) return false;
       if (requireEdit) return true;
 
@@ -184,9 +209,9 @@ const AccountsTable: FC<Props> = ({
             updatedRow.insideCommitment = '';
             updatedRow.allocationBasis = '';
 
-            cellKeysToUnBlock.push(getCellKey(data.id, AccountFiledIds[AccountFields.investment]));
+            cellKeysToUnBlock.push(getCellKey(data.id, AccountFieldIds[AccountFields.investment]));
             cellKeysToUnBlock.push(
-              getCellKey(data.id, AccountFiledIds[AccountFields.allocationBasis]),
+              getCellKey(data.id, AccountFieldIds[AccountFields.allocationBasis]),
             );
 
             const reasons = getReasons(newValue);
@@ -194,7 +219,7 @@ const AccountsTable: FC<Props> = ({
             if (reasons?.length === 1 && reasons[0]) {
               updatedRow.callDistributionReason = reasons[0];
               cellKeysToUnBlock.push(
-                getCellKey(data.id, AccountFiledIds[AccountFields.callDistributionReason]),
+                getCellKey(data.id, AccountFieldIds[AccountFields.callDistributionReason]),
               );
 
               const descriptions = getBySelectedCategoryAndReason(
@@ -206,7 +231,7 @@ const AccountsTable: FC<Props> = ({
               if (descriptions.length === 1 && descriptions[0]) {
                 updatedRow.defaultDescription = descriptions[0];
                 cellKeysToUnBlock.push(
-                  getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
+                  getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
                 );
               }
 
@@ -219,14 +244,14 @@ const AccountsTable: FC<Props> = ({
               if (commitments.length === 1 && commitments[0]) {
                 updatedRow.insideCommitment = commitments[0];
                 cellKeysToUnBlock.push(
-                  getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
+                  getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
                 );
               }
             } else {
               updatedRow.callDistributionReason = '';
               cellKeysToBlock.push(
-                getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
-                getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
+                getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
+                getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
               );
             }
           }
@@ -245,7 +270,7 @@ const AccountsTable: FC<Props> = ({
             if (descriptions.length === 1 && descriptions[0]) {
               updatedRow.defaultDescription = descriptions[0];
               cellKeysToUnBlock.push(
-                getCellKey(data.id, AccountFiledIds[AccountFields.defaultDescription]),
+                getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
               );
             }
 
@@ -258,10 +283,44 @@ const AccountsTable: FC<Props> = ({
             if (commitments.length === 1 && commitments[0]) {
               updatedRow.insideCommitment = commitments[0];
               cellKeysToUnBlock.push(
-                getCellKey(data.id, AccountFiledIds[AccountFields.insideCommitment]),
+                getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
               );
             }
           }
+
+          if (
+            fieldName === AccountFields.allocationBasis &&
+            newValue === USER_PROVIDED_OPTION &&
+            level === LineItemTypes.group
+          ) {
+            cellKeysToBlock.push(getCellKey(data.id, AccountFieldIds[AccountFields.amount]));
+          }
+
+          if (fieldName === AccountFields.amount) {
+            const fundGroupRelatedItem = capEventSettingsStore.fundGroupsLineItem.find(
+              (item) => item.id === data.inheritedId,
+            );
+
+            // For USER-PROVIDED Allocation Basis calculate amount of inherited entities and populate it for parent fund group amount
+            if (fundGroupRelatedItem?.allocationBasis === USER_PROVIDED_OPTION) {
+              const relatedInheritedEntities = Array.from(
+                capEventSettingsStore.entitiesLineItem.values(),
+              )
+                .flatMap((item) => item)
+                .filter((values) => values.inheritedId === fundGroupRelatedItem?.id);
+              const newFundGroupAmount = relatedInheritedEntities.reduce(
+                (acc, item) => acc + item.amount,
+                0,
+              );
+              const newFundGroupItem = { ...fundGroupRelatedItem, amount: newFundGroupAmount };
+              const updatedData = capEventSettingsStore.fundGroupsLineItem.map((item) =>
+                item.id === newFundGroupItem.id ? newFundGroupItem : { ...item },
+              );
+
+              capEventSettingsStore.setFundGroupsLineItem(updatedData);
+            }
+          }
+
           return updatedRow;
         }
         return row;
@@ -273,10 +332,18 @@ const AccountsTable: FC<Props> = ({
       const nextColumnId = Number(params.column.getColId()) + 1;
       const key = getCellKey(data.id, String(nextColumnId));
       editableCellRef.current[key] = true;
+
       cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
     },
-    [lineItems, entityKey, getBySelectedCategoryAndReason, getReasons, setDataToStoreCallback],
+    [
+      lineItems,
+      setDataToStoreCallback,
+      entityKey,
+      level,
+      getReasons,
+      getBySelectedCategoryAndReason,
+    ],
   );
 
   const isApplyButtonDisabled =
@@ -290,19 +357,45 @@ const AccountsTable: FC<Props> = ({
       (entity) => entity.state === ITEM_STATES.SELECTED,
     );
 
-    selectedEntities.forEach((entity) => {
+    const getRelatedRow = (label: string, inheritedId: string) => {
+      return capEventSettingsStore.entitiesLineItem
+        .get(label)
+        ?.find((item) => item.inheritedId === inheritedId);
+    };
+
+    selectedEntities.forEach((entity, index) => {
       capEventSettingsStore.setEntitiesLineItem(
         entity.label,
-        capEventSettingsStore.fundGroupsLineItem.map((fgLineItem) => ({
-          ...fgLineItem,
-          inheritedId: fgLineItem.id,
-        })),
+        capEventSettingsStore.fundGroupsLineItem.map((fgLineItem) => {
+          const relatedRowAmount = getRelatedRow(entity.label, fgLineItem.id)?.amount || 0;
+
+          return {
+            ...fgLineItem,
+            amount:
+              fgLineItem.allocationBasis === USER_PROVIDED_OPTION
+                ? relatedRowAmount
+                : fgLineItem.amount,
+            allocationBasis:
+              fgLineItem.allocationBasis === USER_PROVIDED_OPTION ? '' : fgLineItem.allocationBasis,
+            inheritedId: fgLineItem.id,
+            id: `${fgLineItem.id}-${index}`,
+          };
+        }),
         true,
       );
     });
 
     capEventSettingsStore.setFundGroupsStateAfterApply();
   };
+
+  const getAllocationBasisOptions = useCallback(() => {
+    return [USER_PROVIDED_OPTION, ...ALLOCATION_BASIS_MOCK_OPTIONS].filter((item) => {
+      if (level === LineItemTypes.group) {
+        return true;
+      }
+      return item !== USER_PROVIDED_OPTION;
+    });
+  }, [level]);
 
   const TableFooter = (
     <TableControls>
@@ -320,7 +413,7 @@ const AccountsTable: FC<Props> = ({
         />
         Add New Row
       </ControlButton>
-      {level === 'group' && (
+      {level === LineItemTypes.group && (
         <ControlButton
           data-testid={prepareDataTestId('apply', testId, entityKey)}
           data-is-disabled={isApplyButtonDisabled}
@@ -356,7 +449,7 @@ const AccountsTable: FC<Props> = ({
           ]
         : []),
       {
-        colId: AccountFiledIds[AccountFields.capitalCategory],
+        colId: AccountFieldIds[AccountFields.capitalCategory],
         headerName: AccountFieldTitles[AccountFields.capitalCategory],
         field: AccountFields.capitalCategory,
         cellRenderer: DropdownSearchCell,
@@ -367,7 +460,7 @@ const AccountsTable: FC<Props> = ({
         cellStyle: { padding: '0px' },
       },
       {
-        colId: AccountFiledIds[AccountFields.callDistributionReason],
+        colId: AccountFieldIds[AccountFields.callDistributionReason],
         headerName: AccountFieldTitles[AccountFields.callDistributionReason],
         field: AccountFields.callDistributionReason,
         cellRenderer: DropdownSearchCell,
@@ -379,7 +472,7 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.callDistributionReason),
       },
       {
-        colId: AccountFiledIds[AccountFields.defaultDescription],
+        colId: AccountFieldIds[AccountFields.defaultDescription],
         headerName: AccountFieldTitles[AccountFields.defaultDescription],
         field: AccountFields.defaultDescription,
         editable: editableCallback,
@@ -391,7 +484,7 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.defaultDescription),
       },
       {
-        colId: AccountFiledIds[AccountFields.insideCommitment],
+        colId: AccountFieldIds[AccountFields.insideCommitment],
         headerName: AccountFieldTitles[AccountFields.insideCommitment],
         field: AccountFields.insideCommitment,
         editable: editableCallback,
@@ -403,7 +496,7 @@ const AccountsTable: FC<Props> = ({
           cellEditorsParamsCallback(params, AccountFields.insideCommitment),
       },
       {
-        colId: AccountFiledIds[AccountFields.investment],
+        colId: AccountFieldIds[AccountFields.investment],
         headerName: AccountFieldTitles[AccountFields.investment],
         field: AccountFields.investment,
         editable: editableCallback,
@@ -413,7 +506,7 @@ const AccountsTable: FC<Props> = ({
         cellStyle: { padding: '0px' },
       },
       {
-        colId: AccountFiledIds[AccountFields.allocationBasis],
+        colId: AccountFieldIds[AccountFields.allocationBasis],
         headerName: AccountFieldTitles[AccountFields.allocationBasis],
         field: AccountFields.allocationBasis,
         cellRenderer: DropdownSearchCell,
@@ -422,17 +515,11 @@ const AccountsTable: FC<Props> = ({
         flex: 1,
         cellStyle: { padding: '0px' },
         cellEditorParams: {
-          options: [
-            'Commitment',
-            'Contribution Deal',
-            'Contribution All',
-            'Unfunded',
-            'Contribution Deal Parent',
-          ],
+          options: getAllocationBasisOptions(),
         },
       },
       {
-        colId: AccountFiledIds[AccountFields.amount],
+        colId: AccountFieldIds[AccountFields.amount],
         headerName: AccountFieldTitles[AccountFields.amount],
         field: AccountFields.amount,
         cellRenderer: AmountCell,
@@ -442,7 +529,7 @@ const AccountsTable: FC<Props> = ({
         suppressKeyboardEvent: () => true,
       },
       {
-        colId: AccountFiledIds[AccountFields.actions],
+        colId: AccountFieldIds[AccountFields.actions],
         headerName: AccountFieldTitles[AccountFields.actions],
         flex: 0.5,
         cellRenderer: ActionsCell,
@@ -455,6 +542,7 @@ const AccountsTable: FC<Props> = ({
       editableCallback,
       categoryOptions,
       cellEditorsParamsCallback,
+      getAllocationBasisOptions,
       entityKey,
       level,
     ],
