@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.25](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.24&targetVersion=GTv0.0.25) (2025-10-03)
+
+
+### Bug Fixes
+
+* [Issue-5079]: [FE] adjust UI changes accrodring to capEventPackage.json ([693a708](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/693a70831d65519ed8a2c05275f69f47647e92e6))
+* added tooltip to intacct link btn ([7a96d06](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/7a96d06fb37846ddddfc2e53bd82eaf3cf51a608))
+
 ### [0.0.24](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.23&targetVersion=GTv0.0.24) (2025-10-01)
 
 
