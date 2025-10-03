@@ -184,12 +184,7 @@ class CapEventSettingsStore {
 
     if (entitiesLineItems) {
       for (let i = 0; i < entitiesLineItems?.length; i++) {
-        let checker = false;
-        for (let j = 0; j < data.length; j++) {
-          if (entitiesLineItems[i].id !== data[j].inheritedId) continue;
-          checker = true;
-        }
-        if (!checker) {
+        if (!entitiesLineItems[i].inheritedId) {
           entityManualItems.push(entitiesLineItems[i]);
         }
       }

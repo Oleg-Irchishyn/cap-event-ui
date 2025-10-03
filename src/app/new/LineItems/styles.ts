@@ -267,3 +267,30 @@ export const RedirectIcon = styled.img.attrs({
   marginLeft: '8px',
   cursor: 'pointer',
 });
+
+export const ActionButtonsWrapper = styled.div({
+  width: '100%',
+  height: '100%',
+  boxSizing: 'border-box',
+  padding: '0 10px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '8px',
+});
+
+export const DeleteButton = styled.button({
+  width: '15px',
+  height: '15px',
+  border: 0,
+  padding: 0,
+  cursor: 'pointer',
+  background: `url(icons/trash-enabled.svg) no-repeat center center;`,
+  backgroundSize: 'contain',
+
+  '&[data-is-disabled="true"]': {
+    background: `url(icons/trash.svg) no-repeat center center;`,
+    backgroundSize: 'contain',
+    cursor: 'default',
+  },
+});

@@ -21,6 +21,7 @@ import { ITEM_STATES } from '@/const/common';
 import { Account } from '@/clients/ReferenceData';
 import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
 import { AccountFields, AccountFiledIds, AccountFieldTitles } from '@/app/new/LineItems/const';
+import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -284,7 +285,6 @@ const AccountsTable: FC<Props> = ({
 
   const applyFundGroupChanges = () => {
     if (isApplyButtonDisabled) return;
-    capEventSettingsStore.setFundGroupsStateAfterApply();
 
     const selectedEntities = capEventSettingsStore.fundEntities.filter(
       (entity) => entity.state === ITEM_STATES.SELECTED,
@@ -300,6 +300,8 @@ const AccountsTable: FC<Props> = ({
         true,
       );
     });
+
+    capEventSettingsStore.setFundGroupsStateAfterApply();
   };
 
   const TableFooter = (
@@ -439,8 +441,23 @@ const AccountsTable: FC<Props> = ({
         headerClass: 'custom-header',
         suppressKeyboardEvent: () => true,
       },
+      {
+        colId: AccountFiledIds[AccountFields.actions],
+        headerName: AccountFieldTitles[AccountFields.actions],
+        flex: 0.5,
+        cellRenderer: ActionsCell,
+        cellStyle: { padding: '0px' },
+        cellEditorParams: { level, entityKey: entityKey || '' },
+      },
     ],
-    [isMultiLineItems, editableCallback, categoryOptions, cellEditorsParamsCallback],
+    [
+      isMultiLineItems,
+      editableCallback,
+      categoryOptions,
+      cellEditorsParamsCallback,
+      entityKey,
+      level,
+    ],
   );
 
   return (

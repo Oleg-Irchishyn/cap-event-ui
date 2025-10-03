@@ -6,6 +6,7 @@ export const AccountFields = {
   investment: 'investment',
   amount: 'amount',
   allocationBasis: 'allocationBasis',
+  actions: 'actions',
 };
 
 export const AccountFieldTitles = {
@@ -16,6 +17,7 @@ export const AccountFieldTitles = {
   [AccountFields.investment]: 'Investment',
   [AccountFields.amount]: 'Amount',
   [AccountFields.allocationBasis]: 'Allocation Basis',
+  [AccountFields.actions]: 'Actions',
 };
 
 export const AccountFiledIds = {
@@ -37,3 +39,8 @@ export const investmentMandatoryCategories = [
   'Dist - Gain',
   'Dist – Dividend',
 ];
+
+export const LineItemTypes = {
+  group: 'group',
+  entity: 'entity',
+};
