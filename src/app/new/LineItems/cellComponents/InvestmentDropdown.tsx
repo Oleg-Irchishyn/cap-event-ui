@@ -226,7 +226,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                           </LinkButtonWrapper>
                         </InvestmentTitleWrapper>
                         <InvestmentSubLabel>Id: {option.id}</InvestmentSubLabel>
-                        <InvestmentSubLabel>{option.type}</InvestmentSubLabel>
+                        <InvestmentSubLabel>{option.type || '-'}</InvestmentSubLabel>
                       </InvestmentOptionWrapper>
                     </Option>
                   );
