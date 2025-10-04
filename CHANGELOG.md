@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.26](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.25&targetVersion=GTv0.0.26) (2025-10-04)
+
+
+### Features
+
+* add user-provided allo basis ([02f1362](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/02f13626511fbe9bba9fe42f24c6eb3b34ab6bce))
+* added delete CELI button ([41ca4a1](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/41ca4a113abba902a483f1ce04c3b9cccba7308b))
+
+
+### Bug Fixes
+
+* added '-' for empty investment type ([9264bd5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9264bd50171d3ce56c1d4b6e6d83f8fd26c9f147))
+
 ### [0.0.25](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.24&targetVersion=GTv0.0.25) (2025-10-03)
 
 
