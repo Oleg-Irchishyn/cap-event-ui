@@ -11,6 +11,16 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  coverageReporters: ['text-summary', 'json-summary', 'lcov'],
+  coverageThreshold: {
+    global: {
+      statements: 69,
+      branches: 52,
+      functions: 58,
+      lines: 71,
+    },
+  },
+  workerIdleMemoryLimit: '1024MB',
 };
 
 export default createJestConfig(config);

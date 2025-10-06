@@ -9,6 +9,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "jest",
+    "test:ci": "jest --ci --collectCoverage",
     "test:watch": "jest --watch",
     "drop": "npx standard-version --release-as patch",
     "drop-manual": "npx standard-version --release-as patch --skip.commit --skip.tag",

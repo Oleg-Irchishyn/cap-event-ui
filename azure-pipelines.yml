@@ -87,20 +87,11 @@ stages:
   - template: stages/check_status.yml@templates
   - template: stages/test.yml@templates
     parameters:
-      testingSteps:
-        - task: UseNode@1
-          inputs:
-            version: '22.x'
-        - task: CmdLine@2
-          displayName: Run npm
-          condition: succeeded()
-          inputs:
-            workingDirectory: '$(Build.SourcesDirectory)'
-            script: |
-              npm install &&
-              npm run lint &&
-              npm run test &&
-              npm audit --omit dev
+      testingSteps: []
+      sonarqubeEnabled: true
+      sonarqubePublishResults: true
+      sonarqubePreparationSteps:
+        - template: .azuredevops/common_tests.yml
   - template: stages/build.yml@templates
     parameters:
       buildImage: ${{ parameters.buildImage }}

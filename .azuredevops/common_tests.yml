@@ -1,0 +1,29 @@
+steps:
+  - task: CmdLine@2
+    displayName: Install deps
+    condition: succeeded()
+    inputs:
+      workingDirectory: '$(Build.SourcesDirectory)'
+      script: 'npm install --frozen-lockfile'
+  - task: UseNode@1
+    inputs:
+      version: '22.x'
+  - task: Npm@1
+    displayName: Lints
+    condition: succeeded()
+    inputs:
+      command: 'custom'
+      customCommand: 'run lint'
+  - task: Npm@1
+    displayName: Unit tests
+    condition: succeeded()
+    inputs:
+      command: 'custom'
+      customCommand: 'run test:ci'
+    continueOnError: true
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: Publish test results
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'junit.xml'
