@@ -1,5 +1,6 @@
 import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -104,6 +105,18 @@ describe('CapEventSettingsStore', () => {
       const lineItems = [createMockLineItem()];
       store.setFundGroupsLineItem(lineItems);
       store.setFundGroupsStateAfterApply();
+
+      expect(store.isFundGroupLineItemsChanged).toBe(false);
+    });
+
+    it('should ignore amount if allocation basis USER-PROVIDED', () => {
+      const lineItems = [createMockLineItem({ allocationBasis: USER_PROVIDED_OPTION, amount: 0 })];
+      store.setFundGroupsLineItem(lineItems);
+      store.setFundGroupsStateAfterApply();
+      const changedLineItems = [
+        createMockLineItem({ allocationBasis: USER_PROVIDED_OPTION, amount: 100 }),
+      ];
+      store.setFundGroupsLineItem(changedLineItems);
 
       expect(store.isFundGroupLineItemsChanged).toBe(false);
     });
@@ -225,6 +238,95 @@ describe('CapEventSettingsStore', () => {
       // Verify it's a deep copy, not a reference
       expect(store.fundGroupsStateAfterApply).not.toBe(store.fundGroupsLineItem);
       expect(store.fundGroupsStateAfterApply).toEqual(store.fundGroupsLineItem);
+    });
+  });
+
+  describe('isFundGroupLineItemsFilled', () => {
+    const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
+      id: '1',
+      amount: 100,
+      investment: 'Investment A',
+      allocationBasis: 'Basis A',
+      capitalCategory: 'Category A',
+      defaultDescription: 'Description A',
+      callDistributionReason: 'Reason A',
+      insideCommitment: 'Yes',
+      ...overrides,
+    });
+
+    it('should return false when fundGroupsLineItem is empty', () => {
+      store.setFundGroupsLineItem([]);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+
+    it('should return true when all required fields are filled', () => {
+      const lineItems = [createMockLineItem()];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(true);
+    });
+
+    it('should return false when any required field is missing', () => {
+      const lineItems = [createMockLineItem({ capitalCategory: '' })];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+
+    it('should return false when amount is 0 and allocationBasis is not USER_PROVIDED_OPTION', () => {
+      const lineItems = [createMockLineItem({ amount: 0, allocationBasis: 'Commitment' })];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+
+    it('should return true when amount is 0 but allocationBasis is USER_PROVIDED_OPTION', () => {
+      const lineItems = [createMockLineItem({ amount: 0, allocationBasis: USER_PROVIDED_OPTION })];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(true);
+    });
+
+    it('should return true when investment is empty but capitalCategory is not mandatory', () => {
+      const lineItems = [
+        createMockLineItem({
+          investment: '',
+          capitalCategory: 'Non-mandatory category',
+        }),
+      ];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(true);
+    });
+
+    it('should return false when investment is empty and capitalCategory is mandatory', () => {
+      const lineItems = [
+        createMockLineItem({
+          investment: '',
+          capitalCategory: 'Cont - Investments',
+        }),
+      ];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+
+    it('should return false when any field is empty string', () => {
+      const lineItems = [createMockLineItem({ defaultDescription: '' })];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+
+    it('should return true for multiple line items when all are filled', () => {
+      const lineItems = [
+        createMockLineItem({ id: '1' }),
+        createMockLineItem({ id: '2', amount: 200 }),
+      ];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(true);
+    });
+
+    it('should return false for multiple line items when any is not filled', () => {
+      const lineItems = [
+        createMockLineItem({ id: '1' }),
+        createMockLineItem({ id: '2', capitalCategory: '' }),
+      ];
+      store.setFundGroupsLineItem(lineItems);
+      expect(store.isFundGroupLineItemsFilled).toBe(false);
     });
   });
 });
