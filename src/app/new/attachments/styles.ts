@@ -28,7 +28,7 @@ export const AttachmentsCounter = styled.div(({ theme }) => ({
 }));
 
 export const FileNumber = styled('span')(({ theme }) => ({
-  margin: '0 10px',
+  marginRight: '8px',
   color: theme.colors.textSecondary,
 }));
 
@@ -43,7 +43,7 @@ export const FileName = styled('span')({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  maxWidth: '516px',
+  maxWidth: '324px',
 });
 
 export const VisuallyHiddenInput = styled('input')({
@@ -110,17 +110,17 @@ export const FileListStyled = styled.div({
 });
 
 export const FileListItem = styled.div(({ theme }) => ({
+  height: '36px',
   fontSize: '14px',
   opacity: '1',
   transformOrigin: '50% 50%',
-  borderRadius: '5px',
+  borderRadius: '8px',
   cursor: 'grab',
   backgroundColor: `rgba(${theme.colors.pastelYellow}, 0.48)`,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   flexShrink: '0',
-  padding: '3px 15px 3px 0',
   '&[data-hovered="true"]': {
     backgroundColor: `rgba(${theme.colors.pastelYellow}, 1)`,
   },
@@ -132,11 +132,16 @@ export const FileListItem = styled.div(({ theme }) => ({
   },
 }));
 
-export const IconButton = styled.button({
+export const IconButton = styled.div({
+  width: '20px',
+  height: '20px',
+  marginLeft: '8px',
+  marginRight: '12px',
   backgroundColor: 'transparent',
   border: 'none',
   cursor: 'pointer',
   display: 'flex',
+  alignItems: 'center',
   opacity: 0,
   '&[data-hovered="true"]': {
     opacity: 1,
@@ -148,9 +153,9 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
   flexShrink: 0,
   alignItems: 'center',
   justifyContent: 'center',
-  width: '20px',
-  height: '20px',
-  marginRight: '10px',
+  width: '18px',
+  height: '18px',
+  marginRight: '8px',
 
   appearance: 'none',
   borderRadius: '4px',
@@ -209,8 +214,8 @@ export const TrashIcon = styled.img.attrs({
 export const DragIcon = styled.img.attrs({
   src: 'icons/drag-icon.svg',
 })({
-  width: '18px',
-  height: '18px',
+  width: '20px',
+  height: '20px',
   opacity: 0,
   fontSize: '16px',
   '&[data-hovered="true"]': {
