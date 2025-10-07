@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.27](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.26&targetVersion=GTv0.0.27) (2025-10-07)
+
+
+### Features
+
+* Implement SonarQube ([7fdeb90](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/7fdeb908595a655b576ae359bf3a088346bf544b))
+
+
+### Bug Fixes
+
+* styles for attachments ([738c182](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/738c1822a8961f2b283e9299f1910b5cdd99e018))
+
 ### [0.0.26](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.25&targetVersion=GTv0.0.26) (2025-10-04)
 
 
