@@ -12,7 +12,7 @@ export const AccountFields = {
 export const AccountFieldTitles = {
   [AccountFields.capitalCategory]: 'Category',
   [AccountFields.callDistributionReason]: 'Call/Distribution Reason',
-  [AccountFields.defaultDescription]: 'Call Line Description',
+  [AccountFields.defaultDescription]: 'Notice Line Description',
   [AccountFields.insideCommitment]: 'Inside CMNT',
   [AccountFields.investment]: 'Investment',
   [AccountFields.amount]: 'Amount',
