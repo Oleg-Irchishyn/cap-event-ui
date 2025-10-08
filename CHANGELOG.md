@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.28](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.27&targetVersion=GTv0.0.28) (2025-10-08)
+
+
+### Bug Fixes
+
+* rename description column ([f87120a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f87120afd06f82813628941e2205b879d53ea185))
+
 ### [0.0.27](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.26&targetVersion=GTv0.0.27) (2025-10-07)
 
 
