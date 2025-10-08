@@ -206,7 +206,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                   const label = option.title || option.name;
                   return (
                     <Option
-                      key={label}
+                      key={option.id}
                       onClick={() => handleSelect(label)}
                       data-is-selected={label === selectedValue}
                     >
