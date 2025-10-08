@@ -87,8 +87,28 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (isDisabled) return false;
-      if (level === 'entity') {
-        if (params.colDef.field === AccountFields.allocationBasis) return true;
+
+      if (level === LineItemTypes.group) {
+        if (
+          params.colDef.field === AccountFields.amount &&
+          params.data.allocationBasis === USER_PROVIDED_OPTION
+        ) {
+          return false;
+        }
+      }
+
+      if (level === LineItemTypes.entity) {
+        // the if statement below is a temporary solution to enable all amounts on fund groups and entity levels
+        if (params.data.inheritedId) {
+          if (
+            params.colDef.field === AccountFields.allocationBasis ||
+            params.colDef.field === AccountFields.amount
+          ) {
+            return true;
+          }
+
+          return false;
+        }
 
         const parentFundGroup = capEventSettingsStore.fundGroupsLineItem.find(
           (lineItem) => lineItem.id === params.data.inheritedId,
@@ -99,7 +119,16 @@ const AccountsTable: FC<Props> = ({
         )
           return true;
       }
-      if (params.data.inheritedId) return false;
+
+      if (
+        (params.colDef.field === AccountFields.investment ||
+          params.colDef.field === AccountFields.allocationBasis ||
+          params.colDef.field === AccountFields.amount) &&
+        params.data.capitalCategory
+      ) {
+        return true;
+      }
+
       if (requireEdit) return true;
 
       const columnId = params.column?.getColId() || '';
