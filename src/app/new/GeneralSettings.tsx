@@ -1,22 +1,24 @@
 'use client';
 
-import BackgroundContainer from '@/app/components/BackgroundContainer';
-import DatePicker from '@/app/components/DatePicker';
-import Dropdown from '@/app/components/Dropdown';
-import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import { ITEM_STATES } from '@/const/common';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 import Image from 'next/image';
 import dayjs from 'dayjs';
-import { parseValidDate } from '@/utils/datePickerUtils';
-import { observer } from 'mobx-react-lite';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { DropdownWrapper, Title } from './styles';
 import { CapEventPackageApi, TemplateLibraryApi, ReferenceDataApi } from '@/api';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
+import { GENERAL_SETTINGS_FIELDS, ITEM_STATES } from '@/const/common';
+import { parseValidDate } from '@/utils/datePickerUtils';
+import BackgroundContainer from '@/app/components/BackgroundContainer';
+import DatePicker from '@/app/components/DatePicker';
+import Dropdown from '@/app/components/Dropdown';
+import ConfirmationModal from '@/app/components/ConfirmationModal';
+import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import useConfirmationModal from '@/hooks/useConfirmationModal';
 import { Entity, FundGroup } from '@/clients/ReferenceData';
 import { CapEventType } from '@/clients/CapEventPackage';
 import { TemplateMetadata } from '@/clients/TemplateLibrary';
+import { DropdownWrapper, Title } from './styles';
 
 const EVENT_TYPE_MOCK = [
   {
@@ -199,18 +201,41 @@ const GeneralSettings = () => {
     [fundEntities, searchText],
   );
 
-  const handleNoticeDate = (item: PickerValue) => {
+  const { modal, confirmFieldChange, isConfirmationModalEnabled, onEntitiesDropdownOpenChange } =
+    useConfirmationModal();
+
+  const handleNoticeDate = async (item: PickerValue) => {
     const parsed = parseValidDate(item);
-    if (parsed === null) {
-      entityDatesStore.clearGeneralNoticeDate();
+
+    if (!isConfirmationModalEnabled) {
+      if (parsed === null) {
+        entityDatesStore.clearGeneralNoticeDate();
+      } else {
+        entityDatesStore.setNoticeDate(parsed);
+        entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
+      }
       return;
     }
+
+    if (parsed === null) {
+      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
+      if (isFieldChanged) entityDatesStore.clearGeneralNoticeDate();
+      return;
+    }
+
+    const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
+    if (!isFieldChanged) return;
 
     entityDatesStore.setNoticeDate(parsed);
     entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
   };
 
-  const selectEventTypeHandler = (item: DropdownItemType) => {
+  const selectEventTypeHandler = async (item: DropdownItemType) => {
+    if (isConfirmationModalEnabled) {
+      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.EVENT_TYPE);
+      if (!isFieldChanged) return;
+    }
+
     const updatedValues = eventTypes.map((eventType) =>
       eventType.label === item.label
         ? { ...eventType, state: ITEM_STATES.SELECTED }
@@ -229,20 +254,27 @@ const GeneralSettings = () => {
     capEventSettingsStore.setTemplates(updatedValues);
   };
 
-  const selectFundGroupHandler = (item: DropdownItemType<FundGroup>) => {
-    entityDatesStore.resetAllDates();
+  const selectFundGroupHandler = async (item: DropdownItemType<FundGroup>) => {
     const selectedFundGroup = fundGroups.find(
       (fundGroup) => fundGroup.state === ITEM_STATES.SELECTED,
     );
     const isSameValueSelected = selectedFundGroup?.label === item.label;
     if (isSameValueSelected) return;
 
+    if (isConfirmationModalEnabled) {
+      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.FUND_GROUP);
+      if (!isFieldChanged) return;
+    }
+
+    entityDatesStore.resetAllDates();
     const updatedValues = fundGroups.map((fundGroup) =>
       fundGroup.label === item.label
         ? { ...fundGroup, state: ITEM_STATES.SELECTED }
         : { ...fundGroup, state: ITEM_STATES.OPTIONAL },
     );
+
     capEventSettingsStore.setFundGroups(updatedValues);
+    capEventSettingsStore.setFundEntities([]);
 
     if (item.id) {
       updateFundEntities(item.id);
@@ -300,6 +332,7 @@ const GeneralSettings = () => {
 
   const handleFundsDropdownOpenChange = (isOpen: boolean) => {
     capEventSettingsStore.setEntitiesDropdownOpen(isOpen);
+    onEntitiesDropdownOpenChange(isOpen);
     return true;
   };
 
@@ -311,7 +344,7 @@ const GeneralSettings = () => {
           testId="event-type"
           withDescription
           items={eventTypes}
-          label="Event Type*"
+          label={`${GENERAL_SETTINGS_FIELDS.EVENT_TYPE}*`}
           placeholder="Select Event Type"
           selectHandler={selectEventTypeHandler}
           selectedItems={capEventSettingsStore.eventTypes.filter(
@@ -321,7 +354,7 @@ const GeneralSettings = () => {
         <Dropdown
           testId="template"
           withDescription
-          label="Template*"
+          label={`${GENERAL_SETTINGS_FIELDS.TEMPLATE}*`}
           items={templates}
           placeholder="Select Template"
           isDisabled={
@@ -338,7 +371,7 @@ const GeneralSettings = () => {
         <Dropdown<FundGroup>
           testId="fund-groups"
           withSearch
-          label="Fund Group*"
+          label={`${GENERAL_SETTINGS_FIELDS.FUND_GROUP}*`}
           searchText={searchText}
           items={visibleFundGroups}
           placeholder="Select Fund Group"
@@ -353,7 +386,7 @@ const GeneralSettings = () => {
           withControls
           isMultiSelect
           withDescription
-          label={'Entity(ies)*'}
+          label={`${GENERAL_SETTINGS_FIELDS.ENTITIES}*`}
           items={visibleFunds}
           searchText={searchText}
           placeholder={'Select Entity(ies)'}
@@ -371,7 +404,7 @@ const GeneralSettings = () => {
         />
 
         <DatePicker
-          label="Notice Date*"
+          label={`${GENERAL_SETTINGS_FIELDS.NOTICE_DATE}*`}
           onChange={handleNoticeDate}
           maxDate={dayjs().add(1, 'months')}
           defaultValue={
@@ -386,6 +419,12 @@ const GeneralSettings = () => {
           testId="GeneralSettings"
         />
       </DropdownWrapper>
+      <ConfirmationModal
+        title={modal.title}
+        isOpen={modal.isOpen}
+        handleClose={modal.handleClose}
+        handleProceed={modal.handleProceed}
+      />
     </BackgroundContainer>
   );
 };

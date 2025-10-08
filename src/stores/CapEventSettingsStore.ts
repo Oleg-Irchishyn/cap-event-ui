@@ -45,18 +45,25 @@ class CapEventSettingsStore {
     this.fetchSessionId();
   }
 
-  isGeneralSettingsEmpty(noticeDate: Date | null, hasDifferentDates: boolean) {
+  isGeneralSettingsEmpty(
+    noticeDate?: Date | null,
+    hasDifferentDates?: boolean,
+    entitiesToCheck?: DropdownItemType[],
+  ) {
     const selectedEventTypes = this.eventTypes.filter(selectedFilterCallback);
     const selectedTemplates = this.templates.filter(selectedFilterCallback);
     const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
-    const selectedFunds = this.fundEntities.filter(selectedFilterCallback);
+    const selectedFunds = (entitiesToCheck ?? this.fundEntities).filter(selectedFilterCallback);
+
+    const effectiveNoticeDate = noticeDate ?? null;
+    const effectiveHasDifferentDates = hasDifferentDates ?? false;
 
     return (
       selectedEventTypes.length === 0 ||
       selectedTemplates.length === 0 ||
       selectedFundGroups.length === 0 ||
       selectedFunds.length === 0 ||
-      (noticeDate === null && !hasDifferentDates)
+      (effectiveNoticeDate === null && !effectiveHasDifferentDates)
     );
   }
 
@@ -67,7 +74,7 @@ class CapEventSettingsStore {
         Object.entries(item).every(([key, value]) => {
           if (
             key === AccountFields.investment &&
-            !investmentMandatoryCategories.includes(item.capitalCategory || '')
+            !investmentMandatoryCategories.includes(item.capitalCategory ?? '')
           ) {
             return true;
           }
@@ -205,11 +212,11 @@ class CapEventSettingsStore {
   }
 
   getUserInputs(cellKey: string): string[] {
-    return this.userInputs.get(cellKey) || [];
+    return this.userInputs.get(cellKey) ?? [];
   }
 
   addUserInput(cellKey: string, input: string) {
-    const currentInputs = this.userInputs.get(cellKey) || [];
+    const currentInputs = this.userInputs.get(cellKey) ?? [];
     if (!currentInputs.includes(input)) {
       this.userInputs.set(cellKey, [...currentInputs, input]);
     }

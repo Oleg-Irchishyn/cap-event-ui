@@ -6,3 +6,11 @@ export const ITEM_STATES = {
   ALTERNATIVE: 'A',
   EXCLUDED_SELECTED: 'XS',
 };
+
+export const GENERAL_SETTINGS_FIELDS = {
+  EVENT_TYPE: 'Event Type',
+  TEMPLATE: 'Template',
+  FUND_GROUP: 'Fund Group',
+  ENTITIES: 'Entity(ies)',
+  NOTICE_DATE: 'Notice Date',
+};

@@ -13,14 +13,17 @@ const FundGroupLineItems = () => {
     capEventSettingsStore.setFundGroupsLineItem(newValue);
   };
 
+  const isDisabled =
+    capEventSettingsStore.isGeneralSettingsEmpty(
+      entityDatesStore.noticeDate,
+      entityDatesStore.hasDifferentDates,
+    ) || !capEventSettingsStore.hasMultipleEntitiesChosen;
+
   return (
     <BackgroundContainer testId="fund-group-line-items">
       <Title>Capital Event Line Items - Fund Group Level</Title>
 
-      {capEventSettingsStore.isGeneralSettingsEmpty(
-        entityDatesStore.noticeDate,
-        entityDatesStore.hasDifferentDates,
-      ) || !capEventSettingsStore.hasMultipleEntitiesChosen ? (
+      {isDisabled ? (
         <AccountsTable
           testId="fund-group-account-table"
           level="group"

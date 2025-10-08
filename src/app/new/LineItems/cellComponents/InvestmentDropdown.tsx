@@ -42,13 +42,14 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const withSearch = options.length > 3;
   const placeholder = `Select ${props.colDef?.headerName}`;
 
-  const filteredOptions = options.filter(
-    (option) =>
-      option.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      option.type?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      option.id?.toLowerCase().includes(searchValue.toLowerCase()) ||
-      option.name?.toLowerCase().includes(searchValue.toLowerCase()),
-  );
+  const filteredOptions =
+    options?.filter(
+      (option) =>
+        option.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        option.type?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        option.id?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        option.name?.toLowerCase().includes(searchValue.toLowerCase()),
+    ) ?? [];
 
   const isCellEditable =
     typeof props.colDef?.editable === 'function'
