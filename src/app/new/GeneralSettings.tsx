@@ -243,6 +243,14 @@ const GeneralSettings = () => {
     );
     capEventSettingsStore.setEventTypes(updatedValues);
     getTemplates(item.id || '');
+
+    entityDatesStore.setSelectedEventType(item.label || '');
+
+    if (entityDatesStore.noticeDate) {
+      entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
+    } else {
+      entityDatesStore.recalcEntityDueDatesForSelectedFunds(capEventSettingsStore.fundEntities);
+    }
   };
 
   const selectTemplateHandler = (item: DropdownItemType) => {

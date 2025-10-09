@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { ITEM_STATES } from '@/const/common';
-import { DAY_TYPES } from '@/const/dateTypes';
+import { DAY_TYPES, DISTRIBUTION_EVENT_TYPE_DAYS } from '@/const/dateTypes';
 
 interface EntityDates {
   [entityLabel: string]: {
@@ -20,6 +20,7 @@ class EntityDatesStore {
   noticeDate: Date | null = null;
   entityDates: EntityDates = {};
   hasDifferentDates: boolean = false;
+  selectedEventType: string = '';
 
   constructor() {
     makeAutoObservable(this);
@@ -91,6 +92,10 @@ class EntityDatesStore {
     this.hasDifferentDates = false;
   }
 
+  setSelectedEventType(eventType: string) {
+    this.selectedEventType = eventType || '';
+  }
+
   updateEntityDatesFromGeneral(funds: DropdownItemType[]) {
     if (this.noticeDate && funds && Array.isArray(funds)) {
       funds
@@ -102,6 +107,19 @@ class EntityDatesStore {
     }
   }
 
+  recalcEntityDueDatesForSelectedFunds(funds: DropdownItemType[]) {
+    if (!funds || !Array.isArray(funds)) return;
+    funds
+      .filter((fund) => fund && fund.state === ITEM_STATES.SELECTED)
+      .forEach((fund) => {
+        const entityLabel = fund.label;
+        const entityData = this.entityDates[entityLabel];
+        if (entityData?.noticeDate) {
+          this.calculateAndSetEntityDueDate(entityLabel, funds);
+        }
+      });
+  }
+
   calculateAndSetEntityDueDate(entityLabel: string, funds: DropdownItemType[]) {
     const entityData = this.entityDates[entityLabel];
     if (!entityData?.noticeDate || !funds || !Array.isArray(funds)) return;
@@ -110,17 +128,31 @@ class EntityDatesStore {
       (fund) => fund && fund.label === entityLabel,
     ) as ExtendedDropdownItemType;
 
-    if (!selectedFund?.dueDateDays || !selectedFund?.dueDateType) {
-      this.setEntityDueDate(entityLabel, null);
-      this.clearDueDateManualOverride(entityLabel);
-      return;
-    }
+    const isDistribution = this.selectedEventType.toLowerCase().includes('dist');
 
     const noticeDate = new Date(entityData.noticeDate);
-    const numberOfDays = parseInt(selectedFund.dueDateDays, 10);
-    const dateType = selectedFund.dueDateType.toLowerCase().includes(DAY_TYPES.BUSINESS)
-      ? DAY_TYPES.BUSINESS
-      : DAY_TYPES.CALENDAR;
+
+    let numberOfDays: number;
+    let dateType: string;
+
+    if (isDistribution) {
+      numberOfDays = DISTRIBUTION_EVENT_TYPE_DAYS;
+      dateType = DAY_TYPES.BUSINESS;
+    } else {
+      const dueDateDays = selectedFund?.dueDateDays;
+      const dueDateType = selectedFund?.dueDateType;
+
+      if (!dueDateDays || !dueDateType) {
+        this.setEntityDueDate(entityLabel, null);
+        this.clearDueDateManualOverride(entityLabel);
+        return;
+      }
+
+      numberOfDays = parseInt(dueDateDays, 10);
+      dateType = dueDateType.toLowerCase().includes(DAY_TYPES.BUSINESS)
+        ? DAY_TYPES.BUSINESS
+        : DAY_TYPES.CALENDAR;
+    }
 
     const dueDate = this.addDaysToDate(noticeDate, numberOfDays, dateType);
 

@@ -72,4 +72,22 @@ describe('EntityDatesStore', () => {
     expect(store.getEntityNoticeDate('B')).toBeNull();
     expect(store.getEntityDueDate('B')).toBeNull();
   });
+
+  it('recalculates due dates for selected funds with entity notice dates (Different Dates) and Distribution', () => {
+    expect(store.noticeDate).toBeNull();
+
+    store.setSelectedEventType('Distribution');
+
+    const funds: FundItem[] = [
+      { label: 'A', state: ITEM_STATES.SELECTED, dueDateDays: '10', dueDateType: 'calendar' },
+      { label: 'B', state: ITEM_STATES.SELECTED, dueDateDays: '5', dueDateType: 'calendar' },
+    ];
+
+    store.setEntityNoticeDate('A', new Date(2025, 0, 3));
+
+    store.recalcEntityDueDatesForSelectedFunds(funds);
+
+    expect(dayjs(store.getEntityDueDate('A') as Date).format('YYYY-MM-DD')).toBe('2025-01-07');
+    expect(store.getEntityDueDate('B')).toBeNull();
+  });
 });

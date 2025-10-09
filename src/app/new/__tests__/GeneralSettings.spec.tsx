@@ -91,6 +91,8 @@ jest.mock('@/stores', () => {
     hasDifferentDates: false,
     clearGeneralNoticeDate: jest.fn(),
     setNoticeDate: jest.fn(),
+    setSelectedEventType: jest.fn(),
+    recalcEntityDueDatesForSelectedFunds: jest.fn(),
     updateEntityDatesFromGeneral: jest.fn(),
     resetAllDates: jest.fn(),
   };
