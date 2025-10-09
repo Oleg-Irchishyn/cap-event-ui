@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
@@ -148,6 +148,18 @@ describe('InvestmentDropdown', () => {
       fireEvent.click(trigger);
 
       expect(screen.queryByText('Refresh List')).not.toBeInTheDocument();
+    });
+
+    it('should display tooltip', async () => {
+      renderWithTheme(<InvestmentDropdown {...defaultProps} />);
+      const trigger = screen.getByText('Select Investment');
+      fireEvent.click(trigger);
+
+      const icon = screen.getByTestId('link-icon-1');
+      fireEvent.mouseOver(icon);
+
+      await waitFor(() => screen.getByTestId('link-tooltip'));
+      expect(screen.getByTestId('link-tooltip')).toBeInTheDocument();
     });
   });
 

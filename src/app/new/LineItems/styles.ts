@@ -123,7 +123,7 @@ export const DropdownMenu = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.white,
   border: '1px solid #ccc',
   borderRadius: '4px',
-  zIndex: 99999,
+  zIndex: 9999,
   maxHeight: '250px',
   overflow: 'hidden',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',

@@ -1,4 +1,4 @@
-import { HTMLAttributes, Ref, useEffect, useRef, useState } from 'react';
+import { HTMLAttributes, Ref, useRef, useState } from 'react';
 import {
   DragIcon,
   FileListItem,
@@ -10,6 +10,7 @@ import {
   TrashIcon,
 } from './styles';
 import { capEventSettingsStore } from '@/stores';
+import Tooltip from '@/app/components/Tooltip';
 
 export type ItemProps = HTMLAttributes<HTMLDivElement> & {
   id: string;
@@ -35,9 +36,9 @@ const Item = ({
   ...props
 }: ItemProps) => {
   const [hovered, setHovered] = useState(false);
-  const [isNameOverflowing, setIsNameOverflowing] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  const spanRef = useRef<HTMLSpanElement>(null);
+  const spanRef = useRef(null);
 
   const filesWithCheckbox = ['pdf', 'docx'];
   const fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
@@ -46,12 +47,6 @@ const Item = ({
   const handleCheckboxClick = () => {
     capEventSettingsStore.toggleAttachmentCheckbox(id);
   };
-
-  useEffect(() => {
-    if (spanRef.current) {
-      setIsNameOverflowing(spanRef.current.scrollWidth > spanRef.current.clientWidth);
-    }
-  }, [fileNameWithoutExtension]);
 
   return (
     <FileListItem
@@ -80,10 +75,16 @@ const Item = ({
         <FileName
           {...props}
           ref={spanRef}
-          title={isNameOverflowing ? fileNameWithoutExtension : undefined}
+          onMouseOver={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
         >
           {fileNameWithoutExtension}
         </FileName>
+        <Tooltip
+          tooltipMessage={fileNameWithoutExtension}
+          showTooltip={showTooltip}
+          targetRef={spanRef}
+        />
         {'.' + fileExtension}
       </FileNameWrapper>
 

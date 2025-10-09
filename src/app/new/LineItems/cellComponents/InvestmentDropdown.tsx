@@ -28,15 +28,18 @@ import SearchBox from '@/app/components/SearchBox';
 import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore } from '@/stores';
 import { generateIntacctLink } from '@/utils/generateIntacctLink';
+import Tooltip from '@/app/components/Tooltip';
 
 export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedValue, setSelectedValue] = useState(props.value || '');
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [showTooltip, setShowTooltip] = useState(false);
 
+  const tooltipRef = useRef<HTMLElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const options = capEventSettingsStore.investments;
   const withSearch = options.length > 3;
@@ -122,6 +125,16 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
 
   const refreshInvestments = () => {
     capEventSettingsStore.fetchInvestments();
+  };
+
+  const handleMouseHoverIntacctLink = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setShowTooltip(true);
+    tooltipRef.current = e.currentTarget;
+  };
+
+  const handleMouseLeaveIntacctLink = () => {
+    setShowTooltip(false);
+    tooltipRef.current = null;
   };
 
   useEffect(() => {
@@ -215,13 +228,15 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                         <InvestmentTitleWrapper>
                           <InvestmentLabel>{label}</InvestmentLabel>
                           <LinkButtonWrapper
-                            title="Redirect to Investment's profile in Intacct"
                             href={generateIntacctLink({
                               sessionId: capEventSettingsStore.sessionId,
                               type: 'edit',
                               investmentId: option.id,
                             })}
                             target="_blank"
+                            onMouseOver={handleMouseHoverIntacctLink}
+                            onMouseLeave={handleMouseLeaveIntacctLink}
+                            data-testid={`link-icon-${option.id}`}
                           >
                             <RedirectIcon />
                           </LinkButtonWrapper>
@@ -235,6 +250,12 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
               ) : (
                 <AltView>No options found</AltView>
               )}
+              <Tooltip
+                tooltipMessage={"Redirect to Investment's profile in Intacct"}
+                showTooltip={showTooltip}
+                targetRef={tooltipRef}
+                testId="link-tooltip"
+              />
             </OptionsWrapper>
           </DropdownMenu>,
           document.body,

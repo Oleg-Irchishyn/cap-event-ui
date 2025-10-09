@@ -4,10 +4,11 @@ import { createPortal } from 'react-dom';
 type TooltipProps = {
   showTooltip: boolean;
   tooltipMessage: string;
-  targetRef: RefObject<HTMLDivElement | null>;
+  targetRef: RefObject<HTMLElement | null>;
+  testId?: string;
 };
 
-const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef }) => {
+const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef, testId }) => {
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef }) =
   return showTooltip && tooltipMessage
     ? createPortal(
         <div
+          data-testid={testId}
           style={{
             display: 'flex',
             backgroundColor: 'white',
@@ -35,11 +37,12 @@ const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef }) =
             position: 'absolute',
             top: pos.top - 40,
             left: pos.left,
-            boxShadow: '0px 12px 16px rgba(0, 0, 0, 0.25)',
-            padding: '10px',
+            boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+            padding: '10px 12px',
             whiteSpace: 'nowrap',
             color: 'black',
-            zIndex: 10,
+            fontSize: '14px',
+            zIndex: 99999,
           }}
         >
           {tooltipMessage}
