@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.29](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.28&targetVersion=GTv0.0.29) (2025-10-09)
+
+
+### Features
+
+* [TASK-5523]: [FE] Implement general setting editing ([0b196bc](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0b196bc2657d2132277ea276adc0445b8d6fa3f1)), closes [#5523](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/5523)
+
+
+### Bug Fixes
+
+* allocation basis and amount disable state ([f7451d0](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f7451d030ca2d631aa95b79df334207a8d1419a4))
+* investment search ([910a0ac](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/910a0ac6f2e11473c60166091426e9df46d2c478))
+
 ### [0.0.28](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.27&targetVersion=GTv0.0.28) (2025-10-08)
 
 
