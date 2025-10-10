@@ -121,7 +121,7 @@ class CapEventSettingsStore {
       this.accounts = yield ReferenceDataApi.accounts.getAccounts(
         'Golden Image DEV',
         ['Capital'],
-        ['Cont-Management-fees'],
+        ['Cont - Management fees'],
       );
     } catch (error) {
       console.error(error);
