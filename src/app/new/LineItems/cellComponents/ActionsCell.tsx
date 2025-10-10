@@ -36,7 +36,7 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
 
     if (level === LineItemTypes.group) {
       if (capEventSettingsStore.fundGroupsLineItem.length === 1) {
-        capEventSettingsStore.setFundGroupsLineItem([prepareNewRow()]);
+        capEventSettingsStore.setFundGroupsLineItem([prepareNewRow(level)]);
         return;
       }
       const filteredFundGroupLineItems = capEventSettingsStore.fundGroupsLineItem.filter(
@@ -47,7 +47,7 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
 
     if (level === LineItemTypes.entity) {
       if (capEventSettingsStore.entitiesLineItem.get(key)?.length === 1) {
-        capEventSettingsStore.setEntitiesLineItem(key, [prepareNewRow()]);
+        capEventSettingsStore.setEntitiesLineItem(key, [prepareNewRow(level)]);
         return;
       }
       const filteredEntityLineItems = capEventSettingsStore.entitiesLineItem

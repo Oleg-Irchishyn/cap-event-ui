@@ -13,6 +13,9 @@ jest.mock('@/stores', () => ({
     isFundGroupLineItemsFilled: true,
     isFundGroupLineItemsChanged: true,
   },
+  entityDatesStore: {
+    getEntityDueDate: jest.fn(),
+  },
 }));
 
 jest.mock('@/app/components/ConfigurationTable', () => {

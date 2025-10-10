@@ -64,6 +64,7 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
       entityDatesStore.setDifferentDatesState();
     } else {
       entityDatesStore.setEntityDueDateManually(entityLabel, date);
+      capEventSettingsStore.updateEntityLineItemPRDate(entityLabel, date);
     }
 
     if (onDateChange) {

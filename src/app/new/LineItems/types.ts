@@ -6,4 +6,6 @@ export type LineItemRow = {
   inheritedId?: string;
   investment: string;
   allocationBasis: string;
+  prDate?: Date;
+  prFlag?: string;
 } & Omit<Account, 'accountNo'>;

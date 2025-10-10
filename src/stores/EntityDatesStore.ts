@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { ITEM_STATES } from '@/const/common';
 import { DAY_TYPES, DISTRIBUTION_EVENT_TYPE_DAYS } from '@/const/dateTypes';
+import { capEventSettingsStore } from '@/stores/index';
 
 interface EntityDates {
   [entityLabel: string]: {
@@ -157,6 +158,7 @@ class EntityDatesStore {
     const dueDate = this.addDaysToDate(noticeDate, numberOfDays, dateType);
 
     this.setEntityDueDate(entityLabel, dueDate);
+    capEventSettingsStore.updateEntityLineItemPRDate(entityLabel, dueDate);
     this.clearDueDateManualOverride(entityLabel);
   }
 

@@ -1,13 +1,5 @@
 import React, { FC, useCallback, useMemo, useRef } from 'react';
-import {
-  CellValueChangedEvent,
-  ColDef,
-  EditableCallbackParams,
-  ICellEditorParams,
-  DragStoppedEvent,
-} from 'ag-grid-community';
-import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownSearchCell';
-import { AmountCell } from '@/app/new/LineItems/cellComponents/AmountCell';
+import { CellValueChangedEvent, EditableCallbackParams, DragStoppedEvent } from 'ag-grid-community';
 import { capEventSettingsStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/styles';
@@ -18,24 +10,18 @@ import '@/app/new/grid-styles.css';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
-import { Account } from '@/clients/ReferenceData';
-import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
 import {
   AccountFields,
   AccountFieldIds,
-  AccountFieldTitles,
   USER_PROVIDED_OPTION,
   LineItemTypes,
+  YesNoOptions,
 } from '@/app/new/LineItems/const';
-import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
-
-const ALLOCATION_BASIS_MOCK_OPTIONS = [
-  'Commitment',
-  'Contribution Deal',
-  'Contribution All',
-  'Unfunded',
-  'Contribution Deal Parent',
-];
+import {
+  entityColumnDef,
+  fundGroupColumnDef,
+} from '@/app/new/LineItems/accountsTableConfiguration';
+import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -69,7 +55,7 @@ const AccountsTable: FC<Props> = ({
   entityKey,
   level,
   testId,
-  lineItems = [prepareNewRow()],
+  lineItems = [prepareNewRow(level)],
   onDragStopped,
 }) => {
   const accounts = useMemo(
@@ -78,16 +64,9 @@ const AccountsTable: FC<Props> = ({
   );
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
 
-  const getCategories = () => {
-    return Array.from(new Set(accounts.map((account) => account.capitalCategory)));
-  };
-
-  const categoryOptions = getCategories();
-
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (isDisabled) return false;
-
       if (level === LineItemTypes.group) {
         if (
           params.colDef.field === AccountFields.amount &&
@@ -98,6 +77,9 @@ const AccountsTable: FC<Props> = ({
       }
 
       if (level === LineItemTypes.entity) {
+        if (params.colDef.field === AccountFields.allocationBasis) return true;
+        if (params.colDef.field === AccountFields.prDate) return true;
+        if (params.colDef.field === AccountFields.prFlag) return true;
         // the if statement below is a temporary solution to enable all amounts on fund groups and entity levels
         if (params.data.inheritedId) {
           if (
@@ -139,87 +121,16 @@ const AccountsTable: FC<Props> = ({
 
       return editableCellRef.current[key];
     },
-    [isDisabled],
-  );
-
-  const getReasons = useCallback(
-    (selectedCategory: string) => {
-      return Array.from(
-        new Set(
-          accounts
-            .filter(
-              (account) =>
-                account.capitalCategory === selectedCategory && account.callDistributionReason,
-            )
-            .map((account) => account.callDistributionReason),
-        ),
-      );
-    },
-    [accounts],
-  );
-
-  const getBySelectedCategoryAndReason = useCallback(
-    (selectedCategory: string, selectedReason: string, keyValueToReturn: string) => {
-      return Array.from(
-        new Set(
-          accounts
-            .filter(
-              (account) =>
-                account.capitalCategory === selectedCategory &&
-                account.callDistributionReason === selectedReason &&
-                account[keyValueToReturn as keyof Account],
-            )
-            .map((account) => account[keyValueToReturn as keyof Account]),
-        ),
-      );
-    },
-    [accounts],
-  );
-
-  const cellEditorsParamsCallback = useCallback(
-    (params: ICellEditorParams, key: string) => {
-      const selectedCategory = params.data?.capitalCategory;
-      const selectedReason = params.data?.callDistributionReason;
-
-      switch (key) {
-        case AccountFields.callDistributionReason: {
-          const possibleValues = getReasons(selectedCategory);
-          return { options: possibleValues };
-        }
-
-        case AccountFields.defaultDescription: {
-          const possibleValues = getBySelectedCategoryAndReason(
-            selectedCategory,
-            selectedReason,
-            AccountFields.defaultDescription,
-          );
-          return {
-            options: possibleValues,
-            withAddingFromSearch: true,
-            searchPlaceholder: 'Search or Add New',
-          };
-        }
-
-        case AccountFields.insideCommitment: {
-          const possibleValues = getBySelectedCategoryAndReason(
-            selectedCategory,
-            selectedReason,
-            AccountFields.insideCommitment,
-          );
-          return { options: possibleValues };
-        }
-      }
-    },
-    [getBySelectedCategoryAndReason, getReasons],
+    [isDisabled, level],
   );
 
   const addNewRow = useCallback(() => {
-    const newRow = prepareNewRow();
+    const newRow = prepareNewRow(level);
     const key = getCellKey(newRow.id, '0');
     editableCellRef.current[key] = true;
 
     setDataToStoreCallback?.(entityKey || '-', [...lineItems, newRow]);
-  }, [lineItems, entityKey, setDataToStoreCallback]);
+  }, [level, setDataToStoreCallback, entityKey, lineItems]);
 
   const onCellValueChanged = useCallback(
     (params: CellValueChangedEvent) => {
@@ -243,7 +154,7 @@ const AccountsTable: FC<Props> = ({
               getCellKey(data.id, AccountFieldIds[AccountFields.allocationBasis]),
             );
 
-            const reasons = getReasons(newValue);
+            const reasons = getReasons(newValue, accounts);
 
             if (reasons?.length === 1 && reasons[0]) {
               updatedRow.callDistributionReason = reasons[0];
@@ -255,6 +166,7 @@ const AccountsTable: FC<Props> = ({
                 newValue,
                 reasons[0],
                 AccountFields.defaultDescription,
+                accounts,
               );
 
               if (descriptions.length === 1 && descriptions[0]) {
@@ -268,6 +180,7 @@ const AccountsTable: FC<Props> = ({
                 newValue,
                 reasons[0],
                 AccountFields.insideCommitment,
+                accounts,
               );
 
               if (commitments.length === 1 && commitments[0]) {
@@ -294,6 +207,7 @@ const AccountsTable: FC<Props> = ({
               updatedRow.capitalCategory,
               newValue,
               AccountFields.defaultDescription,
+              accounts,
             );
 
             if (descriptions.length === 1 && descriptions[0]) {
@@ -307,6 +221,7 @@ const AccountsTable: FC<Props> = ({
               updatedRow.capitalCategory,
               newValue,
               AccountFields.insideCommitment,
+              accounts,
             );
 
             if (commitments.length === 1 && commitments[0]) {
@@ -365,14 +280,7 @@ const AccountsTable: FC<Props> = ({
       cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
     },
-    [
-      lineItems,
-      setDataToStoreCallback,
-      entityKey,
-      level,
-      getReasons,
-      getBySelectedCategoryAndReason,
-    ],
+    [lineItems, setDataToStoreCallback, entityKey, level, accounts],
   );
 
   const isApplyButtonDisabled =
@@ -408,6 +316,7 @@ const AccountsTable: FC<Props> = ({
               fgLineItem.allocationBasis === USER_PROVIDED_OPTION ? '' : fgLineItem.allocationBasis,
             inheritedId: fgLineItem.id,
             id: `${fgLineItem.id}-${index}`,
+            prFlag: YesNoOptions[0],
           };
         }),
         true,
@@ -416,15 +325,6 @@ const AccountsTable: FC<Props> = ({
 
     capEventSettingsStore.setFundGroupsStateAfterApply();
   };
-
-  const getAllocationBasisOptions = useCallback(() => {
-    return [USER_PROVIDED_OPTION, ...ALLOCATION_BASIS_MOCK_OPTIONS].filter((item) => {
-      if (level === LineItemTypes.group) {
-        return true;
-      }
-      return item !== USER_PROVIDED_OPTION;
-    });
-  }, [level]);
 
   const TableFooter = (
     <TableControls>
@@ -463,119 +363,14 @@ const AccountsTable: FC<Props> = ({
 
   const isMultiLineItems = lineItems.length > 1;
 
-  const columnDefs = useMemo<ColDef[]>(
-    () => [
-      ...(isMultiLineItems
-        ? [
-            {
-              headerName: '',
-              field: 'drag',
-              rowDrag: true,
-              flex: 1,
-              maxWidth: 15,
-              cellStyle: { padding: '0px' },
-            },
-          ]
-        : []),
-      {
-        colId: AccountFieldIds[AccountFields.capitalCategory],
-        headerName: AccountFieldTitles[AccountFields.capitalCategory],
-        field: AccountFields.capitalCategory,
-        cellRenderer: DropdownSearchCell,
-        cellEditor: DropdownSearchCell,
-        editable: editableCallback,
-        flex: 1,
-        cellEditorParams: { options: categoryOptions },
-        cellStyle: { padding: '0px' },
-      },
-      {
-        colId: AccountFieldIds[AccountFields.callDistributionReason],
-        headerName: AccountFieldTitles[AccountFields.callDistributionReason],
-        field: AccountFields.callDistributionReason,
-        cellRenderer: DropdownSearchCell,
-        cellEditor: DropdownSearchCell,
-        editable: editableCallback,
-        flex: 1,
-        cellStyle: { padding: '0px' },
-        cellEditorParams: (params: ICellEditorParams) =>
-          cellEditorsParamsCallback(params, AccountFields.callDistributionReason),
-      },
-      {
-        colId: AccountFieldIds[AccountFields.defaultDescription],
-        headerName: AccountFieldTitles[AccountFields.defaultDescription],
-        field: AccountFields.defaultDescription,
-        editable: editableCallback,
-        flex: 1,
-        cellRenderer: DropdownSearchCell,
-        cellEditor: DropdownSearchCell,
-        cellStyle: { padding: '0px' },
-        cellEditorParams: (params: ICellEditorParams) =>
-          cellEditorsParamsCallback(params, AccountFields.defaultDescription),
-      },
-      {
-        colId: AccountFieldIds[AccountFields.insideCommitment],
-        headerName: AccountFieldTitles[AccountFields.insideCommitment],
-        field: AccountFields.insideCommitment,
-        editable: editableCallback,
-        flex: 1,
-        cellRenderer: DropdownSearchCell,
-        cellEditor: DropdownSearchCell,
-        cellStyle: { padding: '0px' },
-        cellEditorParams: (params: ICellEditorParams) =>
-          cellEditorsParamsCallback(params, AccountFields.insideCommitment),
-      },
-      {
-        colId: AccountFieldIds[AccountFields.investment],
-        headerName: AccountFieldTitles[AccountFields.investment],
-        field: AccountFields.investment,
-        editable: editableCallback,
-        flex: 1,
-        cellRenderer: InvestmentDropdown,
-        cellEditor: InvestmentDropdown,
-        cellStyle: { padding: '0px' },
-      },
-      {
-        colId: AccountFieldIds[AccountFields.allocationBasis],
-        headerName: AccountFieldTitles[AccountFields.allocationBasis],
-        field: AccountFields.allocationBasis,
-        cellRenderer: DropdownSearchCell,
-        cellEditor: DropdownSearchCell,
-        editable: editableCallback,
-        flex: 1,
-        cellStyle: { padding: '0px' },
-        cellEditorParams: {
-          options: getAllocationBasisOptions(),
-        },
-      },
-      {
-        colId: AccountFieldIds[AccountFields.amount],
-        headerName: AccountFieldTitles[AccountFields.amount],
-        field: AccountFields.amount,
-        cellRenderer: AmountCell,
-        editable: editableCallback,
-        flex: 1,
-        headerClass: 'custom-header',
-        suppressKeyboardEvent: () => true,
-      },
-      {
-        colId: AccountFieldIds[AccountFields.actions],
-        headerName: AccountFieldTitles[AccountFields.actions],
-        flex: 0.5,
-        cellRenderer: ActionsCell,
-        cellStyle: { padding: '0px' },
-        cellEditorParams: { level, entityKey: entityKey || '' },
-      },
-    ],
-    [
-      isMultiLineItems,
-      editableCallback,
-      categoryOptions,
-      cellEditorsParamsCallback,
-      getAllocationBasisOptions,
-      entityKey,
-      level,
-    ],
-  );
+  const columnDefs =
+    level === 'group'
+      ? fundGroupColumnDef({
+          accounts,
+          isMultiLineItems,
+          editableCallback,
+        })
+      : entityColumnDef({ accounts, isMultiLineItems, editableCallback, entityKey });
 
   return (
     <>

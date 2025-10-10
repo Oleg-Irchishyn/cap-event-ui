@@ -4,6 +4,8 @@ export const AccountFields = {
   defaultDescription: 'defaultDescription',
   insideCommitment: 'insideCommitment',
   investment: 'investment',
+  prDate: 'prDate',
+  prFlag: 'prFlag',
   amount: 'amount',
   allocationBasis: 'allocationBasis',
   actions: 'actions',
@@ -15,6 +17,8 @@ export const AccountFieldTitles = {
   [AccountFields.defaultDescription]: 'Notice Line Description',
   [AccountFields.insideCommitment]: 'Inside CMNT',
   [AccountFields.investment]: 'Investment',
+  [AccountFields.prDate]: 'PR Date',
+  [AccountFields.prFlag]: 'PR Flag',
   [AccountFields.amount]: 'Amount',
   [AccountFields.allocationBasis]: 'Allocation Basis',
   [AccountFields.actions]: 'Actions',
@@ -26,8 +30,10 @@ export const AccountFieldIds = {
   [AccountFields.defaultDescription]: '2',
   [AccountFields.insideCommitment]: '3',
   [AccountFields.investment]: '4',
-  [AccountFields.allocationBasis]: '5',
-  [AccountFields.amount]: '6',
+  [AccountFields.prDate]: '5',
+  [AccountFields.prFlag]: '6',
+  [AccountFields.allocationBasis]: '7',
+  [AccountFields.amount]: '8',
 };
 
 export const investmentMandatoryCategories = [
@@ -46,3 +52,5 @@ export const LineItemTypes = {
 };
 
 export const USER_PROVIDED_OPTION = 'User-Provided';
+
+export const YesNoOptions = ['Yes', 'No'];

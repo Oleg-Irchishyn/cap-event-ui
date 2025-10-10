@@ -27,6 +27,7 @@ type DatePickerStyleProps = {
   margin?: string;
   borderColor?: string;
   backgroundColor?: string;
+  disabledColor?: string;
 };
 
 type DatePickerProps = DatePickerStyleProps & {
@@ -40,6 +41,7 @@ type DatePickerProps = DatePickerStyleProps & {
   testId: string;
   pickerIcon?: () => React.ReactNode;
   format?: string;
+  compact?: boolean;
 };
 
 export const DatePicker: FC<DatePickerProps> = ({
@@ -53,6 +55,7 @@ export const DatePicker: FC<DatePickerProps> = ({
   testId,
   pickerIcon,
   format,
+  compact = false,
   ...styleProps
 }) => {
   const {
@@ -68,6 +71,7 @@ export const DatePicker: FC<DatePickerProps> = ({
     margin = '0',
     borderColor = theme.colors.gray500,
     backgroundColor = theme.colors.white,
+    disabledColor = theme.colors.textSecondary,
   } = styleProps;
 
   const onSetIsValidDate = (newError: DateValidationError) => {
@@ -76,7 +80,10 @@ export const DatePicker: FC<DatePickerProps> = ({
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Wrapper data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}>
+      <Wrapper
+        data-testid={prepareDataTestId(testId, 'DatePicker', 'Wrapper')}
+        style={{ width: compact ? '100%' : '' }}
+      >
         <FieldLabel
           $color={labelColor}
           $margin={labelMargin}
@@ -121,6 +128,14 @@ export const DatePicker: FC<DatePickerProps> = ({
                   },
                   '& .MuiPickersSectionList-root': {
                     padding: '5px 0',
+                    width: compact ? '100%' : '',
+                  },
+                  '& .MuiPickersInputBase-root': {
+                    alignItems: compact ? 'baseline' : '',
+                  },
+                  '&.Mui-disabled': {
+                    color: disabledColor,
+                    WebkitTextFillColor: disabledColor,
                   },
                   '& button': {
                     padding: '0 8px',

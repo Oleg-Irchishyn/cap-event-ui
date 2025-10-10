@@ -22,6 +22,7 @@ jest.mock('@/stores', () => ({
   entityDatesStore: {
     noticeDate: null,
     hasDifferentDates: false,
+    getEntityDueDate: jest.fn(),
   },
 }));
 

@@ -10,6 +10,16 @@ jest.mock('@/hooks/useExternalElementClick', () => ({
   useExternalElementClick: jest.fn(),
 }));
 
+jest.mock('@/stores', () => ({
+  entityDatesStore: {
+    getEntityDueDate: jest.fn(() => {}),
+    getEntityNoticeDate: jest.fn(),
+  },
+  capEventSettingsStore: {
+    getUserInputs: jest.fn(() => []),
+  },
+}));
+
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };

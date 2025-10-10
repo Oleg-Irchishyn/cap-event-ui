@@ -59,6 +59,71 @@ export const AmountInput = styled.input(({ theme }) => ({
   },
 }));
 
+export const DateCellWrapper = styled.div(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+
+  // Override MUI DatePicker styles to make it look like a cell
+  '& .MuiTextField-root': {
+    width: '100%',
+    height: '100%',
+  },
+
+  '& .MuiInputBase-root': {
+    height: '100%',
+    fontSize: '14px',
+    color: theme.colors.textPrimary,
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: '0',
+
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+
+    '&.Mui-focused': {
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
+    },
+
+    '&.Mui-disabled': {
+      color: theme.colors.textSecondary,
+      cursor: 'default',
+    },
+  },
+
+  '& .MuiOutlinedInput-notchedOutline': {
+    border: 'none',
+  },
+
+  '& .MuiInputAdornment-root': {
+    color: theme.colors.textSecondary,
+    marginLeft: '0',
+  },
+
+  '& .MuiIconButton-root': {
+    padding: '4px',
+    color: theme.colors.textSecondary,
+
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
+
+  // Inherited data styling
+  '&[data-is-inherited="true"] .MuiInputBase-root': {
+    color: theme.colors.textSecondary,
+  },
+
+  '&[data-is-inherited="true"] .MuiInputAdornment-root': {
+    color: theme.colors.textSecondary,
+  },
+}));
+
 export const TableControls = styled.div({
   display: 'flex',
   justifyContent: 'flex-end',

@@ -9,6 +9,7 @@ import AccountsTable from '@/app/new/LineItems/AccountsTable';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { DragStoppedEvent } from 'ag-grid-community';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { LineItemTypes } from '@/app/new/LineItems/const';
 
 const EntityLineItems = () => {
   const entitiesSnapshotRef = useRef(capEventSettingsStore.fundEntities);
@@ -53,13 +54,17 @@ const EntityLineItems = () => {
         />
         <AccountsTable
           testId="accounts-table"
-          level="entity"
+          level={LineItemTypes.entity}
           entityKey={fund.label}
           onDragStopped={onDragStopped(fund.label)}
           setDataToStoreCallback={(key, data) => {
             capEventSettingsStore.setEntitiesLineItem(key, data);
           }}
-          lineItems={capEventSettingsStore.entitiesLineItem.get(fund.label) || [prepareNewRow()]}
+          lineItems={
+            capEventSettingsStore.entitiesLineItem.get(fund.label) || [
+              prepareNewRow(LineItemTypes.entity),
+            ]
+          }
         />
       </Fragment>
     ));
@@ -75,7 +80,11 @@ const EntityLineItems = () => {
       ) ? (
         renderFundCapitalDetailsPanel()
       ) : (
-        <AccountsTable testId="accounts-table-placeholder" level="entity" isDisabled />
+        <AccountsTable
+          testId="accounts-table-placeholder"
+          level={LineItemTypes.entity}
+          isDisabled
+        />
       )}
     </BackgroundContainer>
   );

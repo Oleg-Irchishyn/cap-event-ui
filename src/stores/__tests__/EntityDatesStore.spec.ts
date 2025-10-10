@@ -2,6 +2,16 @@ import dayjs from 'dayjs';
 import EntityDatesStore from '@/stores/EntityDatesStore';
 import { ITEM_STATES } from '@/const/common';
 
+jest.mock('@/stores', () => ({
+  entityDatesStore: {
+    getEntityDueDate: jest.fn(() => {}),
+    getEntityNoticeDate: jest.fn(),
+  },
+  capEventSettingsStore: {
+    updateEntityLineItemPRDate: jest.fn(),
+  },
+}));
+
 type FundItem = { label: string; state: string; dueDateDays?: string; dueDateType?: string };
 
 describe('EntityDatesStore', () => {

@@ -1,6 +1,34 @@
-import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
+
+// Mock the dependencies to avoid circular imports
+jest.mock('@/api', () => ({
+  ReferenceDataApi: {
+    getAccounts: jest.fn(),
+    getInvestments: jest.fn(),
+    session: {
+      getSessionId: jest.fn(),
+    },
+  },
+}));
+
+jest.mock('@/utils/prepareNewRow', () => ({
+  prepareNewRow: jest.fn(() => ({
+    id: 'mock-id',
+    amount: 0,
+    investment: '',
+    allocationBasis: '',
+  })),
+}));
+
+jest.mock('@/stores', () => ({
+  entityDatesStore: {
+    getEntityDueDate: jest.fn(() => new Date('2024-01-01')),
+  },
+}));
+
+// Import after mocking
+import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -327,6 +355,89 @@ describe('CapEventSettingsStore', () => {
       ];
       store.setFundGroupsLineItem(lineItems);
       expect(store.isFundGroupLineItemsFilled).toBe(false);
+    });
+  });
+
+  describe('updateEntityLineItemPRDate', () => {
+    it('should update prDate for all line items of an existing entity', () => {
+      // Arrange
+      const entityLabel = 'Test Entity';
+      const existingDate = new Date('2024-01-15');
+      const newDate = new Date('2024-02-20');
+
+      const lineItems: LineItemRow[] = [
+        {
+          id: '1',
+          amount: 100,
+          investment: 'Investment A',
+          allocationBasis: 'Basis A',
+          prDate: existingDate,
+        } as unknown as LineItemRow,
+        {
+          id: '2',
+          amount: 200,
+          investment: 'Investment B',
+          allocationBasis: 'Basis B',
+          prDate: existingDate,
+        } as unknown as LineItemRow,
+      ];
+
+      store.entitiesLineItem.set(entityLabel, lineItems);
+
+      // Act
+      store.updateEntityLineItemPRDate(entityLabel, newDate);
+
+      // Assert
+      const updatedLineItems = store.entitiesLineItem.get(entityLabel);
+      expect(updatedLineItems).toHaveLength(2);
+      expect(updatedLineItems![0].prDate).toEqual(newDate);
+      expect(updatedLineItems![1].prDate).toEqual(newDate);
+    });
+
+    it('should not modify line items when entity does not exist', () => {
+      // Arrange
+      const nonExistentEntity = 'Non Existent Entity';
+      const newDate = new Date('2024-02-20');
+      const initialSize = store.entitiesLineItem.size;
+
+      // Act
+      store.updateEntityLineItemPRDate(nonExistentEntity, newDate);
+
+      // Assert
+      expect(store.entitiesLineItem.size).toBe(initialSize);
+      expect(store.entitiesLineItem.has(nonExistentEntity)).toBe(false);
+    });
+
+    it('should preserve other properties when updating prDate', () => {
+      // Arrange
+      const entityLabel = 'Test Entity';
+      const newDate = new Date('2024-02-20');
+
+      const originalItem: LineItemRow = {
+        id: 'test-id',
+        amount: 500,
+        investment: 'Test Investment',
+        allocationBasis: 'Test Basis',
+        prDate: new Date('2024-01-01'),
+        capitalCategory: 'Test Category',
+        callDistributionReason: 'Test Reason',
+        defaultDescription: 'Test Description',
+        insideCommitment: 'Test Commitment',
+      } as unknown as LineItemRow;
+
+      store.entitiesLineItem.set(entityLabel, [originalItem]);
+
+      // Act
+      store.updateEntityLineItemPRDate(entityLabel, newDate);
+
+      // Assert
+      const updatedItem = store.entitiesLineItem.get(entityLabel)![0];
+      expect(updatedItem.prDate).toEqual(newDate);
+      expect(updatedItem.id).toBe(originalItem.id);
+      expect(updatedItem.amount).toBe(originalItem.amount);
+      expect(updatedItem.investment).toBe(originalItem.investment);
+      expect(updatedItem.allocationBasis).toBe(originalItem.allocationBasis);
+      expect(updatedItem.capitalCategory).toBe(originalItem.capitalCategory);
     });
   });
 });

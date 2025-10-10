@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import AccountsTable from './AccountsTable';
 import { DragStoppedEvent } from 'ag-grid-community';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { LineItemTypes } from '@/app/new/LineItems/const';
 
 const FundGroupLineItems = () => {
   const onDragStopped = (e: DragStoppedEvent) => {
@@ -26,14 +27,14 @@ const FundGroupLineItems = () => {
       {isDisabled ? (
         <AccountsTable
           testId="fund-group-account-table"
-          level="group"
+          level={LineItemTypes.group}
           isDisabled
           lineItems={capEventSettingsStore.fundGroupsLineItem}
         />
       ) : (
         <AccountsTable
           testId="fund-group-account-table"
-          level="group"
+          level={LineItemTypes.group}
           onDragStopped={onDragStopped}
           setDataToStoreCallback={(entityKey, data) => {
             capEventSettingsStore.setFundGroupsLineItem(data);

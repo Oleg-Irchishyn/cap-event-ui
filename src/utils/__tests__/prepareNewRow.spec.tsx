@@ -1,5 +1,13 @@
-import { prepareNewRow } from '../prepareNewRow';
 import { LineItemRow } from '@/app/new/LineItems/types';
+
+// Mock the entityDatesStore to avoid circular dependency
+jest.mock('@/stores', () => ({
+  entityDatesStore: {
+    getEntityDueDate: jest.fn(() => new Date('2024-01-01')),
+  },
+}));
+
+import { prepareNewRow } from '../prepareNewRow';
 
 describe('prepareNewRow', () => {
   it('should return a LineItemRow with all required fields initialized', () => {
@@ -39,5 +47,19 @@ describe('prepareNewRow', () => {
     expect(typeof result.amount).toBe('number');
     expect(typeof result.allocationBasis).toBe('string');
     expect(result.inheritedId).toBeUndefined();
+  });
+
+  it('should include prDate and prFlag when level is entity', () => {
+    const result = prepareNewRow('entity', 'test-entity');
+
+    expect(result.prDate).toEqual(new Date('2024-01-01'));
+    expect(result.prFlag).toBe('Yes');
+  });
+
+  it('should not include prDate and prFlag when level is not entity', () => {
+    const result = prepareNewRow('group');
+
+    expect(result.prDate).toBeUndefined();
+    expect(result.prFlag).toBeUndefined();
   });
 });

@@ -9,6 +9,7 @@ import { ReferenceDataApi } from '@/api';
 import {
   AccountFields,
   investmentMandatoryCategories,
+  LineItemTypes,
   USER_PROVIDED_OPTION,
 } from '@/app/new/LineItems/const';
 
@@ -26,7 +27,7 @@ class CapEventSettingsStore {
   attachments: Attachment[] = [];
 
   // Line Items
-  fundGroupsLineItem: LineItemRow[] = [prepareNewRow()];
+  fundGroupsLineItem: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
   fundGroupsStateAfterApply: LineItemRow[] = [];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
@@ -224,6 +225,20 @@ class CapEventSettingsStore {
 
   clearUserInputs(cellKey: string) {
     this.userInputs.delete(cellKey);
+  }
+
+  updateEntityLineItemPRDate(entityLabel: string, date: Date) {
+    const entityLineItems = this.entitiesLineItem.get(entityLabel);
+
+    if (entityLineItems) {
+      // Update prDate for all line items of this entity
+      const updatedLineItems = entityLineItems.map((item) => ({
+        ...item,
+        prDate: date,
+      }));
+
+      this.entitiesLineItem.set(entityLabel, updatedLineItems);
+    }
   }
 }
 

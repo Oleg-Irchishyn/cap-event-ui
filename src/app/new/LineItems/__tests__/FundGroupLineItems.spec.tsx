@@ -38,10 +38,18 @@ jest.mock('@/api', () => ({
 }));
 
 jest.mock('@/stores', () => ({
-  ...jest.requireActual('@/stores'),
   entityDatesStore: {
     noticeDate: new Date(),
     hasDifferentDates: false,
+  },
+  capEventSettingsStore: {
+    isGeneralSettingsEmpty: jest.fn(() => true),
+    hasMultipleEntitiesChosen: true,
+    setEventTypes: jest.fn(),
+    setTemplates: jest.fn(),
+    setFundGroups: jest.fn(),
+    setFundEntities: jest.fn(),
+    setNoticeDate: jest.fn(),
   },
 }));
 
@@ -170,6 +178,8 @@ describe('FundGroupLineItems', () => {
         { label: 'entity2', state: ITEM_STATES.SELECTED },
       ]);
       capEventSettingsStore.setNoticeDate(new Date());
+
+      jest.spyOn(capEventSettingsStore, 'isGeneralSettingsEmpty').mockReturnValue(false);
 
       render(<FundGroupLineItems />);
 
