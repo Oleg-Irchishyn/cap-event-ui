@@ -28,7 +28,7 @@ class CapEventSettingsStore {
 
   // Line Items
   fundGroupsLineItem: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
-  fundGroupsStateAfterApply: LineItemRow[] = [];
+  fundGroupsStateAfterApply: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
   entitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
   investments: Investment[] = [];

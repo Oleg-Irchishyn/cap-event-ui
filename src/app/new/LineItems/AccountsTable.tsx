@@ -21,7 +21,12 @@ import {
   entityColumnDef,
   fundGroupColumnDef,
 } from '@/app/new/LineItems/accountsTableConfiguration';
-import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
+import {
+  getBySelectedCategoryAndReason,
+  getReasons,
+  isRowEmpty,
+  isRowFilled,
+} from '@/app/new/LineItems/utils';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -283,12 +288,15 @@ const AccountsTable: FC<Props> = ({
     [lineItems, setDataToStoreCallback, entityKey, level, accounts],
   );
 
-  const isApplyButtonDisabled =
-    !capEventSettingsStore.isFundGroupLineItemsFilled ||
-    !capEventSettingsStore.isFundGroupLineItemsChanged;
+  const isApplyButtonEnabled =
+    (capEventSettingsStore.fundGroupsLineItem.length === 1 &&
+      isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0]) &&
+      isRowFilled(capEventSettingsStore.fundGroupsStateAfterApply[0])) ||
+    (capEventSettingsStore.isFundGroupLineItemsFilled &&
+      capEventSettingsStore.isFundGroupLineItemsChanged);
 
   const applyFundGroupChanges = () => {
-    if (isApplyButtonDisabled) return;
+    if (!isApplyButtonEnabled) return;
 
     const selectedEntities = capEventSettingsStore.fundEntities.filter(
       (entity) => entity.state === ITEM_STATES.SELECTED,
@@ -301,6 +309,25 @@ const AccountsTable: FC<Props> = ({
     };
 
     selectedEntities.forEach((entity, index) => {
+      if (
+        capEventSettingsStore.fundGroupsLineItem.length === 1 &&
+        isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
+      ) {
+        const notInheritedEntities: LineItemRow[] =
+          capEventSettingsStore.entitiesLineItem
+            .get(entity.label)
+            ?.filter((entity) => !entity.inheritedId) ?? [];
+
+        capEventSettingsStore.setEntitiesLineItem(
+          entity.label,
+          notInheritedEntities.length
+            ? notInheritedEntities
+            : [prepareNewRow(LineItemTypes.entity)],
+          true,
+        );
+        return;
+      }
+
       capEventSettingsStore.setEntitiesLineItem(
         entity.label,
         capEventSettingsStore.fundGroupsLineItem.map((fgLineItem) => {
@@ -345,17 +372,17 @@ const AccountsTable: FC<Props> = ({
       {level === LineItemTypes.group && (
         <ControlButton
           data-testid={prepareDataTestId('apply', testId, entityKey)}
-          data-is-disabled={isApplyButtonDisabled}
+          data-is-disabled={!isApplyButtonEnabled}
           onClick={applyFundGroupChanges}
         >
           <Image
-            src={isApplyButtonDisabled ? 'icons/checkmark.svg' : 'icons/checkmark-green.svg'}
+            src={!isApplyButtonEnabled ? 'icons/checkmark.svg' : 'icons/checkmark-green.svg'}
             alt="checkmark"
             width={13}
             height={13}
             priority={true}
           />
-          <ApplyText data-is-disabled={isApplyButtonDisabled}>Apply</ApplyText>
+          <ApplyText data-is-disabled={!isApplyButtonEnabled}>Apply</ApplyText>
         </ControlButton>
       )}
     </TableControls>

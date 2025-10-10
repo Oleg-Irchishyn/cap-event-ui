@@ -1,4 +1,5 @@
 import { Account } from '@/clients/ReferenceData';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 export const getReasons = (selectedCategory: string, accounts: Account[]) => {
   return Array.from(
@@ -30,5 +31,29 @@ export const getBySelectedCategoryAndReason = (
         )
         .map((account) => account[keyValueToReturn as keyof Account]),
     ),
+  );
+};
+
+export const isRowEmpty = (data: LineItemRow) => {
+  return (
+    data.capitalCategory === '' &&
+    data.callDistributionReason === '' &&
+    data.defaultDescription === '' &&
+    data.insideCommitment === '' &&
+    data.investment === '' &&
+    data.allocationBasis === '' &&
+    data.amount === 0
+  );
+};
+
+export const isRowFilled = (data: LineItemRow) => {
+  return (
+    data.capitalCategory !== '' &&
+    data.callDistributionReason !== '' &&
+    data.defaultDescription !== '' &&
+    data.insideCommitment !== '' &&
+    data.investment !== '' &&
+    data.allocationBasis !== '' &&
+    data.amount !== 0
   );
 };
