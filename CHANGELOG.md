@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.30](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.29&targetVersion=GTv0.0.30) (2025-10-10)
+
+
+### Bug Fixes
+
+* [Issue-6666]: [FE] Incorrect Due Date if Distribution event type is selected ([772a146](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/772a146eb228dd8251a8f2492368c1adcf33c14a)), closes [#6666](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6666)
+* styles for tooltip ([2e96ad8](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2e96ad869e5bf366ae2d6289d4e765ab564f434a))
+
 ### [0.0.29](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.28&targetVersion=GTv0.0.29) (2025-10-09)
 
 
