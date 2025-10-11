@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.31](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.30&targetVersion=GTv0.0.31) (2025-10-11)
+
+
+### Features
+
+* add new enitty columns ([ae8a0cb](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ae8a0cba5cc7a654f94afbaa3036a43c37b3120f))
+
+
+### Bug Fixes
+
+* apply button enable cases ([d184d96](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d184d9643788dd697ba31fcfe3fe0c85677fbb43))
+* update accounts request ([9fc556d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9fc556dbac8098fae581d9c5f430ec0810031b9d))
+
 ### [0.0.30](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.29&targetVersion=GTv0.0.30) (2025-10-10)
 
 
