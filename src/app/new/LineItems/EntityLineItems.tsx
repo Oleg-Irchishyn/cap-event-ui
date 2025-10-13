@@ -70,14 +70,17 @@ const EntityLineItems = () => {
     ));
   };
 
+  const isDisabled =
+    capEventSettingsStore.isGeneralSettingsEmpty(
+      entityDatesStore.noticeDate,
+      entityDatesStore.hasDifferentDates,
+      entitiesToUse,
+    ) || !capEventSettingsStore.isNoticeDateValid;
+
   return (
     <BackgroundContainer testId="entity-line-items">
       <Title>Capital Event Line Items - Entity Level</Title>
-      {!capEventSettingsStore.isGeneralSettingsEmpty(
-        entityDatesStore.noticeDate,
-        entityDatesStore.hasDifferentDates,
-        entitiesToUse,
-      ) ? (
+      {!isDisabled ? (
         renderFundCapitalDetailsPanel()
       ) : (
         <AccountsTable

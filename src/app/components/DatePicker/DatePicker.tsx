@@ -8,6 +8,8 @@ import { FieldLabel, Wrapper } from '@/app/components/DatePicker/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+const INVALID_DATE_ERROR = 'invalidDate';
+
 const defaultTheme = createTheme({
   typography: {
     fontFamily: `"IBM Plex Sans", "Arial" sans-serif`,
@@ -21,6 +23,7 @@ type DatePickerStyleProps = {
   inputHeight?: string;
   inputWidth?: string;
   inputPadding?: string;
+  inputColor?: string;
   inputFontWeight?: string;
   labelColor?: string;
   labelMargin?: string;
@@ -69,13 +72,15 @@ export const DatePicker: FC<DatePickerProps> = ({
     labelColor = theme.colors.textSecondary,
     labelMargin = '0 0 2px 0',
     margin = '0',
+    inputColor = theme.colors.textPrimary,
     borderColor = theme.colors.gray500,
     backgroundColor = theme.colors.white,
     disabledColor = theme.colors.textSecondary,
   } = styleProps;
 
   const onSetIsValidDate = (newError: DateValidationError) => {
-    setIsValidDate(newError === null);
+    if (newError === INVALID_DATE_ERROR) return;
+    setIsValidDate(!newError);
   };
 
   return (
@@ -107,7 +112,7 @@ export const DatePicker: FC<DatePickerProps> = ({
                   sx: {
                     height: inputHeight,
                     fontSize: '14px',
-                    color: theme.colors.textPrimary,
+                    color: inputColor,
                     fontWeight: inputFontWeight,
                     width: inputWidth,
                     padding: inputPadding,

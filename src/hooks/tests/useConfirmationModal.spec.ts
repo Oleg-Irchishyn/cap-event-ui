@@ -23,6 +23,7 @@ jest.mock('@/stores', () => {
     isGeneralSettingsEmpty: jest.fn(() => true),
     fundEntities: [] as Array<{ id?: string; label?: string; state: string }>,
     setFundEntities: jest.fn(),
+    isNoticeDateValid: true,
   };
   const entityDatesStore = {
     noticeDate: null as unknown as Date | null,

@@ -23,6 +23,7 @@ class CapEventSettingsStore {
   fundEntities: DropdownItemType[] = [];
   noticeDate: Date | null = null;
   isEntitiesDropdownOpen: boolean = false;
+  isNoticeDateValid: boolean = true;
 
   attachments: Attachment[] = [];
 
@@ -172,6 +173,10 @@ class CapEventSettingsStore {
 
   setNoticeDate(date: Date) {
     this.noticeDate = date;
+  }
+
+  setIsNoticeDateValid(value: boolean) {
+    this.isNoticeDateValid = value;
   }
 
   setAttachments(attachments: Attachment[]) {

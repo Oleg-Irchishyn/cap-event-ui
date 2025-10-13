@@ -45,6 +45,7 @@ jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     isGeneralSettingsEmpty: jest.fn(() => true),
     hasMultipleEntitiesChosen: true,
+    isNoticeDateValid: true,
     setEventTypes: jest.fn(),
     setTemplates: jest.fn(),
     setFundGroups: jest.fn(),

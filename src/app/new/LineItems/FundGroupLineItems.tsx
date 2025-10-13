@@ -18,7 +18,9 @@ const FundGroupLineItems = () => {
     capEventSettingsStore.isGeneralSettingsEmpty(
       entityDatesStore.noticeDate,
       entityDatesStore.hasDifferentDates,
-    ) || !capEventSettingsStore.hasMultipleEntitiesChosen;
+    ) ||
+    !capEventSettingsStore.hasMultipleEntitiesChosen ||
+    !capEventSettingsStore.isNoticeDateValid;
 
   return (
     <BackgroundContainer testId="fund-group-line-items">

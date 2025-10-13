@@ -123,6 +123,13 @@ const pickerIcon = () => <Image src="icons/calendar.svg" width={20} height={20} 
 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
+  const [noticeInputValue, setNoticeInputValue] = useState<PickerValue>(
+    entityDatesStore.hasDifferentDates
+      ? null
+      : entityDatesStore.noticeDate
+        ? dayjs(entityDatesStore.noticeDate)
+        : null,
+  );
 
   const getEventTypes = async () => {
     try {
@@ -204,30 +211,39 @@ const GeneralSettings = () => {
   const { modal, confirmFieldChange, isConfirmationModalEnabled, onEntitiesDropdownOpenChange } =
     useConfirmationModal();
 
-  const handleNoticeDate = async (item: PickerValue) => {
-    const parsed = parseValidDate(item);
+  const handleNoticeDateError = (isValid: boolean) => {
+    capEventSettingsStore.setIsNoticeDateValid(isValid);
+  };
 
-    if (!isConfirmationModalEnabled) {
-      if (parsed === null) {
-        entityDatesStore.clearGeneralNoticeDate();
-      } else {
-        entityDatesStore.setNoticeDate(parsed);
-        entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
-      }
+  const handleNoticeDate = async (item: PickerValue) => {
+    setNoticeInputValue(item);
+    const parsed = parseValidDate(item);
+    if (item === null) {
+      entityDatesStore.clearGeneralNoticeDate();
       return;
     }
 
     if (parsed === null) {
-      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
-      if (isFieldChanged) entityDatesStore.clearGeneralNoticeDate();
       return;
     }
 
+    if (!isConfirmationModalEnabled) {
+      entityDatesStore.setNoticeDate(parsed);
+      entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
+      setNoticeInputValue(dayjs(parsed));
+      return;
+    }
+
+    const prevValue = entityDatesStore.noticeDate ? dayjs(entityDatesStore.noticeDate) : null;
     const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
-    if (!isFieldChanged) return;
+    if (!isFieldChanged) {
+      setNoticeInputValue(prevValue);
+      return;
+    }
 
     entityDatesStore.setNoticeDate(parsed);
     entityDatesStore.updateEntityDatesFromGeneral(capEventSettingsStore.fundEntities);
+    setNoticeInputValue(dayjs(parsed));
   };
 
   const selectEventTypeHandler = async (item: DropdownItemType) => {
@@ -274,7 +290,6 @@ const GeneralSettings = () => {
       if (!isFieldChanged) return;
     }
 
-    entityDatesStore.resetAllDates();
     const updatedValues = fundGroups.map((fundGroup) =>
       fundGroup.label === item.label
         ? { ...fundGroup, state: ITEM_STATES.SELECTED }
@@ -414,14 +429,9 @@ const GeneralSettings = () => {
         <DatePicker
           label={`${GENERAL_SETTINGS_FIELDS.NOTICE_DATE}*`}
           onChange={handleNoticeDate}
+          setIsValidDate={handleNoticeDateError}
           maxDate={dayjs().add(1, 'months')}
-          defaultValue={
-            entityDatesStore.hasDifferentDates
-              ? null
-              : entityDatesStore.noticeDate
-                ? dayjs(entityDatesStore.noticeDate)
-                : null
-          }
+          defaultValue={noticeInputValue}
           pickerIcon={pickerIcon}
           format={entityDatesStore.hasDifferentDates ? '[Different Dates]' : undefined}
           testId="GeneralSettings"

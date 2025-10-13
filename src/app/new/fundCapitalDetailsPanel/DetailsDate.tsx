@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import Image from 'next/image';
@@ -7,6 +7,7 @@ import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { parseValidDate } from '@/utils/datePickerUtils';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 import { DATE_TYPES } from '@/const/dateTypes';
+import { theme } from '@/ui/globalStyles';
 import { datePickerStyles } from './style';
 import { DetailsDateProps } from './types';
 
@@ -39,17 +40,31 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     }
   }, [entityLabel, dateType]);
 
+  const [inputValue, setInputValue] = useState<PickerValue>(
+    currentDate ? dayjs(currentDate) : null,
+  );
+
+  const [isValid, setIsValid] = useState(true);
+  const handleValidityChange = (valid: boolean) => setIsValid(valid);
+
+  useEffect(() => {
+    setInputValue(currentDate ? dayjs(currentDate) : null);
+  }, [currentDate]);
+
   const handleDateChange = (value: PickerValue) => {
+    setInputValue(value);
     const parsedDate = parseValidDate(value);
-    if (parsedDate === null) {
-      if (value === null) {
-        if (dateType === DATE_TYPES.NOTICE) {
-          entityDatesStore.setEntityNoticeDate(entityLabel, null);
-        } else {
-          entityDatesStore.setEntityDueDateManually(entityLabel, null);
-        }
-        if (onDateChange) onDateChange(null as unknown as Date);
+    if (value === null) {
+      if (dateType === DATE_TYPES.NOTICE) {
+        entityDatesStore.setEntityNoticeDate(entityLabel, null);
+      } else {
+        entityDatesStore.setEntityDueDateManually(entityLabel, null);
       }
+      if (onDateChange) onDateChange(null as unknown as Date);
+      return;
+    }
+
+    if (parsedDate === null) {
       return;
     }
 
@@ -70,6 +85,7 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     if (onDateChange) {
       onDateChange(date);
     }
+    setInputValue(dayjs(date));
   };
 
   const getMaxDate = () => {
@@ -91,18 +107,20 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     return dateType === DATE_TYPES.NOTICE ? 'Notice Date' : 'Due Date';
   };
 
-  const defaultValue = currentDate ? dayjs(currentDate) : null;
+  const defaultValue = inputValue;
 
   return (
     <DatePicker
       label={getLabel()}
       onChange={handleDateChange}
       defaultValue={defaultValue}
+      setIsValidDate={handleValidityChange}
       minDate={getMinDate()}
       maxDate={getMaxDate()}
       testId={finalTestId}
       pickerIcon={pickerIcon}
       {...datePickerStyles}
+      inputColor={isValid ? theme.colors.textPrimary : theme.colors.error}
       maxWidth={defaultValue === null ? '115px' : datePickerStyles.maxWidth}
     />
   );

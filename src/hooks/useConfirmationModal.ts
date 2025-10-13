@@ -15,10 +15,12 @@ export const useConfirmationModal = () => {
   const prevSelectedSetRef = useRef<Set<string> | null>(null);
   const prevStateByKeyRef = useRef<Map<string, string> | null>(null);
 
-  const isEntityCELIsEnabled = !capEventSettingsStore.isGeneralSettingsEmpty(
-    entityDatesStore.noticeDate,
-    entityDatesStore.hasDifferentDates,
-  );
+  const isEntityCELIsEnabled =
+    capEventSettingsStore.isNoticeDateValid &&
+    !capEventSettingsStore.isGeneralSettingsEmpty(
+      entityDatesStore.noticeDate,
+      entityDatesStore.hasDifferentDates,
+    );
 
   const openModal = useCallback((fieldTitle: FieldTitle, revertAction: RevertAction | null) => {
     setTitle(fieldTitle);

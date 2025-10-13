@@ -12,6 +12,13 @@ jest.mock('@/stores', () => ({
     accounts: [],
     isFundGroupLineItemsFilled: true,
     isFundGroupLineItemsChanged: true,
+    fundGroupsLineItem: [],
+    fundGroupsStateAfterApply: [],
+    entitiesLineItem: new Map(),
+    fundEntities: [],
+    setFundGroupsLineItem: jest.fn(),
+    setEntitiesLineItem: jest.fn(),
+    setFundGroupsStateAfterApply: jest.fn(),
   },
   entityDatesStore: {
     getEntityDueDate: jest.fn(),
