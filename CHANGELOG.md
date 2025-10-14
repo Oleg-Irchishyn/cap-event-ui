@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.32](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.31&targetVersion=GTv0.0.32) (2025-10-14)
+
+
+### Bug Fixes
+
+* [Issue-6667]: [FE] Incorrect Notice Date dropdown behavior ([0b5b66f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0b5b66f90d9db10dbf42bbd2ca7fcd311c3aabb2)), closes [#6667](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6667)
+
 ### [0.0.31](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.30&targetVersion=GTv0.0.31) (2025-10-11)
 
 
