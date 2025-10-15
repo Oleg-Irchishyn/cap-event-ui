@@ -14,17 +14,61 @@ const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef, tes
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (targetRef?.current) {
-        const rec = targetRef.current.getBoundingClientRect();
-        setPos({
-          top: rec.top + window.scrollY + (e.clientY - rec.top),
-          left: rec.left + window.scrollX + (e.clientX - rec.left) + 10,
-        });
+        const tooltipWidth = tooltipMessage.length * 6; // Rough estimation
+        const tooltipHeight = 40;
+        const offset = 1;
+
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let top = e.clientY + window.scrollY;
+        let left = e.clientX + window.scrollX;
+
+        // Vertical positioning logic
+        const spaceAbove = e.clientY;
+        const spaceBelow = viewportHeight - e.clientY;
+
+        if (spaceBelow >= tooltipHeight + offset) {
+          // Prefer below cursor
+          top += offset;
+        } else if (spaceAbove >= tooltipHeight + offset) {
+          // Show above cursor
+          top -= tooltipHeight + offset;
+        } else {
+          // Use the side with more space, with minimum offset
+          const minOffset = 5;
+          if (spaceAbove > spaceBelow) {
+            top = Math.max(minOffset, e.clientY - tooltipHeight - minOffset) + window.scrollY;
+          } else {
+            top =
+              Math.min(viewportHeight - tooltipHeight - minOffset, e.clientY + minOffset) +
+              window.scrollY;
+          }
+        }
+
+        const spaceLeft = e.clientX;
+        const spaceRight = viewportWidth - e.clientX;
+
+        if (spaceRight >= tooltipWidth + offset) {
+          // Prefer right of cursor
+          left += offset;
+        } else if (spaceLeft >= tooltipWidth + offset) {
+          // Show left of cursor
+          left -= tooltipWidth + offset;
+        } else {
+          // Center horizontally, but keep within viewport bounds
+          left =
+            Math.max(5, Math.min(viewportWidth - tooltipWidth - 5, e.clientX - tooltipWidth / 2)) +
+            window.scrollX;
+        }
+
+        setPos({ top, left });
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [targetRef]);
+  }, [targetRef, tooltipMessage.length]);
 
   return showTooltip && tooltipMessage
     ? createPortal(

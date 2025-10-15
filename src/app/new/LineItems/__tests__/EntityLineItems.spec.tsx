@@ -70,6 +70,7 @@ const mockCapEventSettingsStore = capEventSettingsStore as unknown as {
   eventTypes: Array<{ label: string; state: string }>;
   templates: Array<{ label: string; state: string }>;
   fundGroups: Array<{ label: string; state: string }>;
+  fundGroupsLineItem: Array<{ label: string; state: string }>;
   isEntitiesDropdownOpen: boolean;
   setEntitiesLineItem: jest.Mock;
   entitiesLineItem: Map<string, unknown>;
@@ -88,6 +89,7 @@ describe('EntityLineItems', () => {
     mockCapEventSettingsStore.eventTypes = [];
     mockCapEventSettingsStore.templates = [];
     mockCapEventSettingsStore.fundGroups = [];
+    mockCapEventSettingsStore.fundGroupsLineItem = [];
     mockCapEventSettingsStore.isEntitiesDropdownOpen = false;
     mockCapEventSettingsStore.entitiesLineItem = new Map();
     mockEntityDatesStore.noticeDate = null;

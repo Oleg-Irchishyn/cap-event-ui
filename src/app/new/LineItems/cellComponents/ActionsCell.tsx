@@ -1,13 +1,16 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
-import { ActionButtonsWrapper, DeleteButton } from '../styles';
-import { capEventSettingsStore } from '@/stores';
+import { ActionButtonsWrapper, DeleteButton, PreviewButton, PreviewWrapper } from '../styles';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemTypes } from '../const';
+import Tooltip from '@/app/components/Tooltip';
 
 export const ActionsCell: FC<ICellRendererParams> = (props) => {
-  const key = props.colDef?.cellEditorParams.entityKey;
-  const { level } = props.colDef?.cellEditorParams ?? {};
+  const [showPreviewTooltip, setPreviewTooltip] = useState(false);
+  const previewTooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
 
   const isRowEmpty = () => {
     return (
@@ -21,13 +24,22 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
     );
   };
 
+  const isPreviewDisabled =
+    props.data.capitalCategory === '' ||
+    props.data.callDistributionReason === '' ||
+    props.data.defaultDescription === '' ||
+    props.data.insideCommitment === '' ||
+    props.data.allocationBasis === '' ||
+    props.data.amount === 0 ||
+    !(entityDatesStore.getEntityDueDate(entityKey) instanceof Date);
+
   const isDeleteDisabled = () => {
     if (level === LineItemTypes.group) {
       return isRowEmpty() && capEventSettingsStore.fundGroupsLineItem.length === 1;
     }
     if (level === LineItemTypes.entity) {
-      if (!capEventSettingsStore.entitiesLineItem.get(key)) return true;
-      return isRowEmpty() && capEventSettingsStore.entitiesLineItem.get(key)?.length === 1;
+      if (!capEventSettingsStore.entitiesLineItem.get(entityKey)) return true;
+      return isRowEmpty() && capEventSettingsStore.entitiesLineItem.get(entityKey)?.length === 1;
     }
   };
 
@@ -46,21 +58,40 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
     }
 
     if (level === LineItemTypes.entity) {
-      if (capEventSettingsStore.entitiesLineItem.get(key)?.length === 1) {
-        capEventSettingsStore.setEntitiesLineItem(key, [prepareNewRow(level)]);
+      if (capEventSettingsStore.entitiesLineItem.get(entityKey)?.length === 1) {
+        capEventSettingsStore.setEntitiesLineItem(entityKey, [prepareNewRow(level)]);
         return;
       }
       const filteredEntityLineItems = capEventSettingsStore.entitiesLineItem
-        .get(key)
+        .get(entityKey)
         ?.filter((item) => item.id !== props.data.id);
       if (filteredEntityLineItems) {
-        capEventSettingsStore.setEntitiesLineItem(key, filteredEntityLineItems);
+        capEventSettingsStore.setEntitiesLineItem(entityKey, filteredEntityLineItems);
       }
     }
   };
 
+  const handlePreviewClick = () => {
+    if (isPreviewDisabled) return;
+  };
+
   return (
     <ActionButtonsWrapper>
+      {level === LineItemTypes.entity && (
+        <PreviewWrapper
+          ref={previewTooltipRef}
+          onMouseEnter={() => isPreviewDisabled && setPreviewTooltip(true)}
+          onMouseLeave={() => setPreviewTooltip(false)}
+        >
+          <PreviewButton data-is-disabled={isPreviewDisabled} onClick={handlePreviewClick} />
+          <Tooltip
+            tooltipMessage="Not all required fields are populated"
+            showTooltip={showPreviewTooltip}
+            targetRef={previewTooltipRef}
+            testId="preview-icon-tooltip"
+          />
+        </PreviewWrapper>
+      )}
       {!props.data.inheritedId && (
         <DeleteButton data-is-disabled={isDeleteDisabled()} onClick={handleDeleteCELI} />
       )}

@@ -340,7 +340,6 @@ export const ActionButtonsWrapper = styled.div({
   padding: '0 10px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
   gap: '8px',
 });
 
@@ -358,4 +357,24 @@ export const DeleteButton = styled.button({
     backgroundSize: 'contain',
     cursor: 'default',
   },
+});
+
+export const PreviewButton = styled.button({
+  width: '15px',
+  height: '15px',
+  border: 0,
+  padding: 0,
+  cursor: 'pointer',
+  background: `url(icons/eye-enabled.svg) no-repeat center center;`,
+  backgroundSize: 'contain',
+
+  '&[data-is-disabled="true"]': {
+    background: `url(icons/eye-disabled.svg) no-repeat center center;`,
+    backgroundSize: 'contain',
+    cursor: 'default',
+  },
+});
+
+export const PreviewWrapper = styled.div({
+  display: 'flex',
 });

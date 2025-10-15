@@ -10,6 +10,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     accounts: [],
+    fundGroupsLineItem: [],
     isFundGroupLineItemsFilled: true,
     isFundGroupLineItemsChanged: true,
     fundGroupsLineItem: [],
