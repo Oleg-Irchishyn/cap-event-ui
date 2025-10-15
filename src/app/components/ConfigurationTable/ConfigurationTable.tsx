@@ -80,6 +80,12 @@ const ConfigurationTable: FC<Props> = ({
     gridApi.hideOverlay();
   }, [gridApi, isLoading, rowData]);
 
+  const safeRowData = useMemo(() => {
+    if (!Array.isArray(rowData)) return [] as unknown[];
+    // Avoid MobX strict-mode mutations by giving AG Grid cloned objects
+    return rowData.map((r) => (r !== null && typeof r === 'object' ? { ...r } : r));
+  }, [rowData]);
+
   return (
     <TableWrapper
       data-testid={prepareDataTestId('table-wrapper', testId)}
@@ -87,7 +93,7 @@ const ConfigurationTable: FC<Props> = ({
     >
       <AgGridReact
         columnDefs={columnDefs}
-        rowData={rowData}
+        rowData={safeRowData}
         defaultColDef={defaultColDef}
         onCellValueChanged={onCellValueChanged}
         onRowClicked={onRowClicked}

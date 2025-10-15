@@ -290,6 +290,8 @@ const GeneralSettings = () => {
       if (!isFieldChanged) return;
     }
 
+    capEventSettingsStore.resetOnFundGroupChange();
+
     const updatedValues = fundGroups.map((fundGroup) =>
       fundGroup.label === item.label
         ? { ...fundGroup, state: ITEM_STATES.SELECTED }

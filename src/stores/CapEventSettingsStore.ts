@@ -24,6 +24,7 @@ class CapEventSettingsStore {
   noticeDate: Date | null = null;
   isEntitiesDropdownOpen: boolean = false;
   isNoticeDateValid: boolean = true;
+  entitiesSelectedCountSnapshot: number | null = null;
 
   attachments: Attachment[] = [];
 
@@ -56,6 +57,7 @@ class CapEventSettingsStore {
     const selectedTemplates = this.templates.filter(selectedFilterCallback);
     const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
     const selectedFunds = (entitiesToCheck ?? this.fundEntities).filter(selectedFilterCallback);
+    const selectedFundsCountEffective = this.entitiesSelectedCountSnapshot ?? selectedFunds.length;
 
     const effectiveNoticeDate = noticeDate ?? null;
     const effectiveHasDifferentDates = hasDifferentDates ?? false;
@@ -64,7 +66,7 @@ class CapEventSettingsStore {
       selectedEventTypes.length === 0 ||
       selectedTemplates.length === 0 ||
       selectedFundGroups.length === 0 ||
-      selectedFunds.length === 0 ||
+      selectedFundsCountEffective === 0 ||
       (effectiveNoticeDate === null && !effectiveHasDifferentDates)
     );
   }
@@ -114,7 +116,9 @@ class CapEventSettingsStore {
   }
 
   get hasMultipleEntitiesChosen() {
-    return this.fundEntities.filter(selectedFilterCallback).length > 1;
+    const effectiveSelectedCount =
+      this.entitiesSelectedCountSnapshot ?? this.fundEntities.filter(selectedFilterCallback).length;
+    return effectiveSelectedCount > 1;
   }
 
   *fetchAccounts() {
@@ -194,6 +198,39 @@ class CapEventSettingsStore {
     this.isEntitiesDropdownOpen = isOpen;
   }
 
+  setEntitiesSelectedCountSnapshot(value: number | null) {
+    this.entitiesSelectedCountSnapshot = value;
+  }
+
+  applyEntitiesSelectionConfirmed() {
+    const selectedEntities = this.fundEntities.filter(selectedFilterCallback);
+    const selectedCount = selectedEntities.length;
+    const selectedLabels = new Set<string>(selectedEntities.map((e) => e.label ?? ''));
+
+    for (const key of Array.from(this.entitiesLineItem.keys())) {
+      if (!selectedLabels.has(key)) {
+        this.entitiesLineItem.delete(key);
+      }
+    }
+
+    if (selectedCount <= 1) {
+      this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
+      this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
+      // Remove inherited rows for each entity; keep only manual rows (no inheritedId).
+      // If an entity has no manual rows, preserve a single fresh row for UX consistency.
+      for (const [entityLabel, rows] of this.entitiesLineItem.entries()) {
+        const manualRows = (rows ?? []).filter((item) => !item.inheritedId);
+        if (manualRows.length > 0) {
+          this.entitiesLineItem.set(entityLabel, manualRows);
+        } else {
+          this.entitiesLineItem.set(entityLabel, [
+            prepareNewRow(LineItemTypes.entity, entityLabel),
+          ]);
+        }
+      }
+    }
+  }
+
   setFundGroupsLineItem(data: LineItemRow[]) {
     this.fundGroupsLineItem = data;
   }
@@ -215,6 +252,12 @@ class CapEventSettingsStore {
     }
 
     this.entitiesLineItem.set(key, [...data, ...entityManualItems]);
+  }
+
+  resetOnFundGroupChange() {
+    this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
+    this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
+    this.entitiesLineItem.clear();
   }
 
   getUserInputs(cellKey: string): string[] {

@@ -36,6 +36,7 @@ export const useConfirmationModal = () => {
     if (resolverRef.current) {
       resolverRef.current(false);
     }
+    capEventSettingsStore.setEntitiesSelectedCountSnapshot(null);
     resolverRef.current = null;
     revertActionRef.current = null;
   }, []);
@@ -45,6 +46,8 @@ export const useConfirmationModal = () => {
     if (resolverRef.current) {
       resolverRef.current(true);
     }
+    capEventSettingsStore.applyEntitiesSelectionConfirmed();
+    capEventSettingsStore.setEntitiesSelectedCountSnapshot(null);
     resolverRef.current = null;
     revertActionRef.current = null;
   }, []);
@@ -99,6 +102,7 @@ export const useConfirmationModal = () => {
         const { selectedKeys, stateByKey } = snapshotSelections();
         prevSelectedSetRef.current = selectedKeys;
         prevStateByKeyRef.current = stateByKey;
+        capEventSettingsStore.setEntitiesSelectedCountSnapshot(selectedKeys.size);
         return true;
       }
 
@@ -113,6 +117,7 @@ export const useConfirmationModal = () => {
         return false;
       }
 
+      capEventSettingsStore.setEntitiesSelectedCountSnapshot(null);
       return true;
     },
     [isEntityCELIsEnabled, openModal, applyEntitiesSnapshot],

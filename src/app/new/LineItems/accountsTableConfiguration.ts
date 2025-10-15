@@ -291,6 +291,10 @@ export const entityColumnDef = ({
     cellRenderer: DateCell,
     cellEditor: DateCell,
     cellStyle: { padding: '0px' },
+    // Satisfy AG Grid object data type requirements
+    valueFormatter: ({ value }: { value: unknown }) =>
+      value instanceof Date ? value.toLocaleDateString() : ((value as string) ?? ''),
+    valueParser: (params: { newValue: unknown }) => params.newValue,
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.prDate, accounts, entityKey),
   },

@@ -9,7 +9,6 @@ import { Account } from '@/clients/ReferenceData';
 import { AccountFields, LineItemTypes, USER_PROVIDED_OPTION } from '../const';
 import { ICellEditorParams } from 'ag-grid-community';
 
-// Mock the dependencies
 jest.mock('@/stores', () => ({
   entityDatesStore: {
     getEntityDueDate: jest.fn(() => new Date('2024-01-01')),

@@ -24,6 +24,8 @@ jest.mock('@/stores', () => {
     fundEntities: [] as Array<{ id?: string; label?: string; state: string }>,
     setFundEntities: jest.fn(),
     isNoticeDateValid: true,
+    setEntitiesSelectedCountSnapshot: jest.fn(),
+    applyEntitiesSelectionConfirmed: jest.fn(),
   };
   const entityDatesStore = {
     noticeDate: null as unknown as Date | null,
