@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.33](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.32&targetVersion=GTv0.0.33) (2025-10-16)
+
+
+### Features
+
+* add preview icon ([81426bc](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/81426bc771c0f068f7a462a32b49d47de628be34))
+
+
+### Bug Fixes
+
+* [Issue-6747]: [FE] Incorrect state of Fund Group and Entity level sections if only one Entity is selected or Fund Group was changed ([0b934df](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0b934dfcf23448a860c5e09a058b2f6585b53c90)), closes [#6747](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6747) [#6748](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6748)
+
 ### [0.0.32](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.31&targetVersion=GTv0.0.32) (2025-10-14)
 
 
