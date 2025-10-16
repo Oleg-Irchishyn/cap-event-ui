@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, useRef } from 'react';
 import { CellValueChangedEvent, EditableCallbackParams, DragStoppedEvent } from 'ag-grid-community';
-import { capEventSettingsStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/styles';
 import Image from 'next/image';
@@ -21,12 +21,7 @@ import {
   entityColumnDef,
   fundGroupColumnDef,
 } from '@/app/new/LineItems/accountsTableConfiguration';
-import {
-  getBySelectedCategoryAndReason,
-  getReasons,
-  isRowEmpty,
-  isRowFilled,
-} from '@/app/new/LineItems/utils';
+import { getBySelectedCategoryAndReason, getReasons, isRowEmpty } from '@/app/new/LineItems/utils';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -152,7 +147,15 @@ const AccountsTable: FC<Props> = ({
           if (fieldName === AccountFields.capitalCategory) {
             updatedRow.defaultDescription = '';
             updatedRow.insideCommitment = '';
-            updatedRow.allocationBasis = '';
+
+            if (level === LineItemTypes.entity) {
+              if (!updatedRow.prDate) {
+                updatedRow.prDate = entityDatesStore.getEntityDueDate(entityKey ?? '') ?? undefined;
+              }
+              if (!updatedRow.prFlag) {
+                updatedRow.prFlag = YesNoOptions[0];
+              }
+            }
 
             cellKeysToUnBlock.push(getCellKey(data.id, AccountFieldIds[AccountFields.investment]));
             cellKeysToUnBlock.push(
@@ -245,31 +248,6 @@ const AccountsTable: FC<Props> = ({
             cellKeysToBlock.push(getCellKey(data.id, AccountFieldIds[AccountFields.amount]));
           }
 
-          if (fieldName === AccountFields.amount) {
-            const fundGroupRelatedItem = capEventSettingsStore.fundGroupsLineItem.find(
-              (item) => item.id === data.inheritedId,
-            );
-
-            // For USER-PROVIDED Allocation Basis calculate amount of inherited entities and populate it for parent fund group amount
-            if (fundGroupRelatedItem?.allocationBasis === USER_PROVIDED_OPTION) {
-              const relatedInheritedEntities = Array.from(
-                capEventSettingsStore.entitiesLineItem.values(),
-              )
-                .flatMap((item) => item)
-                .filter((values) => values.inheritedId === fundGroupRelatedItem?.id);
-              const newFundGroupAmount = relatedInheritedEntities.reduce(
-                (acc, item) => acc + item.amount,
-                0,
-              );
-              const newFundGroupItem = { ...fundGroupRelatedItem, amount: newFundGroupAmount };
-              const updatedData = capEventSettingsStore.fundGroupsLineItem.map((item) =>
-                item.id === newFundGroupItem.id ? newFundGroupItem : { ...item },
-              );
-
-              capEventSettingsStore.setFundGroupsLineItem(updatedData);
-            }
-          }
-
           return updatedRow;
         }
         return row;
@@ -284,6 +262,32 @@ const AccountsTable: FC<Props> = ({
 
       cellKeysToBlock.forEach((key) => (editableCellRef.current[key] = false));
       cellKeysToUnBlock.forEach((key) => (editableCellRef.current[key] = true));
+
+      // calculate amount after updated data is set
+      if (fieldName === AccountFields.amount) {
+        const fundGroupRelatedItem = capEventSettingsStore.fundGroupsLineItem.find(
+          (item) => item.id === data.inheritedId,
+        );
+
+        // For USER-PROVIDED Allocation Basis calculate amount of inherited entities and populate it for parent fund group amount
+        if (fundGroupRelatedItem?.allocationBasis === USER_PROVIDED_OPTION) {
+          const relatedInheritedEntities = Array.from(
+            capEventSettingsStore.entitiesLineItem.values(),
+          )
+            .flatMap((item) => item)
+            .filter((values) => values.inheritedId === fundGroupRelatedItem?.id);
+          const newFundGroupAmount = relatedInheritedEntities.reduce(
+            (acc, item) => acc + item.amount,
+            0,
+          );
+          const newFundGroupItem = { ...fundGroupRelatedItem, amount: newFundGroupAmount };
+          const updatedData = capEventSettingsStore.fundGroupsLineItem.map((item) =>
+            item.id === newFundGroupItem.id ? newFundGroupItem : { ...item },
+          );
+
+          capEventSettingsStore.setFundGroupsLineItem(updatedData);
+        }
+      }
     },
     [lineItems, setDataToStoreCallback, entityKey, level, accounts],
   );
@@ -291,7 +295,7 @@ const AccountsTable: FC<Props> = ({
   const isApplyButtonEnabled =
     (capEventSettingsStore.fundGroupsLineItem.length === 1 &&
       isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0]) &&
-      isRowFilled(capEventSettingsStore.fundGroupsStateAfterApply[0])) ||
+      capEventSettingsStore.isFundGroupLineItemsChanged) ||
     (capEventSettingsStore.isFundGroupLineItemsFilled &&
       capEventSettingsStore.isFundGroupLineItemsChanged);
 
@@ -313,18 +317,8 @@ const AccountsTable: FC<Props> = ({
         capEventSettingsStore.fundGroupsLineItem.length === 1 &&
         isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
       ) {
-        const notInheritedEntities: LineItemRow[] =
-          capEventSettingsStore.entitiesLineItem
-            .get(entity.label)
-            ?.filter((entity) => !entity.inheritedId) ?? [];
-
-        capEventSettingsStore.setEntitiesLineItem(
-          entity.label,
-          notInheritedEntities.length
-            ? notInheritedEntities
-            : [prepareNewRow(LineItemTypes.entity)],
-          true,
-        );
+        // should not pass any value for case when no inherited line items applied
+        capEventSettingsStore.setEntitiesLineItem(entity.label, [], true);
         return;
       }
 
@@ -344,6 +338,7 @@ const AccountsTable: FC<Props> = ({
             inheritedId: fgLineItem.id,
             id: `${fgLineItem.id}-${index}`,
             prFlag: YesNoOptions[0],
+            prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,
           };
         }),
         true,

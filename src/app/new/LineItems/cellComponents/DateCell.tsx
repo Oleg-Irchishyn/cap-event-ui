@@ -8,14 +8,7 @@ import { parseValidDate } from '@/utils/datePickerUtils';
 import Image from 'next/image';
 
 export const DateCell: FC<ICellRendererParams> = (props) => {
-  const params =
-    (typeof props.colDef?.cellEditorParams === 'function'
-      ? props.colDef?.cellEditorParams(props)
-      : props.colDef?.cellEditorParams) || {};
-
-  const defaultValue = dayjs(params.defaultValue);
-
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(defaultValue);
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
   const isCellEditable = useMemo(
     () =>
@@ -30,9 +23,9 @@ export const DateCell: FC<ICellRendererParams> = (props) => {
       const parsedDate = parseValidDate(props.value);
       setSelectedDate(parsedDate ? dayjs(parsedDate) : null);
     } else {
-      setSelectedDate(isCellEditable ? defaultValue : null);
+      setSelectedDate(null);
     }
-  }, [isCellEditable, props.value]);
+  }, [props.value]);
 
   const handleDateChange = (value: PickerValue) => {
     const parsedDate = parseValidDate(value);
@@ -40,14 +33,10 @@ export const DateCell: FC<ICellRendererParams> = (props) => {
       setSelectedDate(dayjs(parsedDate));
       props.setValue?.(parsedDate);
     } else {
-      setSelectedDate(isCellEditable ? defaultValue : null);
-      props.setValue?.(isCellEditable ? defaultValue : null);
+      setSelectedDate(null);
+      props.setValue?.(null);
     }
   };
-
-  useEffect(() => {
-    handleDateChange(null);
-  }, [isCellEditable]);
 
   const pickerIcon = () => <Image src="icons/calendar.svg" width={13} height={13} alt="calendar" />;
 

@@ -223,9 +223,7 @@ class CapEventSettingsStore {
         if (manualRows.length > 0) {
           this.entitiesLineItem.set(entityLabel, manualRows);
         } else {
-          this.entitiesLineItem.set(entityLabel, [
-            prepareNewRow(LineItemTypes.entity, entityLabel),
-          ]);
+          this.entitiesLineItem.set(entityLabel, [prepareNewRow(LineItemTypes.entity)]);
         }
       }
     }

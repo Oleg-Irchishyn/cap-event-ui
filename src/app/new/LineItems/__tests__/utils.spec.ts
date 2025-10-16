@@ -1,4 +1,4 @@
-import { getReasons, getBySelectedCategoryAndReason, isRowEmpty, isRowFilled } from '../utils';
+import { getReasons, getBySelectedCategoryAndReason, isRowEmpty } from '../utils';
 import { Account } from '@/clients/ReferenceData';
 import { LineItemRow } from '@/app/new/LineItems/types';
 
@@ -54,16 +54,6 @@ describe('LineItems/utils', () => {
     investment: '',
     allocationBasis: '',
     amount: 0,
-  } as LineItemRow;
-
-  const mockedFilledRow = {
-    capitalCategory: 'Value 1',
-    callDistributionReason: 'Value 2',
-    defaultDescription: 'Value 3',
-    insideCommitment: 'Value 4',
-    investment: 'Value 5',
-    allocationBasis: 'Value 6',
-    amount: 100,
   } as LineItemRow;
 
   const mockedRowWithSpaces = {
@@ -144,22 +134,9 @@ describe('LineItems/utils', () => {
     });
   });
 
-  describe('isRowFilled', () => {
-    it('should return true for a fully filled row', () => {
-      const result = isRowFilled(mockedFilledRow);
-      expect(result).toEqual(true);
-    });
-
-    it('should return false for a not fully filled row', () => {
-      const result = isRowFilled(mockedPartiallyRow);
-      expect(result).toEqual(false);
-    });
-  });
-
-  describe('extra cases for isRowEmpty/isRowFilled', () => {
+  describe('extra cases for isRowEmpty', () => {
     it('should treat whitespace-only strings as non-empty but amount 0 prevents "filled"', () => {
       expect(isRowEmpty(mockedRowWithSpaces)).toEqual(false);
-      expect(isRowFilled(mockedRowWithSpaces)).toEqual(false);
     });
   });
 });

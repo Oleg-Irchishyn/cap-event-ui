@@ -49,11 +49,10 @@ describe('prepareNewRow', () => {
     expect(result.inheritedId).toBeUndefined();
   });
 
-  it('should include prDate and prFlag when level is entity', () => {
-    const result = prepareNewRow('entity', 'test-entity');
+  it('should include prFlag when level is entity', () => {
+    const result = prepareNewRow('entity');
 
-    expect(result.prDate).toEqual(new Date('2024-01-01'));
-    expect(result.prFlag).toBe('Yes');
+    expect(result.prFlag).toBe('');
   });
 
   it('should not include prDate and prFlag when level is not entity', () => {

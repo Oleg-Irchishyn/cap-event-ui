@@ -158,8 +158,7 @@ describe('DateCell', () => {
     fireEvent.click(selectButton);
 
     expect(mockProps.setValue).toHaveBeenCalledWith(expect.any(Date));
-    // setValue is called twice: once in useEffect and once on click
-    expect(mockProps.setValue).toHaveBeenCalledTimes(2);
+    expect(mockProps.setValue).toHaveBeenCalledTimes(1);
   });
 
   it('should handle inherited data styling', () => {

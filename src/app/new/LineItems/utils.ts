@@ -45,15 +45,3 @@ export const isRowEmpty = (data: LineItemRow) => {
     data.amount === 0
   );
 };
-
-export const isRowFilled = (data: LineItemRow) => {
-  return (
-    data.capitalCategory !== '' &&
-    data.callDistributionReason !== '' &&
-    data.defaultDescription !== '' &&
-    data.insideCommitment !== '' &&
-    data.investment !== '' &&
-    data.allocationBasis !== '' &&
-    data.amount !== 0
-  );
-};

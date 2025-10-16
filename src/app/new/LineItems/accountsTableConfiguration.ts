@@ -287,10 +287,10 @@ export const entityColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.prDate],
     field: AccountFields.prDate,
     editable: editableCallback,
-    flex: 1,
     cellRenderer: DateCell,
     cellEditor: DateCell,
     cellStyle: { padding: '0px' },
+    maxWidth: 120,
     // Satisfy AG Grid object data type requirements
     valueFormatter: ({ value }: { value: unknown }) =>
       value instanceof Date ? value.toLocaleDateString() : ((value as string) ?? ''),
@@ -305,7 +305,7 @@ export const entityColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    maxWidth: 100,
     cellStyle: { padding: '0px' },
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.prFlag, accounts, entityKey),

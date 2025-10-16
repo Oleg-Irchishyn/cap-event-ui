@@ -1,13 +1,11 @@
 import { LineItemRow } from '@/app/new/LineItems/types';
-import { LineItemTypes, YesNoOptions } from '@/app/new/LineItems/const';
-import { entityDatesStore } from '@/stores';
+import { LineItemTypes } from '@/app/new/LineItems/const';
 
 let rowIdCounter = 0;
 
-export const prepareNewRow = (level?: string, entityKey?: string): LineItemRow => {
-  const prDate = entityDatesStore.getEntityDueDate(entityKey ?? '') || undefined;
+export const prepareNewRow = (level?: string): LineItemRow => {
   const levelSpecificColumns =
-    level === LineItemTypes.entity ? { prDate, prFlag: YesNoOptions[0] } : {};
+    level === LineItemTypes.entity ? { prDate: undefined, prFlag: '' } : {};
 
   return {
     id: `row-${++rowIdCounter}-${Date.now()}`,
