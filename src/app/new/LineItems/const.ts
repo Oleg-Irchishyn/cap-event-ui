@@ -34,6 +34,7 @@ export const AccountFieldIds = {
   [AccountFields.prFlag]: '6',
   [AccountFields.allocationBasis]: '7',
   [AccountFields.amount]: '8',
+  [AccountFields.actions]: '9',
 };
 
 export const investmentMandatoryCategories = [

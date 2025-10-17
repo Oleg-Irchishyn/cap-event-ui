@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AgGridReact } from 'ag-grid-react';
 import {
@@ -14,6 +14,7 @@ import {
   RowClickedEvent,
   themeAlpine,
   DragStoppedEvent,
+  ColumnState,
 } from 'ag-grid-community';
 
 import { TableWrapper } from './styles';
@@ -66,6 +67,20 @@ const ConfigurationTable: FC<Props> = ({
 
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
+  const applyPinnedFromDefs = useCallback(() => {
+    if (!gridApi) return;
+    const state: ColumnState[] = columnDefs
+      .map((def): ColumnState | null => {
+        const colId = def.colId ?? (typeof def.field === 'string' ? def.field : undefined);
+        if (!colId || def.pinned === undefined || def.pinned === null) return null;
+        return { colId, pinned: def.pinned };
+      })
+      .filter((s): s is ColumnState => s !== null);
+    if (state.length) {
+      gridApi.applyColumnState({ defaultState: { pinned: null }, state, applyOrder: false });
+    }
+  }, [gridApi, columnDefs]);
+
   useEffect(() => {
     if (!gridApi) return;
     const isEmpty = !rowData || (Array.isArray(rowData) && rowData.length === 0);
@@ -79,6 +94,11 @@ const ConfigurationTable: FC<Props> = ({
     }
     gridApi.hideOverlay();
   }, [gridApi, isLoading, rowData]);
+
+  // Ensure pinned state persists across re-renders/resizing by reapplying it from columnDefs
+  useEffect(() => {
+    applyPinnedFromDefs();
+  }, [applyPinnedFromDefs]);
 
   const safeRowData = useMemo(() => {
     if (!Array.isArray(rowData)) return [] as unknown[];
@@ -113,6 +133,12 @@ const ConfigurationTable: FC<Props> = ({
         headerHeight={40}
         onGridReady={(params: GridReadyEvent) => {
           setGridApi(params.api);
+        }}
+        onGridSizeChanged={() => {
+          applyPinnedFromDefs();
+        }}
+        onFirstDataRendered={() => {
+          applyPinnedFromDefs();
         }}
         getRowId={(params) => {
           const data = params.data as { id?: string };

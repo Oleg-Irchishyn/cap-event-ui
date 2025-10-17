@@ -7,7 +7,7 @@ import {
   YesNoOptions,
 } from '@/app/new/LineItems/const';
 import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownSearchCell';
-import { EditableCallbackParams, ICellEditorParams } from 'ag-grid-community';
+import { EditableCallbackParams, ICellEditorParams, ColDef } from 'ag-grid-community';
 import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
 import { AmountCell } from '@/app/new/LineItems/cellComponents/AmountCell';
 import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
@@ -103,16 +103,16 @@ export const fundGroupColumnDef = ({
   editableCallback,
   level = LineItemTypes.group,
   entityKey,
-}: ColumnDefProp) => [
+}: ColumnDefProp): ColDef[] => [
   ...(isMultiLineItems
     ? [
         {
           headerName: '',
           field: 'drag',
           rowDrag: true,
-          flex: 1,
-          maxWidth: 15,
-          cellStyle: { padding: '0px' },
+          pinned: 'left' as const,
+          width: 15,
+          cellStyle: { padding: '0px 10px' },
         },
       ]
     : []),
@@ -123,7 +123,8 @@ export const fundGroupColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellEditorParams: { options: getCategories(accounts) },
     cellStyle: { padding: '0px' },
   },
@@ -134,7 +135,8 @@ export const fundGroupColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellStyle: { padding: '0px' },
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.callDistributionReason, accounts),
@@ -144,7 +146,8 @@ export const fundGroupColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.defaultDescription],
     field: AccountFields.defaultDescription,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     cellStyle: { padding: '0px' },
@@ -156,7 +159,7 @@ export const fundGroupColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.insideCommitment],
     field: AccountFields.insideCommitment,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     cellStyle: { padding: '0px' },
@@ -168,7 +171,7 @@ export const fundGroupColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.investment],
     field: AccountFields.investment,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellRenderer: InvestmentDropdown,
     cellEditor: InvestmentDropdown,
     cellStyle: { padding: '0px' },
@@ -180,7 +183,7 @@ export const fundGroupColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellStyle: { padding: '0px' },
     cellEditorParams: {
       options: getAllocationBasisOptions(level),
@@ -192,14 +195,16 @@ export const fundGroupColumnDef = ({
     field: AccountFields.amount,
     cellRenderer: AmountCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'right',
+    width: 120,
     headerClass: 'custom-header',
     suppressKeyboardEvent: () => true,
   },
   {
     colId: AccountFieldIds[AccountFields.actions],
     headerName: AccountFieldTitles[AccountFields.actions],
-    flex: 0.5,
+    pinned: 'right',
+    width: 96,
     cellRenderer: ActionsCell,
     cellStyle: { padding: '0px' },
     cellEditorParams: { level, entityKey: entityKey ?? '' },
@@ -212,16 +217,16 @@ export const entityColumnDef = ({
   editableCallback,
   level = LineItemTypes.entity,
   entityKey,
-}: ColumnDefProp) => [
+}: ColumnDefProp): ColDef[] => [
   ...(isMultiLineItems
     ? [
         {
           headerName: '',
           field: 'drag',
           rowDrag: true,
-          flex: 1,
-          maxWidth: 15,
-          cellStyle: { padding: '0px' },
+          pinned: 'left' as const,
+          width: 15,
+          cellStyle: { padding: '0 10px' },
         },
       ]
     : []),
@@ -232,7 +237,8 @@ export const entityColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellEditorParams: { options: getCategories(accounts) },
     cellStyle: { padding: '0px' },
   },
@@ -243,7 +249,8 @@ export const entityColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellStyle: { padding: '0px' },
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.callDistributionReason, accounts),
@@ -253,7 +260,8 @@ export const entityColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.defaultDescription],
     field: AccountFields.defaultDescription,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'left',
+    width: 176,
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     cellStyle: { padding: '0px' },
@@ -265,7 +273,7 @@ export const entityColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.insideCommitment],
     field: AccountFields.insideCommitment,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     cellStyle: { padding: '0px' },
@@ -277,7 +285,7 @@ export const entityColumnDef = ({
     headerName: AccountFieldTitles[AccountFields.investment],
     field: AccountFields.investment,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellRenderer: InvestmentDropdown,
     cellEditor: InvestmentDropdown,
     cellStyle: { padding: '0px' },
@@ -317,7 +325,7 @@ export const entityColumnDef = ({
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
-    flex: 1,
+    width: 164,
     cellStyle: { padding: '0px' },
     cellEditorParams: {
       options: getAllocationBasisOptions(level),
@@ -329,14 +337,16 @@ export const entityColumnDef = ({
     field: AccountFields.amount,
     cellRenderer: AmountCell,
     editable: editableCallback,
-    flex: 1,
+    pinned: 'right',
+    width: 120,
     headerClass: 'custom-header',
     suppressKeyboardEvent: () => true,
   },
   {
     colId: AccountFieldIds[AccountFields.actions],
     headerName: AccountFieldTitles[AccountFields.actions],
-    flex: 0.5,
+    pinned: 'right',
+    width: 96,
     cellRenderer: ActionsCell,
     cellStyle: { padding: '0px' },
     cellEditorParams: { level, entityKey: entityKey ?? '' },
