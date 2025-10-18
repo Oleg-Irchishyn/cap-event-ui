@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.35](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.34&targetVersion=GTv0.0.35) (2025-10-18)
+
+
+### Features
+
+* [TASK-6253]: [FE] Implement CELI scroll ([4288b7e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4288b7eb011b8ac87a2b296670a3d5f4ea38474e)), closes [#6253](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6253) [#6254](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6254)
+
 ### [0.0.34](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.33&targetVersion=GTv0.0.34) (2025-10-17)
 
 
