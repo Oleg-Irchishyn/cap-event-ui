@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AgGridReact } from 'ag-grid-react';
 import {
@@ -15,6 +15,7 @@ import {
   themeAlpine,
   DragStoppedEvent,
   ColumnState,
+  ColumnResizedEvent,
 } from 'ag-grid-community';
 
 import { TableWrapper } from './styles';
@@ -52,7 +53,7 @@ const ConfigurationTable: FC<Props> = ({
       sortable: false,
       filter: false,
       floatingFilter: false,
-      suppressSizeToFit: false,
+      suppressSizeToFit: true,
       suppressMovable: true,
     }),
     [],
@@ -66,18 +67,30 @@ const ConfigurationTable: FC<Props> = ({
   );
 
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
+  const lastColumnStateRef = useRef<ColumnState[] | null>(null);
+  const manuallyResizedColsRef = useRef<Set<string>>(new Set());
+  // no-op state removed; rely on applySavedColumnState triggers
 
-  const applyPinnedFromDefs = useCallback(() => {
+  const applyColumnStateFromDefsAndSaved = useCallback(() => {
     if (!gridApi) return;
-    const state: ColumnState[] = columnDefs
+    // Apply pinned state from columnDefs first
+    const pinnedState: ColumnState[] = columnDefs
       .map((def): ColumnState | null => {
         const colId = def.colId ?? (typeof def.field === 'string' ? def.field : undefined);
         if (!colId || def.pinned === undefined || def.pinned === null) return null;
         return { colId, pinned: def.pinned };
       })
       .filter((s): s is ColumnState => s !== null);
-    if (state.length) {
-      gridApi.applyColumnState({ defaultState: { pinned: null }, state, applyOrder: false });
+    if (pinnedState.length) {
+      gridApi.applyColumnState({
+        defaultState: { pinned: null },
+        state: pinnedState,
+        applyOrder: false,
+      });
+    }
+    // Then apply any saved widths/order/etc
+    if (lastColumnStateRef.current?.length) {
+      gridApi.applyColumnState({ state: lastColumnStateRef.current, applyOrder: false });
     }
   }, [gridApi, columnDefs]);
 
@@ -95,10 +108,10 @@ const ConfigurationTable: FC<Props> = ({
     gridApi.hideOverlay();
   }, [gridApi, isLoading, rowData]);
 
-  // Ensure pinned state persists across re-renders/resizing by reapplying it from columnDefs
+  // Ensure pinned state and saved widths persist across re-renders/resizing
   useEffect(() => {
-    applyPinnedFromDefs();
-  }, [applyPinnedFromDefs]);
+    applyColumnStateFromDefsAndSaved();
+  }, [applyColumnStateFromDefsAndSaved]);
 
   const safeRowData = useMemo(() => {
     if (!Array.isArray(rowData)) return [] as unknown[];
@@ -106,13 +119,37 @@ const ConfigurationTable: FC<Props> = ({
     return rowData.map((r) => (r !== null && typeof r === 'object' ? { ...r } : r));
   }, [rowData]);
 
+  const effectiveColumnDefs = Array.isArray(columnDefs)
+    ? columnDefs.map((def) => {
+        const colId = def.colId ?? (typeof def.field === 'string' ? def.field : undefined);
+        if (!colId) return def;
+        const saved = lastColumnStateRef.current?.find((s) => s.colId === colId);
+        if (saved && manuallyResizedColsRef.current.has(colId) && saved.width) {
+          return { ...def, width: saved.width, flex: undefined };
+        }
+        return def;
+      })
+    : columnDefs;
+
+  const handleColumnResized = useCallback((e: ColumnResizedEvent) => {
+    if (!e.finished || !e.api) return;
+    lastColumnStateRef.current = e.api.getColumnState();
+    if (e.source === 'uiColumnResized') {
+      if (e.columns?.length) {
+        e.columns.forEach((c) => manuallyResizedColsRef.current.add(c.getColId()));
+      } else if (e.column) {
+        manuallyResizedColsRef.current.add(e.column.getColId());
+      }
+    }
+  }, []);
+
   return (
     <TableWrapper
       data-testid={prepareDataTestId('table-wrapper', testId)}
       className={`ag-theme-alpine  ${isDisabled ? 'grid-disabled' : ''}`}
     >
       <AgGridReact
-        columnDefs={columnDefs}
+        columnDefs={effectiveColumnDefs}
         rowData={safeRowData}
         defaultColDef={defaultColDef}
         onCellValueChanged={onCellValueChanged}
@@ -135,11 +172,12 @@ const ConfigurationTable: FC<Props> = ({
           setGridApi(params.api);
         }}
         onGridSizeChanged={() => {
-          applyPinnedFromDefs();
+          applyColumnStateFromDefsAndSaved();
         }}
         onFirstDataRendered={() => {
-          applyPinnedFromDefs();
+          applyColumnStateFromDefsAndSaved();
         }}
+        onColumnResized={handleColumnResized}
         getRowId={(params) => {
           const data = params.data as { id?: string };
           return data.id || `row-${JSON.stringify(params.data).slice(0, 10)}`;
