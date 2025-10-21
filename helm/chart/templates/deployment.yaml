@@ -32,6 +32,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.registry }}/{{ .Values.image.name }}:{{ include "helper.BuildVersion" . }}
         imagePullPolicy: Always
+        {{- if .Values.container.resources }}
+        resources:
+        {{- toYaml .Values.container.resources | nindent 10 }}
+        {{ end }}
         env:
         # Values from envVars
         {{- range $k, $v := .Values.envVars }}
