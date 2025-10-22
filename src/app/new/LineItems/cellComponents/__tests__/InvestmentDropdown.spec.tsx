@@ -3,9 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import { InvestmentDropdown } from '../InvestmentDropdown';
 import { ICellRendererParams } from 'ag-grid-community';
 import { capEventSettingsStore } from '@/stores';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import { InvestmentDropdown } from '../InvestmentDropdown';
 
 // Mock the store
 jest.mock('@/stores', () => ({
@@ -158,8 +159,8 @@ describe('InvestmentDropdown', () => {
       const icon = screen.getByTestId('link-icon-1');
       fireEvent.mouseOver(icon);
 
-      await waitFor(() => screen.getByTestId('link-tooltip'));
-      expect(screen.getByTestId('link-tooltip')).toBeInTheDocument();
+      await waitFor(() => screen.getByTestId(prepareDataTestId('tooltip', 'link-tooltip')));
+      expect(screen.getByTestId(prepareDataTestId('tooltip', 'link-tooltip'))).toBeInTheDocument();
     });
   });
 

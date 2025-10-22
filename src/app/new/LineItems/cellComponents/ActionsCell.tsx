@@ -5,6 +5,7 @@ import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemTypes } from '../const';
 import Tooltip from '@/app/components/Tooltip';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 export const ActionsCell: FC<ICellRendererParams> = (props) => {
   const [showPreviewTooltip, setPreviewTooltip] = useState(false);
@@ -83,7 +84,11 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
           onMouseEnter={() => isPreviewDisabled && setPreviewTooltip(true)}
           onMouseLeave={() => setPreviewTooltip(false)}
         >
-          <PreviewButton data-is-disabled={isPreviewDisabled} onClick={handlePreviewClick} />
+          <PreviewButton
+            data-testid={prepareDataTestId('', 'preview-icon')}
+            data-is-disabled={isPreviewDisabled}
+            onClick={handlePreviewClick}
+          />
           <Tooltip
             tooltipMessage="Not all required fields are populated"
             showTooltip={showPreviewTooltip}
@@ -93,7 +98,11 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
         </PreviewWrapper>
       )}
       {!props.data.inheritedId && (
-        <DeleteButton data-is-disabled={isDeleteDisabled()} onClick={handleDeleteCELI} />
+        <DeleteButton
+          data-testid={prepareDataTestId('', 'delete-icon')}
+          data-is-disabled={isDeleteDisabled()}
+          onClick={handleDeleteCELI}
+        />
       )}
     </ActionButtonsWrapper>
   );

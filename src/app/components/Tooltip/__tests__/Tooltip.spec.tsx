@@ -2,6 +2,7 @@ import React, { createRef } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Tooltip from '../Tooltip';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 // Mock createPortal to render tooltip in the same container
 jest.mock('react-dom', () => ({
@@ -57,7 +58,7 @@ describe('Tooltip', () => {
     it('should render tooltip when showTooltip is true and message is provided', () => {
       render(<Tooltip {...defaultProps} />);
 
-      const tooltip = screen.getByTestId('test-tooltip');
+      const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
       expect(tooltip).toBeInTheDocument();
       expect(tooltip).toHaveTextContent('Test tooltip message');
     });
@@ -65,14 +66,14 @@ describe('Tooltip', () => {
     it('should not render tooltip when showTooltip is false', () => {
       render(<Tooltip {...defaultProps} showTooltip={false} />);
 
-      const tooltip = screen.queryByTestId('test-tooltip');
+      const tooltip = screen.queryByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
       expect(tooltip).not.toBeInTheDocument();
     });
 
     it('should not render tooltip when message is empty', () => {
       render(<Tooltip {...defaultProps} tooltipMessage="" />);
 
-      const tooltip = screen.queryByTestId('test-tooltip');
+      const tooltip = screen.queryByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
       expect(tooltip).not.toBeInTheDocument();
     });
   });
@@ -85,7 +86,7 @@ describe('Tooltip', () => {
       fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
 
       await waitFor(() => {
-        const tooltip = screen.getByTestId('test-tooltip');
+        const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
         expect(tooltip).toHaveStyle({
           top: '61px', // 100 + 1 (offset) - 40 (tooltip offset)
           left: '101px', // 100 + 1 (offset)
@@ -107,7 +108,7 @@ describe('Tooltip', () => {
       fireEvent.mouseMove(window, { clientX: 100, clientY: 80 });
 
       await waitFor(() => {
-        const tooltip = screen.getByTestId('test-tooltip');
+        const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
         expect(tooltip).toHaveStyle({
           top: '-1px', // 80 - 40 (tooltip height) - 1 (offset)
           left: '101px',
@@ -122,7 +123,7 @@ describe('Tooltip', () => {
       fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
 
       await waitFor(() => {
-        const tooltip = screen.getByTestId('test-tooltip');
+        const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
         expect(tooltip).toHaveStyle({
           left: '101px', // 100 + 1 (offset)
         });
@@ -136,7 +137,7 @@ describe('Tooltip', () => {
       fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
 
       await waitFor(() => {
-        const tooltip = screen.getByTestId('test-tooltip');
+        const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
         expect(tooltip).toHaveStyle({
           top: '61px', // 100 + 1 (offset) - 40 (tooltip offset)
           left: '101px', // 100 + 1 (offset)
@@ -147,7 +148,7 @@ describe('Tooltip', () => {
       fireEvent.mouseMove(window, { clientX: 200, clientY: 200 });
 
       await waitFor(() => {
-        const tooltip = screen.getByTestId('test-tooltip');
+        const tooltip = screen.getByTestId(prepareDataTestId('tooltip', 'test-tooltip'));
         expect(tooltip).toHaveStyle({
           top: '161px', // 200 + 1 (offset) - 40 (tooltip offset)
           left: '201px', // 200 + 1 (offset)

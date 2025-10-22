@@ -1,5 +1,6 @@
 import React, { FC, RefObject, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 type TooltipProps = {
   showTooltip: boolean;
@@ -73,7 +74,7 @@ const Tooltip: FC<TooltipProps> = ({ showTooltip, tooltipMessage, targetRef, tes
   return showTooltip && tooltipMessage
     ? createPortal(
         <div
-          data-testid={testId}
+          data-testid={prepareDataTestId('tooltip', testId)}
           style={{
             display: 'flex',
             backgroundColor: 'white',
