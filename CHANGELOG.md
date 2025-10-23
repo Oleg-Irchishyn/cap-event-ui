@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.36](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.35&targetVersion=GTv0.0.36) (2025-10-23)
+
+
+### Features
+
+* [TASK]-6251: [FE] Implement column resize ([c5e5c98](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/c5e5c989f06b77ab5156b37d13687d1e6155efd2)), closes [#6251](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6251)
+
+
+### Bug Fixes
+
+* [Issue-NO-TASK] : [FE] add-data-test-ids-to-bin-and-view-icons ([22ef343](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/22ef3431badb550ca063cfe5f25f66bb330fe650))
+
 ### [0.0.35](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.34&targetVersion=GTv0.0.35) (2025-10-18)
 
 
