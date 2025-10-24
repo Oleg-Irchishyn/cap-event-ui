@@ -33,6 +33,7 @@ envVars:
   NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://dev.gen2fund.com/cap-event-package
   # TODO: update code to support this
   NEXT_PUBLIC_BACKEND_API: https://dev.gen2fund.com/api/cap-event
+  BACKEND_HOST: https://dev.gen2fund.com
 
 # Use this to configure hostname for Ingress
 ingress:
