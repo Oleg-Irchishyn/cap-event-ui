@@ -101,6 +101,10 @@
 
 
 /* Scrollbar styles */
+
+.ag-theme-alpine .ag-body-horizontal-scroll {
+  background: #F9F9F9 !important;
+}
 .ag-horizontal-right-spacer,
 .ag-horizontal-left-spacer {
   border: none !important;
