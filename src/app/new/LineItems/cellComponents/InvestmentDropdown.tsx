@@ -153,6 +153,8 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
 
   const dropdownWidth = triggerRef?.current?.getBoundingClientRect().width || 'auto';
 
+  if (props.data?.isTotalRow) return null;
+
   return (
     <DropdownContainer>
       <DropdownWrapper

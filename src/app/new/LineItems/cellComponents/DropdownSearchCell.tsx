@@ -145,6 +145,8 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
 
   const shouldShowPlaceholder = props.data?.inheritedId ? !selectedValue : !isCellEditable;
 
+  if (props.data?.isTotalRow) return null;
+
   return (
     <DropdownContainer>
       <DropdownWrapper

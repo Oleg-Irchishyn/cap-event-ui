@@ -1,7 +1,7 @@
 import { ICellRendererParams, EditableCallbackParams } from 'ag-grid-community';
 import React, { KeyboardEventHandler, useEffect, useState, FC, useMemo } from 'react';
 import { AmountInput } from '@/app/new/LineItems/styles';
-import { formatNumberToAmount } from '@/utils/formatNumberToAmount';
+import { formatValue } from '@/app/new/LineItems/utils';
 
 export const AmountCell: FC<ICellRendererParams> = (props) => {
   const [inputValue, setInputValue] = useState('');
@@ -13,18 +13,6 @@ export const AmountCell: FC<ICellRendererParams> = (props) => {
         : true,
     [props],
   );
-
-  const formatValue = (value: number | string) => {
-    const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(numValue)) return '';
-    if (numValue === null) return '';
-    if (numValue === 0) return '';
-
-    const formValue = formatNumberToAmount(Math.abs(numValue));
-    const isNegative = numValue < 0;
-
-    return isNegative ? `($${formValue})` : `$${formValue}`;
-  };
 
   useEffect(() => {
     if (props.value !== undefined) {

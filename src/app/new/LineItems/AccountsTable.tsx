@@ -10,6 +10,7 @@ import '@/app/new/grid-styles.css';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
+import useAccountsTableRowData from '@/hooks/useAccountsTableRowData';
 import {
   AccountFields,
   AccountFieldIds,
@@ -66,6 +67,8 @@ const AccountsTable: FC<Props> = ({
 
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
+      if (params.data?.isTotalRow) return false;
+
       if (isDisabled) return false;
       if (level === LineItemTypes.group) {
         if (
@@ -135,6 +138,9 @@ const AccountsTable: FC<Props> = ({
   const onCellValueChanged = useCallback(
     (params: CellValueChangedEvent) => {
       const { data, colDef, newValue } = params;
+
+      if (data?.isTotalRow) return;
+
       const fieldName = colDef.field || '-';
       const cellKeysToUnBlock: string[] = [];
       const cellKeysToBlock: string[] = [];
@@ -394,13 +400,15 @@ const AccountsTable: FC<Props> = ({
         })
       : entityColumnDef({ accounts, isMultiLineItems, editableCallback, entityKey });
 
+  const tableData = useAccountsTableRowData(level, lineItems);
+
   return (
     <>
       <ConfigurationTable
         testId={testId}
         isDisabled={isDisabled}
         columnDefs={columnDefs}
-        rowData={lineItems || []}
+        rowData={tableData}
         onCellValueChanged={onCellValueChanged}
         onDragStopped={onDragStopped}
       />

@@ -348,9 +348,18 @@ const GeneralSettings = () => {
   };
 
   const deselectFundsHandler = (item: DropdownItemType) => () => {
+    if (item.isDisabled) return;
+
     const updatedValues = fundEntities.map((fund) =>
       item.label === fund.label ? { ...fund, state: ITEM_STATES.OPTIONAL } : fund,
     );
+
+    if (isConfirmationModalEnabled && !capEventSettingsStore.isEntitiesDropdownOpen) {
+      onEntitiesDropdownOpenChange(true);
+      capEventSettingsStore.setFundEntities(updatedValues);
+      onEntitiesDropdownOpenChange(false);
+      return;
+    }
 
     capEventSettingsStore.setFundEntities(updatedValues);
   };

@@ -1,4 +1,4 @@
-import { getReasons, getBySelectedCategoryAndReason, isRowEmpty } from '../utils';
+import { getReasons, getBySelectedCategoryAndReason, isRowEmpty, formatValue } from '../utils';
 import { Account } from '@/clients/ReferenceData';
 import { LineItemRow } from '@/app/new/LineItems/types';
 
@@ -137,6 +137,12 @@ describe('LineItems/utils', () => {
   describe('extra cases for isRowEmpty', () => {
     it('should treat whitespace-only strings as non-empty but amount 0 prevents "filled"', () => {
       expect(isRowEmpty(mockedRowWithSpaces)).toEqual(false);
+    });
+  });
+
+  describe('formatValue', () => {
+    it('should return empty string for non-numeric input', () => {
+      expect(formatValue('not_a_number')).toEqual('');
     });
   });
 });

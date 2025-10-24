@@ -114,8 +114,15 @@ describe('accountsTableConfiguration', () => {
       expect(result[0]).toMatchObject({
         headerName: '',
         field: 'drag',
-        rowDrag: true,
       });
+      const rowDrag = (
+        result[0] as unknown as {
+          rowDrag: (params: { data?: { isTotalRow?: boolean } }) => boolean;
+        }
+      ).rowDrag;
+      expect(typeof rowDrag).toBe('function');
+      expect(rowDrag({ data: {} })).toBe(true);
+      expect(rowDrag({ data: { isTotalRow: true } })).toBe(false);
     });
 
     it('should return column definitions without drag column when isMultiLineItems is false', () => {

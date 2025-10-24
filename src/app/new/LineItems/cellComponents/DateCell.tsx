@@ -40,6 +40,8 @@ export const DateCell: FC<ICellRendererParams> = (props) => {
 
   const pickerIcon = () => <Image src="icons/calendar.svg" width={13} height={13} alt="calendar" />;
 
+  if (props.data?.isTotalRow) return null;
+
   return (
     <DateCellWrapper data-is-inherited={!!props.data?.inheritedId}>
       <DatePicker

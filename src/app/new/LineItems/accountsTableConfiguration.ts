@@ -7,11 +7,18 @@ import {
   YesNoOptions,
 } from '@/app/new/LineItems/const';
 import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownSearchCell';
-import { EditableCallbackParams, ICellEditorParams, ColDef } from 'ag-grid-community';
+import {
+  EditableCallbackParams,
+  ICellEditorParams,
+  ColDef,
+  ICellRendererParams,
+} from 'ag-grid-community';
 import { InvestmentDropdown } from '@/app/new/LineItems/cellComponents/InvestmentDropdown';
 import { AmountCell } from '@/app/new/LineItems/cellComponents/AmountCell';
 import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
 import { DateCell } from '@/app/new/LineItems/cellComponents/DateCell';
+import { TotalRowAmountCell } from '@/app/new/LineItems/cellComponents/TotalRowAmountCell';
+import { TotalRowCategoryCell } from '@/app/new/LineItems/cellComponents/TotalRowCategoryCell';
 import { Account } from '@/clients/ReferenceData';
 import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 import { entityDatesStore } from '@/stores';
@@ -109,7 +116,7 @@ export const fundGroupColumnDef = ({
         {
           headerName: '',
           field: 'drag',
-          rowDrag: true,
+          rowDrag: (params: { data?: { isTotalRow?: boolean } }) => !params.data?.isTotalRow,
           pinned: 'left' as const,
           resizable: false,
           width: 15,
@@ -206,7 +213,8 @@ export const fundGroupColumnDef = ({
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
     field: AccountFields.amount,
-    cellRenderer: AmountCell,
+    cellRendererSelector: (params: ICellRendererParams) =>
+      params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
     editable: editableCallback,
     pinned: 'right',
     minWidth: 100,
@@ -240,7 +248,7 @@ export const entityColumnDef = ({
         {
           headerName: '',
           field: 'drag',
-          rowDrag: true,
+          rowDrag: (params: { data?: { isTotalRow?: boolean } }) => !params.data?.isTotalRow,
           pinned: 'left' as const,
           resizable: false,
           width: 15,
@@ -252,7 +260,10 @@ export const entityColumnDef = ({
     colId: AccountFieldIds[AccountFields.capitalCategory],
     headerName: AccountFieldTitles[AccountFields.capitalCategory],
     field: AccountFields.capitalCategory,
-    cellRenderer: DropdownSearchCell,
+    cellRendererSelector: (params: ICellRendererParams) =>
+      params.data?.isTotalRow
+        ? { component: TotalRowCategoryCell }
+        : { component: DropdownSearchCell },
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
     pinned: 'left',
@@ -369,7 +380,8 @@ export const entityColumnDef = ({
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
     field: AccountFields.amount,
-    cellRenderer: AmountCell,
+    cellRendererSelector: (params: ICellRendererParams) =>
+      params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
     editable: editableCallback,
     pinned: 'right',
     minWidth: 100,

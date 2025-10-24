@@ -76,6 +76,8 @@ export const ActionsCell: FC<ICellRendererParams> = (props) => {
     if (isPreviewDisabled) return;
   };
 
+  if (props.data?.isTotalRow) return null;
+
   return (
     <ActionButtonsWrapper>
       {level === LineItemTypes.entity && (
