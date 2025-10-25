@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.37](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.36&targetVersion=GTv0.0.37) (2025-10-25)
+
+
+### Features
+
+* [TASK-6246]: [FE] Implement total amount per entity ([211c1e3](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/211c1e3619b28a75e27e01d1ea099f4b89c3c1e2)), closes [#6246](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6246) [#6749](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6749)
+
+
+### Bug Fixes
+
+* [Issue-NO_TASK]: [FE] added transparent backgroud to scrollbar ([b5333ba](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/b5333ba03b8297490a205f2224bdb261622fa968))
+* [Issue-NO_TASK]: [FE] update dev env baseUrl ([31de31e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/31de31ed0b6b0be51f3a84902a66ecdba3e85b3e))
+
 ### [0.0.36](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.35&targetVersion=GTv0.0.36) (2025-10-23)
 
 
