@@ -22,6 +22,7 @@ import { TotalRowCategoryCell } from '@/app/new/LineItems/cellComponents/TotalRo
 import { Account } from '@/clients/ReferenceData';
 import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 import { entityDatesStore } from '@/stores';
+import { TableHeaderWithTooltip } from '@/app/components/TableHeaderWithTooltip/TableHeaderWithTooltip';
 
 const ALLOCATION_BASIS_MOCK_OPTIONS = [
   'Commitment',
@@ -212,6 +213,7 @@ export const fundGroupColumnDef = ({
   {
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
+    headerComponent: TableHeaderWithTooltip,
     field: AccountFields.amount,
     cellRendererSelector: (params: ICellRendererParams) =>
       params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
@@ -379,6 +381,7 @@ export const entityColumnDef = ({
   {
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
+    headerComponent: TableHeaderWithTooltip,
     field: AccountFields.amount,
     cellRendererSelector: (params: ICellRendererParams) =>
       params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
