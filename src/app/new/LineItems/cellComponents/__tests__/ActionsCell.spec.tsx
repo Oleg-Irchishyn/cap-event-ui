@@ -63,7 +63,7 @@ describe('ActionsCell', () => {
     it('should render delete button for non-inherited rows', () => {
       render(<ActionsCell {...mockProps} />);
       const buttons = screen.getAllByRole('button');
-      expect(buttons).toHaveLength(2); // Preview + Delete buttons
+      expect(buttons).toHaveLength(3); // Preview + Duplicate + Delete buttons
     });
 
     it('should not render delete button for inherited rows', () => {
@@ -73,7 +73,8 @@ describe('ActionsCell', () => {
       };
       render(<ActionsCell {...propsWithInherited} />);
       const buttons = screen.getAllByRole('button');
-      expect(buttons).toHaveLength(1); // Only Preview button
+      expect(buttons).toHaveLength(2); // Preview + Duplicate buttons
+      expect(screen.queryByTestId('delete-icon')).not.toBeInTheDocument();
     });
 
     it('should render preview button for entity level rows', () => {

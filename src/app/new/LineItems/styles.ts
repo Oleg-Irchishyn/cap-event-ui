@@ -379,6 +379,25 @@ export const DeleteButton = styled.button({
   },
 });
 
+export const DuplicateRowButton = styled.button({
+  width: '15px',
+  height: '15px',
+  border: 0,
+  padding: 0,
+  cursor: 'pointer',
+  background: `url(icons/duplicate-row.svg) no-repeat center center;`,
+  backgroundSize: 'contain',
+
+  '&[data-is-disabled="true"]': {
+    opacity: 0.5,
+    cursor: 'default',
+  },
+});
+
+export const DuplicateRowWrapper = styled.div({
+  display: 'flex',
+});
+
 export const PreviewButton = styled.button({
   width: '15px',
   height: '15px',
