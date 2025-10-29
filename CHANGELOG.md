@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.38](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.37&targetVersion=GTv0.0.38) (2025-10-29)
+
+
+### Features
+
+* added tooltip to Amount header ([486b18a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/486b18a6edd76741f763f78dfbe65752bf2b14f6))
+
 ### [0.0.37](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.36&targetVersion=GTv0.0.37) (2025-10-25)
 
 
