@@ -159,7 +159,9 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
         <Label
           data-is-placeholder={!selectedValue || shouldShowPlaceholder}
           data-is-inherited={
-            !!props.data?.inheritedId && props.colDef?.field !== AccountFields.allocationBasis
+            !!props.data?.inheritedId &&
+            props.colDef?.field !== AccountFields.allocationBasis &&
+            props.colDef?.field !== AccountFields.prFlag
           }
         >
           {shouldShowPlaceholder ? placeholder : selectedValue || placeholder}

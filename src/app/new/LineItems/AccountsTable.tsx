@@ -80,9 +80,11 @@ const AccountsTable: FC<Props> = ({
       }
 
       if (level === LineItemTypes.entity) {
-        if (params.colDef.field === AccountFields.allocationBasis) return true;
-        if (params.colDef.field === AccountFields.prDate) return true;
-        if (params.colDef.field === AccountFields.prFlag) return true;
+        if (params.data.capitalCategory) {
+          if (params.colDef.field === AccountFields.allocationBasis) return true;
+          if (params.colDef.field === AccountFields.prDate) return true;
+          if (params.colDef.field === AccountFields.prFlag) return true;
+        }
         // the if statement below is a temporary solution to enable all amounts on fund groups and entity levels
         if (params.data.inheritedId) {
           if (
