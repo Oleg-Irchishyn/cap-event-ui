@@ -8,6 +8,7 @@ export const AccountFields = {
   prFlag: 'prFlag',
   amount: 'amount',
   allocationBasis: 'allocationBasis',
+  drCr: 'drCr',
   actions: 'actions',
 };
 
@@ -21,6 +22,7 @@ export const AccountFieldTitles = {
   [AccountFields.prFlag]: 'PR Flag',
   [AccountFields.amount]: 'Amount',
   [AccountFields.allocationBasis]: 'Allocation Basis',
+  [AccountFields.drCr]: 'Dr/Cr',
   [AccountFields.actions]: 'Actions',
 };
 
@@ -34,7 +36,8 @@ export const AccountFieldIds = {
   [AccountFields.prFlag]: '6',
   [AccountFields.allocationBasis]: '7',
   [AccountFields.amount]: '8',
-  [AccountFields.actions]: '9',
+  [AccountFields.drCr]: '9',
+  [AccountFields.actions]: '10',
 };
 
 export const investmentMandatoryCategories = [

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const TotalRowAmountValue = styled.div`
   font-weight: 700;
   text-align: right;
+  letter-spacing: -0.1px;
 `;
 
 export const TotalRowAmountCell = (props: ICellRendererParams) => {

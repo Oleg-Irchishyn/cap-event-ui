@@ -31,7 +31,7 @@ export const ControlButton = styled.div(({ theme }) => ({
   alignItems: 'center',
   marginTop: '17px',
   fontSize: '14px',
-  fontWeight: 400,
+  fontWeight: 500,
 
   '&[data-is-disabled="true"]': {
     color: theme.colors.textDisabled,
@@ -44,16 +44,36 @@ export const AmountInput = styled.input(({ theme }) => ({
   height: '100%',
   textAlign: 'end',
   border: 'none',
-  paddingRight: '4px',
+  padding: '0',
   backgroundColor: 'transparent',
   fontSize: '14px',
-  fontWeight: 400,
+  fontWeight: 500,
 
   '&:focus': {
     outline: 'none',
   },
 
   '&::placeholder': {
+    fontStyle: 'italic',
+    color: theme.colors.textDisabled,
+  },
+}));
+
+export const DrCrInput = styled.input(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  textAlign: 'left',
+  border: 'none',
+  padding: '0 8px',
+  backgroundColor: 'transparent',
+  fontSize: '14px',
+  fontWeight: 500,
+
+  '&:focus': {
+    outline: 'none',
+  },
+
+  '&[disabled]': {
     fontStyle: 'italic',
     color: theme.colors.textDisabled,
   },

@@ -19,6 +19,7 @@ import { ActionsCell } from '@/app/new/LineItems/cellComponents/ActionsCell';
 import { DateCell } from '@/app/new/LineItems/cellComponents/DateCell';
 import { TotalRowAmountCell } from '@/app/new/LineItems/cellComponents/TotalRowAmountCell';
 import { TotalRowCategoryCell } from '@/app/new/LineItems/cellComponents/TotalRowCategoryCell';
+import { DrCrCell } from '@/app/new/LineItems/cellComponents/DrCrCell';
 import { Account } from '@/clients/ReferenceData';
 import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 import { entityDatesStore } from '@/stores';
@@ -223,6 +224,7 @@ export const fundGroupColumnDef = ({
     initialWidth: 120,
     resizable: true,
     headerClass: 'custom-header',
+    cellStyle: { padding: '0px 8px' },
     suppressKeyboardEvent: () => true,
   },
   {
@@ -390,7 +392,22 @@ export const entityColumnDef = ({
     minWidth: 100,
     initialWidth: 120,
     resizable: true,
+    cellStyle: { padding: '0px 8xp' },
     headerClass: 'custom-header',
+    suppressKeyboardEvent: () => true,
+  },
+  {
+    colId: AccountFieldIds[AccountFields.drCr],
+    headerName: AccountFieldTitles[AccountFields.drCr],
+    field: AccountFields.drCr,
+    valueGetter: ({ data }) => data?.amount,
+    cellRenderer: DrCrCell,
+    editable: false,
+    pinned: 'right',
+    minWidth: 40,
+    initialWidth: 52,
+    resizable: true,
+    cellStyle: { padding: '0px' },
     suppressKeyboardEvent: () => true,
   },
   {
