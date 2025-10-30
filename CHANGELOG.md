@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.39](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.38&targetVersion=GTv0.0.39) (2025-10-30)
+
+
+### Features
+
+* [TASK-6818]: [FE] Add Dr(Debit) Cr(Credit) fields to AccountTable ([4ae6b8a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4ae6b8ab79e3613ab03b78519ec7d9a55ab313e3)), closes [#6818](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6818)
+* [TASK-6982]: [FE] apply Duplicate CELIs logic on Fund Group and Entity levels ([fcd4c14](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/fcd4c1447c8bb818a1dbb36817105b8cf78db4b4))
+
+
+### Bug Fixes
+
+* [Issue-6818]: [FE] add cr and dr columns to fund group level ([db27e63](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/db27e633af6ee4c42b17ef2d943636fd730f9ba8)), closes [#6818](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6818)
+* PR date/flag behavior ([5619960](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5619960f5561de84e04de01dde66d1492d69656d))
+
 ### [0.0.38](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.37&targetVersion=GTv0.0.38) (2025-10-29)
 
 
