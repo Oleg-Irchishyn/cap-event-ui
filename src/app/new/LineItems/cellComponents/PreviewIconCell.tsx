@@ -4,6 +4,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { entityDatesStore } from '@/stores';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import Tooltip from '@/app/components/Tooltip';
+import { isRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
@@ -15,16 +16,20 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
 
   const isPreviewDisabled =
-    props.data.capitalCategory === '' ||
-    props.data.callDistributionReason === '' ||
-    props.data.defaultDescription === '' ||
-    props.data.insideCommitment === '' ||
-    props.data.allocationBasis === '' ||
-    props.data.amount === 0 ||
-    !(entityDatesStore.getEntityDueDate(entityKey) instanceof Date);
+    isRowEmpty(props.data) || !(entityDatesStore.getEntityDueDate(entityKey) instanceof Date);
 
   const handlePreviewClick = () => {
     if (isPreviewDisabled) return;
+  };
+
+  const onShowTooltip = () => {
+    if (isPreviewDisabled) {
+      setPreviewTooltip(true);
+    }
+  };
+
+  const onHideTooltip = () => {
+    setPreviewTooltip(false);
   };
 
   return (
@@ -32,8 +37,8 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
       {level === LineItemTypes.entity && (
         <PreviewWrapper
           ref={previewTooltipRef}
-          onMouseEnter={() => isPreviewDisabled && setPreviewTooltip(true)}
-          onMouseLeave={() => setPreviewTooltip(false)}
+          onMouseEnter={onShowTooltip}
+          onMouseLeave={onHideTooltip}
         >
           <PreviewButton
             data-testid={prepareDataTestId('', 'preview-icon')}

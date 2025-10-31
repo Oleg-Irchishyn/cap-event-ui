@@ -4,6 +4,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { capEventSettingsStore } from '@/stores';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import { isRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { DeleteButton } from '../styles';
@@ -11,25 +12,17 @@ import { DeleteButton } from '../styles';
 const DeleteCell: FC<ICellRendererParams> = (props) => {
   const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
 
-  const isRowEmpty = () => {
-    return (
-      props.data.capitalCategory === '' &&
-      props.data.callDistributionReason === '' &&
-      props.data.defaultDescription === '' &&
-      props.data.insideCommitment === '' &&
-      props.data.investment === '' &&
-      props.data.allocationBasis === '' &&
-      props.data.amount === 0
-    );
-  };
+  const isCurrentRowEmpty = isRowEmpty(props.data);
 
   const isDeleteDisabled = () => {
     if (level === LineItemTypes.group) {
-      return isRowEmpty() && capEventSettingsStore.fundGroupsLineItem.length === 1;
+      return isCurrentRowEmpty && capEventSettingsStore.fundGroupsLineItem.length === 1;
     }
     if (level === LineItemTypes.entity) {
       if (!capEventSettingsStore.entitiesLineItem.get(entityKey)) return true;
-      return isRowEmpty() && capEventSettingsStore.entitiesLineItem.get(entityKey)?.length === 1;
+      return (
+        isCurrentRowEmpty && capEventSettingsStore.entitiesLineItem.get(entityKey)?.length === 1
+      );
     }
   };
 
@@ -60,6 +53,7 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
       }
     }
   };
+
   return (
     <>
       {!props.data.inheritedId && (

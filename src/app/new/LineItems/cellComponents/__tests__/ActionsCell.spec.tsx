@@ -231,6 +231,7 @@ describe('ActionsCell', () => {
         },
       };
 
+      jest.spyOn(entityDatesStore, 'getEntityDueDate').mockReturnValue(null);
       render(<ActionsCell {...incompleteRowProps} />);
       const previewWrapper = screen.getByTestId('preview-icon-tooltip').parentElement;
 

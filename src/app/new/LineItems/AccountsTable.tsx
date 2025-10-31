@@ -30,6 +30,30 @@ const hasAllValues = <T extends object>(obj: T) => {
   return Object.values(obj).every(Boolean);
 };
 
+const isDependentPrefilledEditable = (params: EditableCallbackParams, level?: string) => {
+  const field = params.colDef.field;
+  const data = params.data || {};
+
+  if (data.capitalCategory) {
+    if (field === AccountFields.callDistributionReason) return true;
+
+    if (level === LineItemTypes.entity) {
+      if (field === AccountFields.allocationBasis) return true;
+      if (field === AccountFields.prDate) return true;
+      if (field === AccountFields.prFlag) return true;
+    }
+  }
+
+  if (
+    data.callDistributionReason &&
+    (field === AccountFields.defaultDescription || field === AccountFields.insideCommitment)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 type Props =
   | {
       isDisabled?: false;
@@ -79,12 +103,12 @@ const AccountsTable: FC<Props> = ({
         }
       }
 
+      // Unified handling for prefilled/duplicated rows on both levels
+      if (isDependentPrefilledEditable(params, level)) {
+        return true;
+      }
+
       if (level === LineItemTypes.entity) {
-        if (params.data.capitalCategory) {
-          if (params.colDef.field === AccountFields.allocationBasis) return true;
-          if (params.colDef.field === AccountFields.prDate) return true;
-          if (params.colDef.field === AccountFields.prFlag) return true;
-        }
         // the if statement below is a temporary solution to enable all amounts on fund groups and entity levels
         if (params.data.inheritedId) {
           if (

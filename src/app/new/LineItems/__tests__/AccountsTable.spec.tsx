@@ -36,6 +36,13 @@ jest.mock('@/app/components/ConfigurationTable', () => {
       <div data-testid={testId}>
         <div data-testid="column-defs">{JSON.stringify(columnDefs.length)}</div>
         <div data-testid="row-data">{JSON.stringify(rowData.length)}</div>
+        <div data-testid="actions-cell-params">
+          {(() => {
+            const defs = (columnDefs as unknown as Array<Record<string, unknown>>) || [];
+            const last = defs[defs.length - 1] || {};
+            return JSON.stringify((last as { cellEditorParams?: unknown }).cellEditorParams ?? {});
+          })()}
+        </div>
         <button
           data-testid="trigger-cell-change"
           onClick={() => {
@@ -204,6 +211,35 @@ describe('AccountsTable', () => {
       fireEvent.click(triggerButton);
 
       expect(setDataToStoreCallback).toHaveBeenCalledWith('test-entity', expect.any(Array));
+    });
+  });
+
+  describe('ActionsCell params for DuplicateRowCell', () => {
+    it('passes correct params at group level', () => {
+      const props = {
+        ...defaultProps,
+        level: 'group',
+      };
+
+      renderWithTheme(<AccountsTable {...props} />);
+      const paramsJson = screen.getByTestId('actions-cell-params').textContent || '{}';
+      const params = JSON.parse(paramsJson);
+      expect(params.level).toBe('group');
+      expect(params.entityKey).toBe('');
+    });
+
+    it('passes correct params at entity level', () => {
+      const props = {
+        ...defaultProps,
+        level: 'entity',
+        entityKey: 'entity-123',
+      };
+
+      renderWithTheme(<AccountsTable {...props} />);
+      const paramsJson = screen.getByTestId('actions-cell-params').textContent || '{}';
+      const params = JSON.parse(paramsJson);
+      expect(params.level).toBe('entity');
+      expect(params.entityKey).toBe('entity-123');
     });
   });
 });

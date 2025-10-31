@@ -15,10 +15,19 @@ jest.mock('@/app/components/Tooltip', () => {
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     hasMultipleEntitiesChosen: false,
+    fundGroupsLineItem: [],
+    setFundGroupsLineItem: jest.fn(),
+    entitiesLineItem: new Map(),
+    setEntitiesLineItem: jest.fn(),
   },
 }));
 
+jest.mock('@/utils/prepareNewRow', () => ({
+  prepareNewRow: jest.fn(() => ({ id: 'new-id' })),
+}));
+
 import { capEventSettingsStore } from '@/stores';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 const nonEmptyRow = {
   id: 'row-1',
@@ -48,6 +57,8 @@ describe('DuplicateRowCell', () => {
     Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
       get: () => false,
     });
+    capEventSettingsStore.fundGroupsLineItem = [];
+    capEventSettingsStore.entitiesLineItem = new Map();
   });
 
   it('renders only for fund group when multiple entities are selected', () => {
@@ -75,7 +86,7 @@ describe('DuplicateRowCell', () => {
     expect(btn).toHaveAttribute('data-is-disabled', 'false');
   });
 
-  it('renders for entity and disabled for group when a single entity is selected', () => {
+  it('hides for entity empty row and disabled for group when a single entity is selected', () => {
     Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
       get: () => false,
     });
@@ -86,8 +97,7 @@ describe('DuplicateRowCell', () => {
     } as unknown as ICellRendererParams;
 
     const { unmount } = render(<DuplicateRowCell {...entityProps} />);
-    const entityBtn = screen.getByTestId('duplicate-row-icon');
-    expect(entityBtn).toHaveAttribute('data-is-disabled', 'true');
+    expect(screen.queryByTestId('duplicate-row-icon')).not.toBeInTheDocument();
     unmount();
 
     const groupProps = {
@@ -122,5 +132,36 @@ describe('DuplicateRowCell', () => {
 
     fireEvent.mouseLeave(wrapper);
     expect(tooltip).toHaveAttribute('data-show-tooltip', 'false');
+  });
+
+  it('duplicates a fund group row below the source row', () => {
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => true,
+    });
+
+    const row1 = { ...nonEmptyRow, id: 'row-1' };
+    const row2 = { ...nonEmptyRow, id: 'row-2', defaultDescription: 'Another' };
+    capEventSettingsStore.fundGroupsLineItem = [row1, row2] as unknown as LineItemRow[];
+
+    const props = {
+      data: row1,
+      colDef: { cellEditorParams: { level: LineItemTypes.group } },
+    } as unknown as ICellRendererParams;
+
+    render(<DuplicateRowCell {...props} />);
+    const btn = screen.getByTestId('duplicate-row-icon');
+    fireEvent.click(btn);
+
+    expect(capEventSettingsStore.setFundGroupsLineItem).toHaveBeenCalledTimes(1);
+    const updatedArg = (capEventSettingsStore.setFundGroupsLineItem as jest.Mock).mock
+      .calls[0][0] as Array<Record<string, unknown>>;
+    expect(updatedArg).toHaveLength(3);
+    const inserted = updatedArg[1];
+    expect(inserted.id).toBe('new-id');
+    expect(inserted.inheritedId).toBeUndefined();
+    expect(inserted.capitalCategory).toBe(row1.capitalCategory);
+    expect(inserted.callDistributionReason).toBe(row1.callDistributionReason);
+    expect(inserted.defaultDescription).toBe(row1.defaultDescription);
+    expect(inserted.insideCommitment).toBe(row1.insideCommitment);
   });
 });
