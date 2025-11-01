@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.40](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.39&targetVersion=GTv0.0.40) (2025-11-01)
+
+
+### Features
+
+* [TASK-6982]: [FE]  apply Duplicate CELIs logic on Fund Group and Entity levels ([75e75c7](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/75e75c7c851c853f1cfe1f6f2dc4f15b68de4f3c)), closes [#6982](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6982)
+
 ### [0.0.39](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.38&targetVersion=GTv0.0.39) (2025-10-30)
 
 
