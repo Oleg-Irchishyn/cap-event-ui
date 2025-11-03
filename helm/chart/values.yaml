@@ -8,7 +8,7 @@ image:
   name: gen2apps/com.gen2fund.cap-event-ui
   version: # Defaults to .Chart.AppVersion
   # provide an endpoint to verify that app is working. it should response with HTTP 2XX or 3XX
-  healthcheck: /
+  healthcheck: /actuator/health
 
 container:
   replicas: 1
