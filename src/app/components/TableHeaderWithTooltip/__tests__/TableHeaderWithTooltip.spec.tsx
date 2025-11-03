@@ -17,7 +17,7 @@ const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
 
-describe('TabelHeaderWithTooltip', () => {
+describe('TableHeaderWithTooltip', () => {
   const props: Partial<IHeaderParams> = { displayName: 'Amount' };
 
   it('renders header name correctly', () => {

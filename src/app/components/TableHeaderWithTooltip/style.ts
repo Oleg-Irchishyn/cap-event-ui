@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-export const HeaderWrapper = styled.div({
+export const HeaderWrapper = styled.div<{ $headerAlignment: string }>(({ $headerAlignment }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
+  justifyContent: $headerAlignment ?? 'flex-start',
   width: '100%',
-});
+}));
 
 export const HeaderName = styled.span(({ theme }) => ({
   color: theme.colors.textSecondary,

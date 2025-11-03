@@ -269,6 +269,11 @@ export const fundGroupColumnDef = ({
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
     headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      headerAlignment: 'flex-end',
+      tooltipMessage:
+        'Input Contributions as positive amounts, and Distributions as negative amounts',
+    },
     field: AccountFields.amount,
     cellRendererSelector: (params: ICellRendererParams) =>
       params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
@@ -405,6 +410,10 @@ export const entityColumnDef = ({
     colId: AccountFieldIds[AccountFields.prDate],
     headerName: AccountFieldTitles[AccountFields.prDate],
     field: AccountFields.prDate,
+    headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      tooltipMessage: 'Preferred Return Date',
+    },
     editable: editableCallback,
     cellRenderer: DateCell,
     cellEditor: DateCell,
@@ -423,6 +432,10 @@ export const entityColumnDef = ({
     colId: AccountFieldIds[AccountFields.prFlag],
     headerName: AccountFieldTitles[AccountFields.prFlag],
     field: AccountFields.prFlag,
+    headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      tooltipMessage: 'Preferred Return Inclusion',
+    },
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,
@@ -452,6 +465,11 @@ export const entityColumnDef = ({
     colId: AccountFieldIds[AccountFields.amount],
     headerName: AccountFieldTitles[AccountFields.amount],
     headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      headerAlignment: 'flex-end',
+      tooltipMessage:
+        'Input Contributions as positive amounts, and Distributions as negative amounts',
+    },
     field: AccountFields.amount,
     cellRendererSelector: (params: ICellRendererParams) =>
       params.data?.isTotalRow ? { component: TotalRowAmountCell } : { component: AmountCell },
@@ -573,6 +591,10 @@ export const otherEntityColumnDef = ({
     colId: OtherAccountFieldIds[OtherAccountFields.prDate],
     headerName: OtherAccountFieldTitles[OtherAccountFields.prDate],
     field: OtherAccountFields.prDate,
+    headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      tooltipMessage: 'Preferred Return Date',
+    },
     editable: editableCallback,
     cellRenderer: DateCell,
     cellEditor: DateCell,
@@ -591,6 +613,10 @@ export const otherEntityColumnDef = ({
     colId: OtherAccountFieldIds[OtherAccountFields.prFlag],
     headerName: OtherAccountFieldTitles[OtherAccountFields.prFlag],
     field: OtherAccountFields.prFlag,
+    headerComponent: TableHeaderWithTooltip,
+    headerComponentParams: {
+      tooltipMessage: 'Preferred Return Inclusion',
+    },
     cellRenderer: DropdownSearchCell,
     cellEditor: DropdownSearchCell,
     editable: editableCallback,

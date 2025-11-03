@@ -2,15 +2,20 @@ import { useRef, useState } from 'react';
 import Tooltip from '@/app/components/Tooltip';
 import { HeaderName, HeaderWrapper, HelpIcon, IconWrapper } from './style';
 import { IHeaderParams } from 'ag-grid-community';
+import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 export const TableHeaderWithTooltip = (props: IHeaderParams) => {
   const [showTooltip, setTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const { displayName } = props;
+  const { displayName, column } = props;
+
+  const headerComponentParams = column?.getColDef().headerComponentParams;
+  const tooltipMessage = headerComponentParams?.tooltipMessage ?? '';
+  const headerAlignment = headerComponentParams?.headerAlignment;
 
   return (
-    <HeaderWrapper>
+    <HeaderWrapper $headerAlignment={headerAlignment}>
       <HeaderName>{displayName}</HeaderName>
       <IconWrapper ref={tooltipRef}>
         <HelpIcon
@@ -20,10 +25,10 @@ export const TableHeaderWithTooltip = (props: IHeaderParams) => {
         />
       </IconWrapper>
       <Tooltip
-        tooltipMessage="Input Contributions as positive amounts, and Distributions as negative amounts"
+        tooltipMessage={tooltipMessage}
         showTooltip={showTooltip}
         targetRef={tooltipRef}
-        testId="amount-icon-tooltip"
+        testId={prepareDataTestId(displayName, 'tooltip')}
       />
     </HeaderWrapper>
   );
