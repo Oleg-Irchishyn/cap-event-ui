@@ -3,6 +3,9 @@ import {
   AccountFields,
   AccountFieldTitles,
   LineItemTypes,
+  OtherAccountFieldIds,
+  OtherAccountFields,
+  OtherAccountFieldTitles,
   USER_PROVIDED_OPTION,
   YesNoOptions,
 } from '@/app/new/LineItems/const';
@@ -21,9 +24,14 @@ import { TotalRowAmountCell } from '@/app/new/LineItems/cellComponents/TotalRowA
 import { TotalRowCategoryCell } from '@/app/new/LineItems/cellComponents/TotalRowCategoryCell';
 import { DrCrCell } from '@/app/new/LineItems/cellComponents/DrCrCell';
 import { Account } from '@/clients/ReferenceData';
-import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
+import {
+  getBySelectedCategoryAndReason,
+  getKeyValuesByAccountName,
+  getReasons,
+} from '@/app/new/LineItems/utils';
 import { entityDatesStore } from '@/stores';
 import { TableHeaderWithTooltip } from '@/app/components/TableHeaderWithTooltip/TableHeaderWithTooltip';
+import DeleteCell from '@/app/new/LineItems/cellComponents/DeleteCell';
 
 const ALLOCATION_BASIS_MOCK_OPTIONS = [
   'Commitment',
@@ -52,6 +60,10 @@ export const getAllocationBasisOptions = (level?: string) => {
     }
     return item !== USER_PROVIDED_OPTION;
   });
+};
+
+export const getAccountNames = (accounts: Account[]) => {
+  return Array.from(new Set(accounts.map((account) => account.accountName)));
 };
 
 export const cellEditorsParamsCallback = (
@@ -101,6 +113,48 @@ export const cellEditorsParamsCallback = (
     }
 
     case AccountFields.prDate: {
+      return { defaultValue: entityDatesStore.getEntityDueDate(entityKey ?? '') };
+    }
+  }
+};
+
+export const otherCellEditorsParamsCallback = (
+  params: ICellEditorParams,
+  key: string,
+  accounts: Account[],
+  entityKey?: string,
+) => {
+  const accountName = params.data?.accountName;
+
+  switch (key) {
+    case OtherAccountFields.defaultDescription: {
+      const possibleValues = getKeyValuesByAccountName(
+        accountName,
+        OtherAccountFields.defaultDescription,
+        accounts,
+      );
+
+      return { options: possibleValues };
+    }
+
+    case OtherAccountFields.insideCommitment: {
+      const possibleValues = getKeyValuesByAccountName(
+        accountName,
+        OtherAccountFields.insideCommitment,
+        accounts,
+      );
+
+      return { options: possibleValues };
+    }
+
+    case OtherAccountFields.prFlag: {
+      return {
+        options: YesNoOptions,
+        defaultValue: YesNoOptions[0],
+      };
+    }
+
+    case OtherAccountFields.prDate: {
       return { defaultValue: entityDatesStore.getEntityDueDate(entityKey ?? '') };
     }
   }
@@ -434,5 +488,128 @@ export const entityColumnDef = ({
     cellRenderer: ActionsCell,
     cellStyle: { padding: '0px' },
     cellEditorParams: { level, entityKey: entityKey ?? '' },
+  },
+];
+
+export const otherEntityColumnDef = ({
+  accounts,
+  isMultiLineItems,
+  editableCallback,
+  level = LineItemTypes.entity,
+  entityKey,
+}: ColumnDefProp): ColDef[] => [
+  ...(isMultiLineItems
+    ? [
+        {
+          headerName: '',
+          field: 'drag',
+          rowDrag: (params: { data?: { isTotalRow?: boolean } }) => !params.data?.isTotalRow,
+          pinned: 'left' as const,
+          resizable: false,
+          width: 15,
+          cellStyle: { padding: '0 10px' },
+        },
+      ]
+    : []),
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.accountName],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.accountName],
+    field: OtherAccountFields.accountName,
+    cellRendererSelector: (params: ICellRendererParams) =>
+      params.data?.isTotalRow
+        ? { component: TotalRowCategoryCell }
+        : { component: DropdownSearchCell },
+    cellEditor: DropdownSearchCell,
+    editable: editableCallback,
+    pinned: 'left',
+    minWidth: 100,
+    initialWidth: 190,
+    resizable: true,
+    cellEditorParams: { options: getAccountNames(accounts) },
+    cellStyle: { padding: '0px' },
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.defaultDescription],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.defaultDescription],
+    field: OtherAccountFields.defaultDescription,
+    editable: editableCallback,
+    pinned: 'left',
+    minWidth: 100,
+    initialWidth: 190,
+    resizable: true,
+    cellRenderer: DropdownSearchCell,
+    cellEditor: DropdownSearchCell,
+    cellStyle: { padding: '0px' },
+    cellEditorParams: (params: ICellEditorParams) =>
+      otherCellEditorsParamsCallback(params, OtherAccountFields.defaultDescription, accounts),
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.insideCommitment],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.insideCommitment],
+    field: OtherAccountFields.insideCommitment,
+    editable: editableCallback,
+    minWidth: 164,
+    flex: 1,
+    resizable: true,
+    cellRenderer: DropdownSearchCell,
+    cellEditor: DropdownSearchCell,
+    cellStyle: { padding: '0px' },
+    cellEditorParams: (params: ICellEditorParams) =>
+      otherCellEditorsParamsCallback(params, OtherAccountFields.insideCommitment, accounts),
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.investment],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.investment],
+    field: OtherAccountFields.investment,
+    editable: editableCallback,
+    minWidth: 190,
+    flex: 1,
+    resizable: true,
+    cellRenderer: InvestmentDropdown,
+    cellEditor: InvestmentDropdown,
+    cellStyle: { padding: '0px' },
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.prDate],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.prDate],
+    field: OtherAccountFields.prDate,
+    editable: editableCallback,
+    cellRenderer: DateCell,
+    cellEditor: DateCell,
+    cellStyle: { padding: '0px' },
+    minWidth: 100,
+    maxWidth: 120,
+    resizable: true,
+    // Satisfy AG Grid object data type requirements
+    valueFormatter: ({ value }: { value: unknown }) =>
+      value instanceof Date ? value.toLocaleDateString() : ((value as string) ?? ''),
+    valueParser: (params: { newValue: unknown }) => params.newValue,
+    cellEditorParams: (params: ICellEditorParams) =>
+      otherCellEditorsParamsCallback(params, OtherAccountFields.prDate, accounts, entityKey),
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.prFlag],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.prFlag],
+    field: OtherAccountFields.prFlag,
+    cellRenderer: DropdownSearchCell,
+    cellEditor: DropdownSearchCell,
+    editable: editableCallback,
+    minWidth: 100,
+    maxWidth: 120,
+    resizable: true,
+    cellStyle: { padding: '0px' },
+    cellEditorParams: (params: ICellEditorParams) =>
+      otherCellEditorsParamsCallback(params, OtherAccountFields.prFlag, accounts, entityKey),
+  },
+  {
+    colId: OtherAccountFieldIds[OtherAccountFields.actions],
+    headerName: OtherAccountFieldTitles[OtherAccountFields.actions],
+    pinned: 'right',
+    minWidth: 50,
+    initialWidth: 96,
+    resizable: true,
+    cellRenderer: DeleteCell,
+    cellStyle: { padding: '0px' },
+    cellEditorParams: { level, entityKey: entityKey ?? '', isOtherTable: true },
   },
 ];

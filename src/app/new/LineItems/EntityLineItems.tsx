@@ -37,10 +37,14 @@ const EntityLineItems = () => {
       return nameA.localeCompare(nameB);
     });
 
-  const onDragStopped = (entityKey: string) => (e: DragStoppedEvent) => {
+  const onDragStopped = (entityKey: string, isOtherTable?: boolean) => (e: DragStoppedEvent) => {
     const newValue: LineItemRow[] = [];
     e.api.forEachNode((node) => newValue.push(node.data));
-    capEventSettingsStore.setEntitiesLineItem(entityKey, newValue);
+    if (isOtherTable) {
+      capEventSettingsStore.setOtherEntitiesLineItems(entityKey, newValue);
+    } else {
+      capEventSettingsStore.setEntitiesLineItem(entityKey, newValue);
+    }
   };
 
   const renderFundCapitalDetailsPanel = () => {
@@ -57,9 +61,18 @@ const EntityLineItems = () => {
           level={LineItemTypes.entity}
           entityKey={fund.label}
           onDragStopped={onDragStopped(fund.label)}
-          setDataToStoreCallback={(key, data) => {
-            capEventSettingsStore.setEntitiesLineItem(key, data);
-          }}
+          onOtherDragStopped={onDragStopped(fund.label, true)}
+          setDataToStoreCallback={(key, data) =>
+            capEventSettingsStore.setEntitiesLineItem(key, data)
+          }
+          setOtherDataToStoreCallback={(key, data) =>
+            capEventSettingsStore.setOtherEntitiesLineItems(key, data)
+          }
+          otherLineItems={
+            capEventSettingsStore.otherEntitiesLineItem.get(fund.label) || [
+              prepareNewRow(LineItemTypes.entity),
+            ]
+          }
           lineItems={
             capEventSettingsStore.entitiesLineItem.get(fund.label) || [
               prepareNewRow(LineItemTypes.entity),

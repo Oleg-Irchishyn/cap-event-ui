@@ -1,6 +1,13 @@
-import { getReasons, getBySelectedCategoryAndReason, isRowEmpty, formatValue } from '../utils';
+import {
+  getReasons,
+  getBySelectedCategoryAndReason,
+  isRowEmpty,
+  formatValue,
+  getKeyValuesByAccountName,
+} from '../utils';
 import { Account } from '@/clients/ReferenceData';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { OtherAccountFields } from '@/app/new/LineItems/const';
 
 describe('LineItems/utils', () => {
   const mockAccounts: Account[] = [
@@ -9,31 +16,36 @@ describe('LineItems/utils', () => {
       callDistributionReason: 'Reason 1',
       defaultDescription: 'Description 1',
       insideCommitment: 'Inside 1',
-    } as Account,
+      accountName: 'Account 1',
+    },
     {
       capitalCategory: 'Category A',
       callDistributionReason: 'Reason 2',
       defaultDescription: 'Description 2',
       insideCommitment: 'Inside 2',
-    } as Account,
+      accountName: 'Account 1',
+    },
     {
       capitalCategory: 'Category B',
       callDistributionReason: 'Reason 1',
       defaultDescription: 'Description 3',
       insideCommitment: 'Inside 3',
-    } as Account,
+      accountName: 'Account 2',
+    },
     {
       capitalCategory: 'Category A',
       callDistributionReason: 'Reason 1',
       defaultDescription: 'Description 4',
       insideCommitment: 'Inside 4',
-    } as Account,
+      accountName: 'Account 1',
+    },
     {
       capitalCategory: 'Category A',
       callDistributionReason: '',
       defaultDescription: 'Description 5',
       insideCommitment: 'Inside 5',
-    } as Account,
+      accountName: 'Account 1',
+    },
   ];
 
   const mockedEmptyRow = {
@@ -143,6 +155,19 @@ describe('LineItems/utils', () => {
   describe('formatValue', () => {
     it('should return empty string for non-numeric input', () => {
       expect(formatValue('not_a_number')).toEqual('');
+    });
+  });
+
+  describe('getKeyValuesByAccountName', () => {
+    it('should return accounts keys based on selected account name', () => {
+      const accountName1 = 'Account 1';
+      const accountName2 = 'Account 2';
+      const keyValueToReturn = OtherAccountFields.defaultDescription;
+      const result1 = getKeyValuesByAccountName(accountName1, keyValueToReturn, mockAccounts);
+      const result2 = getKeyValuesByAccountName(accountName2, keyValueToReturn, mockAccounts);
+
+      expect(result1).toHaveLength(4);
+      expect(result2).toEqual(['Description 3']);
     });
   });
 });

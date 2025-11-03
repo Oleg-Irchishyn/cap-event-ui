@@ -5,7 +5,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
-import { ReferenceDataApi } from '@/api';
+import { _ReferenceDataServer, ReferenceDataApi } from '@/api';
 import {
   AccountFields,
   investmentMandatoryCategories,
@@ -32,7 +32,9 @@ class CapEventSettingsStore {
   fundGroupsLineItem: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
   fundGroupsStateAfterApply: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
   entitiesLineItem = new Map<string, LineItemRow[]>();
+  otherEntitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
+  otherTableAccounts: Account[] = [];
   investments: Investment[] = [];
   areInvestmentsLoading: boolean = false;
   // user inputs in line item table dropdown
@@ -43,9 +45,17 @@ class CapEventSettingsStore {
   constructor() {
     makeAutoObservable(this);
 
-    this.fetchAccounts();
+    this.initAccountsSet();
     this.fetchInvestments();
     this.fetchSessionId();
+  }
+
+  *initAccountsSet() {
+    this.accounts = yield this.fetchAccounts(['Capital'], ['Cont - Management fees']);
+  }
+
+  setOtherTableAccounts(accounts: Account[]) {
+    this.otherTableAccounts = accounts;
   }
 
   isGeneralSettingsEmpty(
@@ -121,16 +131,17 @@ class CapEventSettingsStore {
     return effectiveSelectedCount > 1;
   }
 
-  *fetchAccounts() {
+  async fetchAccounts(fsGroupings: string[] = [], capitalCategories: string[] = []) {
     try {
-      this.accounts = yield ReferenceDataApi.accounts.getAccounts(
+      const accounts: Account[] = await ReferenceDataApi.accounts.getAccounts(
         'Golden Image DEV',
-        ['Capital'],
-        ['Cont - Management fees'],
+        fsGroupings,
+        capitalCategories,
       );
+      return accounts;
     } catch (error) {
       console.error(error);
-      this.accounts = [];
+      return [];
     }
   }
 
@@ -148,7 +159,9 @@ class CapEventSettingsStore {
 
   *fetchSessionId() {
     try {
-      this.sessionId = yield ReferenceDataApi.session.getSessionId(this.sessionId);
+      this.sessionId = yield _ReferenceDataServer.get('/session', {
+        params: { id: this.sessionId },
+      });
     } catch (error) {
       console.error(error);
       this.sessionId = '';
@@ -252,10 +265,15 @@ class CapEventSettingsStore {
     this.entitiesLineItem.set(key, [...data, ...entityManualItems]);
   }
 
+  setOtherEntitiesLineItems(key: string, data: LineItemRow[]) {
+    this.otherEntitiesLineItem.set(key, data);
+  }
+
   resetOnFundGroupChange() {
     this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
     this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
     this.entitiesLineItem.clear();
+    this.otherEntitiesLineItem.clear();
   }
 
   getUserInputs(cellKey: string): string[] {

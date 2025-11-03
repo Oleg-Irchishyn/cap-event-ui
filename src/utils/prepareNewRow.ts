@@ -5,7 +5,7 @@ let rowIdCounter = 0;
 
 export const prepareNewRow = (level?: string): LineItemRow => {
   const levelSpecificColumns =
-    level === LineItemTypes.entity ? { prDate: undefined, prFlag: '' } : {};
+    level === LineItemTypes.entity ? { prDate: undefined, prFlag: '', accountName: '' } : {};
 
   return {
     id: `row-${++rowIdCounter}-${Date.now()}`,

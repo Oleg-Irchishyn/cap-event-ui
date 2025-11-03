@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Account = {
+    accountName?: string;
     accountNo?: string;
     capitalCategory?: string;
     callDistributionReason?: string;

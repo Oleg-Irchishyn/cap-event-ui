@@ -4,9 +4,12 @@ import {
   cellEditorsParamsCallback,
   fundGroupColumnDef,
   entityColumnDef,
+  getAccountNames,
+  otherCellEditorsParamsCallback,
+  otherEntityColumnDef,
 } from '../accountsTableConfiguration';
 import { Account } from '@/clients/ReferenceData';
-import { AccountFields, LineItemTypes, USER_PROVIDED_OPTION } from '../const';
+import { AccountFields, LineItemTypes, OtherAccountFields, USER_PROVIDED_OPTION } from '../const';
 import { ICellEditorParams } from 'ag-grid-community';
 
 jest.mock('@/stores', () => ({
@@ -18,13 +21,29 @@ jest.mock('@/stores', () => ({
 jest.mock('../utils', () => ({
   getReasons: jest.fn(() => ['Reason 1', 'Reason 2']),
   getBySelectedCategoryAndReason: jest.fn(() => ['Option 1', 'Option 2']),
+  getKeyValuesByAccountName: jest.fn(() => ['Description 1', 'Description 2']),
 }));
 
 describe('accountsTableConfiguration', () => {
   const mockAccounts: Account[] = [
-    { capitalCategory: 'Category A', callDistributionReason: 'Reason 1' } as Account,
-    { capitalCategory: 'Category B', callDistributionReason: 'Reason 2' } as Account,
-    { capitalCategory: 'Category A', callDistributionReason: 'Reason 3' } as Account,
+    {
+      capitalCategory: 'Category A',
+      callDistributionReason: 'Reason 1',
+      accountName: 'Account 1',
+      defaultDescription: 'Description 1',
+    } as Account,
+    {
+      capitalCategory: 'Category B',
+      callDistributionReason: 'Reason 2',
+      accountName: 'Account 2',
+      defaultDescription: 'Description 2',
+    } as Account,
+    {
+      capitalCategory: 'Category A',
+      callDistributionReason: 'Reason 3',
+      accountName: 'Account 1',
+      defaultDescription: 'Description 3',
+    } as Account,
   ];
 
   const mockEditableCallback = jest.fn(() => true);
@@ -197,6 +216,80 @@ describe('accountsTableConfiguration', () => {
       // Check for actions column by looking for the column with ActionsCell renderer
       const actionsColumn = result.find((col) => col.cellRenderer?.name === 'ActionsCell');
       expect(actionsColumn).toBeDefined();
+    });
+  });
+
+  describe('getAccountNames', () => {
+    it('should return unique account names', () => {
+      const result = getAccountNames(mockAccounts);
+      expect(result).toEqual(['Account 1', 'Account 2']);
+    });
+  });
+
+  describe('otherCellEditorsParamsCallback', () => {
+    const mockParams = {
+      data: { accountName: 'Account 1', defaultDescription: 'Description 1' },
+    } as unknown as ICellEditorParams;
+
+    it('should return values for description', () => {
+      const result = otherCellEditorsParamsCallback(
+        mockParams,
+        OtherAccountFields.defaultDescription,
+        mockAccounts,
+      );
+      expect(result).toEqual({ options: ['Description 1', 'Description 2'] });
+    });
+
+    it('should return correct params for prFlag field', () => {
+      const result = otherCellEditorsParamsCallback(
+        mockParams,
+        OtherAccountFields.prFlag,
+        mockAccounts,
+      );
+
+      expect(result).toEqual({
+        options: ['Yes', 'No'],
+        defaultValue: 'Yes',
+      });
+    });
+
+    it('should return correct params for prDate field', () => {
+      const result = otherCellEditorsParamsCallback(
+        mockParams,
+        OtherAccountFields.prDate,
+        mockAccounts,
+        'test-entity',
+      );
+
+      expect(result).toEqual({
+        defaultValue: new Date('2024-01-01'),
+      });
+    });
+  });
+
+  describe('otherEntityColumnDef', () => {
+    it('should return column definitions without drag column when isMultiLineItems is false', () => {
+      const result = otherEntityColumnDef({
+        accounts: mockAccounts,
+        isMultiLineItems: false,
+        editableCallback: mockEditableCallback,
+      });
+
+      expect(result[0]).not.toMatchObject({
+        field: 'drag',
+      });
+    });
+
+    it('should return column definitions with drag column when isMultiLineItems is true', () => {
+      const result = otherEntityColumnDef({
+        accounts: mockAccounts,
+        isMultiLineItems: true,
+        editableCallback: mockEditableCallback,
+      });
+
+      expect(result[0]).toMatchObject({
+        field: 'drag',
+      });
     });
   });
 });

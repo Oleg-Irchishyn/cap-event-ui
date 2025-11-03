@@ -18,7 +18,7 @@ import {
   ColumnResizedEvent,
 } from 'ag-grid-community';
 
-import { TableWrapper } from './styles';
+import { Header, TableWrapper } from './styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -34,6 +34,7 @@ type Props = {
   isLoading?: boolean;
   onRowClicked?: (e: RowClickedEvent) => void;
   onDragStopped?: (e: DragStoppedEvent) => void;
+  headerLabel?: string;
 };
 
 const ConfigurationTable: FC<Props> = ({
@@ -46,6 +47,7 @@ const ConfigurationTable: FC<Props> = ({
   isLoading,
   onRowClicked,
   onDragStopped,
+  headerLabel,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -148,6 +150,7 @@ const ConfigurationTable: FC<Props> = ({
       data-testid={prepareDataTestId('table-wrapper', testId)}
       className={`ag-theme-alpine  ${isDisabled ? 'grid-disabled' : ''}`}
     >
+      {headerLabel && <Header>{headerLabel}</Header>}
       <AgGridReact
         columnDefs={effectiveColumnDefs}
         rowData={safeRowData}

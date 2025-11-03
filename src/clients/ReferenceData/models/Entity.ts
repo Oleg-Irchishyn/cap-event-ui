@@ -7,5 +7,8 @@ export type Entity = {
     name?: string;
     dueDateDays?: string;
     dueDateType?: string;
+    allocationBasis?: string;
+    mfBasisDateDefault?: string;
+    yearFractionApproach?: string;
 };
 

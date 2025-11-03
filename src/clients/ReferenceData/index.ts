@@ -15,9 +15,11 @@ export type { Entity } from './models/Entity';
 export { ErrorResponse } from './models/ErrorResponse';
 export type { FundGroup } from './models/FundGroup';
 export type { Investment } from './models/Investment';
+export type { Query } from './models/Query';
+export type { QueryResults } from './models/QueryResults';
 
 export { AccountsService } from './services/AccountsService';
 export { EntitiesService } from './services/EntitiesService';
 export { FundGroupsService } from './services/FundGroupsService';
 export { InvestmentsService } from './services/InvestmentsService';
-export { SessionService } from './services/SessionService';
+export { QueriesService } from './services/QueriesService';

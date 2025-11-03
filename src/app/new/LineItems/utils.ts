@@ -47,6 +47,12 @@ export const isRowEmpty = (data: LineItemRow) => {
   );
 };
 
+export const isOtherRowEmpty = (data: LineItemRow) =>
+  data.accountName === '' &&
+  data.defaultDescription === '' &&
+  data.insideCommitment === '' &&
+  data.investment === '';
+
 export const formatValue = (value: number | string, isTotalRowAmount: boolean = false) => {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   if (isNaN(numValue)) return '';
@@ -58,4 +64,18 @@ export const formatValue = (value: number | string, isTotalRowAmount: boolean = 
   const isNegative = numValue < 0;
 
   return isNegative ? `($${formValue})` : `$${formValue}`;
+};
+
+export const getKeyValuesByAccountName = (
+  accountName: string,
+  keyValueToReturn: string,
+  accounts: Account[],
+) => {
+  return Array.from(
+    new Set(
+      accounts
+        .filter((account) => account.accountName === accountName)
+        .map((account) => account[keyValueToReturn as keyof Account]),
+    ),
+  );
 };

@@ -40,6 +40,37 @@ export const AccountFieldIds = {
   [AccountFields.actions]: '10',
 };
 
+// Other Table Fields
+export const OtherAccountFields = {
+  accountName: 'accountName',
+  defaultDescription: 'defaultDescription',
+  insideCommitment: 'insideCommitment',
+  investment: 'investment',
+  prDate: 'prDate',
+  prFlag: 'prFlag',
+  actions: 'actions',
+};
+
+export const OtherAccountFieldTitles = {
+  [OtherAccountFields.accountName]: 'Account',
+  [OtherAccountFields.defaultDescription]: 'Notice Line Description',
+  [OtherAccountFields.insideCommitment]: 'Inside Commitment',
+  [OtherAccountFields.investment]: 'Investment',
+  [OtherAccountFields.prDate]: 'PR Date',
+  [OtherAccountFields.prFlag]: 'PR Flag',
+  [OtherAccountFields.actions]: 'Actions',
+};
+
+export const OtherAccountFieldIds = {
+  [OtherAccountFields.accountName]: '0',
+  [OtherAccountFields.defaultDescription]: '1',
+  [OtherAccountFields.insideCommitment]: '2',
+  [OtherAccountFields.investment]: '3',
+  [OtherAccountFields.prDate]: '4',
+  [OtherAccountFields.prFlag]: '5',
+  [OtherAccountFields.actions]: '6',
+};
+
 export const investmentMandatoryCategories = [
   'Cont - Investments',
   'Cont - ROE',

@@ -46,7 +46,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const searchPlaceholder = params.searchPlaceholder;
 
   const filteredOptions = [...options, ...userInputs].filter((option) =>
-    option.toLowerCase().includes(searchValue.toLowerCase()),
+    option?.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
   const isCellEditable = useMemo(

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useRef } from 'react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import { CellValueChangedEvent, EditableCallbackParams, DragStoppedEvent } from 'ag-grid-community';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
@@ -17,12 +17,15 @@ import {
   USER_PROVIDED_OPTION,
   LineItemTypes,
   YesNoOptions,
+  OtherAccountFields,
 } from '@/app/new/LineItems/const';
 import {
   entityColumnDef,
   fundGroupColumnDef,
+  otherEntityColumnDef,
 } from '@/app/new/LineItems/accountsTableConfiguration';
 import { getBySelectedCategoryAndReason, getReasons, isRowEmpty } from '@/app/new/LineItems/utils';
+import CustomSwitch from '@/app/components/CustomSwitch/CustomSwitch';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -60,34 +63,44 @@ type Props =
       level: string;
       entityKey: string;
       setDataToStoreCallback: (key: string, data: LineItemRow[]) => void;
+      setOtherDataToStoreCallback?: (key: string, data: LineItemRow[]) => void;
       testId: string;
       lineItems: LineItemRow[];
+      otherLineItems?: LineItemRow[];
       onDragStopped?: (e: DragStoppedEvent) => void;
+      onOtherDragStopped?: (e: DragStoppedEvent) => void;
     }
   | {
       isDisabled: true;
       level?: string;
       entityKey?: string;
       setDataToStoreCallback?: (key: string, data: LineItemRow[]) => void;
+      setOtherDataToStoreCallback?: (key: string, data: LineItemRow[]) => void;
       testId: string;
       lineItems?: LineItemRow[];
+      otherLineItems?: LineItemRow[];
       onDragStopped?: (e: DragStoppedEvent) => void;
+      onOtherDragStopped?: (e: DragStoppedEvent) => void;
     };
 
 const AccountsTable: FC<Props> = ({
   isDisabled,
   setDataToStoreCallback,
+  setOtherDataToStoreCallback,
   entityKey,
   level,
   testId,
   lineItems = [prepareNewRow(level)],
+  otherLineItems = [prepareNewRow(level)],
   onDragStopped,
+  onOtherDragStopped,
 }) => {
   const accounts = useMemo(
     () => capEventSettingsStore.accounts?.filter((account) => hasAllValues(account)) || [],
     [capEventSettingsStore.accounts],
   );
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
+  const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
 
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
@@ -152,6 +165,21 @@ const AccountsTable: FC<Props> = ({
     },
     [isDisabled, level],
   );
+
+  const otherEditableCallback = useCallback((params: EditableCallbackParams) => {
+    const columnId = params.column?.getColId() || '';
+    const rowId = params.data.id || '';
+    const key = getCellKey(rowId, columnId);
+
+    if (params.data.accountName) {
+      if (params.colDef.field === OtherAccountFields.prDate) return true;
+      if (params.colDef.field === OtherAccountFields.prFlag) return true;
+      if (params.colDef.field === OtherAccountFields.investment) return true;
+    }
+
+    if (columnId === '0') return true;
+    return otherEditableCellRef.current[key];
+  }, []);
 
   const addNewRow = useCallback(() => {
     const newRow = prepareNewRow(level);
@@ -324,6 +352,40 @@ const AccountsTable: FC<Props> = ({
     [lineItems, setDataToStoreCallback, entityKey, level, accounts],
   );
 
+  const onOtherCellValueChanged = useCallback(
+    (params: CellValueChangedEvent) => {
+      const { data, colDef, newValue } = params;
+      const fieldName = colDef.field ?? '-';
+
+      const updatedData = otherLineItems.map((row) => {
+        if (row.id === data.id) {
+          const updatedRow = { ...row, [fieldName]: newValue };
+
+          if (fieldName === OtherAccountFields.accountName) {
+            updatedRow.defaultDescription = '';
+            updatedRow.insideCommitment = '';
+
+            if (!updatedRow.prDate) {
+              updatedRow.prDate = entityDatesStore.getEntityDueDate(entityKey ?? '') ?? undefined;
+            }
+            if (!updatedRow.prFlag) {
+              updatedRow.prFlag = YesNoOptions[0];
+            }
+          }
+          return updatedRow;
+        }
+        return row;
+      });
+
+      setOtherDataToStoreCallback?.(entityKey ?? '-', updatedData);
+
+      const nextColumnId = Number(params.column.getColId()) + 1;
+      const key = getCellKey(data.id, String(nextColumnId));
+      otherEditableCellRef.current[key] = true;
+    },
+    [entityKey, otherLineItems, setOtherDataToStoreCallback],
+  );
+
   const isApplyButtonEnabled =
     (capEventSettingsStore.fundGroupsLineItem.length === 1 &&
       isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0]) &&
@@ -380,8 +442,28 @@ const AccountsTable: FC<Props> = ({
     capEventSettingsStore.setFundGroupsStateAfterApply();
   };
 
+  const [showOtherTable, setShowOtherTable] = useState(false);
+
+  const handleOtherSwitchPress = async () => {
+    setShowOtherTable((prev) => !prev);
+
+    if (capEventSettingsStore.otherTableAccounts.length === 0) {
+      const otherAccounts = await capEventSettingsStore.fetchAccounts();
+      capEventSettingsStore.setOtherTableAccounts(otherAccounts);
+    }
+  };
+
   const TableFooter = (
     <TableControls>
+      {level === LineItemTypes.entity && (
+        <CustomSwitch
+          label="Other"
+          disabled={isDisabled}
+          checked={showOtherTable}
+          onChange={handleOtherSwitchPress}
+        />
+      )}
+
       <ControlButton
         data-testid={prepareDataTestId('add-new-row', testId, entityKey)}
         data-is-disabled={isDisabled}
@@ -415,6 +497,26 @@ const AccountsTable: FC<Props> = ({
     </TableControls>
   );
 
+  const addNewOtherTableRow = useCallback(() => {
+    const newRow = prepareNewRow(level);
+    const key = getCellKey(newRow.id, '0');
+    otherEditableCellRef.current[key] = true;
+
+    setOtherDataToStoreCallback?.(entityKey ?? '-', [...otherLineItems, newRow]);
+  }, [level, setOtherDataToStoreCallback, entityKey, otherLineItems]);
+
+  const OtherTableFooter = (
+    <TableControls>
+      <ControlButton
+        data-testid={prepareDataTestId('add-new-row', testId, entityKey)}
+        onClick={addNewOtherTableRow}
+      >
+        <Image src={'icons/plus.svg'} alt="plus" width={13} height={13} priority={true} />
+        Add New Row
+      </ControlButton>
+    </TableControls>
+  );
+
   const isMultiLineItems = lineItems.length > 1;
 
   const columnDefs =
@@ -439,6 +541,25 @@ const AccountsTable: FC<Props> = ({
         onDragStopped={onDragStopped}
       />
       {TableFooter}
+      {showOtherTable && (
+        <>
+          <ConfigurationTable
+            testId={`other-${testId}`}
+            isDisabled={isDisabled}
+            headerLabel="Other"
+            columnDefs={otherEntityColumnDef({
+              accounts: capEventSettingsStore.otherTableAccounts,
+              isMultiLineItems: otherLineItems.length > 1,
+              editableCallback: otherEditableCallback,
+              entityKey,
+            })}
+            rowData={otherLineItems}
+            onCellValueChanged={onOtherCellValueChanged}
+            onDragStopped={onOtherDragStopped}
+          />
+          {OtherTableFooter}
+        </>
+      )}
     </>
   );
 };

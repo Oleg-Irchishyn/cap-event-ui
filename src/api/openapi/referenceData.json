@@ -19,8 +19,8 @@
       "description": "Operations related to GL Accounts"
     },
     {
-      "name": "Session",
-      "description": "Operation to retrieve a session ID"
+      "name": "Queries",
+      "description": "Operations related to queries"
     }
   ],
   "servers": [
@@ -322,6 +322,7 @@
                   "example": {
                     "value": [
                       {
+                        "accountName": "Contributions - Demo Other",
                         "accountNo": "1234-PL",
                         "capitalCategory": "Cont - Other",
                         "callDistributionReason": "Other",
@@ -329,6 +330,7 @@
                         "insideCommitment": "YES"
                       },
                       {
+                        "accountName": "Contributions - Demo Investments",
                         "accountNo": "567-GL",
                         "capitalCategory": "Cont - Investments",
                         "callDistributionReason": "Investments",
@@ -371,6 +373,97 @@
                   "details": "null",
                   "timestamp": "2025-08-20T11:13:13.012739700Z",
                   "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queries/{queryId}/filters": {
+      "get": {
+        "tags": [
+          "Queries"
+        ],
+        "summary": "Execute query with id and arguments from request and obtain results",
+        "operationId": "executeQuery",
+        "parameters": [
+          {
+            "name": "queryId",
+            "in": "path",
+            "description": "Query identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "arguments",
+            "in": "query",
+            "description": "Arguments for query execution",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query executed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResults"
+                },
+                "examples": {
+                  "example": {
+                    "value":
+                    {
+                      "GL_ENTRY": "1234",
+                      "ILPA_CATEGORY": "Global Equity"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queries": {
+      "get": {
+        "tags": [
+          "Queries"
+        ],
+        "summary": "Get all queries",
+        "operationId": "getAllQueries",
+        "responses": {
+          "200": {
+            "description": "Queries found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Query"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value":
+                    [
+                      {
+                        "id": "e413a4aa-1ac3-42ee-82ef-0e320ad15c5b",
+                        "name": "vf_demo",
+                        "query": "<object>Demo</object>",
+                        "description": "Demo description"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -455,77 +548,34 @@
           }
         }
       }
-    },
-     "/session": {
-      "get": {
-        "summary": "Retrieve session id",
-        "operationId": "getSessionId",
-        "tags": [
-          "Session"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in":"query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Session id"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Session id",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {}
-              }
-            }
-          },
-          "404": {
-            "description": "No entities found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "reason": "RESOURCE_NOT_FOUND",
-                  "message": "Resource not found",
-                  "details": "null",
-                  "timestamp": "2025-08-20T11:13:13.012739700Z",
-                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "reason": "INTERNAL_SERVER_ERROR",
-                  "message": "Internal Server Error",
-                  "details": "null",
-                  "timestamp": "2025-08-20T11:13:13.012739700Z",
-                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
     "schemas": {
+      "Query": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "QueryResults": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
       "FundGroup": {
         "type": "object",
         "properties": {
@@ -555,12 +605,24 @@
           },
           "dueDateType": {
             "type": "string"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "mfBasisDateDefault": {
+            "type": "string"
+          },
+          "yearFractionApproach": {
+            "type": "string"
           }
         }
       },
       "Account": {
         "type": "object",
         "properties": {
+          "accountName": {
+            "type": "string"
+          },
           "accountNo": {
             "type": "string"
           },

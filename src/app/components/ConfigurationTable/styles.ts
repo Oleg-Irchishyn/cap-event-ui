@@ -5,3 +5,10 @@ export const TableWrapper = styled.div({
   marginTop: '24px',
   marginBottom: '16px',
 });
+
+export const Header = styled.div(({ theme }) => ({
+  backgroundColor: theme.colors.white,
+  padding: '12px 8px',
+  fontSize: '14px',
+  fontWeight: 600,
+}));

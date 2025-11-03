@@ -4,8 +4,12 @@ import { USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
 // Mock the dependencies to avoid circular imports
 jest.mock('@/api', () => ({
   ReferenceDataApi: {
-    getAccounts: jest.fn(),
-    getInvestments: jest.fn(),
+    accounts: {
+      getAccounts: jest.fn(),
+    },
+    investments: {
+      getInvestments: jest.fn(),
+    },
     session: {
       getSessionId: jest.fn(),
     },
@@ -29,6 +33,8 @@ jest.mock('@/stores', () => ({
 
 // Import after mocking
 import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
+import { Account } from '@/clients/ReferenceData';
+import { ReferenceDataApi } from '@/api';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -114,6 +120,51 @@ describe('CapEventSettingsStore', () => {
     store.setEntitiesLineItem(entityKey, lineItems);
 
     expect(store.entitiesLineItem.get(entityKey)).toStrictEqual(lineItems);
+  });
+
+  it('should set otherEntitiesLineItems', () => {
+    const lineItems: LineItemRow[] = [
+      {
+        id: '2',
+        amount: 10,
+        accountName: 'Account Name',
+        callDistributionReason: 'Reason',
+        defaultDescription: 'Desc',
+        insideCommitment: 'Yes',
+        investment: 'Investment',
+        allocationBasis: 'Basis',
+      },
+    ];
+    const entityKey = 'entity-123';
+    store.setOtherEntitiesLineItems(entityKey, lineItems);
+
+    expect(store.otherEntitiesLineItem.get(entityKey)).toStrictEqual(lineItems);
+  });
+
+  it('should set otherTableAccounts', () => {
+    const accounts: Account[] = [
+      {
+        accountNo: 'accountNo',
+        accountName: 'accountName',
+        capitalCategory: 'Category',
+        callDistributionReason: 'reason',
+        defaultDescription: 'desc',
+        insideCommitment: 'com',
+      },
+    ];
+    store.setOtherTableAccounts(accounts);
+
+    expect(store.otherTableAccounts).toStrictEqual(accounts);
+  });
+
+  it('should call initAccountsSet', () => {
+    store.initAccountsSet();
+
+    expect(ReferenceDataApi.accounts.getAccounts).toHaveBeenCalledWith(
+      'Golden Image DEV',
+      ['Capital'],
+      ['Cont - Management fees'],
+    );
   });
 
   describe('isFundGroupLineItemsChanged', () => {

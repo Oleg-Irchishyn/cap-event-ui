@@ -4,13 +4,13 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { capEventSettingsStore } from '@/stores';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { isRowEmpty } from '@/app/new/LineItems/utils';
+import { isOtherRowEmpty, isRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { DeleteButton } from '../styles';
 
 const DeleteCell: FC<ICellRendererParams> = (props) => {
-  const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
+  const { level, entityKey, isOtherTable } = props.colDef?.cellEditorParams ?? {};
 
   const isCurrentRowEmpty = isRowEmpty(props.data);
 
@@ -25,6 +25,10 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
       );
     }
   };
+
+  const isOtherDeleteDisabled =
+    isOtherRowEmpty(props.data) &&
+    capEventSettingsStore.otherEntitiesLineItem.get(entityKey)?.length === 1;
 
   const handleDeleteCELI = () => {
     if (isDeleteDisabled()) return;
@@ -54,13 +58,28 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
     }
   };
 
+  const handleOtherCELIDelete = () => {
+    if (isOtherDeleteDisabled) return;
+
+    if (capEventSettingsStore.otherEntitiesLineItem.get(entityKey)?.length === 1) {
+      capEventSettingsStore.setOtherEntitiesLineItems(entityKey, [prepareNewRow(level)]);
+      return;
+    }
+    const filteredEntityLineItems = capEventSettingsStore.otherEntitiesLineItem
+      .get(entityKey)
+      ?.filter((item) => item.id !== props.data.id);
+    if (filteredEntityLineItems) {
+      capEventSettingsStore.setOtherEntitiesLineItems(entityKey, filteredEntityLineItems);
+    }
+  };
+
   return (
     <>
       {!props.data.inheritedId && (
         <DeleteButton
           data-testid={prepareDataTestId('', 'delete-icon')}
-          data-is-disabled={isDeleteDisabled()}
-          onClick={handleDeleteCELI}
+          data-is-disabled={isOtherTable ? isOtherDeleteDisabled : isDeleteDisabled()}
+          onClick={isOtherTable ? handleOtherCELIDelete : handleDeleteCELI}
         />
       )}
     </>
