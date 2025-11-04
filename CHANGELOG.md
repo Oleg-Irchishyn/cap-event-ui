@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.41](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.40&targetVersion=GTv0.0.41) (2025-11-04)
+
+
+### Features
+
+* [6987] add other table section ([21f7cb0](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/21f7cb0c2ebd22bf2152815a5ef422fe46a6bed3)), closes [#6987](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6987)
+* add prDate/prFlag header tooltips ([c15e88d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/c15e88d4bbed263b1ad65dac83d4c052d5712667))
+
 ### [0.0.40](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.39&targetVersion=GTv0.0.40) (2025-11-01)
 
 
