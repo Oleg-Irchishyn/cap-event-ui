@@ -17,6 +17,7 @@ import {
   USER_PROVIDED_OPTION,
   LineItemTypes,
   YesNoOptions,
+  TEXT_INPUT_MAX_LENGTH,
   OtherAccountFields,
 } from '@/app/new/LineItems/const';
 import {
@@ -231,8 +232,10 @@ const AccountsTable: FC<Props> = ({
                 accounts,
               );
 
-              if (descriptions.length === 1 && descriptions[0]) {
-                updatedRow.defaultDescription = descriptions[0];
+              if (descriptions.length >= 1) {
+                updatedRow.defaultDescription = descriptions
+                  .join('; ')
+                  .slice(0, TEXT_INPUT_MAX_LENGTH);
                 cellKeysToUnBlock.push(
                   getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
                 );
@@ -272,8 +275,10 @@ const AccountsTable: FC<Props> = ({
               accounts,
             );
 
-            if (descriptions.length === 1 && descriptions[0]) {
-              updatedRow.defaultDescription = descriptions[0];
+            if (descriptions.length >= 1) {
+              updatedRow.defaultDescription = descriptions
+                .join('; ')
+                .slice(0, TEXT_INPUT_MAX_LENGTH);
               cellKeysToUnBlock.push(
                 getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
               );

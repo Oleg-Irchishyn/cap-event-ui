@@ -155,6 +155,7 @@ const ConfigurationTable: FC<Props> = ({
         columnDefs={effectiveColumnDefs}
         rowData={safeRowData}
         defaultColDef={defaultColDef}
+        suppressClickEdit={true}
         onCellValueChanged={onCellValueChanged}
         onRowClicked={onRowClicked}
         rowClass={onRowClicked ? 'clickable-row' : ''}

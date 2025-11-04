@@ -89,3 +89,5 @@ export const LineItemTypes = {
 export const USER_PROVIDED_OPTION = 'User-Provided';
 
 export const YesNoOptions = ['Yes', 'No'];
+
+export const TEXT_INPUT_MAX_LENGTH = 200;

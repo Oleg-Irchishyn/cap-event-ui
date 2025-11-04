@@ -48,7 +48,32 @@ export const AmountInput = styled.input(({ theme }) => ({
   backgroundColor: 'transparent',
   fontSize: '14px',
   fontWeight: 500,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
 
+  '&:focus': {
+    outline: 'none',
+  },
+
+  '&::placeholder': {
+    fontStyle: 'italic',
+    color: theme.colors.textDisabled,
+  },
+}));
+
+export const TextInput = styled.input(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+  textAlign: 'left',
+  border: 'none',
+  padding: '0 8px',
+  backgroundColor: 'transparent',
+  fontSize: '14px',
+  fontWeight: 500,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
   '&:focus': {
     outline: 'none',
   },
@@ -68,6 +93,9 @@ export const DrCrInput = styled.input(({ theme }) => ({
   backgroundColor: 'transparent',
   fontSize: '14px',
   fontWeight: 500,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
 
   '&:focus': {
     outline: 'none',

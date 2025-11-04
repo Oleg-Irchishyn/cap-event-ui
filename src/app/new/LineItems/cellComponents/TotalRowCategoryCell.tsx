@@ -5,6 +5,9 @@ import styled from 'styled-components';
 const TotalRowCategoryLabel = styled.span`
   font-weight: 700;
   padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const TotalRowCategoryCell: FC<ICellRendererParams> = (props) => {

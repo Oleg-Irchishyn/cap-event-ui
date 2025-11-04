@@ -6,6 +6,9 @@ const TotalRowAmountValue = styled.div`
   font-weight: 700;
   text-align: right;
   letter-spacing: -0.1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const TotalRowAmountCell = (props: ICellRendererParams) => {

@@ -20,7 +20,7 @@
 .ag-theme-alpine .ag-header-viewport {
     border-bottom: 1px solid #F9F9F9 !important;
     background-color: inherit !important;
-    font-family: var(--font-ibm-plex-sans), Arial sans-serif;
+    font-family: var(--font-ibm-plex-sans), IBM Plex Sans Fallback;
 }
 
 .ag-theme-alpine .ag-header-cell-label {
@@ -57,8 +57,8 @@
 }
 
 .grid-disabled .ag-row-hover::before {
-        background-color: transparent !important;
-        background-image: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
 }
 
 .ag-header-cell-text {
@@ -72,6 +72,7 @@
 }
 .ag-cell-edit-wrapper, .ag-cell-editor, .ag-cell-wrapper, :where(.ag-cell-editor) .ag-input-field-input, :where(.ag-cell-editor) .ag-wrapper {
     text-align: end;
+    font-family: var(--font-ibm-plex-sans), IBM Plex Sans Fallback;
 }
 
 .ag-skeleton-wrapper {
@@ -98,7 +99,6 @@
     background-position: 0 0;
   }
 }
-
 
 /* Scrollbar styles */
 

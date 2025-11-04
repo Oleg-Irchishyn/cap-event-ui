@@ -31,6 +31,7 @@ import {
 } from '@/app/new/LineItems/utils';
 import { entityDatesStore } from '@/stores';
 import { TableHeaderWithTooltip } from '@/app/components/TableHeaderWithTooltip/TableHeaderWithTooltip';
+import { TextInputCell } from '@/app/new/LineItems/cellComponents/TextInputCell';
 import DeleteCell from '@/app/new/LineItems/cellComponents/DeleteCell';
 
 const ALLOCATION_BASIS_MOCK_OPTIONS = [
@@ -218,9 +219,10 @@ export const fundGroupColumnDef = ({
     minWidth: 100,
     initialWidth: 190,
     resizable: true,
-    cellRenderer: DropdownSearchCell,
-    cellEditor: DropdownSearchCell,
+    cellRenderer: TextInputCell,
+    cellEditor: TextInputCell,
     cellStyle: { padding: '0px' },
+    suppressKeyboardEvent: () => true,
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
   },
@@ -374,9 +376,10 @@ export const entityColumnDef = ({
     minWidth: 100,
     initialWidth: 190,
     resizable: true,
-    cellRenderer: DropdownSearchCell,
-    cellEditor: DropdownSearchCell,
+    cellRenderer: TextInputCell,
+    cellEditor: TextInputCell,
     cellStyle: { padding: '0px' },
+    suppressKeyboardEvent: () => true,
     cellEditorParams: (params: ICellEditorParams) =>
       cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
   },
