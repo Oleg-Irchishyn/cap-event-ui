@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useRef, useState } from 'react';
 import { CellValueChangedEvent, EditableCallbackParams, DragStoppedEvent } from 'ag-grid-community';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
@@ -28,10 +28,6 @@ import { getBySelectedCategoryAndReason, getReasons, isRowEmpty } from '@/app/ne
 import CustomSwitch from '@/app/components/CustomSwitch/CustomSwitch';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
-
-const hasAllValues = <T extends object>(obj: T) => {
-  return Object.values(obj).every(Boolean);
-};
 
 const isDependentPrefilledEditable = (params: EditableCallbackParams, level?: string) => {
   const field = params.colDef.field;
@@ -95,10 +91,8 @@ const AccountsTable: FC<Props> = ({
   onDragStopped,
   onOtherDragStopped,
 }) => {
-  const accounts = useMemo(
-    () => capEventSettingsStore.accounts?.filter((account) => hasAllValues(account)) || [],
-    [capEventSettingsStore.accounts],
-  );
+  const accounts = capEventSettingsStore.accounts || [];
+
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
 
