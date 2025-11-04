@@ -1,11 +1,17 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { ICellRendererParams } from 'ag-grid-community';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import { ICellRendererParams } from 'ag-grid-community';
+
 import { TextInputCell } from '../TextInputCell';
 import { TEXT_INPUT_MAX_LENGTH } from '../../const';
+
+type TextInputCellTestProps = ICellRendererParams & {
+  placeholder?: string;
+  name?: string;
+  maxLength?: number;
+};
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
@@ -25,11 +31,11 @@ describe('TextInputCell', () => {
 
   describe('Rendering', () => {
     it('renders input with placeholder and attributes', () => {
-      renderWithTheme(<TextInputCell {...baseProps} />);
+      renderWithTheme(<TextInputCell {...(baseProps as TextInputCellTestProps)} />);
 
-      const input = screen.getByPlaceholderText('Enter Notice Line Description');
+      const input = screen.getByPlaceholderText('Enter Value');
       expect(input).toBeInTheDocument();
-      expect(input).toHaveAttribute('name', 'notice-line-description-cell');
+      expect(input).toHaveAttribute('name', 'text-input-cell');
       expect(input).toHaveAttribute('type', 'text');
       expect(input).toHaveAttribute('maxLength', String(TEXT_INPUT_MAX_LENGTH));
     });
@@ -40,18 +46,22 @@ describe('TextInputCell', () => {
         data: { isTotalRow: true },
       } as unknown as ICellRendererParams;
 
-      const { container } = renderWithTheme(<TextInputCell {...props} />);
+      const { container } = renderWithTheme(
+        <TextInputCell {...(props as TextInputCellTestProps)} />,
+      );
       expect(container.firstChild).toBeNull();
     });
 
     it('sets initial value from props and updates on prop change', () => {
-      const { rerender } = renderWithTheme(<TextInputCell {...baseProps} value={'Initial'} />);
+      const { rerender } = renderWithTheme(
+        <TextInputCell {...(baseProps as TextInputCellTestProps)} value={'Initial'} />,
+      );
 
       expect(screen.getByRole('textbox')).toHaveValue('Initial');
 
       rerender(
         <ThemeProvider theme={theme}>
-          <TextInputCell {...baseProps} value={'Updated'} />
+          <TextInputCell {...(baseProps as TextInputCellTestProps)} value={'Updated'} />
         </ThemeProvider>,
       );
       expect(screen.getByRole('textbox')).toHaveValue('Updated');
@@ -62,7 +72,7 @@ describe('TextInputCell', () => {
     it('is enabled when colDef.editable=true', () => {
       renderWithTheme(
         <TextInputCell
-          {...({ ...baseProps, colDef: { editable: true } } as unknown as ICellRendererParams)}
+          {...({ ...baseProps, colDef: { editable: true } } as TextInputCellTestProps)}
         />,
       );
       expect(screen.getByRole('textbox')).toBeEnabled();
@@ -71,7 +81,7 @@ describe('TextInputCell', () => {
     it('is disabled when colDef.editable=false', () => {
       renderWithTheme(
         <TextInputCell
-          {...({ ...baseProps, colDef: { editable: false } } as unknown as ICellRendererParams)}
+          {...({ ...baseProps, colDef: { editable: false } } as TextInputCellTestProps)}
         />,
       );
       expect(screen.getByRole('textbox')).toBeDisabled();
@@ -81,10 +91,7 @@ describe('TextInputCell', () => {
       const editableFn = jest.fn(() => true);
       renderWithTheme(
         <TextInputCell
-          {...({
-            ...baseProps,
-            colDef: { editable: editableFn },
-          } as unknown as ICellRendererParams)}
+          {...({ ...baseProps, colDef: { editable: editableFn } } as TextInputCellTestProps)}
         />,
       );
       expect(editableFn).toHaveBeenCalled();
@@ -93,10 +100,7 @@ describe('TextInputCell', () => {
       const notEditableFn = jest.fn(() => false);
       renderWithTheme(
         <TextInputCell
-          {...({
-            ...baseProps,
-            colDef: { editable: notEditableFn },
-          } as unknown as ICellRendererParams)}
+          {...({ ...baseProps, colDef: { editable: notEditableFn } } as TextInputCellTestProps)}
         />,
       );
       expect(notEditableFn).toHaveBeenCalled();
@@ -106,7 +110,7 @@ describe('TextInputCell', () => {
 
   describe('Input behavior', () => {
     it('trims leading and trailing spaces on each change', () => {
-      renderWithTheme(<TextInputCell {...baseProps} />);
+      renderWithTheme(<TextInputCell {...(baseProps as TextInputCellTestProps)} />);
       const input = screen.getByRole('textbox');
 
       fireEvent.change(input, { target: { value: '  abc  ' } });
@@ -117,7 +121,7 @@ describe('TextInputCell', () => {
     });
 
     it('enforces max length on change', () => {
-      renderWithTheme(<TextInputCell {...baseProps} />);
+      renderWithTheme(<TextInputCell {...(baseProps as TextInputCellTestProps)} />);
       const input = screen.getByRole('textbox');
       const longValue = 'a'.repeat(TEXT_INPUT_MAX_LENGTH + 10);
 
@@ -127,7 +131,9 @@ describe('TextInputCell', () => {
 
     it('calls setValue with trimmed and capped value on blur', () => {
       const setValue = jest.fn();
-      renderWithTheme(<TextInputCell {...baseProps} setValue={setValue} />);
+      renderWithTheme(
+        <TextInputCell {...(baseProps as TextInputCellTestProps)} setValue={setValue} />,
+      );
       const input = screen.getByRole('textbox');
 
       const valueWithSpaces = `  ${'x'.repeat(TEXT_INPUT_MAX_LENGTH + 5)}  `;
@@ -136,13 +142,14 @@ describe('TextInputCell', () => {
 
       expect(setValue).toHaveBeenCalledTimes(1);
       expect(setValue).toHaveBeenCalledWith('x'.repeat(TEXT_INPUT_MAX_LENGTH));
-      // input state should also reflect the trimmed+capped value
       expect(input).toHaveValue('x'.repeat(TEXT_INPUT_MAX_LENGTH));
     });
 
     it('submits value on Enter key press', () => {
       const setValue = jest.fn();
-      renderWithTheme(<TextInputCell {...baseProps} setValue={setValue} />);
+      renderWithTheme(
+        <TextInputCell {...(baseProps as TextInputCellTestProps)} setValue={setValue} />,
+      );
       const input = screen.getByRole('textbox');
 
       fireEvent.change(input, { target: { value: '  Hello world  ' } });
@@ -156,7 +163,7 @@ describe('TextInputCell', () => {
       const Wrapper = (props: ICellRendererParams) => (
         <div onDoubleClick={parentDoubleClick}>
           <ThemeProvider theme={theme}>
-            <TextInputCell {...props} />
+            <TextInputCell {...(props as TextInputCellTestProps)} />
           </ThemeProvider>
         </div>
       );

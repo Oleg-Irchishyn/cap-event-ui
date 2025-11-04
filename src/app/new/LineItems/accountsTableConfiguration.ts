@@ -8,6 +8,7 @@ import {
   OtherAccountFieldTitles,
   USER_PROVIDED_OPTION,
   YesNoOptions,
+  NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
 } from '@/app/new/LineItems/const';
 import { DropdownSearchCell } from '@/app/new/LineItems/cellComponents/DropdownSearchCell';
 import {
@@ -221,10 +222,13 @@ export const fundGroupColumnDef = ({
     resizable: true,
     cellRenderer: TextInputCell,
     cellEditor: TextInputCell,
+    cellRendererParams: NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
     cellStyle: { padding: '0px' },
     suppressKeyboardEvent: () => true,
-    cellEditorParams: (params: ICellEditorParams) =>
-      cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
+    cellEditorParams: (params: ICellEditorParams) => ({
+      ...cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
+      ...NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
+    }),
   },
   {
     colId: AccountFieldIds[AccountFields.insideCommitment],
@@ -378,10 +382,13 @@ export const entityColumnDef = ({
     resizable: true,
     cellRenderer: TextInputCell,
     cellEditor: TextInputCell,
+    cellRendererParams: NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
     cellStyle: { padding: '0px' },
     suppressKeyboardEvent: () => true,
-    cellEditorParams: (params: ICellEditorParams) =>
-      cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
+    cellEditorParams: (params: ICellEditorParams) => ({
+      ...cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),
+      ...NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
+    }),
   },
   {
     colId: AccountFieldIds[AccountFields.insideCommitment],

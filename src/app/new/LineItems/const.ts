@@ -91,3 +91,9 @@ export const USER_PROVIDED_OPTION = 'User-Provided';
 export const YesNoOptions = ['Yes', 'No'];
 
 export const TEXT_INPUT_MAX_LENGTH = 200;
+
+export const NOTICE_LINE_DESCRIPTION_INPUT_PROPS = {
+  placeholder: 'Enter Notice Line Description',
+  name: 'notice-line-description-cell',
+  maxLength: TEXT_INPUT_MAX_LENGTH,
+};

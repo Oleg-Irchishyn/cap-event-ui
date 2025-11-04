@@ -4,8 +4,18 @@ import { EditableCallbackParams, ICellRendererParams } from 'ag-grid-community';
 import { TextInput } from '../styles';
 import { TEXT_INPUT_MAX_LENGTH } from '../const';
 
-export const TextInputCell: FC<ICellRendererParams> = (props) => {
+type TextInputCellProps = ICellRendererParams & {
+  placeholder?: string;
+  name?: string;
+  maxLength?: number;
+};
+
+export const TextInputCell: FC<TextInputCellProps> = (props) => {
   const [inputValue, setInputValue] = useState('');
+
+  const effectiveMaxLength = props.maxLength ?? TEXT_INPUT_MAX_LENGTH;
+  const inputName = props.name ?? 'text-input-cell';
+  const inputPlaceholder = props.placeholder ?? 'Enter Value';
 
   const isCellEditable =
     typeof props.colDef?.editable === 'function'
@@ -19,12 +29,12 @@ export const TextInputCell: FC<ICellRendererParams> = (props) => {
   }, [props.value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nextValue = e.target.value.trim().slice(0, TEXT_INPUT_MAX_LENGTH);
+    const nextValue = e.target.value.trim().slice(0, effectiveMaxLength);
     setInputValue(nextValue);
   };
 
   const handleBlur = () => {
-    const nextValue = (inputValue || '').trim().slice(0, TEXT_INPUT_MAX_LENGTH);
+    const nextValue = (inputValue || '').trim().slice(0, effectiveMaxLength);
     setInputValue(nextValue);
     props.setValue?.(nextValue);
   };
@@ -41,12 +51,12 @@ export const TextInputCell: FC<ICellRendererParams> = (props) => {
   return (
     <TextInput
       disabled={!isCellEditable}
-      name="notice-line-description-cell"
+      name={inputName}
       type="text"
       value={inputValue}
-      placeholder="Enter Notice Line Description"
+      placeholder={inputPlaceholder}
       autoComplete="off"
-      maxLength={TEXT_INPUT_MAX_LENGTH}
+      maxLength={effectiveMaxLength}
       onChange={handleChange}
       onDoubleClick={(e) => e.stopPropagation()}
       onBlur={handleBlur}
