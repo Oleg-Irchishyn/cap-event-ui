@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.42](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.41&targetVersion=GTv0.0.42) (2025-11-05)
+
+
+### Features
+
+* [TASK-6978]: [FE] Convert Notice Line Description into Editable Text Input ([f2d7b31](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f2d7b31d4ebe6944ae3343b4964c3ce8dec9b4fa)), closes [#6978](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6978)
+
+
+### Bug Fixes
+
+* display accounts with empty fields ([315ff91](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/315ff91264c571adc9b584ff6338fa12b5c85c84))
+
 ### [0.0.41](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.40&targetVersion=GTv0.0.41) (2025-11-04)
 
 
