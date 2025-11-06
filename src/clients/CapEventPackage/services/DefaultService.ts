@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AllocationInput } from '../models/AllocationInput';
 import type { CapEventLineItemResponse } from '../models/CapEventLineItemResponse';
 import type { CapEventProcessRequest } from '../models/CapEventProcessRequest';
 import type { CapEventType } from '../models/CapEventType';
+import type { InvestorEntry } from '../models/InvestorEntry';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class DefaultService {
@@ -37,6 +39,27 @@ export class DefaultService {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad request`,
+                404: `Resource not found`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Allocate investors for cap event line item
+     * @param requestBody
+     * @returns InvestorEntry List of allocated investor entries
+     * @throws ApiError
+     */
+    public allocateLineItem(
+        requestBody: AllocationInput,
+    ): CancelablePromise<Array<InvestorEntry>> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/cap-events/line-items/allocate',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

@@ -1,17 +1,18 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
-import { LineItemRow } from '@/app/new/LineItems/types';
+import { AllocationPreviewTableData, LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
-import { _ReferenceDataServer, ReferenceDataApi } from '@/api';
+import { CapEventPackageApi, _ReferenceDataServer, ReferenceDataApi } from '@/api';
 import {
   AccountFields,
   investmentMandatoryCategories,
   LineItemTypes,
   USER_PROVIDED_OPTION,
 } from '@/app/new/LineItems/const';
+import { AllocationInput } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
@@ -42,6 +43,11 @@ class CapEventSettingsStore {
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
   sessionId: string = '';
+
+  // Allocation Preview
+  isAllocationPreviewModalOpen: boolean = false;
+  allocationPreviewModalData: AllocationPreviewTableData[] = [];
+  allocationPreviewModalTitle: string = '';
 
   footnotes: FootnoteRecordType[] = [];
 
@@ -184,6 +190,15 @@ class CapEventSettingsStore {
     }
   }
 
+  *fetchAllocationPreviewData(requestBody: AllocationInput) {
+    try {
+      this.allocationPreviewModalData =
+        yield CapEventPackageApi.default.allocateLineItem(requestBody);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   setEventTypes(types: DropdownItemType[]) {
     this.eventTypes = types;
   }
@@ -318,6 +333,14 @@ class CapEventSettingsStore {
       }));
 
       this.entitiesLineItem.set(entityLabel, updatedLineItems);
+    }
+  }
+
+  setAllocationPreviewOpen(isOpen: boolean, requestBody?: AllocationInput, title?: string) {
+    this.isAllocationPreviewModalOpen = isOpen;
+    if (requestBody && title) {
+      this.fetchAllocationPreviewData(requestBody);
+      this.allocationPreviewModalTitle = title;
     }
   }
 

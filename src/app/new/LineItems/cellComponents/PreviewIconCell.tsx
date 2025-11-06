@@ -1,13 +1,14 @@
 import { FC, useRef, useState } from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
 
-import { entityDatesStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import Tooltip from '@/app/components/Tooltip';
 import { isRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
+import { AllocationInput } from '@/clients/CapEventPackage';
 
 const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   const [showPreviewTooltip, setPreviewTooltip] = useState(false);
@@ -20,6 +21,31 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
 
   const handlePreviewClick = () => {
     if (isPreviewDisabled) return;
+    const date = new Date(entityDatesStore.getEntityDueDate(entityKey) ?? new Date());
+    const dueDate =
+      date.getFullYear() +
+      '-' +
+      String(date.getMonth() + 1).padStart(2, '0') +
+      '-' +
+      String(date.getDate()).padStart(2, '0');
+
+    const requestBody: AllocationInput = {
+      entityId: entityKey.split(' - ')[0],
+      dueDate: dueDate || '',
+      allocationBasis: props.data.allocationBasis,
+      accountNo:
+        capEventSettingsStore.accounts.find(
+          (acc) =>
+            acc.capitalCategory === props.data.capitalCategory &&
+            acc.callDistributionReason === props.data.callDistributionReason &&
+            acc.insideCommitment === props.data.insideCommitment,
+        )?.accountNo ?? '',
+      investmentId:
+        capEventSettingsStore.investments.find((inv) => inv.name === props.data.investment)?.id ??
+        '',
+      amount: props.data.amount,
+    };
+    capEventSettingsStore.setAllocationPreviewOpen(true, requestBody, entityKey);
   };
 
   const onShowTooltip = () => {

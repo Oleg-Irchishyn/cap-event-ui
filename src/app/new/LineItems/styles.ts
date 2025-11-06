@@ -445,3 +445,50 @@ export const PreviewButton = styled.button({
 export const PreviewWrapper = styled.div({
   display: 'flex',
 });
+
+export const ModalWrapper = styled.div(({ theme }) => ({
+  position: 'fixed',
+  boxSizing: 'border-box',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  paddingTop: '64px',
+  paddingLeft: '25px',
+  paddingRight: '25px',
+  backgroundColor: theme.colors.black300,
+  backdropFilter: 'blur(10px)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 10,
+}));
+
+export const ModalContainer = styled.div(({ theme }) => ({
+  position: 'relative',
+  background: theme.colors.white,
+  padding: '24px',
+  borderRadius: '8px',
+  width: '100%',
+  boxSizing: 'border-box',
+}));
+
+export const ModalHeader = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '32px',
+  padding: '8px 0',
+});
+
+export const ModalButtonContainer = styled.div({
+  display: 'flex',
+  gap: '8px',
+  justifyContent: 'flex-end',
+});
+
+export const ModalContent = styled.div({
+  marginBottom: '24px',
+  overflowY: 'scroll',
+  maxHeight: '400px',
+});

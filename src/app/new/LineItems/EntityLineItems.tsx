@@ -10,12 +10,14 @@ import { prepareNewRow } from '@/utils/prepareNewRow';
 import { DragStoppedEvent } from 'ag-grid-community';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { LineItemTypes } from '@/app/new/LineItems/const';
+import AllocationPreviewModal from './AllocationPreviewModal';
 
 const EntityLineItems = () => {
   const entitiesSnapshotRef = useRef(capEventSettingsStore.fundEntities);
   const wasDropdownOpenRef = useRef(capEventSettingsStore.isEntitiesDropdownOpen);
 
   const isDropdownOpen = capEventSettingsStore.isEntitiesDropdownOpen;
+  const { isAllocationPreviewModalOpen } = capEventSettingsStore;
 
   if (!isDropdownOpen && wasDropdownOpenRef.current) {
     entitiesSnapshotRef.current = capEventSettingsStore.fundEntities;
@@ -91,18 +93,25 @@ const EntityLineItems = () => {
     ) || !capEventSettingsStore.isNoticeDateValid;
 
   return (
-    <BackgroundContainer testId="entity-line-items">
-      <Title>Capital Event Line Items - Entity Level</Title>
-      {!isDisabled ? (
-        renderFundCapitalDetailsPanel()
-      ) : (
-        <AccountsTable
-          testId="accounts-table-placeholder"
-          level={LineItemTypes.entity}
-          isDisabled
-        />
-      )}
-    </BackgroundContainer>
+    <>
+      <BackgroundContainer testId="entity-line-items">
+        <Title>Capital Event Line Items - Entity Level</Title>
+        {!isDisabled ? (
+          renderFundCapitalDetailsPanel()
+        ) : (
+          <AccountsTable
+            testId="accounts-table-placeholder"
+            level={LineItemTypes.entity}
+            isDisabled
+          />
+        )}
+      </BackgroundContainer>
+      <AllocationPreviewModal
+        title={capEventSettingsStore.allocationPreviewModalTitle}
+        isOpen={isAllocationPreviewModalOpen}
+        data={capEventSettingsStore.allocationPreviewModalData}
+      />
+    </>
   );
 };
 

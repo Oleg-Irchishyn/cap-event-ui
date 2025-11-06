@@ -11,6 +11,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Account } from './models/Account';
+export type { AllocationInput } from './models/AllocationInput';
 export type { CapEventEntityLineItem } from './models/CapEventEntityLineItem';
 export type { CapEventLineItem } from './models/CapEventLineItem';
 export type { CapEventLineItemResponse } from './models/CapEventLineItemResponse';

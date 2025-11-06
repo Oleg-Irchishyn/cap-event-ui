@@ -356,6 +356,164 @@
           }
         }
       }
+    },
+    "/cap-events/line-items/allocate": {
+      "post": {
+        "summary": "Allocate investors for cap event line item",
+        "operationId": "allocateLineItem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationInput"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "entityId": "ENTITY001",
+                    "dueDate": "2024-12-15",
+                    "allocationBasis": "commitment",
+                    "accountNo": "ACC123456",
+                    "investmentId": "INV001",
+                    "amount": 1000000.00
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of allocated investor entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InvestorEntry" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": true,
+                        "investor": "ABC Pension Fund",
+                        "classID": "Class A",
+                        "additionalInvestorType": "Institutional",
+                        "customerId": "CUST001",
+                        "customerName": "ABC Pension Fund LLC",
+                        "department": "Private Equity",
+                        "commitment": 5000000.00,
+                        "investedCapital": 2500000.00,
+                        "unfunded": 2500000.00,
+                        "managementFee": 50000.00,
+                        "managementFeePercentage": 2.0,
+                        "amount": 250000.00,
+                        "originalAmount": 250000.00,
+                        "allocatedAmount": 250000.00,
+                        "allocatedAmountNotRounded": 250000.00,
+                        "isTransferEntry": false,
+                        "trType": 1,
+                        "hasZeroCtb": false,
+                        "investorToRound": true,
+                        "location": "New York",
+                        "dataPoints": "Q4-2024",
+                        "isAggregated": false,
+                        "lineItemAmount": 2000
+                      },
+                      {
+                        "optOut": false,
+                        "readOnly": false,
+                        "rounded": true,
+                        "investor": "XYZ Family Office",
+                        "classID": "Class B",
+                        "additionalInvestorType": "Private Wealth",
+                        "customerId": "CUST002",
+                        "customerName": "XYZ Family Office Ltd",
+                        "department": "Alternative Investments",
+                        "commitment": 2000000.00,
+                        "investedCapital": 1000000.00,
+                        "unfunded": 1000000.00,
+                        "managementFee": 20000.00,
+                        "managementFeePercentage": 2.0,
+                        "amount": 100000.00,
+                        "originalAmount": 100000.00,
+                        "allocatedAmount": 100000.00,
+                        "allocatedAmountNotRounded": 100000.00,
+                        "isTransferEntry": false,
+                        "trType": 1,
+                        "hasZeroCtb": false,
+                        "investorToRound": true,
+                        "location": "California",
+                        "dataPoints": "Q4-2024",
+                        "isAggregated": false,
+                        "lineItemAmount": 4000
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -630,6 +788,31 @@
           },
           "isAggregated": {
             "type": "boolean"
+          }
+        }
+      },
+      "AllocationInput": {
+        "type": "object",
+        "required": ["entityId", "dueDate", "allocationBasis", "accountNo", "investmentId", "amount"],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "investmentId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
           }
         }
       }
