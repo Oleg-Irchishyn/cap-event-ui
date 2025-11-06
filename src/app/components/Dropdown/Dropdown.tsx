@@ -6,6 +6,7 @@ import DropdownInputField from './DropdownInputField';
 import ListView from './ListView';
 import { DropdownWrapper, ErrorLabel, FieldLabel, LabelContainer } from './styles';
 import Image from 'next/image';
+import { ITEM_STATES } from '@/const/common';
 
 export type DropdownItemType<T = object> = {
   label: string;
@@ -107,6 +108,7 @@ const Dropdown = <T,>({
   };
 
   const itemClickHandler = (item: DropdownItemType<T>) => () => {
+    if (item.state === ITEM_STATES.EXCLUDED) return;
     selectHandler(item);
 
     if (!isMultiSelect) {

@@ -1,11 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useRef } from 'react';
 
 import { BUTTON_THEMES, ButtonWrapper, Text } from './styles';
+import Tooltip from '@/app/components/Tooltip';
 
 type ButtonProps = {
   children: React.ReactNode;
   textStyle?: React.CSSProperties;
   disabled?: boolean;
+  disabledTooltipText?: string;
   style?: React.CSSProperties;
   onClick: () => void;
   buttonTheme: string;
@@ -23,20 +25,54 @@ const Button: FC<ButtonProps> = (props) => {
     buttonTheme = BUTTON_THEMES.secondary,
     width = '250px',
     testId,
+    disabledTooltipText,
   } = props;
 
+  const [showTooltip, setShowTooltip] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const showTooltipHandler = () => {
+    if (disabledTooltipText && disabled) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    showTooltipHandler();
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
+
   return (
-    <ButtonWrapper
-      data-testid={testId}
-      data-theme={buttonTheme}
-      type="button"
-      width={width}
-      onClick={onClick}
-      disabled={disabled}
-      style={style}
+    <div
+      ref={wrapperRef}
+      style={{
+        position: 'relative',
+        width,
+        display: 'inline-block',
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <Text style={textStyle}>{children}</Text>
-    </ButtonWrapper>
+      <ButtonWrapper
+        data-testid={testId}
+        data-theme={buttonTheme}
+        type="button"
+        width={width}
+        onClick={onClick}
+        disabled={disabled}
+        style={style}
+      >
+        <Text style={textStyle}>{children}</Text>
+      </ButtonWrapper>
+      <Tooltip
+        showTooltip={showTooltip}
+        tooltipMessage={disabledTooltipText ?? ''}
+        targetRef={wrapperRef}
+      />
+    </div>
   );
 };
 

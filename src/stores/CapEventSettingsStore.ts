@@ -12,6 +12,7 @@ import {
   LineItemTypes,
   USER_PROVIDED_OPTION,
 } from '@/app/new/LineItems/const';
+import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -41,6 +42,8 @@ class CapEventSettingsStore {
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
   sessionId: string = '';
+
+  footnotes: FootnoteRecordType[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -129,6 +132,19 @@ class CapEventSettingsStore {
     const effectiveSelectedCount =
       this.entitiesSelectedCountSnapshot ?? this.fundEntities.filter(selectedFilterCallback).length;
     return effectiveSelectedCount > 1;
+  }
+
+  get customEntityDescription() {
+    const groupDescriptions = this.fundGroupsLineItem.map((item) => item.defaultDescription);
+    const entityDescriptions = Array.from(this.entitiesLineItem.values())
+      .flat()
+      .map((item) => item.defaultDescription);
+
+    const allDescriptions = [...entityDescriptions, ...groupDescriptions].filter(
+      Boolean,
+    ) as string[];
+
+    return Array.from(new Set(allDescriptions)).sort((a, b) => a.localeCompare(b));
   }
 
   async fetchAccounts(fsGroupings: string[] = [], capitalCategories: string[] = []) {
@@ -303,6 +319,10 @@ class CapEventSettingsStore {
 
       this.entitiesLineItem.set(entityLabel, updatedLineItems);
     }
+  }
+
+  setFootnotes(data: FootnoteRecordType[]) {
+    this.footnotes = data;
   }
 }
 

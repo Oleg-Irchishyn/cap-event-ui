@@ -491,4 +491,80 @@ describe('CapEventSettingsStore', () => {
       expect(updatedItem.capitalCategory).toBe(originalItem.capitalCategory);
     });
   });
+
+  describe('customEntityDescription', () => {
+    const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
+      id: '1',
+      amount: 100,
+      investment: 'Investment A',
+      allocationBasis: 'Basis A',
+      capitalCategory: 'Category A',
+      defaultDescription: 'Description A',
+      callDistributionReason: 'Reason A',
+      insideCommitment: 'Yes',
+      ...overrides,
+    });
+
+    it('should return empty array when both fundGroupsLineItem and entitiesLineItem are empty', () => {
+      store.setFundGroupsLineItem([]);
+      store.entitiesLineItem.clear();
+
+      expect(store.customEntityDescription).toEqual([]);
+    });
+
+    it('should return descriptions from fundGroupsLineItem only', () => {
+      const lineItems = [
+        createMockLineItem({ id: '1', defaultDescription: 'Fund Group Desc 1' }),
+        createMockLineItem({ id: '2', defaultDescription: 'Fund Group Desc 2' }),
+      ];
+      store.setFundGroupsLineItem(lineItems);
+      store.entitiesLineItem.clear();
+
+      expect(store.customEntityDescription).toEqual(['Fund Group Desc 1', 'Fund Group Desc 2']);
+    });
+
+    it('should combine descriptions from both fundGroupsLineItem and entitiesLineItem', () => {
+      const fundGroupItems = [
+        createMockLineItem({ id: '1', defaultDescription: 'Fund Group Desc' }),
+      ];
+      const entityItems = [createMockLineItem({ id: '2', defaultDescription: 'Entity Desc' })];
+      store.setFundGroupsLineItem(fundGroupItems);
+      store.setEntitiesLineItem('entity-1', entityItems);
+
+      expect(store.customEntityDescription).toEqual(['Entity Desc', 'Fund Group Desc']);
+    });
+
+    it('should remove duplicate descriptions', () => {
+      const fundGroupItems = [
+        createMockLineItem({ id: '1', defaultDescription: 'Duplicate Desc' }),
+      ];
+      const entity1Items = [createMockLineItem({ id: '2', defaultDescription: 'Duplicate Desc' })];
+      const entity2Items = [createMockLineItem({ id: '3', defaultDescription: 'Unique Desc' })];
+      store.setFundGroupsLineItem(fundGroupItems);
+      store.setEntitiesLineItem('entity-1', entity1Items);
+      store.setEntitiesLineItem('entity-2', entity2Items);
+
+      expect(store.customEntityDescription).toEqual(['Duplicate Desc', 'Unique Desc']);
+    });
+
+    it('should filter out empty and falsy descriptions', () => {
+      const fundGroupItems = [
+        createMockLineItem({ id: '1', defaultDescription: 'Valid Desc 1' }),
+        createMockLineItem({ id: '2', defaultDescription: '' }),
+        createMockLineItem({ id: '3', defaultDescription: 'Valid Desc 2' }),
+      ];
+      const entityItems = [
+        createMockLineItem({ id: '4', defaultDescription: '' }),
+        createMockLineItem({ id: '5', defaultDescription: 'Valid Desc 3' }),
+      ];
+      store.setFundGroupsLineItem(fundGroupItems);
+      store.setEntitiesLineItem('entity-1', entityItems);
+
+      expect(store.customEntityDescription).toEqual([
+        'Valid Desc 1',
+        'Valid Desc 2',
+        'Valid Desc 3',
+      ]);
+    });
+  });
 });

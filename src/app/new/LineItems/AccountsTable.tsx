@@ -92,8 +92,7 @@ const AccountsTable: FC<Props> = ({
   onDragStopped,
   onOtherDragStopped,
 }) => {
-  const accounts = capEventSettingsStore.accounts || [];
-
+  const accounts = capEventSettingsStore.accounts;
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
 
