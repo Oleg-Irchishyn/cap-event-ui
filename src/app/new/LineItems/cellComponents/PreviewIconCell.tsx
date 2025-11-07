@@ -9,6 +9,7 @@ import { isRowEmpty } from '@/app/new/LineItems/utils';
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
 import { AllocationInput } from '@/clients/CapEventPackage';
+import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 
 const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   const [showPreviewTooltip, setPreviewTooltip] = useState(false);
@@ -32,7 +33,7 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
     const requestBody: AllocationInput = {
       entityId: entityKey.split(' - ')[0],
       dueDate: dueDate || '',
-      allocationBasis: props.data.allocationBasis,
+      allocationBasis: ALLOCATION_BASIS_DEFAULT_OPTIONS[props.data.allocationBasis],
       accountNo:
         capEventSettingsStore.accounts.find(
           (acc) =>

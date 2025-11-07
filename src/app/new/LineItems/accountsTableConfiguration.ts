@@ -34,14 +34,7 @@ import { entityDatesStore } from '@/stores';
 import { TableHeaderWithTooltip } from '@/app/components/TableHeaderWithTooltip/TableHeaderWithTooltip';
 import { TextInputCell } from '@/app/new/LineItems/cellComponents/TextInputCell';
 import DeleteCell from '@/app/new/LineItems/cellComponents/DeleteCell';
-
-const ALLOCATION_BASIS_MOCK_OPTIONS = [
-  'Commitment',
-  'Contribution Deal',
-  'Contribution All',
-  'Unfunded',
-  'Contribution Deal Parent',
-];
+import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 
 type ColumnDefProp = {
   accounts: Account[];
@@ -56,7 +49,7 @@ export const getCategories = (accounts: Account[]) => {
 };
 
 export const getAllocationBasisOptions = (level?: string) => {
-  return [USER_PROVIDED_OPTION, ...ALLOCATION_BASIS_MOCK_OPTIONS].filter((item) => {
+  return [USER_PROVIDED_OPTION, ...Object.keys(ALLOCATION_BASIS_DEFAULT_OPTIONS)].filter((item) => {
     if (level === LineItemTypes.group) {
       return true;
     }
