@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import {
   TextAreaWrapper,
   TextAreaLabel,
@@ -5,8 +7,8 @@ import {
   TextArea,
   Counter,
 } from '@/app/new/styles';
-import { FC } from 'react';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+
 import { DistributionJsonParseFieldProps } from './types';
 
 const MAX_LENGTH = 20000;

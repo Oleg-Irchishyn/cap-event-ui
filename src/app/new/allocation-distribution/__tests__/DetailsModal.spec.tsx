@@ -5,24 +5,35 @@ import { theme } from '@/ui/globalStyles';
 import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
 import { DistributionRow } from '@/app/new/allocation-distribution/types';
 
+jest.mock('docx-preview', () => ({
+  renderAsync: jest.fn().mockResolvedValue(undefined),
+}));
+
 const mockCloseModal = jest.fn();
 
-const mockDetails: DistributionRow = {
+const mockSelectedRow: DistributionRow = {
   id: 'test-id',
   investor: 'Test Investor',
   entityId: 'entity-123',
   entityName: 'Test Entity',
   description: 'Test Description',
-  dataPoints: '{"test": "data", "amount": 1000}',
-  investmentTitle: 'Test Investment Title',
-  investmentName: 'Test Investment Name',
   allocatedAmount: 1000,
+  isAggregated: true,
+  ceBoxFileId: 'file-123',
 };
 
-const renderWithTheme = (details: DistributionRow = mockDetails, closeModal = mockCloseModal) =>
+const renderWithTheme = (
+  selectedRow: DistributionRow | null = mockSelectedRow,
+  closeModal = mockCloseModal,
+  noticePreviewDoc: Blob | null = null,
+) =>
   render(
     <ThemeProvider theme={theme}>
-      <DetailsModal details={details} closeModal={closeModal} />
+      <DetailsModal
+        selectedRow={selectedRow}
+        closeModal={closeModal}
+        noticePreviewDoc={noticePreviewDoc}
+      />
     </ThemeProvider>,
   );
 
@@ -34,45 +45,35 @@ describe('DetailsModal', () => {
   it('renders modal with correct title', () => {
     renderWithTheme();
 
-    expect(screen.getByText('Investor Details')).toBeInTheDocument();
+    expect(screen.getByTestId('title-details-modal')).toHaveTextContent('Notice Preview');
   });
 
-  it('displays details data in textarea', () => {
+  it('renders Notice preview container', () => {
     renderWithTheme();
 
-    const textarea = screen.getByTestId('textarea-detail-modal') as HTMLTextAreaElement;
-    expect(textarea).toBeInTheDocument();
-    expect(textarea.value).toBe(mockDetails.dataPoints);
-    expect(textarea.name).toBe('allocation-payload');
-    expect(textarea.rows).toBe(4);
+    const container = screen.getByTestId('notice-preview-details-modal');
+    expect(container).toBeInTheDocument();
   });
 
-  it('renders close button with correct properties', () => {
+  it('renders close button', () => {
     renderWithTheme();
 
-    const closeButton = screen.getByTestId('close-details');
+    const closeButton = screen.getByRole('button');
     expect(closeButton).toBeInTheDocument();
-    expect(closeButton).toHaveTextContent('Close');
   });
 
   it('calls closeModal when close button is clicked', () => {
     renderWithTheme();
 
-    const closeButton = screen.getByTestId('close-details');
+    const closeButton = screen.getByRole('button');
     fireEvent.click(closeButton);
 
     expect(mockCloseModal).toHaveBeenCalledTimes(1);
   });
 
-  it('handles undefined dataPoints gracefully', () => {
-    const detailsWithUndefinedDataPoints: DistributionRow = {
-      ...mockDetails,
-      dataPoints: undefined,
-    };
+  it('handles null noticePreviewDoc gracefully by showing loading text', async () => {
+    renderWithTheme(mockSelectedRow, mockCloseModal, null);
 
-    renderWithTheme(detailsWithUndefinedDataPoints);
-
-    const textarea = screen.getByTestId('textarea-detail-modal') as HTMLTextAreaElement;
-    expect(textarea.value).toBe('');
+    expect(await screen.findByText('Loading Notice preview...')).toBeInTheDocument();
   });
 });

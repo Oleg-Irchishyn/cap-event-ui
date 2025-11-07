@@ -1,18 +1,19 @@
 'use client';
 
 import { useState, ChangeEvent } from 'react';
-import { CapEventPackageApi } from '@/api';
 import { RowClickedEvent } from 'ag-grid-community';
+import { observer } from 'mobx-react-lite';
+
+import { allocationDistributionStore } from '@/stores/AllocationDistributionStore';
+import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
 import DistributionJsonParseField from '@/app/new/allocation-distribution/DistributionJsonParseField';
 import DistributionJsonUploadButton from '@/app/new/allocation-distribution/DistributionJsonUploadButton';
 import DistributionTable from '@/app/new/allocation-distribution/DistributionTable';
 import { Title, Wrapper } from '@/app/new/styles';
-import { CapEventProcessRequest } from '@/clients/CapEventPackage';
-import { useToast } from '@/providers/ToastProvider';
-import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+
 import { DistributionRow } from './types';
 
 const DistributionDetails = () => {
@@ -21,41 +22,31 @@ const DistributionDetails = () => {
   const [rows, setRows] = useState<DistributionRow[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState<DistributionRow | null>(null);
+  const [noticePreviewDoc, setNoticePreviewDoc] = useState<Blob | null>(null);
 
   const handleUpload = async () => {
-    let requestPayload: CapEventProcessRequest;
-    try {
-      requestPayload = JSON.parse(payload) as CapEventProcessRequest;
-    } catch {
-      const msg = `Invalid JSON`;
-      toast.error(msg);
-      return;
-    }
-
-    try {
-      setRows([]);
-      setIsLoading(true);
-      const response = await CapEventPackageApi.default.process(requestPayload);
-      setRows(parseToDistributionRows(response));
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Upload failed. Please try again.';
-      toast.error(message);
-      setRows([]);
-    } finally {
-      setIsLoading(false);
-    }
+    setRows([]);
+    setIsLoading(true);
+    const newRows = await allocationDistributionStore.processPayload(payload, toast);
+    setRows(newRows);
+    setIsLoading(false);
   };
 
   const onSetPayload = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPayload(e.target.value);
   };
 
-  const onRowClicked = (e: RowClickedEvent) => {
-    setSelectedRow(e.data);
+  const onRowClicked = async (e: RowClickedEvent) => {
+    if (e.data?.isAggregated) {
+      setSelectedRow(e.data);
+      const blob = await allocationDistributionStore.fetchDoc(e.data.ceBoxFileId);
+      setNoticePreviewDoc(blob ?? null);
+    }
   };
 
   const closeModal = () => {
     setSelectedRow(null);
+    setNoticePreviewDoc(null);
   };
 
   return (
@@ -85,9 +76,14 @@ const DistributionDetails = () => {
           />
         </Wrapper>
       </BackgroundContainer>
-      {selectedRow && <DetailsModal details={selectedRow} closeModal={closeModal} />}
+      {selectedRow && (
+        <DetailsModal
+          noticePreviewDoc={noticePreviewDoc}
+          closeModal={closeModal}
+          selectedRow={selectedRow}
+        />
+      )}
     </>
   );
 };
-
-export default DistributionDetails;
+export default observer(DistributionDetails);

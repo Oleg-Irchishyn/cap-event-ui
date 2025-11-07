@@ -27,6 +27,7 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
         dataPoints: inv.dataPoints,
         allocatedAmount: inv.allocatedAmount || 0,
         isAggregated: inv.isAggregated || false,
+        ceBoxFileId: inv.isAggregated ? inv.ceBoxFileId : undefined,
       };
     });
   });

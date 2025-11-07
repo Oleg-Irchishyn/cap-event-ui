@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1",
+      "url": "http://localhost:8081/api/v1",
       "description": "v1 API base path"
     }
   ],
@@ -213,7 +213,8 @@
                             "investorToRound": true,
                             "location": "New York",
                             "dataPoints": "Q4-2024",
-                            "isAggregated": false
+                            "isAggregated": false,
+                            "lineItemAmount": 2000
                           },
                           {
                             "optOut": false,
@@ -240,7 +241,8 @@
                             "investorToRound": true,
                             "location": "California",
                             "dataPoints": "Q4-2024",
-                            "isAggregated": false
+                            "isAggregated": false,
+                            "lineItemAmount": 4000
                           }
                         ]
                       },
@@ -289,7 +291,8 @@
                             "investorToRound": true,
                             "location": "Massachusetts",
                             "dataPoints": "Q4-2024",
-                            "isAggregated": false
+                            "isAggregated": false,
+                            "lineItemAmount": 6040
                           }
                         ]
                       }
@@ -589,6 +592,12 @@
             "type": "string",
             "format": "uuid"
           },
+          "footnotes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "capEventEntityLineItems": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/CapEventEntityLineItem" }
@@ -597,7 +606,7 @@
       },
       "CapEventEntityLineItem": {
         "type": "object",
-        "required": ["entity", "dueDate", "capEventLineItems"],
+        "required": ["entity", "dueDate", "capEventLineItems", "entityLineItemAmount"],
         "properties": {
           "id": {
             "type": "string",
@@ -613,6 +622,9 @@
           "dueDate": {
             "type": "string",
             "format": "date"
+          },
+          "entityLineItemAmount": {
+            "type": "number"
           },
           "capEventLineItems": {
             "type": "array",
@@ -698,6 +710,10 @@
         "properties": {
           "entity": {
             "$ref": "#/components/schemas/Entity"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
           },
           "plInvestorEntries": {
             "type": "array",
@@ -787,7 +803,39 @@
             "type": "string"
           },
           "isAggregated": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
+          },
+          "lineItemAmount": {
+            "type": "number"
+          },
+          "ceBoxFileId": {
+            "type": "string"
+          }
+        }
+      },
+      "AllocationInput": {
+        "type": "object",
+        "required": ["entityId", "dueDate", "allocationBasis", "accountNo", "investmentId", "amount"],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "allocationBasis": {
+            "type": "string"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "investmentId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
           }
         }
       },

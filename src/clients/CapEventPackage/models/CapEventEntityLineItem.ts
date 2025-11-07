@@ -9,6 +9,7 @@ export type CapEventEntityLineItem = {
     entity: Entity;
     noticeDate?: string;
     dueDate: string;
+    entityLineItemAmount: number;
     capEventLineItems: Array<CapEventLineItem>;
 };
 

@@ -58,7 +58,7 @@ describe('DistributionDetails', () => {
 
     await waitFor(() => expect(processMock).toHaveBeenCalledTimes(1));
     expect(processMock).toHaveBeenCalledWith({ a: 1 });
-    expect(screen.getByTestId('rows-count').textContent).toBe('2');
+    await waitFor(() => expect(screen.getByTestId('rows-count').textContent).toBe('2'));
   });
 
   it('shows toast error and falls back to mocked response on API error', async () => {

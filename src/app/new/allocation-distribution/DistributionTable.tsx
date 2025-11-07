@@ -1,10 +1,11 @@
 'use client';
 
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { getDistributionColumnDefs } from '@/utils/getDistributionColumnDefs';
+
 import { DistributionTableProps, DistributionRow } from './types';
 
 const DistributionTable: FC<DistributionTableProps> = ({

@@ -32,5 +32,7 @@ export type InvestorEntry = {
     location?: string;
     dataPoints?: string;
     isAggregated?: boolean;
+    lineItemAmount?: number;
+    ceBoxFileId?: string;
 };
 

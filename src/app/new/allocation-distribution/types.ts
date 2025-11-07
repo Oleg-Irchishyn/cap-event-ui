@@ -12,6 +12,7 @@ type DistributionRow = {
   investmentName?: string;
   allocatedAmount: number;
   isAggregated?: boolean;
+  ceBoxFileId?: string;
 };
 
 interface DistributionTableProps {

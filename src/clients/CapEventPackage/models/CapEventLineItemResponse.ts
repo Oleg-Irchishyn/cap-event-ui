@@ -6,6 +6,7 @@ import type { Entity } from './Entity';
 import type { InvestorEntry } from './InvestorEntry';
 export type CapEventLineItemResponse = {
     entity?: Entity;
+    dueDate?: string;
     plInvestorEntries?: Array<InvestorEntry>;
 };
 

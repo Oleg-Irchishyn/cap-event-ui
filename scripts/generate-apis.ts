@@ -13,6 +13,7 @@ const apis = [
   { name: 'ReferenceData', file: 'referenceData.json' },
   { name: 'CapEventPackage', file: 'capEventPackage.json' },
   { name: 'TemplateLibrary', file: 'templateLibrary.json' },
+  { name: 'BoxConnector', file: 'boxConnector.json' },
 ];
 
 (async () => {

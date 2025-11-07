@@ -7,6 +7,7 @@ export type CapEventProcessRequest = {
     sponsorId?: string;
     capEventTypeId?: string;
     templateId?: string;
+    footnotes?: Record<string, string>;
     capEventEntityLineItems: Array<CapEventEntityLineItem>;
 };
 

@@ -1,16 +1,10 @@
 'use client';
 
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { ToastContainer, toast, ToastOptions, Slide } from 'react-toastify';
-import { useTheme } from 'styled-components';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-type ToastApi = {
-  success: (message: string, options?: ToastOptions) => void;
-  error: (message: string, options?: ToastOptions) => void;
-  info: (message: string, options?: ToastOptions) => void;
-  warning: (message: string, options?: ToastOptions) => void;
-};
+import { useTheme } from 'styled-components';
+import { ToastApi } from './types';
 
 const ToastContext = createContext<ToastApi>({
   success: (message, options) => toast.success(message, options),
