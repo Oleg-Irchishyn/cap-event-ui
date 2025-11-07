@@ -23,6 +23,8 @@ const AllocationPreviewModal: FC<EntityPreviewModalProps> = ({ isOpen, title, da
 
   const handleCancel = () => {
     capEventSettingsStore.setAllocationPreviewOpen(false);
+    capEventSettingsStore.setAllocationPreviewModalData([]);
+    capEventSettingsStore.setAllocationPreviewModalAllocationBasis('');
   };
 
   return (
@@ -42,7 +44,10 @@ const AllocationPreviewModal: FC<EntityPreviewModalProps> = ({ isOpen, title, da
           </ModalButtonContainer>
         </ModalHeader>
         <ModalContent>
-          <AllocationPreviewTable rows={data} />
+          <AllocationPreviewTable
+            rows={data}
+            isLoading={capEventSettingsStore.isAllocationPreviewModalLoading}
+          />
         </ModalContent>
       </ModalContainer>
     </ModalWrapper>

@@ -3,8 +3,6 @@ import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import {
   ALLOCATED_AMOUNT_FIELD,
   ALLOCATED_AMOUNT_HEADER,
-  COMMITMENT_FIELD,
-  COMMITMENT_HEADER,
   INVESTOR_ID_FIELD,
   INVESTOR_ID_HEADER,
   INVESTOR_NAME_FIELD,
@@ -15,7 +13,11 @@ import {
   INVESTOR_ADDITIONAL_TYPE_HEADER,
 } from '@/const/allocationPreview';
 
-export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] => [
+export const getAllocationPreviewColumnDefs = (
+  fieldName: string,
+  allocationBasis: string,
+  isLoading?: boolean,
+): ColDef[] => [
   // OptOut col is hidden due to lack of backend for this functionlity
   // {
   //   headerName: OPT_OUT,
@@ -30,6 +32,9 @@ export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] =>
     flex: 1,
     sortable: true,
     sort: 'asc',
+    valueGetter: (params) => {
+      return params.data.customerId ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
   },
@@ -38,6 +43,9 @@ export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] =>
     field: INVESTOR_NAME_FIELD,
     flex: 1.5,
     sortable: true,
+    valueGetter: (params) => {
+      return params.data.investor ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 70 } } : undefined,
   },
@@ -46,6 +54,9 @@ export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] =>
     field: INVESTOR_CLASS_ID_FIELD,
     flex: 2,
     sortable: false,
+    valueGetter: (params) => {
+      return params.data.classID ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 85 } } : undefined,
   },
@@ -54,14 +65,20 @@ export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] =>
     field: INVESTOR_ADDITIONAL_TYPE_FIELD,
     flex: 1.5,
     sortable: false,
+    valueGetter: (params) => {
+      return params.data.additionalInvestorType ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
   },
   {
-    headerName: COMMITMENT_HEADER,
-    field: COMMITMENT_FIELD,
+    headerName: allocationBasis,
+    field: fieldName,
     flex: 1,
     sortable: true,
+    valueGetter: (params) => {
+      return params.data[fieldName] ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
   },
@@ -70,6 +87,9 @@ export const getAllocationPreviewColumnDefs = (isLoading?: boolean): ColDef[] =>
     field: ALLOCATED_AMOUNT_FIELD,
     flex: 1.5,
     sortable: false,
+    valueGetter: (params) => {
+      return params.data.allocatedAmount ?? '-';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
   },

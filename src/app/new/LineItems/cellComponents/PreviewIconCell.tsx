@@ -45,6 +45,7 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
         '',
       amount: props.data.amount,
     };
+    capEventSettingsStore.setAllocationPreviewModalAllocationBasis(props.data.allocationBasis);
     capEventSettingsStore.setAllocationPreviewOpen(true, requestBody, entityKey);
   };
 

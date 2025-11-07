@@ -45,9 +45,11 @@ class CapEventSettingsStore {
   sessionId: string = '';
 
   // Allocation Preview
+  isAllocationPreviewModalLoading: boolean = false;
   isAllocationPreviewModalOpen: boolean = false;
   allocationPreviewModalData: AllocationPreviewTableData[] = [];
   allocationPreviewModalTitle: string = '';
+  allocationPreviewModalAllocationBasis: string = '';
 
   footnotes: FootnoteRecordType[] = [];
 
@@ -192,10 +194,13 @@ class CapEventSettingsStore {
 
   *fetchAllocationPreviewData(requestBody: AllocationInput) {
     try {
+      this.isAllocationPreviewModalLoading = true;
       this.allocationPreviewModalData =
         yield CapEventPackageApi.default.allocateLineItem(requestBody);
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isAllocationPreviewModalLoading = false;
     }
   }
 
@@ -342,6 +347,14 @@ class CapEventSettingsStore {
       this.fetchAllocationPreviewData(requestBody);
       this.allocationPreviewModalTitle = title;
     }
+  }
+
+  setAllocationPreviewModalData(data: AllocationPreviewTableData[]) {
+    this.allocationPreviewModalData = data;
+  }
+
+  setAllocationPreviewModalAllocationBasis(value: string) {
+    this.allocationPreviewModalAllocationBasis = value;
   }
 
   setFootnotes(data: FootnoteRecordType[]) {
