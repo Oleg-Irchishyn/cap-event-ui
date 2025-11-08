@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.44](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.43&targetVersion=GTv0.0.44) (2025-11-08)
+
+
+### Features
+
+* [TASK-7431]: [FE] Display notice preview ([e7deaed](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e7deaed4d41dfa9a5b4ab870fac12f4deb72172e)), closes [#7431](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7431)
+
+
+### Bug Fixes
+
+* allocation basis values ([a6c7bc5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a6c7bc54f4d980834152894c24ac46a3748e14e5)), closes [#7693](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7693)
+* dynamic column in Allocation preview ([1272efe](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/1272efe4fa067a245ccea2b774117b446ae9615d)), closes [#7692](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7692)
+
 ### [0.0.43](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.42&targetVersion=GTv0.0.43) (2025-11-07)
 
 
