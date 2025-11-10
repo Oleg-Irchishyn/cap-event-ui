@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import DistributionTable from '@/app/new/allocation-distribution/DistributionTable';
+import DistributionTable from '@/app/allocation-distribution/DistributionTable';
 
 jest.mock('@/app/components/ConfigurationTable', () => ({
   __esModule: true,

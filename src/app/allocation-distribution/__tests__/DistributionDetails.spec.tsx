@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DistributionDetails from '@/app/new/allocation-distribution/DistributionDetails';
+import DistributionDetails from '@/app/allocation-distribution/DistributionDetails';
 
 const toast = { success: jest.fn(), error: jest.fn(), info: jest.fn(), warning: jest.fn() };
 jest.mock('@/providers/ToastProvider', () => ({ useToast: () => toast }));
@@ -11,7 +11,7 @@ jest.mock('@/api', () => ({
   CapEventPackageApi: { default: { process: (...args: unknown[]) => processMock(...args) } },
 }));
 
-jest.mock('@/app/new/allocation-distribution/DistributionTable', () => ({
+jest.mock('@/app/allocation-distribution/DistributionTable', () => ({
   __esModule: true,
   default: ({ rows }: { rows: unknown[] }) => (
     <div data-testid="rows-count">{Array.isArray(rows) ? rows.length : 'NA'}</div>

@@ -76,7 +76,7 @@ const ButtonsGroup = () => {
         <Button
           testId="allocation-distribution"
           width="auto"
-          onClick={() => router.push('/new/allocation-distribution')}
+          onClick={() => router.push('/allocation-distribution')}
           buttonTheme={BUTTON_THEMES.secondary}
         >
           Allocation Distribution

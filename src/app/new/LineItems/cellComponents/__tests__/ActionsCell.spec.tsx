@@ -6,9 +6,11 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { LineItemTypes } from '@/app/new/LineItems/const';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 
-// Mock the stores
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
+    hasMultipleEntitiesChosen: false,
+    entitiesSelectedCountSnapshot: null,
+    fundEntities: [],
     fundGroupsLineItem: [],
     entitiesLineItem: new Map(),
     setFundGroupsLineItem: jest.fn(),
@@ -19,7 +21,6 @@ jest.mock('@/stores', () => ({
   },
 }));
 
-// Mock the Tooltip component
 jest.mock('@/app/components/Tooltip', () => {
   return function MockTooltip({ showTooltip, tooltipMessage, testId }: unknown) {
     return (
@@ -53,7 +54,11 @@ describe('ActionsCell', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset store state
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => false,
+    });
+    capEventSettingsStore.entitiesSelectedCountSnapshot = null;
+    capEventSettingsStore.fundEntities = [];
     capEventSettingsStore.fundGroupsLineItem = [];
     capEventSettingsStore.entitiesLineItem = new Map();
     jest.spyOn(entityDatesStore, 'getEntityDueDate').mockReturnValue(new Date());

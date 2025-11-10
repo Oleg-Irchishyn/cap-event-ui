@@ -7,6 +7,7 @@ import { capEventSettingsStore } from '@/stores';
 import { isRowEmpty } from '@/app/new/LineItems/utils';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { ITEM_STATES } from '@/const/common';
 
 import { LineItemTypes } from '../const';
 import { DuplicateRowButton, DuplicateRowWrapper } from '../styles';
@@ -23,7 +24,13 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
   const hasMultipleEntities = capEventSettingsStore.hasMultipleEntitiesChosen;
   const isCurrentRowEmpty = isRowEmpty(props.data);
 
-  const shouldRender = (entityLevel && !hasMultipleEntities && !isCurrentRowEmpty) || !entityLevel;
+  const selectedEntitiesCount =
+    capEventSettingsStore.entitiesSelectedCountSnapshot ??
+    capEventSettingsStore.fundEntities.filter((e) => e.state === ITEM_STATES.SELECTED).length;
+
+  const shouldRender = entityLevel
+    ? !hasMultipleEntities && (selectedEntitiesCount === 1 || !isCurrentRowEmpty)
+    : true;
   const isSectionDisabled = !entityLevel && !hasMultipleEntities;
   const isDuplicateRowDisabled = isCurrentRowEmpty || isSectionDisabled;
 

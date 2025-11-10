@@ -15,6 +15,8 @@ jest.mock('@/app/components/Tooltip', () => {
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     hasMultipleEntitiesChosen: false,
+    entitiesSelectedCountSnapshot: null,
+    fundEntities: [],
     fundGroupsLineItem: [],
     setFundGroupsLineItem: jest.fn(),
     entitiesLineItem: new Map(),
@@ -57,6 +59,8 @@ describe('DuplicateRowCell', () => {
     Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
       get: () => false,
     });
+    capEventSettingsStore.entitiesSelectedCountSnapshot = null;
+    capEventSettingsStore.fundEntities = [];
     capEventSettingsStore.fundGroupsLineItem = [];
     capEventSettingsStore.entitiesLineItem = new Map();
   });
@@ -86,10 +90,11 @@ describe('DuplicateRowCell', () => {
     expect(btn).toHaveAttribute('data-is-disabled', 'false');
   });
 
-  it('hides for entity empty row and disabled for group when a single entity is selected', () => {
+  it('shows disabled icon for entity empty row and disables group when a single entity is selected', () => {
     Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
       get: () => false,
     });
+    capEventSettingsStore.entitiesSelectedCountSnapshot = 1;
 
     const entityProps = {
       data: emptyRow,
@@ -97,7 +102,9 @@ describe('DuplicateRowCell', () => {
     } as unknown as ICellRendererParams;
 
     const { unmount } = render(<DuplicateRowCell {...entityProps} />);
-    expect(screen.queryByTestId('duplicate-row-icon')).not.toBeInTheDocument();
+    const entityBtn = screen.getByTestId('duplicate-row-icon');
+    expect(entityBtn).toBeInTheDocument();
+    expect(entityBtn).toHaveAttribute('data-is-disabled', 'true');
     unmount();
 
     const groupProps = {
@@ -108,6 +115,21 @@ describe('DuplicateRowCell', () => {
     render(<DuplicateRowCell {...groupProps} />);
     const groupBtn = screen.getByTestId('duplicate-row-icon');
     expect(groupBtn).toHaveAttribute('data-is-disabled', 'true');
+  });
+
+  it('hides icon for entity empty row when no entities are selected', () => {
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => false,
+    });
+    capEventSettingsStore.entitiesSelectedCountSnapshot = 0;
+
+    const entityProps = {
+      data: emptyRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity } },
+    } as unknown as ICellRendererParams;
+
+    render(<DuplicateRowCell {...entityProps} />);
+    expect(screen.queryByTestId('duplicate-row-icon')).not.toBeInTheDocument();
   });
 
   it('shows tooltip on hover only when enabled', () => {

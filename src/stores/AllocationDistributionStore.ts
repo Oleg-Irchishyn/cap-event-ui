@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CapEventPackageApi, BoxConnectorApi } from '@/api';
 import { CapEventProcessRequest } from '@/clients/CapEventPackage';
 import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
-import type { DistributionRow } from '@/app/new/allocation-distribution/types';
+import type { DistributionRow } from '@/app/allocation-distribution/types';
 import { ToastApi } from '@/providers/types';
 
 class AllocationDistributionStore {

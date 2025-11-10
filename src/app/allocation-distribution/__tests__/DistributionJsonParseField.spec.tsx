@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DistributionJsonParseField from '@/app/new/allocation-distribution/DistributionJsonParseField';
+import DistributionJsonParseField from '@/app/allocation-distribution/DistributionJsonParseField';
 
 const renderWithTheme = (children: React.ReactNode) => {
   render(<ThemeProvider theme={theme}>{children}</ThemeProvider>);

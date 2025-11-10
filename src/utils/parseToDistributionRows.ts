@@ -1,4 +1,4 @@
-import { DistributionRow } from '@/app/new/allocation-distribution/types';
+import { DistributionRow } from '@/app/allocation-distribution/types';
 import { CapEventLineItemResponse, InvestorEntry } from '@/clients/CapEventPackage';
 
 export const parseToDistributionRows = (items: unknown): DistributionRow[] => {

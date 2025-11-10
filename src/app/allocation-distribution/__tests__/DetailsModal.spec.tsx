@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
-import { DistributionRow } from '@/app/new/allocation-distribution/types';
+import DetailsModal from '@/app/allocation-distribution/DetailsModal';
+import { DistributionRow } from '@/app/allocation-distribution/types';
 
 jest.mock('docx-preview', () => ({
   renderAsync: jest.fn().mockResolvedValue(undefined),

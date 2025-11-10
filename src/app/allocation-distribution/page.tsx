@@ -1,6 +1,6 @@
 'use client';
 
-import DistributionDetails from '@/app/new/allocation-distribution/DistributionDetails';
+import DistributionDetails from '@/app/allocation-distribution/DistributionDetails';
 
 const AllocationDistribution = () => {
   return <DistributionDetails />;

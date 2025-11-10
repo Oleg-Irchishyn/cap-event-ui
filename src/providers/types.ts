@@ -1,4 +1,4 @@
-import { ToastOptions } from 'react-toastify';
+import type { ToastOptions } from 'react-toastify';
 
 export type ToastApi = {
   success: (message: string, options?: ToastOptions) => void;

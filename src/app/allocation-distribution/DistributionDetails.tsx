@@ -7,10 +7,10 @@ import { observer } from 'mobx-react-lite';
 import { allocationDistributionStore } from '@/stores/AllocationDistributionStore';
 import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
-import DetailsModal from '@/app/new/allocation-distribution/DetailsModal';
-import DistributionJsonParseField from '@/app/new/allocation-distribution/DistributionJsonParseField';
-import DistributionJsonUploadButton from '@/app/new/allocation-distribution/DistributionJsonUploadButton';
-import DistributionTable from '@/app/new/allocation-distribution/DistributionTable';
+import DetailsModal from '@/app/allocation-distribution/DetailsModal';
+import DistributionJsonParseField from '@/app/allocation-distribution/DistributionJsonParseField';
+import DistributionJsonUploadButton from '@/app/allocation-distribution/DistributionJsonUploadButton';
+import DistributionTable from '@/app/allocation-distribution/DistributionTable';
 import { Title, Wrapper } from '@/app/new/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 

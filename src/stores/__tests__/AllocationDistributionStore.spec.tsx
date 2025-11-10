@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { ToastApi } from '@/providers/types';
 
 const processMock = jest.fn();
 const parseMock = jest.fn();
@@ -25,6 +26,10 @@ jest.mock('@/utils/parseToDistributionRows', () => ({
 }));
 
 describe('AllocationDistributionStore', () => {
+  const BlobCtor: new (...args: unknown[]) => unknown =
+    (global as unknown as { Blob?: new (...args: unknown[]) => unknown }).Blob ??
+    (class MockBlob {} as unknown as new (...args: unknown[]) => unknown);
+
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
@@ -39,7 +44,7 @@ describe('AllocationDistributionStore', () => {
 
   it('processPayload handles invalid JSON with toast and no API call', async () => {
     const store = await importStore();
-    const toast = { error: jest.fn() };
+    const toast = { error: jest.fn() } as unknown as ToastApi;
 
     const result = await store.processPayload('not-json', toast);
 
@@ -53,7 +58,7 @@ describe('AllocationDistributionStore', () => {
 
   it('processPayload success: calls API with parsed payload and updates rows', async () => {
     const store = await importStore();
-    const toast = { error: jest.fn() };
+    const toast = { error: jest.fn() } as unknown as ToastApi;
     processMock.mockResolvedValueOnce([{ any: 'response' }]);
     parseMock.mockReturnValueOnce([{ id: 'r1' }, { id: 'r2' }]);
 
@@ -68,7 +73,7 @@ describe('AllocationDistributionStore', () => {
 
   it('processPayload API error shows toast and clears rows', async () => {
     const store = await importStore();
-    const toast = { error: jest.fn() };
+    const toast = { error: jest.fn() } as unknown as ToastApi;
     processMock.mockRejectedValueOnce(new Error('Boom'));
 
     const result = await store.processPayload('{"a":1}', toast);
@@ -81,8 +86,9 @@ describe('AllocationDistributionStore', () => {
 
   it('fetchDoc success returns blob and uses BoxConnectorApi config', async () => {
     const store = await importStore();
-    const toast = { error: jest.fn() };
-    const blob = new Blob(['abc'], { type: 'text/plain' });
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    // Use environment-agnostic Blob constructor
+    const blob = new (BlobCtor as new (...args: unknown[]) => unknown)();
     axiosGetMock.mockResolvedValueOnce({ data: blob });
 
     const result = await store.fetchDoc('file-123', toast);
@@ -92,12 +98,12 @@ describe('AllocationDistributionStore', () => {
       headers: { Accept: 'application/octet-stream' },
       withCredentials: true,
     });
-    expect(result).toBeInstanceOf(Blob);
+    expect(result).toBeInstanceOf(BlobCtor);
   });
 
   it('fetchDoc error shows toast and returns undefined', async () => {
     const store = await importStore();
-    const toast = { error: jest.fn() };
+    const toast = { error: jest.fn() } as unknown as ToastApi;
     axiosGetMock.mockRejectedValueOnce(new Error('Oops'));
 
     const result = await store.fetchDoc('file-123', toast);

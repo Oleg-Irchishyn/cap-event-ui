@@ -20,6 +20,7 @@ const ModalContainer = styled.div(({ theme }) => ({
   padding: '24px',
   borderRadius: '8px',
   maxWidth: '900px',
+  minHeight: '90dvh',
   width: '100%',
   boxSizing: 'border-box',
 }));
@@ -61,7 +62,7 @@ const ModalButtonContainer = styled.div({
 });
 
 const DocxContainer = styled.div(({ theme }) => ({
-  maxHeight: '65vh',
+  maxHeight: '65dvh',
   overflow: 'auto',
   margin: '16px 0',
 

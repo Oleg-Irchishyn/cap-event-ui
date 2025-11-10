@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DistributionJsonUploadButton from '@/app/new/allocation-distribution/DistributionJsonUploadButton';
+import DistributionJsonUploadButton from '@/app/allocation-distribution/DistributionJsonUploadButton';
 
 const renderWithTheme = (children: React.ReactNode) => {
   render(<ThemeProvider theme={theme}>{children}</ThemeProvider>);
