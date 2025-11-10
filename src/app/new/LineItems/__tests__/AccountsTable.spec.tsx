@@ -32,17 +32,66 @@ jest.mock('@/app/components/ConfigurationTable', () => {
     rowData,
     onCellValueChanged,
   }: unknown) {
+    const defs = (columnDefs as unknown as Array<Record<string, unknown>>) || [];
+    const getDefByField = (field: string) => defs.find((d) => d.field === field);
+
+    const evaluateEditable = (field: string, row: Record<string, unknown>) => {
+      const def = getDefByField(field);
+      if (!def) return undefined;
+      const editable = def.editable;
+      if (typeof editable === 'function') {
+        return !!editable({
+          data: row,
+          colDef: def,
+          column: { getColId: () => '1' },
+        });
+      }
+      return !!editable;
+    };
+
+    const inheritedRow = {
+      id: 'inherited-1',
+      inheritedId: 'fg-1',
+      capitalCategory: 'Cont - Other',
+      callDistributionReason: 'Other',
+    };
+
+    const normalRow = {
+      id: 'row-1',
+      capitalCategory: 'Cont - Other',
+      callDistributionReason: 'Other',
+    };
+
+    const fieldsToCheck = [
+      'callDistributionReason',
+      'defaultDescription',
+      'insideCommitment',
+      'allocationBasis',
+      'prDate',
+      'prFlag',
+      'investment',
+      'amount',
+    ];
+
+    const editableInherited: Record<string, boolean | undefined> = {};
+    const editableNormal: Record<string, boolean | undefined> = {};
+    fieldsToCheck.forEach((f) => {
+      editableInherited[f] = evaluateEditable(f, inheritedRow);
+      editableNormal[f] = evaluateEditable(f, normalRow);
+    });
+
     return (
       <div data-testid={testId}>
         <div data-testid="column-defs">{JSON.stringify(columnDefs.length)}</div>
         <div data-testid="row-data">{JSON.stringify(rowData.length)}</div>
         <div data-testid="actions-cell-params">
           {(() => {
-            const defs = (columnDefs as unknown as Array<Record<string, unknown>>) || [];
             const last = defs[defs.length - 1] || {};
             return JSON.stringify((last as { cellEditorParams?: unknown }).cellEditorParams ?? {});
           })()}
         </div>
+        <div data-testid="editable-map-inherited">{JSON.stringify(editableInherited)}</div>
+        <div data-testid="editable-map-normal">{JSON.stringify(editableNormal)}</div>
         <button
           data-testid="trigger-cell-change"
           onClick={() => {
@@ -240,6 +289,40 @@ describe('AccountsTable', () => {
       const params = JSON.parse(paramsJson);
       expect(params.level).toBe('entity');
       expect(params.entityKey).toBe('entity-123');
+    });
+  });
+
+  describe('Editability for inherited rows', () => {
+    it('disables Call/Distribution Reason, Notice Line Description, and Inside CMNT for inherited rows', () => {
+      renderWithTheme(<AccountsTable {...defaultProps} />);
+      const inheritedJson = screen.getByTestId('editable-map-inherited').textContent || '{}';
+      const inherited = JSON.parse(inheritedJson);
+
+      expect(inherited.callDistributionReason).toBe(false);
+      expect(inherited.defaultDescription).toBe(false);
+      expect(inherited.insideCommitment).toBe(false);
+    });
+
+    it('allows other fields to follow normal rules on inherited rows', () => {
+      renderWithTheme(<AccountsTable {...defaultProps} />);
+      const inheritedJson = screen.getByTestId('editable-map-inherited').textContent || '{}';
+      const inherited = JSON.parse(inheritedJson);
+
+      expect(inherited.allocationBasis).toBe(true);
+      expect(inherited.prDate).toBe(true);
+      expect(inherited.prFlag).toBe(true);
+      expect(inherited.investment).toBe(true);
+      expect(inherited.amount).toBe(true);
+    });
+
+    it('keeps those fields editable for non-inherited rows when applicable', () => {
+      renderWithTheme(<AccountsTable {...defaultProps} />);
+      const normalJson = screen.getByTestId('editable-map-normal').textContent || '{}';
+      const normal = JSON.parse(normalJson);
+
+      expect(normal.callDistributionReason).toBe(true);
+      expect(normal.defaultDescription).toBe(true);
+      expect(normal.insideCommitment).toBe(true);
     });
   });
 });

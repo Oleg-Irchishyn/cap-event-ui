@@ -110,24 +110,23 @@ const AccountsTable: FC<Props> = ({
         }
       }
 
+      // For inherited entity rows, disable only specific fields before any enabling logic
+      if (level === LineItemTypes.entity && params.data.inheritedId) {
+        if (
+          params.colDef.field === AccountFields.callDistributionReason ||
+          params.colDef.field === AccountFields.defaultDescription ||
+          params.colDef.field === AccountFields.insideCommitment
+        ) {
+          return false;
+        }
+      }
+
       // Unified handling for prefilled/duplicated rows on both levels
       if (isDependentPrefilledEditable(params, level)) {
         return true;
       }
 
       if (level === LineItemTypes.entity) {
-        // the if statement below is a temporary solution to enable all amounts on fund groups and entity levels
-        if (params.data.inheritedId) {
-          if (
-            params.colDef.field === AccountFields.allocationBasis ||
-            params.colDef.field === AccountFields.amount
-          ) {
-            return true;
-          }
-
-          return false;
-        }
-
         const parentFundGroup = capEventSettingsStore.fundGroupsLineItem.find(
           (lineItem) => lineItem.id === params.data.inheritedId,
         );
@@ -239,7 +238,6 @@ const AccountsTable: FC<Props> = ({
                   getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
                 );
               } else {
-                // No predefined descriptions found; still allow manual entry
                 cellKeysToUnBlock.push(
                   getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
                 );
@@ -287,7 +285,6 @@ const AccountsTable: FC<Props> = ({
                 getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
               );
             } else {
-              // No predefined descriptions found; still allow manual entry
               cellKeysToUnBlock.push(
                 getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
               );
