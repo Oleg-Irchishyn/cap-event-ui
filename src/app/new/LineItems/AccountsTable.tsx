@@ -238,6 +238,11 @@ const AccountsTable: FC<Props> = ({
                 cellKeysToUnBlock.push(
                   getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
                 );
+              } else {
+                // No predefined descriptions found; still allow manual entry
+                cellKeysToUnBlock.push(
+                  getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
+                );
               }
 
               const commitments = getBySelectedCategoryAndReason(
@@ -278,6 +283,11 @@ const AccountsTable: FC<Props> = ({
               updatedRow.defaultDescription = descriptions
                 .join('; ')
                 .slice(0, TEXT_INPUT_MAX_LENGTH);
+              cellKeysToUnBlock.push(
+                getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
+              );
+            } else {
+              // No predefined descriptions found; still allow manual entry
               cellKeysToUnBlock.push(
                 getCellKey(data.id, AccountFieldIds[AccountFields.defaultDescription]),
               );

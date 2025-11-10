@@ -67,11 +67,11 @@ export const TextInput = styled.input(({ theme }) => ({
   height: '100%',
   textAlign: 'left',
   border: 'none',
-  padding: '0 8px',
+  padding: '0',
   backgroundColor: 'transparent',
   fontSize: '14px',
   fontWeight: 500,
-  overflow: 'hidden',
+  overflow: 'hidden !important',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   '&:focus': {
