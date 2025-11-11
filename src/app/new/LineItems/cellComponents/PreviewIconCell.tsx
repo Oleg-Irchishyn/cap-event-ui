@@ -1,10 +1,11 @@
 import { FC, useRef, useState } from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
+import { observer } from 'mobx-react-lite';
 
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import Tooltip from '@/app/components/Tooltip';
-import { isRowEmpty } from '@/app/new/LineItems/utils';
+import { getValidDate, hasRequiredFieldsForPreview } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
@@ -17,12 +18,16 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
 
   const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
 
+  const validDueDate = getValidDate(entityDatesStore.getEntityDueDate(entityKey));
+  const hasDueDate = !!validDueDate;
+
+  const isDueDateInputValid = entityDatesStore.getEntityDueDateInputValidity(entityKey);
   const isPreviewDisabled =
-    isRowEmpty(props.data) || !(entityDatesStore.getEntityDueDate(entityKey) instanceof Date);
+    !hasRequiredFieldsForPreview(props.data) || !hasDueDate || !isDueDateInputValid;
 
   const handlePreviewClick = () => {
     if (isPreviewDisabled) return;
-    const date = new Date(entityDatesStore.getEntityDueDate(entityKey) ?? new Date());
+    const date = validDueDate ?? new Date();
     const dueDate =
       date.getFullYear() +
       '-' +
@@ -85,4 +90,4 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   );
 };
 
-export default PreviewIconCell;
+export default observer(PreviewIconCell);

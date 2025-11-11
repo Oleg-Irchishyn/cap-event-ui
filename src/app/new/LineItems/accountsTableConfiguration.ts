@@ -376,7 +376,7 @@ export const entityColumnDef = ({
     cellRenderer: TextInputCell,
     cellEditor: TextInputCell,
     cellRendererParams: NOTICE_LINE_DESCRIPTION_INPUT_PROPS,
-    cellStyle: { padding: '0px' },
+    cellStyle: { padding: '0 8px' },
     suppressKeyboardEvent: () => true,
     cellEditorParams: (params: ICellEditorParams) => ({
       ...cellEditorsParamsCallback(params, AccountFields.defaultDescription, accounts),

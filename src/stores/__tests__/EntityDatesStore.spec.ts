@@ -63,7 +63,6 @@ describe('EntityDatesStore', () => {
 
     store.calculateAndSetEntityDueDate(entity, funds);
     const due = store.getEntityDueDate(entity) as Date;
-    // Fri + Mon + Tue => 2025-01-07
     expect(dayjs(due).format('YYYY-MM-DD')).toBe('2025-01-07');
     expect(store.isDueDateManuallyOverridden(entity)).toBe(false);
   });
@@ -99,5 +98,21 @@ describe('EntityDatesStore', () => {
 
     expect(dayjs(store.getEntityDueDate('A') as Date).format('YYYY-MM-DD')).toBe('2025-01-07');
     expect(store.getEntityDueDate('B')).toBeNull();
+  });
+
+  it('defaults due date input validity to true for unknown entity', () => {
+    expect(store.getEntityDueDateInputValidity('Unknown')).toBe(true);
+  });
+
+  it('sets and gets per-entity due date input validity', () => {
+    const entity = 'Fund Validity';
+
+    expect(store.getEntityDueDateInputValidity(entity)).toBe(true);
+
+    store.setEntityDueDateInputValidity(entity, false);
+    expect(store.getEntityDueDateInputValidity(entity)).toBe(false);
+
+    store.setEntityDueDateInputValidity(entity, true);
+    expect(store.getEntityDueDateInputValidity(entity)).toBe(true);
   });
 });

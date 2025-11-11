@@ -18,6 +18,7 @@ jest.mock('@/stores', () => ({
   },
   entityDatesStore: {
     getEntityDueDate: jest.fn(),
+    getEntityDueDateInputValidity: jest.fn(),
   },
 }));
 
@@ -62,6 +63,7 @@ describe('ActionsCell', () => {
     capEventSettingsStore.fundGroupsLineItem = [];
     capEventSettingsStore.entitiesLineItem = new Map();
     jest.spyOn(entityDatesStore, 'getEntityDueDate').mockReturnValue(new Date());
+    jest.spyOn(entityDatesStore, 'getEntityDueDateInputValidity').mockReturnValue(true);
   });
 
   describe('Rendering', () => {

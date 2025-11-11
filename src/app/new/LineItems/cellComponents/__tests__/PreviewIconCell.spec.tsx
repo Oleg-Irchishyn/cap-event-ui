@@ -14,6 +14,7 @@ jest.mock('@/app/components/Tooltip', () => {
 jest.mock('@/stores', () => ({
   entityDatesStore: {
     getEntityDueDate: jest.fn(),
+    getEntityDueDateInputValidity: jest.fn(),
   },
 }));
 
@@ -49,6 +50,7 @@ describe('PreviewIconCell', () => {
 
   it('is enabled when required fields are populated and due date is valid', () => {
     (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date());
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(true);
     const props = {
       data: baseRow,
       colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
@@ -61,6 +63,7 @@ describe('PreviewIconCell', () => {
 
   it('is disabled and shows tooltip on hover when due date is invalid', () => {
     (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(null);
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(true);
     const props = {
       data: baseRow,
       colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
@@ -78,5 +81,44 @@ describe('PreviewIconCell', () => {
 
     fireEvent.mouseLeave(wrapper);
     expect(tooltip).toHaveAttribute('data-show-tooltip', 'false');
+  });
+
+  it('is disabled when store returns an invalid Date object', () => {
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date('invalid'));
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(true);
+    const props = {
+      data: baseRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
+    } as unknown as ICellRendererParams;
+
+    render(<PreviewIconCell {...props} />);
+    const btn = screen.getByTestId('preview-icon');
+    expect(btn).toHaveAttribute('data-is-disabled', 'true');
+  });
+
+  it('is enabled when store returns a valid ISO date string', () => {
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue('2025-01-15');
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(true);
+    const props = {
+      data: baseRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
+    } as unknown as ICellRendererParams;
+
+    render(<PreviewIconCell {...props} />);
+    const btn = screen.getByTestId('preview-icon');
+    expect(btn).toHaveAttribute('data-is-disabled', 'false');
+  });
+
+  it('is disabled when input validity flag is false even with valid date', () => {
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date());
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(false);
+    const props = {
+      data: baseRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
+    } as unknown as ICellRendererParams;
+
+    render(<PreviewIconCell {...props} />);
+    const btn = screen.getByTestId('preview-icon');
+    expect(btn).toHaveAttribute('data-is-disabled', 'true');
   });
 });

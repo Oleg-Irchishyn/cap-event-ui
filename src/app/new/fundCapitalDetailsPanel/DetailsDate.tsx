@@ -45,7 +45,12 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
   );
 
   const [isValid, setIsValid] = useState(true);
-  const handleValidityChange = (valid: boolean) => setIsValid(valid);
+  const handleValidityChange = (valid: boolean) => {
+    setIsValid(valid);
+    if (dateType === DATE_TYPES.DUE) {
+      entityDatesStore.setEntityDueDateInputValidity(entityLabel, valid);
+    }
+  };
 
   useEffect(() => {
     setInputValue(currentDate ? dayjs(currentDate) : null);

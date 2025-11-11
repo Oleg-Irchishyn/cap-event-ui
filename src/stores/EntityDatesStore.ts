@@ -9,6 +9,7 @@ interface EntityDates {
     noticeDate: Date | null;
     dueDate: Date | null;
     isDueDateManuallyOverridden: boolean;
+    isDueDateInputValid: boolean;
   };
 }
 
@@ -38,6 +39,7 @@ class EntityDatesStore {
         noticeDate: null,
         dueDate: null,
         isDueDateManuallyOverridden: false,
+        isDueDateInputValid: true,
       };
     }
     this.entityDates[entityLabel].noticeDate = date;
@@ -49,6 +51,7 @@ class EntityDatesStore {
         noticeDate: null,
         dueDate: null,
         isDueDateManuallyOverridden: false,
+        isDueDateInputValid: true,
       };
     }
     this.entityDates[entityLabel].dueDate = date;
@@ -60,6 +63,7 @@ class EntityDatesStore {
         noticeDate: null,
         dueDate: null,
         isDueDateManuallyOverridden: false,
+        isDueDateInputValid: true,
       };
     }
     this.entityDates[entityLabel].dueDate = date;
@@ -72,6 +76,22 @@ class EntityDatesStore {
 
   getEntityDueDate(entityLabel: string): Date | null {
     return this.entityDates[entityLabel]?.dueDate || null;
+  }
+
+  setEntityDueDateInputValidity(entityLabel: string, isValid: boolean) {
+    if (!this.entityDates[entityLabel]) {
+      this.entityDates[entityLabel] = {
+        noticeDate: null,
+        dueDate: null,
+        isDueDateManuallyOverridden: false,
+        isDueDateInputValid: true,
+      };
+    }
+    this.entityDates[entityLabel].isDueDateInputValid = isValid;
+  }
+
+  getEntityDueDateInputValidity(entityLabel: string): boolean {
+    return this.entityDates[entityLabel]?.isDueDateInputValid ?? true;
   }
 
   clearGeneralNoticeDate() {
