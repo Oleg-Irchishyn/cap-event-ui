@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.45](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.44&targetVersion=GTv0.0.45) (2025-11-11)
+
+
+### Features
+
+* [TASK-7465]: [FE] Incorrect state for dropdowns at Entity level if rows are inherited from Fund Group level ([bba0dae](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/bba0dae5a8a11b727c98c19f2c503a063caae51f)), closes [#7465](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7465)
+
+
+### Bug Fixes
+
+* [Issue-7464]: [FE] Incorrect state for duplicate icon at Entity level if only 1 entity is selected ([90a6301](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/90a6301d35f4089d1dba2f796ea9ce8121c179f3)), closes [#7464](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7464)
+* [TASK-7630]: [FE] Notice Line Description field is disabled if empty ([f066c43](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f066c43cafd09e9f20e25695edcc10a288196ca7)), closes [#7630](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7630)
+
 ### [0.0.44](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.43&targetVersion=GTv0.0.44) (2025-11-08)
 
 
