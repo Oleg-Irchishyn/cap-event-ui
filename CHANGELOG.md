@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.46](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.45&targetVersion=GTv0.0.46) (2025-11-12)
+
+
+### Bug Fixes
+
+* [Issue-7261]: [FE] Preview icon is still enabled when user removes Due Date ([07ab5ee](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/07ab5ee2f8f222469bd9437d9853ad5c6d2369d1)), closes [#7261](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7261) [#7717](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7717)
+
 ### [0.0.45](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.44&targetVersion=GTv0.0.45) (2025-11-11)
 
 
