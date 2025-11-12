@@ -21,6 +21,10 @@
     {
       "name": "Queries",
       "description": "Operations related to queries"
+    },
+    {
+      "name": "Sponsors",
+      "description": "Operations related to sponsors"
     }
   ],
   "servers": [
@@ -41,11 +45,20 @@
           {
             "name": "sponsorId",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             },
             "description": "Sponsor ID used to filter fund groups"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -139,6 +152,15 @@
         "operationId": "getEntitiesByFundGroup",
         "parameters": [
           {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "fundGroupId",
             "in": "path",
             "required": true,
@@ -193,13 +215,20 @@
                         "id": "F001",
                         "name": "Global Growth",
                         "dueDateDays": "2",
-                        "dueDateType": "Business Days"
+                        "dueDateType": "Business Days",
+                        "mfBasisDateDefault": "Beginning of Period",
+                        "mfBasis": "10123",
+                        "mfPercent": "0.02"
                       },
                       {
                         "id": "F002",
                         "name": "Bond Index",
                         "dueDateDays": "5",
-                        "dueDateType": "Calendar Days"
+                        "dueDateType": "Calendar Days",
+                        "mfBasisDateDefault": "Beginning of Period",
+                        "mfBasis": "1234",
+                        "mfPercent": "0.01",
+                        "yearFractionApproach": "90/360"
                       }
                     ]
                   }
@@ -548,10 +577,97 @@
           }
         }
       }
+    },
+    "/sponsors": {
+      "get": {
+        "summary": "Retrieve list of sponsors",
+        "operationId": "getSponsors",
+        "tags": [
+          "Sponsors"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sponsors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Sponsor" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "inv-12345-abcd-6789-ef01-234567890123",
+                        "name": "Real Estate Fund A",
+                        "title": "Premium Real Estate Investment Fund",
+                        "type": "real_estate"
+                      },
+                      {
+                        "id": "inv-98765-dcba-4321-ef01-876543210987",
+                        "name": "Tech Growth Fund",
+                        "title": "Technology Growth Investment Fund",
+                        "type": "equity"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Sponsor": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "1" },
+          "name": { "type": "string", "example": "Golder Dev Test" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "PROSPECT",
+              "ONBOARDING_TRANSITION",
+              "PENDING_CS_APPROVAL",
+              "PENDING_QC_LEGAL_APPROVAL",
+              "QC_REJECTED",
+              "LEGAL_REJECTED",
+              "IT_PROCESSING",
+              "ACTIVE",
+              "NEVER_LAUNCHED",
+              "OFFBOARDING",
+              "INACTIVE",
+              "PENDING_CS_APPROVAL_OFFBOARDING",
+              "IT_PROCESSING_OFFBOARDING"
+            ],
+            "example":  "ACTIVE"
+          },
+          "salesforceId": {
+            "type": "string"
+          }
+        }
+      },
       "Query": {
         "type": "object",
         "properties": {
@@ -606,7 +722,7 @@
           "dueDateType": {
             "type": "string"
           },
-          "allocationBasis": {
+          "mfBasis": {
             "type": "string"
           },
           "mfBasisDateDefault": {
@@ -614,6 +730,10 @@
           },
           "yearFractionApproach": {
             "type": "string"
+          },
+          "mfPercent": {
+            "type": "string",
+            "example": "0.02"
           }
         }
       },

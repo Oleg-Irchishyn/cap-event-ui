@@ -10,6 +10,7 @@ import { EntitiesService } from './services/EntitiesService';
 import { FundGroupsService } from './services/FundGroupsService';
 import { InvestmentsService } from './services/InvestmentsService';
 import { QueriesService } from './services/QueriesService';
+import { SponsorsService } from './services/SponsorsService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class ReferenceDataClient {
     public readonly accounts: AccountsService;
@@ -17,6 +18,7 @@ export class ReferenceDataClient {
     public readonly fundGroups: FundGroupsService;
     public readonly investments: InvestmentsService;
     public readonly queries: QueriesService;
+    public readonly sponsors: SponsorsService;
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = AxiosHttpRequest) {
         this.request = new HttpRequest({
@@ -35,6 +37,7 @@ export class ReferenceDataClient {
         this.fundGroups = new FundGroupsService(this.request);
         this.investments = new InvestmentsService(this.request);
         this.queries = new QueriesService(this.request);
+        this.sponsors = new SponsorsService(this.request);
     }
 }
 

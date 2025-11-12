@@ -9,7 +9,7 @@ export const ITEM_STATES = {
 
 export const GENERAL_SETTINGS_FIELDS = {
   EVENT_TYPE: 'Event Type',
-  TEMPLATE: 'Template',
+  SPONSOR: 'Sponsor',
   FUND_GROUP: 'Fund Group',
   ENTITIES: 'Entity(ies)',
   NOTICE_DATE: 'Notice Date',

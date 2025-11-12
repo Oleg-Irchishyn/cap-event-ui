@@ -10,6 +10,7 @@ export class EntitiesService {
     /**
      * Get entities by fund group ID
      * @param fundGroupId
+     * @param sessionId Session identifier
      * @param statuses Filter by entity statuses
      * @param typesToExclude Exclude specific entity types
      * @returns Entity List of entities found
@@ -17,6 +18,7 @@ export class EntitiesService {
      */
     public getEntitiesByFundGroup(
         fundGroupId: string,
+        sessionId?: string,
         statuses?: Array<string>,
         typesToExclude?: Array<string>,
     ): CancelablePromise<Array<Entity>> {
@@ -25,6 +27,9 @@ export class EntitiesService {
             url: '/fund-groups/{fundGroupId}/entities',
             path: {
                 'fundGroupId': fundGroupId,
+            },
+            headers: {
+                'Session-Id': sessionId,
             },
             query: {
                 'statuses': statuses,

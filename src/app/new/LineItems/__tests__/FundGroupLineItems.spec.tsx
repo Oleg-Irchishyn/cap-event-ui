@@ -47,7 +47,7 @@ jest.mock('@/stores', () => ({
     hasMultipleEntitiesChosen: true,
     isNoticeDateValid: true,
     setEventTypes: jest.fn(),
-    setTemplates: jest.fn(),
+    setSponsors: jest.fn(),
     setFundGroups: jest.fn(),
     setFundEntities: jest.fn(),
     setNoticeDate: jest.fn(),
@@ -143,7 +143,7 @@ describe('FundGroupLineItems', () => {
       jest.clearAllMocks();
 
       capEventSettingsStore.setEventTypes([]);
-      capEventSettingsStore.setTemplates([]);
+      capEventSettingsStore.setSponsors([]);
       capEventSettingsStore.setFundGroups([]);
       capEventSettingsStore.setFundEntities([]);
 
@@ -155,7 +155,7 @@ describe('FundGroupLineItems', () => {
 
     it('renders disabled AccountTable when only one entity is selected', () => {
       capEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setTemplates([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
+      capEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
       capEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
       capEventSettingsStore.setFundEntities([{ label: 'entity1', state: ITEM_STATES.SELECTED }]);
       capEventSettingsStore.setNoticeDate(new Date());
@@ -172,7 +172,7 @@ describe('FundGroupLineItems', () => {
       entityDatesStore.hasDifferentDates = false;
 
       capEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setTemplates([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
+      capEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
       capEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
       capEventSettingsStore.setFundEntities([
         { label: 'entity1', state: ITEM_STATES.SELECTED },

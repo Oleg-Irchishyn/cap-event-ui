@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 import Image from 'next/image';
 import dayjs from 'dayjs';
-import { CapEventPackageApi, TemplateLibraryApi, ReferenceDataApi } from '@/api';
+import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { GENERAL_SETTINGS_FIELDS, ITEM_STATES } from '@/const/common';
 import { parseValidDate } from '@/utils/datePickerUtils';
@@ -15,9 +15,8 @@ import Dropdown from '@/app/components/Dropdown';
 import ConfirmationModal from '@/app/components/ConfirmationModal';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import useConfirmationModal from '@/hooks/useConfirmationModal';
-import { Entity, FundGroup } from '@/clients/ReferenceData';
+import { Entity, FundGroup, Sponsor } from '@/clients/ReferenceData';
 import { CapEventType } from '@/clients/CapEventPackage';
-import { TemplateMetadata } from '@/clients/TemplateLibrary';
 import { DropdownWrapper, Title } from './styles';
 
 const EVENT_TYPE_MOCK = [
@@ -34,14 +33,6 @@ const EVENT_TYPE_MOCK = [
   {
     label: 'Subsequent Closing',
     description: 'Sub Cl',
-    state: 'O',
-  },
-];
-
-const TEMPLATES_MOCK = [
-  {
-    label: 'Template for cap event',
-    description: 'Capital Call',
     state: 'O',
   },
 ];
@@ -91,11 +82,11 @@ const prepareFundEntities = (funds: Entity[]) => {
   }));
 };
 
-const prepareTemplates = (templates: TemplateMetadata[]) => {
-  return templates?.map((template) => ({
-    ...template,
+const prepareSponsors = (sponsors: Sponsor[]) => {
+  return sponsors?.map((sponsor) => ({
+    ...sponsor,
     state: ITEM_STATES.OPTIONAL,
-    label: template.name,
+    label: sponsor.name ?? '',
   }));
 };
 
@@ -141,10 +132,9 @@ const GeneralSettings = () => {
     }
   };
 
-  const getFundGroups = async () => {
+  const getFundGroups = async (sponsorId: string) => {
     try {
-      const fundGroups =
-        await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor('Golden Image DEV');
+      const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(sponsorId);
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
       console.error(error);
@@ -152,15 +142,25 @@ const GeneralSettings = () => {
     }
   };
 
+  const getSponsors = async () => {
+    try {
+      const sponsors = await ReferenceDataApi.sponsors.getSponsors();
+      capEventSettingsStore.setSponsors(prepareSponsors(sponsors));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const initFetch = useCallback(() => {
     getEventTypes();
-    getFundGroups();
+    getSponsors();
   }, []);
 
   const updateFundEntities = async (id: string) => {
     try {
       const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
         id,
+        '',
         ['ACTIVE'],
         ['ADMIN', 'ELIMINATION'],
       );
@@ -171,32 +171,11 @@ const GeneralSettings = () => {
     }
   };
 
-  const getTemplates = async (eventTypeId: string) => {
-    let preparedTemplates;
-    try {
-      const templates = await TemplateLibraryApi.template.getStandardTemplatesMetadata(
-        'Golden Image DEV',
-        eventTypeId,
-      );
-      preparedTemplates = prepareTemplates(templates);
-    } catch (error) {
-      console.error(error);
-      preparedTemplates = TEMPLATES_MOCK;
-    }
-
-    if (preparedTemplates.length === 1) {
-      const preSelectedTemplate = [{ ...preparedTemplates[0], state: ITEM_STATES.SELECTED }];
-      capEventSettingsStore.setTemplates(preSelectedTemplate);
-    } else {
-      capEventSettingsStore.setTemplates(preparedTemplates);
-    }
-  };
-
   useEffect(() => {
     initFetch();
   }, [initFetch]);
 
-  const { eventTypes, templates, fundGroups, fundEntities } = capEventSettingsStore;
+  const { eventTypes, sponsors, fundGroups, fundEntities } = capEventSettingsStore;
 
   const visibleFundGroups: DropdownItemType<FundGroup>[] = useMemo(
     () => filterBySearch<FundGroup>(fundGroups, searchText),
@@ -258,7 +237,6 @@ const GeneralSettings = () => {
         : { ...eventType, state: ITEM_STATES.OPTIONAL },
     );
     capEventSettingsStore.setEventTypes(updatedValues);
-    getTemplates(item.id || '');
 
     entityDatesStore.setSelectedEventType(item.label || '');
 
@@ -269,13 +247,16 @@ const GeneralSettings = () => {
     }
   };
 
-  const selectTemplateHandler = (item: DropdownItemType) => {
-    const updatedValues = templates.map((template) =>
-      template.label === item.label
-        ? { ...template, state: ITEM_STATES.SELECTED }
-        : { ...template, state: ITEM_STATES.OPTIONAL },
+  const selectSponsorHandler = (item: DropdownItemType) => {
+    const updatedValues = sponsors.map((sponsor) =>
+      sponsor.label === item.label
+        ? { ...sponsor, state: ITEM_STATES.SELECTED }
+        : { ...sponsor, state: ITEM_STATES.OPTIONAL },
     );
-    capEventSettingsStore.setTemplates(updatedValues);
+    capEventSettingsStore.setSponsors(updatedValues);
+    if (item.id) {
+      getFundGroups(item.id);
+    }
   };
 
   const selectFundGroupHandler = async (item: DropdownItemType<FundGroup>) => {
@@ -386,26 +367,20 @@ const GeneralSettings = () => {
           )}
         />
         <Dropdown
-          testId="template"
-          withDescription
-          label={`${GENERAL_SETTINGS_FIELDS.TEMPLATE}*`}
-          items={templates}
-          placeholder="Select Template"
-          isDisabled={
-            templates.length === 1 ||
-            capEventSettingsStore.eventTypes.filter(
-              (eventTypes) => eventTypes.state === ITEM_STATES.SELECTED,
-            ).length === 0
-          }
-          selectHandler={selectTemplateHandler}
-          selectedItems={capEventSettingsStore.templates.filter(
-            (template) => template.state === ITEM_STATES.SELECTED,
+          testId="sponsor"
+          label={`${GENERAL_SETTINGS_FIELDS.SPONSOR}*`}
+          items={sponsors}
+          placeholder="Select Sponsor"
+          selectHandler={selectSponsorHandler}
+          selectedItems={capEventSettingsStore.sponsors.filter(
+            (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
           )}
         />
         <Dropdown<FundGroup>
           testId="fund-groups"
           withSearch
           label={`${GENERAL_SETTINGS_FIELDS.FUND_GROUP}*`}
+          isDisabled={!sponsors.some((item) => item.state === ITEM_STATES.SELECTED)}
           searchText={searchText}
           items={visibleFundGroups}
           placeholder="Select Fund Group"

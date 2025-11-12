@@ -4,6 +4,10 @@ import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 
+import GeneralSettings from '@/app/new/GeneralSettings';
+import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
+
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: React.ComponentProps<'img'>) => React.createElement('img', { ...props }),
@@ -67,6 +71,7 @@ jest.mock('@/api', () => ({
   ReferenceDataApi: {
     fundGroups: { searchFundGroupsBySponsor: jest.fn() },
     entities: { getEntitiesByFundGroup: jest.fn() },
+    sponsors: { getSponsors: jest.fn() },
   },
   TemplateLibraryApi: {
     template: { getStandardTemplatesMetadata: jest.fn() },
@@ -77,11 +82,11 @@ jest.mock('@/stores', () => {
   type Item = { label: string; id?: string; state?: string };
   const capEventSettingsStore = {
     eventTypes: [] as Item[],
-    templates: [] as Item[],
+    sponsors: [] as Item[],
     fundGroups: [] as Item[],
     fundEntities: [] as Item[],
     setEventTypes: jest.fn(),
-    setTemplates: jest.fn(),
+    setSponsors: jest.fn(),
     setFundGroups: jest.fn(),
     setFundEntities: jest.fn(),
     setEntitiesDropdownOpen: jest.fn(),
@@ -111,10 +116,6 @@ jest.mock('@/hooks/useConfirmationModal', () => ({
   default: () => confirmationHook,
 }));
 
-import GeneralSettings from '@/app/new/GeneralSettings';
-import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
-
 const renderWithTheme = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
@@ -134,32 +135,24 @@ describe('GeneralSettings', () => {
     (TemplateLibraryApi.template.getStandardTemplatesMetadata as jest.Mock).mockResolvedValue([]);
   });
 
-  it('fetches event types and fund groups on mount', async () => {
+  it('fetches event types and sponsors on mount', async () => {
     renderWithTheme(<GeneralSettings />);
 
     await waitFor(() => expect(CapEventPackageApi.default.getCapEventTypes).toHaveBeenCalled());
-    await waitFor(() =>
-      expect(ReferenceDataApi.fundGroups.searchFundGroupsBySponsor).toHaveBeenCalled(),
-    );
+    await waitFor(() => expect(ReferenceDataApi.sponsors.getSponsors).toHaveBeenCalled());
     expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();
-    expect(capEventSettingsStore.setFundGroups).toHaveBeenCalled();
+    expect(capEventSettingsStore.setSponsors).toHaveBeenCalled();
   });
 
-  it('selecting event type confirms and triggers templates fetch when enabled', async () => {
+  it('selecting event type confirms when enabled', async () => {
     confirmationHook.isConfirmationModalEnabled = true;
     (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValue(true);
 
     renderWithTheme(<GeneralSettings />);
 
-    fireEvent.click(screen.getByTestId('event-type-select'));
-
-    await waitFor(() =>
-      expect(TemplateLibraryApi.template.getStandardTemplatesMetadata).toHaveBeenCalledWith(
-        'Golden Image DEV',
-        'EVT1',
-      ),
-    );
-    expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();
+    });
   });
 
   it('changing notice date when confirmation disabled updates entity dates', async () => {

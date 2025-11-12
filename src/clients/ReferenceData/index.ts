@@ -17,9 +17,11 @@ export type { FundGroup } from './models/FundGroup';
 export type { Investment } from './models/Investment';
 export type { Query } from './models/Query';
 export type { QueryResults } from './models/QueryResults';
+export { Sponsor } from './models/Sponsor';
 
 export { AccountsService } from './services/AccountsService';
 export { EntitiesService } from './services/EntitiesService';
 export { FundGroupsService } from './services/FundGroupsService';
 export { InvestmentsService } from './services/InvestmentsService';
 export { QueriesService } from './services/QueriesService';
+export { SponsorsService } from './services/SponsorsService';

@@ -64,11 +64,11 @@ describe('CapEventSettingsStore', () => {
     expect(store.eventTypes).toStrictEqual(mockEventTypes);
   });
 
-  it('should set templates', () => {
-    const mockTemplates = mockDropdownValue('Templates');
-    store.setTemplates(mockTemplates);
+  it('should set sponsors', () => {
+    const mockSponsors = mockDropdownValue('Sponsor');
+    store.setSponsors(mockSponsors);
 
-    expect(store.templates).toStrictEqual(mockTemplates);
+    expect(store.sponsors).toStrictEqual(mockSponsors);
   });
 
   it('should set fund groups', () => {

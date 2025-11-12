@@ -20,7 +20,7 @@ const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_S
 class CapEventSettingsStore {
   // General settings
   eventTypes: DropdownItemType[] = [];
-  templates: DropdownItemType[] = [];
+  sponsors: DropdownItemType[] = [];
   fundGroups: DropdownItemType<FundGroup>[] = [];
   fundEntities: DropdownItemType[] = [];
   noticeDate: Date | null = null;
@@ -75,7 +75,7 @@ class CapEventSettingsStore {
     entitiesToCheck?: DropdownItemType[],
   ) {
     const selectedEventTypes = this.eventTypes.filter(selectedFilterCallback);
-    const selectedTemplates = this.templates.filter(selectedFilterCallback);
+    const selectedSponsors = this.sponsors.filter(selectedFilterCallback);
     const selectedFundGroups = this.fundGroups.filter(selectedFilterCallback);
     const selectedFunds = (entitiesToCheck ?? this.fundEntities).filter(selectedFilterCallback);
     const selectedFundsCountEffective = this.entitiesSelectedCountSnapshot ?? selectedFunds.length;
@@ -85,7 +85,7 @@ class CapEventSettingsStore {
 
     return (
       selectedEventTypes.length === 0 ||
-      selectedTemplates.length === 0 ||
+      selectedSponsors.length === 0 ||
       selectedFundGroups.length === 0 ||
       selectedFundsCountEffective === 0 ||
       (effectiveNoticeDate === null && !effectiveHasDifferentDates)
@@ -208,8 +208,8 @@ class CapEventSettingsStore {
     this.eventTypes = types;
   }
 
-  setTemplates(templates: DropdownItemType[]) {
-    this.templates = templates;
+  setSponsors(sponsors: DropdownItemType[]) {
+    this.sponsors = sponsors;
   }
 
   setFundGroups(fundGroups: DropdownItemType<FundGroup>[]) {
