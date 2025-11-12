@@ -7,6 +7,7 @@ import { capEventSettingsStore } from '@/stores';
 import { observer } from 'mobx-react-lite';
 import FootnotesModal from '@/app/new/FootnotesModal';
 import { useState } from 'react';
+import { ROUTES } from '@/const/routes';
 
 const ButtonsGroup = () => {
   const router = useRouter();
@@ -76,7 +77,7 @@ const ButtonsGroup = () => {
         <Button
           testId="allocation-distribution"
           width="auto"
-          onClick={() => router.push('/allocation-distribution')}
+          onClick={() => router.push(ROUTES.ALLOCATION_DISTRIBUTION.path)}
           buttonTheme={BUTTON_THEMES.secondary}
         >
           Allocation Distribution
