@@ -19,41 +19,6 @@ import { Entity, FundGroup, Sponsor } from '@/clients/ReferenceData';
 import { CapEventType } from '@/clients/CapEventPackage';
 import { DropdownWrapper, Title } from './styles';
 
-const EVENT_TYPE_MOCK = [
-  {
-    label: 'Capital Call',
-    description: 'Call',
-    state: 'O',
-  },
-  {
-    label: 'Distribution',
-    description: 'Dist',
-    state: 'O',
-  },
-  {
-    label: 'Subsequent Closing',
-    description: 'Sub Cl',
-    state: 'O',
-  },
-];
-
-const tempId = Math.floor(10000 + Math.random() * 90000);
-const tempFundId = Math.floor(10000 + Math.random() * 80000);
-
-const FUND_GROUPS = [...Array(9)].map((_, i) => ({
-  label: `${tempId}-${i + 1} - Fund group ${i + 1}`,
-  state: 'O',
-  id: 'FG001',
-  name: `${i + 1}`,
-}));
-
-const FUNDS = [...Array(8)].map((_, i) => ({
-  label: `${tempFundId}-${i + 1} - Fund ${i + 1}`,
-  state: 'O',
-  dueDateDays: parseFloat('2.00').toString(),
-  dueDateType: 'Calendar Days',
-}));
-
 const prepareEventType = (eventTypes: CapEventType[]) => {
   return eventTypes?.map((eventType) => ({
     ...eventType,
@@ -128,7 +93,6 @@ const GeneralSettings = () => {
       capEventSettingsStore.setEventTypes(prepareEventType(eventTypes));
     } catch (error) {
       console.error(error);
-      capEventSettingsStore.setEventTypes(EVENT_TYPE_MOCK);
     }
   };
 
@@ -138,7 +102,6 @@ const GeneralSettings = () => {
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
       console.error(error);
-      capEventSettingsStore.setFundGroups(FUND_GROUPS);
     }
   };
 
@@ -167,7 +130,6 @@ const GeneralSettings = () => {
       capEventSettingsStore.setFundEntities(prepareFundEntities(entitiesRelatedToGroup));
     } catch (error) {
       console.error(error);
-      capEventSettingsStore.setFundEntities(FUNDS);
     }
   };
 
