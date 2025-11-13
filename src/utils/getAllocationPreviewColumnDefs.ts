@@ -13,6 +13,18 @@ import {
   INVESTOR_ADDITIONAL_TYPE_HEADER,
 } from '@/const/allocationPreview';
 
+export const formatAmount = (amount: number) => {
+  if (amount === 0) return '0.00';
+  if (!amount) return '-';
+
+  const formattedAmount = Math.abs(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return amount < 0 ? `(${formattedAmount})` : formattedAmount;
+};
+
 export const getAllocationPreviewColumnDefs = (
   fieldName: string,
   allocationBasis: string,
@@ -44,7 +56,7 @@ export const getAllocationPreviewColumnDefs = (
     flex: 1.5,
     sortable: true,
     valueGetter: (params) => {
-      return params.data.investor ?? '-';
+      return params.data.customerName ?? '-';
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 70 } } : undefined,
@@ -77,7 +89,7 @@ export const getAllocationPreviewColumnDefs = (
     flex: 1,
     sortable: true,
     valueGetter: (params) => {
-      return params.data[fieldName] ?? '-';
+      return formatAmount(params.data[fieldName]);
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
@@ -88,7 +100,7 @@ export const getAllocationPreviewColumnDefs = (
     flex: 1.5,
     sortable: false,
     valueGetter: (params) => {
-      return params.data.allocatedAmount ?? '-';
+      return formatAmount(params.data.allocatedAmount);
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,

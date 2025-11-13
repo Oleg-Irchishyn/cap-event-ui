@@ -12,7 +12,7 @@ export const ALLOCATED_AMOUNT_BASE_HEADER = 'Allocated amount (Base)';
 
 // Field names
 export const INVESTOR_ID_FIELD = 'customerId';
-export const INVESTOR_NAME_FIELD = 'investor';
+export const INVESTOR_NAME_FIELD = 'customerName';
 export const INVESTOR_CLASS_ID_FIELD = 'classID';
 export const INVESTOR_ADDITIONAL_TYPE_FIELD = 'additionalInvestorType';
 export const COMMITMENT_FIELD = 'commitment';
