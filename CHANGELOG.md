@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.47](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.46&targetVersion=GTv0.0.47) (2025-11-13)
+
+
+### Features
+
+* add new cap event button ([d64d141](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d64d14156f530ced7dc2bb0959733a1f64def606)), closes [#7736](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7736)
+* add sponsor selection ([6593ddb](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6593ddb95e50793481692d7ea30af094e628108f)), closes [#7739](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7739)
+
 ### [0.0.46](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.45&targetVersion=GTv0.0.46) (2025-11-12)
 
 
