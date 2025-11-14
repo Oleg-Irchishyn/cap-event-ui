@@ -44,10 +44,7 @@ const AllocationPreviewModal: FC<EntityPreviewModalProps> = ({ isOpen, title, da
           </ModalButtonContainer>
         </ModalHeader>
         <ModalContent>
-          <AllocationPreviewTable
-            rows={data}
-            isLoading={capEventSettingsStore.isAllocationPreviewModalLoading}
-          />
+          <AllocationPreviewTable rows={data} />
         </ModalContent>
       </ModalContainer>
     </ModalWrapper>
