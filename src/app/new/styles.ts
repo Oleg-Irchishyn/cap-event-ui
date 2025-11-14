@@ -4,6 +4,7 @@ export const ButtonContainer = styled.div({
   display: 'flex',
   gap: '8px',
   justifyContent: 'flex-end',
+  alignItems: 'flex-start',
   margin: '24px 16px 0 16px',
 });
 

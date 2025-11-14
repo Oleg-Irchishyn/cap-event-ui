@@ -5,12 +5,13 @@ import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import Tooltip from '@/app/components/Tooltip';
-import { getValidDate, hasRequiredFieldsForPreview } from '@/app/new/LineItems/utils';
+import { hasRequiredFieldsForPreview } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
 import { AllocationInput } from '@/clients/CapEventPackage';
 import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
+import { getValidDate } from '@/utils/getValidDate';
 
 const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   const [showPreviewTooltip, setPreviewTooltip] = useState(false);

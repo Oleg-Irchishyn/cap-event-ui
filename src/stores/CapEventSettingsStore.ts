@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
+import type { DragNDropError } from '@/app/new/attachments/types';
 import { AllocationPreviewTableData, LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
@@ -47,6 +48,7 @@ class CapEventSettingsStore {
   // Allocation Preview
   isAllocationPreviewModalLoading: boolean = false;
   isAllocationPreviewModalOpen: boolean = false;
+  attachmentErrors: DragNDropError[] = [];
   allocationPreviewModalData: AllocationPreviewTableData[] = [];
   allocationPreviewModalTitle: string = '';
   allocationPreviewModalAllocationBasis: string = '';
@@ -140,6 +142,10 @@ class CapEventSettingsStore {
     const effectiveSelectedCount =
       this.entitiesSelectedCountSnapshot ?? this.fundEntities.filter(selectedFilterCallback).length;
     return effectiveSelectedCount > 1;
+  }
+
+  get hasAttachmentErrors() {
+    return this.attachmentErrors.length > 0;
   }
 
   get customEntityDescription() {
@@ -359,6 +365,10 @@ class CapEventSettingsStore {
 
   setFootnotes(data: FootnoteRecordType[]) {
     this.footnotes = data;
+  }
+
+  setAttachmentErrors(errors: DragNDropError[]) {
+    this.attachmentErrors = errors;
   }
 }
 

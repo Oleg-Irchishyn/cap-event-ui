@@ -25,7 +25,8 @@ import {
   fundGroupColumnDef,
   otherEntityColumnDef,
 } from '@/app/new/LineItems/accountsTableConfiguration';
-import { getBySelectedCategoryAndReason, getReasons, isRowEmpty } from '@/app/new/LineItems/utils';
+import { isRowEmpty } from '@/utils/isRowEmpty';
+import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 import CustomSwitch from '@/app/components/CustomSwitch/CustomSwitch';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;

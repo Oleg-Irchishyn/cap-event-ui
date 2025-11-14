@@ -4,7 +4,8 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { capEventSettingsStore } from '@/stores';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { isOtherRowEmpty, isRowEmpty } from '@/app/new/LineItems/utils';
+import { isRowEmpty } from '@/utils/isRowEmpty';
+import { isOtherRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { DeleteButton } from '../styles';

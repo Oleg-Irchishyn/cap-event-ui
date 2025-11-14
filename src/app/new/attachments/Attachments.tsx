@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, Dispatch, SetStateAction } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
@@ -21,7 +21,16 @@ import { validateFiles } from './utils';
 
 const Attachments: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
-  const [errors, setErrors] = useState<DragNDropError[]>([]);
+
+  // Use errors from the store, provide a React-compatible setter wrapper
+  const errors = capEventSettingsStore.attachmentErrors;
+  const setErrors: Dispatch<SetStateAction<DragNDropError[]>> = useCallback((updater) => {
+    if (typeof updater === 'function') {
+      capEventSettingsStore.setAttachmentErrors(updater(capEventSettingsStore.attachmentErrors));
+    } else {
+      capEventSettingsStore.setAttachmentErrors(updater);
+    }
+  }, []);
 
   const checkedFilesNumber = capEventSettingsStore.attachments.filter(
     (file) => file.checked,
@@ -73,7 +82,7 @@ const Attachments: React.FC = () => {
   };
 
   const handleAlertClose = () => {
-    setErrors([]);
+    capEventSettingsStore.setAttachmentErrors([]);
   };
 
   return (

@@ -1,16 +1,16 @@
 'use client';
 
-import { ButtonContainer } from '@/app/new/styles';
-import Button, { BUTTON_THEMES } from '@/app/components/Button';
-import { useRouter } from 'next/navigation';
-import { capEventSettingsStore } from '@/stores';
 import { observer } from 'mobx-react-lite';
-import FootnotesModal from '@/app/new/FootnotesModal';
 import { useState } from 'react';
-import { ROUTES } from '@/const/routes';
+
+import { capEventSettingsStore } from '@/stores';
+
+import Button, { BUTTON_THEMES } from '@/app/components/Button';
+import FootnotesModal from '@/app/new/FootnotesModal';
+import ContinueButton from '@/app/components/ContinueButton';
+import { ButtonContainer } from '@/app/new/styles';
 
 const ButtonsGroup = () => {
-  const router = useRouter();
   const [isFootnotesModalOpen, setFootnotesModalOpen] = useState(false);
 
   const isDescriptionPresentedInEntities = Array.from(
@@ -39,6 +39,8 @@ const ButtonsGroup = () => {
         </Button>
         <Button
           testId="footnotes"
+          // temporary hide the footnotes button by adding style={{ display: 'none' }}
+          style={{ display: 'none' }}
           disabled={!isFootnotesButtonEnabled}
           disabledTooltipText={'No Notice Line Description available'}
           width="auto"
@@ -65,23 +67,7 @@ const ButtonsGroup = () => {
         >
           Save Draft
         </Button>
-        <Button
-          testId="continue"
-          disabled
-          width="auto"
-          onClick={() => {}}
-          buttonTheme={BUTTON_THEMES.primary}
-        >
-          Continue
-        </Button>
-        <Button
-          testId="allocation-distribution"
-          width="auto"
-          onClick={() => router.push(ROUTES.ALLOCATION_DISTRIBUTION.path)}
-          buttonTheme={BUTTON_THEMES.secondary}
-        >
-          Allocation Distribution
-        </Button>
+        <ContinueButton />
       </ButtonContainer>
       <FootnotesModal
         isOpen={isFootnotesModalOpen}

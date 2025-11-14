@@ -35,18 +35,6 @@ export const getBySelectedCategoryAndReason = (
   );
 };
 
-export const isRowEmpty = (data: LineItemRow) => {
-  return (
-    data.capitalCategory === '' &&
-    data.callDistributionReason === '' &&
-    data.defaultDescription === '' &&
-    data.insideCommitment === '' &&
-    data.investment === '' &&
-    data.allocationBasis === '' &&
-    data.amount === 0
-  );
-};
-
 export const hasRequiredFieldsForPreview = (data: LineItemRow) => {
   return (
     data.capitalCategory !== '' &&
@@ -63,17 +51,6 @@ export const isOtherRowEmpty = (data: LineItemRow) =>
   data.defaultDescription === '' &&
   data.insideCommitment === '' &&
   data.investment === '';
-
-export const getValidDate = (value: unknown): Date | null => {
-  if (value instanceof Date) {
-    return isNaN(value.getTime()) ? null : value;
-  }
-  if (typeof value === 'string') {
-    const parsed = new Date(value);
-    return isNaN(parsed.getTime()) ? null : parsed;
-  }
-  return null;
-};
 
 export const formatValue = (value: number | string, isTotalRowAmount: boolean = false) => {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;

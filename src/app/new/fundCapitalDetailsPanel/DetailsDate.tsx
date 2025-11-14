@@ -50,6 +50,9 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
     if (dateType === DATE_TYPES.DUE) {
       entityDatesStore.setEntityDueDateInputValidity(entityLabel, valid);
     }
+    if (dateType === DATE_TYPES.NOTICE) {
+      entityDatesStore.setEntityNoticeDateInputValidity(entityLabel, valid);
+    }
   };
 
   useEffect(() => {

@@ -567,4 +567,23 @@ describe('CapEventSettingsStore', () => {
       ]);
     });
   });
+
+  describe('attachmentErrors', () => {
+    it('should report no attachment errors by default', () => {
+      expect(store.hasAttachmentErrors).toBe(false);
+    });
+
+    it('should report attachment errors when any error exists', () => {
+      store.setAttachmentErrors([{ message: 'Maximum size limit per file: 5 MB.' }]);
+      expect(store.hasAttachmentErrors).toBe(true);
+    });
+
+    it('should clear attachment errors', () => {
+      store.setAttachmentErrors([{ message: 'Unsupported format(s).' }]);
+      expect(store.hasAttachmentErrors).toBe(true);
+
+      store.setAttachmentErrors([]);
+      expect(store.hasAttachmentErrors).toBe(false);
+    });
+  });
 });

@@ -1,13 +1,10 @@
 import {
   getReasons,
   getBySelectedCategoryAndReason,
-  isRowEmpty,
   formatValue,
   getKeyValuesByAccountName,
-  getValidDate,
 } from '../utils';
 import { Account } from '@/clients/ReferenceData';
-import { LineItemRow } from '@/app/new/LineItems/types';
 import { OtherAccountFields } from '@/app/new/LineItems/const';
 
 describe('LineItems/utils', () => {
@@ -48,36 +45,6 @@ describe('LineItems/utils', () => {
       accountName: 'Account 1',
     },
   ];
-
-  const mockedEmptyRow = {
-    capitalCategory: '',
-    callDistributionReason: '',
-    defaultDescription: '',
-    insideCommitment: '',
-    investment: '',
-    allocationBasis: '',
-    amount: 0,
-  } as LineItemRow;
-
-  const mockedPartiallyRow = {
-    capitalCategory: '',
-    callDistributionReason: 'Value 1',
-    defaultDescription: '',
-    insideCommitment: '',
-    investment: '',
-    allocationBasis: '',
-    amount: 0,
-  } as LineItemRow;
-
-  const mockedRowWithSpaces = {
-    capitalCategory: ' ',
-    callDistributionReason: ' ',
-    defaultDescription: ' ',
-    insideCommitment: ' ',
-    investment: ' ',
-    allocationBasis: ' ',
-    amount: 0,
-  } as LineItemRow;
 
   describe('getReasons', () => {
     it('should return unique reasons for a specific category', () => {
@@ -135,24 +102,6 @@ describe('LineItems/utils', () => {
     });
   });
 
-  describe('isRowEmpty', () => {
-    it('should return true for empty row', () => {
-      const result = isRowEmpty(mockedEmptyRow);
-      expect(result).toEqual(true);
-    });
-
-    it('should return false for not empty row', () => {
-      const result = isRowEmpty(mockedPartiallyRow);
-      expect(result).toEqual(false);
-    });
-  });
-
-  describe('extra cases for isRowEmpty', () => {
-    it('should treat whitespace-only strings as non-empty but amount 0 prevents "filled"', () => {
-      expect(isRowEmpty(mockedRowWithSpaces)).toEqual(false);
-    });
-  });
-
   describe('formatValue', () => {
     it('should return empty string for non-numeric input', () => {
       expect(formatValue('not_a_number')).toEqual('');
@@ -169,40 +118,6 @@ describe('LineItems/utils', () => {
 
       expect(result1).toHaveLength(4);
       expect(result2).toEqual(['Description 3']);
-    });
-  });
-
-  describe('getValidDate', () => {
-    it('returns the same Date instance when value is a valid Date', () => {
-      const d = new Date('2024-01-15');
-      const res = getValidDate(d);
-      expect(res).toBeInstanceOf(Date);
-      expect(res?.getTime()).toBe(d.getTime());
-    });
-
-    it('returns null for invalid Date instance', () => {
-      const invalidDate = new Date('invalid-date');
-      const res = getValidDate(invalidDate);
-      expect(res).toBeNull();
-    });
-
-    it('parses and returns Date for valid date string', () => {
-      const res = getValidDate('2025-02-01');
-      expect(res).toBeInstanceOf(Date);
-      expect(res?.getFullYear()).toBe(2025);
-      expect((res as Date).getMonth()).toBe(1);
-      expect((res as Date).getDate()).toBe(1);
-    });
-
-    it('returns null for non-parsable string', () => {
-      const res = getValidDate('MM/DD/YYYY');
-      expect(res).toBeNull();
-    });
-
-    it('returns null for null/undefined/other types', () => {
-      expect(getValidDate(null as unknown as Date)).toBeNull();
-      expect(getValidDate(undefined as unknown as Date)).toBeNull();
-      expect(getValidDate(123 as unknown as Date)).toBeNull();
     });
   });
 });

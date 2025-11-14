@@ -4,7 +4,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import Tooltip from '@/app/components/Tooltip';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { capEventSettingsStore } from '@/stores';
-import { isRowEmpty } from '@/app/new/LineItems/utils';
+import { isRowEmpty } from '@/utils/isRowEmpty';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
