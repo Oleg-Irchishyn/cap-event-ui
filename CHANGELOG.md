@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.49](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.48&targetVersion=GTv0.0.49) (2025-11-15)
+
+
+### Features
+
+* [TASK-7737]: [FE] Implement validation for Continue button ([c0f3e05](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/c0f3e0550c556143df88e2ec7b876bd4dad1f692)), closes [#7737](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7737)
+
+
+### Bug Fixes
+
+* added skeletons to Allocation Preview Modal Table ([9c096c4](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9c096c478888f5633f428a703e92fa2db4a20cfe)), closes [#7820](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7820)
+
 ### [0.0.48](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.47&targetVersion=GTv0.0.48) (2025-11-14)
 
 
