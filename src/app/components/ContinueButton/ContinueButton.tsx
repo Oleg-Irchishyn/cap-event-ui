@@ -6,6 +6,8 @@ import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import Tooltip from '@/app/components/Tooltip';
 import useContinueButton from '@/hooks/useContinueButton';
 
+import { ROUTES } from '@/const/routes';
+
 import { ContinueButtonWrapper } from './styles';
 
 const ContinueButton = () => {
@@ -26,6 +28,10 @@ const ContinueButton = () => {
     setShowContinueTooltip(false);
   };
 
+  const onContinueClick = () => {
+    router.push(ROUTES.ALLOCATION_DISTRIBUTION.path);
+  };
+
   return (
     <ContinueButtonWrapper
       ref={continueTooltipRef}
@@ -36,7 +42,7 @@ const ContinueButton = () => {
         testId="allocation-distribution"
         disabled={isContinueDisabled}
         width="auto"
-        onClick={() => router.push('/allocation-distribution')}
+        onClick={onContinueClick}
         buttonTheme={BUTTON_THEMES.primary}
       >
         Continue

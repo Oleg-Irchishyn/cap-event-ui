@@ -8,7 +8,7 @@ import { capEventSettingsStore } from '@/stores';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import FootnotesModal from '@/app/new/FootnotesModal';
 import ContinueButton from '@/app/components/ContinueButton';
-import { ButtonContainer } from '@/app/new/styles';
+import { ButtonContainer } from '@/app/styles';
 
 const ButtonsGroup = () => {
   const [isFootnotesModalOpen, setFootnotesModalOpen] = useState(false);

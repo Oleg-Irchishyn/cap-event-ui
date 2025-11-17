@@ -1,13 +1,5 @@
 import styled from 'styled-components';
 
-export const ButtonContainer = styled.div({
-  display: 'flex',
-  gap: '8px',
-  justifyContent: 'flex-end',
-  alignItems: 'flex-start',
-  margin: '24px 16px 0 16px',
-});
-
 export const Title = styled.div(({ theme }) => ({
   display: 'flex',
   fontSize: '16px',
@@ -60,6 +52,7 @@ export const TextAreaWrapper = styled.div({
   display: 'flex',
   position: 'relative',
   flexDirection: 'column',
+  marginBottom: '24px',
 });
 
 export const TextAreaLabel = styled.span(({ theme }) => ({
