@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.50](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.49&targetVersion=GTv0.0.50) (2025-11-18)
+
+
+### Features
+
+* [TASK-7538]: [FE] extend preview table ([a143347](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a143347b3e3d439d2dd20e4116cc502042ca2f21)), closes [#7737](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7737)
+
 ### [0.0.49](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.48&targetVersion=GTv0.0.49) (2025-11-15)
 
 
