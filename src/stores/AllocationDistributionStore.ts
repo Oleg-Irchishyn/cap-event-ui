@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import axios from 'axios';
 import { CapEventPackageApi, BoxConnectorApi } from '@/api';
-import { CapEventProcessRequest } from '@/clients/CapEventPackage';
+import { CapEvent } from '@/clients/CapEventPackage';
 import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
 import type { DistributionRow } from '@/app/allocation-distribution/types';
 import { ToastApi } from '@/providers/types';
@@ -16,9 +16,9 @@ class AllocationDistributionStore {
 
   async processPayload(payload: string, toast?: ToastApi): Promise<DistributionRow[]> {
     try {
-      let requestPayload: CapEventProcessRequest;
+      let requestPayload: CapEvent;
       try {
-        requestPayload = JSON.parse(payload) as CapEventProcessRequest;
+        requestPayload = JSON.parse(payload) as CapEvent;
       } catch {
         const msg = 'Invalid JSON';
         toast?.error?.(msg);

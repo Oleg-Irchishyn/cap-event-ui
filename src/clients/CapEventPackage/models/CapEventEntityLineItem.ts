@@ -7,9 +7,9 @@ import type { Entity } from './Entity';
 export type CapEventEntityLineItem = {
     id?: string;
     entity: Entity;
-    noticeDate?: string;
+    noticeDate: string;
     dueDate: string;
-    entityLineItemAmount: number;
+    templateId?: string;
     capEventLineItems: Array<CapEventLineItem>;
 };
 

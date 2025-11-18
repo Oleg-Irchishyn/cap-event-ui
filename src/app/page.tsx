@@ -4,9 +4,42 @@ import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/const/routes';
 import { ButtonContainer, PageContainer } from '@/app/styles';
+import BackgroundContainer from '@/app/components/BackgroundContainer';
+import { CapEventCollectionTable } from '@/app/components/CapEventCollectionTable/CapEventCollectionTable';
+import { useState, useEffect } from 'react';
+import { Title } from '@/app/new/styles';
+import { capEventSettingsStore } from '@/stores';
+import { ITEM_STATES } from '@/const/common';
+import { ApiError, CapEvent } from '@/clients/CapEventPackage';
+import { CapEventPackageApi } from '@/api';
+import { useToast } from '@/providers/ToastProvider';
 
 export default function Page() {
   const router = useRouter();
+  const toast = useToast();
+
+  const [events, setEvents] = useState<CapEvent[]>([]);
+  const [isListLoading, setIsListLoading] = useState(false);
+
+  useEffect(() => {
+    const getCapEvents = async () => {
+      try {
+        setIsListLoading(true);
+
+        const selectedSponsorId = capEventSettingsStore.sponsors.find(
+          (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
+        )?.id;
+        const capEvents = await CapEventPackageApi.default.getCapEventList(selectedSponsorId);
+        setEvents(capEvents);
+      } catch (error) {
+        console.error(error);
+        if (error instanceof ApiError) toast.error(error?.message);
+      } finally {
+        setIsListLoading(false);
+      }
+    };
+    getCapEvents();
+  }, []);
 
   return (
     <PageContainer>
@@ -20,6 +53,14 @@ export default function Page() {
           New Capital Event
         </Button>
       </ButtonContainer>
+      <BackgroundContainer>
+        <Title>Capital Event List</Title>
+        <CapEventCollectionTable
+          rows={events}
+          isLoading={isListLoading}
+          testId="cap-event-collection"
+        />
+      </BackgroundContainer>
     </PageContainer>
   );
 }

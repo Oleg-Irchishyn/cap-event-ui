@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import TableHeaderWithTooltip from '@/app/components/TableHeaderWithTooltip';
 import { theme } from '@/ui/globalStyles';
-import { IHeaderParams } from 'ag-grid-community';
+import { Column, IHeaderParams } from 'ag-grid-community';
 
 jest.mock('@/app/components/Tooltip', () => ({
   __esModule: true,
@@ -18,7 +18,12 @@ const renderWithTheme = (component: React.ReactElement) => {
 };
 
 describe('TableHeaderWithTooltip', () => {
-  const props: Partial<IHeaderParams> = { displayName: 'Amount' };
+  const props: Partial<IHeaderParams> = {
+    displayName: 'Amount',
+    column: {
+      getColDef: () => ({ headerComponentParams: { tooltipMessage: 'test tooltip' } }),
+    } as Column,
+  };
 
   it('renders header name correctly', () => {
     renderWithTheme(<TableHeaderWithTooltip {...(props as IHeaderParams)} />);

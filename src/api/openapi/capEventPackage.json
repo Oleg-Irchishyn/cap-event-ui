@@ -104,21 +104,53 @@
     },
     "/cap-events": {
       "post": {
-        "summary": "Process capital event",
-        "operationId": "process",
+        "summary": "Stores capital event",
+        "operationId": "create",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CapEventProcessRequest"
+                "$ref": "#/components/schemas/CapEvent"
               },
               "examples": {
                 "example": {
                   "value": {
-                    "sponsorId": "SPONSOR123",
-                    "capEventTypeId": "657475ed-b745-41d3-a864-463847900129",
-                    "templateId": "987654ed-b745-41d3-a864-463847900456",
+                    "id": "657475ed-b745-41d3-a864-463847902229",
+                    "sponsorId": {
+                      "id": "SPONSOR123"
+                    },
+                    "capEventType": {
+                      "id": "657475ed-b745-41d3-a864-463847900129"
+                    },
+                    "noticeDate": "2024-12-15",
+                    "fundGroup":  {
+                      "id": "FG-0022"
+                    },
+                    "entities": [
+                      {
+                        "id":"ENTITY001"
+                      }
+                    ],
+                    "capEventFundGroupLineItems": [
+                      {
+                        "id": "222222ed-b745-41d3-a864-4638479000112",
+                        "account": {
+                          "accountNo": "ACC123456",
+                          "category": "Capital Call",
+                          "reason": "Quarterly Capital Call",
+                          "description": "Q4 2024 Capital Call for Portfolio Investment",
+                          "insideCmnt": true
+                        },
+                        "investment": {
+                          "name": "Tech Fund LP Investment",
+                          "id": "INV001",
+                          "type": "Private Equity"
+                        },
+                        "allocationBasis": "commitment",
+                        "amount": 1000000.00
+                      }
+                    ],
                     "capEventEntityLineItems": [
                       {
                         "id": "111111ed-b745-41d3-a864-463847900001",
@@ -128,9 +160,11 @@
                         },
                         "noticeDate": "2024-12-01",
                         "dueDate": "2024-12-15",
+                        "templateId": "987654ed-b745-41d3-a864-463847900456",
                         "capEventLineItems": [
                           {
                             "id": "222222ed-b745-41d3-a864-463847900002",
+                            "fundGroupLineItemId": "222222ed-b745-41d3-a864-4638479000112",
                             "account": {
                               "accountNo": "ACC123456",
                               "category": "Capital Call",
@@ -152,6 +186,234 @@
                     ]
                   }
                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve Capital event list with optional filters: Sponsor ID and Status list",
+        "operationId": "getCapEventList",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sponsorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Optional Sponsor ID filter to search for matching entries"
+          },
+          {
+            "in": "query",
+            "name": "statuses",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CapEventStatus"
+              }
+            },
+            "required": false,
+            "description": "Optional Status List filter to search for matching entries"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of capital events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEvent" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": "4c88dfdd-74a1-481c-b445-e3296b029819",
+                        "name": "43009-11 - Fund LLC – Distr",
+                        "capEventType": {
+                          "id": "1969bdc5-4a20-475d-8ea8-9a8f00017f34",
+                          "abbreviation": "Distr",
+                          "name": "Distribution",
+                          "description": "Initiate Distribution"
+                        },
+                        "sponsor": {
+                          "id": "Golden Image DEV1",
+                          "name": null
+                        },
+                        "fundGroup": {
+                          "id": "FG001",
+                          "name": null
+                        },
+                        "entities": [
+                          {
+                            "id": "1141-02",
+                            "name": null
+                          },
+                          {
+                            "id": "1141-03",
+                            "name": null
+                          },
+                          {
+                            "id": "1141-01",
+                            "name": null
+                          }
+                        ],
+                        "noticeDate": "2025-08-14",
+                        "status": "SUBMITTED",
+                        "comment": "",
+                        "footnotes": {},
+                        "capEventFundGroupLineItems": [],
+                        "capEventEntityLineItems": [],
+                        "totalAmount": 750000000,
+                        "createdAt": "2025-11-13",
+                        "createdBy": "willie.jennings@example.com",
+                        "modifiedAt": "2025-11-13",
+                        "modifiedBy": "willie.jennings@example.com"
+                      },
+                      {
+                        "id": "6528116c-9517-44a2-8aed-e831cd04625e",
+                        "name": "43009-11 - Fund LLC – Call – 08/26/2025",
+                        "capEventType": {
+                          "id": "98c146dc-c4f8-4099-a13f-9c5dd3673bc8",
+                          "abbreviation": "Call",
+                          "name": "Capital Call",
+                          "description": "Initiate Capital Call"
+                        },
+                        "sponsor": {
+                          "id": "Golden Image DEV",
+                          "name": null
+                        },
+                        "fundGroup": {
+                          "id": "FG001",
+                          "name": null
+                        },
+                        "entities": [
+                          {
+                            "id": "1141-02",
+                            "name": null
+                          },
+                          {
+                            "id": "1141-01",
+                            "name": null
+                          }
+                        ],
+                        "noticeDate": "2025-08-14",
+                        "status": "DRAFT",
+                        "comment": "",
+                        "footnotes": {},
+                        "capEventFundGroupLineItems": [],
+                        "capEventEntityLineItems": [],
+                        "totalAmount": 550000000,
+                        "createdAt": "2025-11-13",
+                        "createdBy": "willie.jennings@example.com",
+                        "modifiedAt": "2025-11-13",
+                        "modifiedBy": "willie.jennings@example.com"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/process": {
+      "post": {
+        "summary": "Process capital event",
+        "operationId": "process",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEvent"
               }
             }
           }
@@ -577,20 +839,50 @@
           }
         }
       },
-      "CapEventProcessRequest": {
+      "CapEventStatus" : {
+        "type": "string",
+        "enum": ["DRAFT", "SUBMITTED", "POSTED"],
+        "x-java-class": "com.gen2fund.capeventpackage.model.enums.CapEventStatus"
+      },
+      "CapEvent" : {
         "type": "object",
-        "required": ["capEventEntityLineItems"],
+        "required": ["sponsor", "capEventType", "fundGroup", "entities", "noticeDate"],
         "properties": {
-          "sponsorId": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
             "type": "string"
           },
-          "capEventTypeId": {
-            "type": "string",
-            "format": "uuid"
+          "capEventType": {
+            "$ref": "#/components/schemas/CapEventType"
           },
-          "templateId": {
+          "sponsor": {
+            "$ref": "#/components/schemas/Sponsor",
+            "type": "string"
+          },
+          "fundGroup": {
+            "$ref": "#/components/schemas/FundGroup",
+            "type": "string"
+          },
+          "entities": {
+            "type": "array",
+            "description": "The list with IDs of selected entities",
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            }
+          },
+          "noticeDate": {
             "type": "string",
-            "format": "uuid"
+            "format": "date"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CapEventStatus"
+          },
+          "comment": {
+            "type": "string",
+            "maxLength": 1200
           },
           "footnotes": {
             "type": "object",
@@ -598,43 +890,41 @@
               "type": "string"
             }
           },
+          "capEventFundGroupLineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CapEventFundGroupLineItem"
+            }
+          },
           "capEventEntityLineItems": {
             "type": "array",
+            "minItems": 1,
             "items": { "$ref": "#/components/schemas/CapEventEntityLineItem" }
-          }
-        }
-      },
-      "CapEventEntityLineItem": {
-        "type": "object",
-        "required": ["entity", "dueDate", "capEventLineItems", "entityLineItemAmount"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
           },
-          "entity": {
-            "$ref": "#/components/schemas/Entity"
-          },
-          "noticeDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "dueDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "entityLineItemAmount": {
+          "totalAmount": {
             "type": "number"
           },
-          "capEventLineItems": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+          "createdAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "email"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "email"
           }
         }
       },
-      "CapEventLineItem": {
+      "LineItemBase" : {
         "type": "object",
-        "required": ["account", "investment", "allocationBasis", "amount"],
+        "required": ["entities","account", "investment", "allocationBasis", "amount"],
         "properties": {
           "id": {
             "type": "string",
@@ -653,6 +943,71 @@
             "type": "number"
           }
         }
+      },
+      "CapEventFundGroupLineItem": {
+        "allOf": [
+          {
+            "type": "object",
+            "required": ["id"]
+          },
+          {
+            "$ref": "#/components/schemas/LineItemBase"
+          }
+        ]
+      },
+      "CapEventEntityLineItem": {
+        "type": "object",
+        "required": ["entity", "noticeDate", "dueDate", "capEventLineItems"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "noticeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "templateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "capEventLineItems": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+          }
+        }
+      },
+      "CapEventLineItem": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LineItemBase"
+          },
+          {
+            "type": "object",
+            "required": ["prFlag", "prDate"],
+            "properties": {
+              "fundGroupLineItemId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "prDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "prFlag": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
       },
       "Investment": {
         "type": "object",
@@ -689,6 +1044,30 @@
             "type": "string"
           },
           "insideCmnt": {
+            "type": "string"
+          }
+        }
+      },
+      "FundGroup": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Sponsor": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           }
         }
@@ -811,31 +1190,6 @@
           },
           "ceBoxFileId": {
             "type": "string"
-          }
-        }
-      },
-      "AllocationInput": {
-        "type": "object",
-        "required": ["entityId", "dueDate", "allocationBasis", "accountNo", "investmentId", "amount"],
-        "properties": {
-          "entityId": {
-            "type": "string"
-          },
-          "dueDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "allocationBasis": {
-            "type": "string"
-          },
-          "accountNo": {
-            "type": "string"
-          },
-          "investmentId": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "number"
           }
         }
       },

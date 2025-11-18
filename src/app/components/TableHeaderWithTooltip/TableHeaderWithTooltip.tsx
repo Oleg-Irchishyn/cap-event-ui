@@ -17,13 +17,15 @@ export const TableHeaderWithTooltip = (props: IHeaderParams) => {
   return (
     <HeaderWrapper $headerAlignment={headerAlignment}>
       <HeaderName>{displayName}</HeaderName>
-      <IconWrapper ref={tooltipRef}>
-        <HelpIcon
-          onMouseEnter={() => setTooltip(true)}
-          onMouseLeave={() => setTooltip(false)}
-          data-testid="help-icon"
-        />
-      </IconWrapper>
+      {tooltipMessage && (
+        <IconWrapper ref={tooltipRef}>
+          <HelpIcon
+            onMouseEnter={() => setTooltip(true)}
+            onMouseLeave={() => setTooltip(false)}
+            data-testid="help-icon"
+          />
+        </IconWrapper>
+      )}
       <Tooltip
         tooltipMessage={tooltipMessage}
         showTooltip={showTooltip}

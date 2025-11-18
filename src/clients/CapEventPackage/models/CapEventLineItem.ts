@@ -2,13 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Account } from './Account';
-import type { Investment } from './Investment';
-export type CapEventLineItem = {
-    id?: string;
-    account: Account;
-    investment: Investment;
-    allocationBasis: string;
-    amount: number;
-};
+import type { LineItemBase } from './LineItemBase';
+export type CapEventLineItem = (LineItemBase & {
+    fundGroupLineItemId?: string;
+    prDate: string;
+    prFlag: boolean;
+});
 
