@@ -87,6 +87,11 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   };
   useExternalElementClick(dropdownRef, handleClickOutside, [isOpen]);
 
+  // Update selected value when props change
+  useEffect(() => {
+    setSelectedValue(props.value || '');
+  }, [props.value]);
+
   const updateDropdownPosition = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
