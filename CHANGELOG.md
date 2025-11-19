@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.51](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.50&targetVersion=GTv0.0.51) (2025-11-19)
+
+
+### Features
+
+* add cap event collection table ([cfc4fb4](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/cfc4fb40f63f9b2ae744c96003907067759be2be)), closes [#7735](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7735)
+
 ### [0.0.50](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.49&targetVersion=GTv0.0.50) (2025-11-18)
 
 
