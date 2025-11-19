@@ -1,21 +1,21 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DistributionDetails from '@/app/allocation-distribution/DistributionDetails';
+import PreviewScreenDetails from '@/app/preview-screen/PreviewScreenDetails';
 
 const toast = { success: jest.fn(), error: jest.fn(), info: jest.fn(), warning: jest.fn() };
 jest.mock('@/providers/ToastProvider', () => ({ useToast: () => toast }));
 
 const processPayloadMock = jest.fn();
-jest.mock('@/stores/AllocationDistributionStore', () => ({
-  allocationDistributionStore: {
+jest.mock('@/stores/PreviewScreenStore', () => ({
+  previewScreenStore: {
     processPayload: (...args: unknown[]) => processPayloadMock(...args),
     fetchDoc: jest.fn(),
     isLoading: false,
   },
 }));
 
-jest.mock('@/app/allocation-distribution/DistributionTable', () => ({
+jest.mock('@/app/preview-screen/PreviewScreenTable', () => ({
   __esModule: true,
   default: ({ rows }: { rows: unknown[] }) => (
     <div data-testid="rows-count">{Array.isArray(rows) ? rows.length : 'NA'}</div>
@@ -25,11 +25,11 @@ jest.mock('@/app/allocation-distribution/DistributionTable', () => ({
 const renderWithTheme = () =>
   render(
     <ThemeProvider theme={theme}>
-      <DistributionDetails />
+      <PreviewScreenDetails />
     </ThemeProvider>,
   );
 
-describe('DistributionDetails', () => {
+describe('PreviewScreenDetails', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

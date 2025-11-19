@@ -60,7 +60,7 @@ describe('ButtonsGroup', () => {
     expect(screen.getByTestId('footnotes')).toBeInTheDocument();
     expect(screen.getByTestId('delete')).toBeInTheDocument();
     expect(screen.getByTestId('save-draft')).toBeInTheDocument();
-    expect(screen.getByTestId('allocation-distribution')).toBeInTheDocument();
+    expect(screen.getByTestId('preview-screen')).toBeInTheDocument();
   });
 
   it('has disabled buttons by default', () => {
@@ -69,7 +69,7 @@ describe('ButtonsGroup', () => {
     expect(screen.getByTestId('cancel')).toBeDisabled();
     expect(screen.getByTestId('delete')).toBeDisabled();
     expect(screen.getByTestId('save-draft')).toBeDisabled();
-    expect(screen.getByTestId('allocation-distribution')).toBeDisabled();
+    expect(screen.getByTestId('preview-screen')).toBeDisabled();
     expect(screen.getByTestId('footnotes')).toBeDisabled();
   });
 

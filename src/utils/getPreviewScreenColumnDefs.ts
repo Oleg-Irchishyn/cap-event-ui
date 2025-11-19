@@ -15,9 +15,9 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
-} from '@/const/allocationDistribution';
+} from '@/const/previewScreen';
 
-export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
+export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   // Entity ID
   {
     headerName: ENTITY_ID_HEADER,

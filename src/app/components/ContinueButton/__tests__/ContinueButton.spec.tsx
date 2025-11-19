@@ -35,7 +35,7 @@ describe('ContinueButton', () => {
 
     renderWithTheme(<ContinueButton />);
 
-    const btn = screen.getByTestId('allocation-distribution');
+    const btn = screen.getByTestId('preview-screen');
     expect(btn).toBeDisabled();
 
     const wrapper = btn.parentElement as HTMLElement;
@@ -52,11 +52,11 @@ describe('ContinueButton', () => {
 
     renderWithTheme(<ContinueButton />);
 
-    const btn = screen.getByTestId('allocation-distribution');
+    const btn = screen.getByTestId('preview-screen');
     expect(btn).not.toBeDisabled();
 
     fireEvent.click(btn);
-    expect(pushMock).toHaveBeenCalledWith('/allocation-distribution');
+    expect(pushMock).toHaveBeenCalledWith('/preview-screen');
   });
 
   it('does not show tooltip when enabled, even on hover', () => {
@@ -67,7 +67,7 @@ describe('ContinueButton', () => {
 
     renderWithTheme(<ContinueButton />);
 
-    const btn = screen.getByTestId('allocation-distribution');
+    const btn = screen.getByTestId('preview-screen');
     const wrapper = btn.parentElement as HTMLElement;
     fireEvent.mouseEnter(wrapper);
 

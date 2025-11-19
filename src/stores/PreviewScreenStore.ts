@@ -14,8 +14,8 @@ import {
   CapEventType as ApiCapEventType,
 } from '@/clients/CapEventPackage';
 import { Account as RefAccount, Investment as RefInvestment } from '@/clients/ReferenceData';
-import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
-import type { DistributionRow } from '@/app/allocation-distribution/types';
+import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
+import type { PreviewScreenRow } from '@/app/preview-screen/types';
 import { ToastApi } from '@/providers/types';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
@@ -30,10 +30,10 @@ import { investmentMandatoryCategories, YesNoOptions } from '@/app/new/LineItems
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { getValidDate } from '@/utils/getValidDate';
 
-class AllocationDistributionStore {
-  rows: DistributionRow[] = [];
+class PreviewScreenStore {
+  rows: PreviewScreenRow[] = [];
   isLoading = false;
-  private inFlightProcess: Promise<DistributionRow[]> | null = null;
+  private inFlightProcess: Promise<PreviewScreenRow[]> | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -311,7 +311,7 @@ class AllocationDistributionStore {
     });
   }
 
-  async processPayload(toast?: ToastApi): Promise<DistributionRow[]> {
+  async processPayload(toast?: ToastApi): Promise<PreviewScreenRow[]> {
     if (this.inFlightProcess) {
       return this.inFlightProcess;
     }
@@ -326,7 +326,7 @@ class AllocationDistributionStore {
         this.isLoading = true;
         this.rows = [];
         const response = await CapEventPackageApi.default.process(requestPayload);
-        const parsed = parseToDistributionRows(response);
+        const parsed = parseToPreviewScreenRows(response);
         this.rows = parsed;
         return parsed;
       } catch (err) {
@@ -360,4 +360,4 @@ class AllocationDistributionStore {
   }
 }
 
-export const allocationDistributionStore = new AllocationDistributionStore();
+export const previewScreenStore = new PreviewScreenStore();

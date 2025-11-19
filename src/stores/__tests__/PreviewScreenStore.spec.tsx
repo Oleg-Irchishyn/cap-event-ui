@@ -22,11 +22,11 @@ jest.mock('@/api', () => ({
   },
 }));
 
-jest.mock('@/utils/parseToDistributionRows', () => ({
-  parseToDistributionRows: (...args: unknown[]) => parseMock(...args),
+jest.mock('@/utils/parseToPreviewScreenRows', () => ({
+  parseToPreviewScreenRows: (...args: unknown[]) => parseMock(...args),
 }));
 
-// Mock stores used by AllocationDistributionStore
+// Mock stores used by PreviewScreenStore
 const mockCapEventSettingsStore = {
   eventTypes: [
     { id: 'TYPE1', name: 'Distribution', abbreviation: 'Distr', state: ITEM_STATES.SELECTED },
@@ -103,7 +103,7 @@ jest.mock('@/stores', () => ({
   entityDatesStore: mockEntityDatesStore,
 }));
 
-describe('AllocationDistributionStore', () => {
+describe('PreviewScreenStore', () => {
   const BlobCtor: new (...args: unknown[]) => unknown =
     (global as unknown as { Blob?: new (...args: unknown[]) => unknown }).Blob ??
     (class MockBlob {} as unknown as new (...args: unknown[]) => unknown);
@@ -116,8 +116,8 @@ describe('AllocationDistributionStore', () => {
   });
 
   const importStore = async () => {
-    const mod = await import('@/stores/AllocationDistributionStore');
-    return mod.allocationDistributionStore;
+    const mod = await import('@/stores/PreviewScreenStore');
+    return mod.previewScreenStore;
   };
 
   it('processPayload: when not enough data, shows toast and does not call API', async () => {

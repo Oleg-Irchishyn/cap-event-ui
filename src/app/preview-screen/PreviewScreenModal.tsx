@@ -14,12 +14,12 @@ import {
   ModalTitle,
   ModalWrapper,
 } from './styles';
-import { DistributionRow } from './types';
+import { PreviewScreenRow } from './types';
 
-interface DetailsModalProps {
+interface PreviewScreenModalProps {
   noticePreviewDoc?: Blob | null;
   closeModal: () => void;
-  selectedRow: DistributionRow | null;
+  selectedRow: PreviewScreenRow | null;
   testId?: string;
 }
 
@@ -27,7 +27,7 @@ const CloseIcon = () => (
   <Image src="icons/cross.svg" width={10} height={10} alt="modal-close-icon" />
 );
 
-const DetailsModal: FC<DetailsModalProps> = ({
+const PreviewScreenModal: FC<PreviewScreenModalProps> = ({
   noticePreviewDoc,
   closeModal,
   selectedRow,
@@ -78,4 +78,4 @@ const DetailsModal: FC<DetailsModalProps> = ({
   );
 };
 
-export default DetailsModal;
+export default PreviewScreenModal;

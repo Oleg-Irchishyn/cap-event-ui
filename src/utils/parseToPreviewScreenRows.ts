@@ -1,7 +1,7 @@
-import { DistributionRow } from '@/app/allocation-distribution/types';
+import { PreviewScreenRow } from '@/app/preview-screen/types';
 import { CapEventLineItemResponse, InvestorEntry } from '@/clients/CapEventPackage';
 
-export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
+export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => {
   const array = (Array.isArray(items) ? items : []) as CapEventLineItemResponse[];
   return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';

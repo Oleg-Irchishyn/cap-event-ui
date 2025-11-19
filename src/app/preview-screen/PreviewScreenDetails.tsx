@@ -4,26 +4,26 @@ import { useEffect, useState } from 'react';
 import { RowClickedEvent } from 'ag-grid-community';
 import { observer } from 'mobx-react-lite';
 
-import { allocationDistributionStore } from '@/stores/AllocationDistributionStore';
+import { previewScreenStore } from '@/stores/PreviewScreenStore';
 import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
-import DetailsModal from '@/app/allocation-distribution/DetailsModal';
-import DistributionTable from '@/app/allocation-distribution/DistributionTable';
+import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';
+import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
 import { Title, Wrapper } from '@/app/new/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
-import { DistributionRow } from './types';
+import { PreviewScreenRow } from './types';
 
-const DistributionDetails = () => {
+const PreviewScreenDetails = () => {
   const toast = useToast();
-  const [rows, setRows] = useState<DistributionRow[]>([]);
-  const [selectedRow, setSelectedRow] = useState<DistributionRow | null>(null);
+  const [rows, setRows] = useState<PreviewScreenRow[]>([]);
+  const [selectedRow, setSelectedRow] = useState<PreviewScreenRow | null>(null);
   const [noticePreviewDoc, setNoticePreviewDoc] = useState<Blob | null>(null);
 
   useEffect(() => {
     const process = async () => {
       setRows([]);
-      const newRows = await allocationDistributionStore.processPayload(toast);
+      const newRows = await previewScreenStore.processPayload(toast);
       setRows(newRows);
     };
     process();
@@ -32,7 +32,7 @@ const DistributionDetails = () => {
   const onRowClicked = async (e: RowClickedEvent) => {
     if (e.data?.isAggregated) {
       setSelectedRow(e.data);
-      const blob = await allocationDistributionStore.fetchDoc(e.data.ceBoxFileId);
+      const blob = await previewScreenStore.fetchDoc(e.data.ceBoxFileId);
       setNoticePreviewDoc(blob ?? null);
     }
   };
@@ -44,20 +44,20 @@ const DistributionDetails = () => {
 
   return (
     <>
-      <BackgroundContainer testId={prepareDataTestId('background', 'allocation-distribution')}>
+      <BackgroundContainer testId={prepareDataTestId('background', 'preview-screen')}>
         <Wrapper>
           <Title>Preview Screen</Title>
 
-          <DistributionTable
-            testId={prepareDataTestId('table', 'allocation-distribution')}
+          <PreviewScreenTable
+            testId={prepareDataTestId('table', 'preview-screen')}
             rows={rows}
-            isLoading={allocationDistributionStore.isLoading}
+            isLoading={previewScreenStore.isLoading}
             onRowClicked={onRowClicked}
           />
         </Wrapper>
       </BackgroundContainer>
       {selectedRow && (
-        <DetailsModal
+        <PreviewScreenModal
           noticePreviewDoc={noticePreviewDoc}
           closeModal={closeModal}
           selectedRow={selectedRow}
@@ -66,4 +66,4 @@ const DistributionDetails = () => {
     </>
   );
 };
-export default observer(DistributionDetails);
+export default observer(PreviewScreenDetails);

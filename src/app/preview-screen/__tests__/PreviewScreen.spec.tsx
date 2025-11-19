@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import AllocationDistributionPage from '@/app/allocation-distribution/page';
+import PreviewScreenPage from '@/app/preview-screen/page';
 import useContinueButton from '@/hooks/useContinueButton';
 import { ROUTES } from '@/const/routes';
 
@@ -17,15 +17,15 @@ jest.mock('@/hooks/useContinueButton', () => ({
   default: jest.fn(() => ({ isContinueDisabled: true })),
 }));
 
-jest.mock('@/app/allocation-distribution/DistributionDetails', () => ({
+jest.mock('@/app/preview-screen/PreviewScreenDetails', () => ({
   __esModule: true,
-  default: () => <div data-testid="allocation-distribution-details">Details</div>,
+  default: () => <div data-testid="preview-screen-details">Details</div>,
 }));
 
 const renderWithTheme = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
-describe('AllocationDistribution page', () => {
+describe('PreviewScreen page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -33,25 +33,25 @@ describe('AllocationDistribution page', () => {
   it('redirects to /new and renders nothing when continue is disabled', () => {
     (useContinueButton as jest.Mock).mockReturnValue({ isContinueDisabled: true });
 
-    const { container } = renderWithTheme(<AllocationDistributionPage />);
+    const { container } = renderWithTheme(<PreviewScreenPage />);
 
     expect(replaceMock).toHaveBeenCalledWith(ROUTES.NEW_CAP_EVENT.path);
-    expect(screen.queryByTestId('allocation-distribution-details')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('preview-screen-details')).not.toBeInTheDocument();
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders DistributionDetails when continue is enabled', () => {
+  it('renders PreviewScreenDetails when continue is enabled', () => {
     (useContinueButton as jest.Mock).mockReturnValue({ isContinueDisabled: false });
 
-    renderWithTheme(<AllocationDistributionPage />);
+    renderWithTheme(<PreviewScreenPage />);
 
-    expect(screen.getByTestId('allocation-distribution-details')).toBeInTheDocument();
+    expect(screen.getByTestId('preview-screen-details')).toBeInTheDocument();
   });
 
   it('does not redirect when continue is enabled', () => {
     (useContinueButton as jest.Mock).mockReturnValue({ isContinueDisabled: false });
 
-    renderWithTheme(<AllocationDistributionPage />);
+    renderWithTheme(<PreviewScreenPage />);
 
     expect(replaceMock).not.toHaveBeenCalled();
   });

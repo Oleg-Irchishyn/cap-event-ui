@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import DistributionDetails from '@/app/allocation-distribution/DistributionDetails';
+import PreviewScreenDetails from '@/app/preview-screen/PreviewScreenDetails';
 import useContinueButton from '@/hooks/useContinueButton';
 
 import { ROUTES } from '@/const/routes';
 
-const AllocationDistribution = () => {
+const PreviewScreen = () => {
   const router = useRouter();
   const { isContinueDisabled } = useContinueButton();
 
@@ -22,7 +22,7 @@ const AllocationDistribution = () => {
     return null;
   }
 
-  return <DistributionDetails />;
+  return <PreviewScreenDetails />;
 };
 
-export default AllocationDistribution;
+export default PreviewScreen;

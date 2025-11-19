@@ -1,11 +1,11 @@
 /* eslint-disable linebreak-style */
-import { parseToDistributionRows } from '@/utils/parseToDistributionRows';
+import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
 
-describe('parseToDistributionRows', () => {
+describe('parseToPreviewScreenRows', () => {
   test('returns empty array for non-array input', () => {
-    expect(parseToDistributionRows(null as unknown as [])).toEqual([]);
-    expect(parseToDistributionRows(undefined as unknown as [])).toEqual([]);
-    expect(parseToDistributionRows({} as unknown as [])).toEqual([]);
+    expect(parseToPreviewScreenRows(null as unknown as [])).toEqual([]);
+    expect(parseToPreviewScreenRows(undefined as unknown as [])).toEqual([]);
+    expect(parseToPreviewScreenRows({} as unknown as [])).toEqual([]);
   });
 
   test('maps entries to DistributionRow with composed id and fallbacks', () => {
@@ -33,7 +33,7 @@ describe('parseToDistributionRows', () => {
       },
     ];
 
-    const rows = parseToDistributionRows(input as unknown);
+    const rows = parseToPreviewScreenRows(input as unknown);
     expect(rows).toHaveLength(2);
 
     expect(rows[0]).toEqual({
@@ -90,7 +90,7 @@ describe('parseToDistributionRows', () => {
       },
     ];
 
-    const rows = parseToDistributionRows(input as unknown);
+    const rows = parseToPreviewScreenRows(input as unknown);
     expect(rows).toHaveLength(1);
     expect(rows[0].id).toBe('-0---0');
     expect(rows[0].investor).toBe('');
@@ -141,7 +141,7 @@ describe('parseToDistributionRows', () => {
       },
     ];
 
-    const rows = parseToDistributionRows(input as unknown);
+    const rows = parseToPreviewScreenRows(input as unknown);
     expect(rows).toHaveLength(3);
     expect(rows[0].isAggregated).toBe(true);
     expect(rows[1].isAggregated).toBe(false);

@@ -4,17 +4,17 @@ import { FC, useMemo } from 'react';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { getDistributionColumnDefs } from '@/utils/getDistributionColumnDefs';
+import { getPreviewScreenColumnDefs } from '@/utils/getPreviewScreenColumnDefs';
 
-import { DistributionTableProps, DistributionRow } from './types';
+import { PreviewScreenTableProps, PreviewScreenRow } from './types';
 
-const DistributionTable: FC<DistributionTableProps> = ({
+const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
   rows,
   testId = 'distribution-table',
   isLoading = false,
   onRowClicked,
 }) => {
-  const columnDefs = useMemo(() => getDistributionColumnDefs(isLoading), [isLoading]);
+  const columnDefs = useMemo(() => getPreviewScreenColumnDefs(isLoading), [isLoading]);
 
   const displayRows = useMemo(() => {
     if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
@@ -22,7 +22,7 @@ const DistributionTable: FC<DistributionTableProps> = ({
       return (rows ?? []).filter((r) => r.isAggregated);
     }
     const placeholderCount = 10;
-    const placeholders: DistributionRow[] = Array.from({ length: placeholderCount }).map(
+    const placeholders: PreviewScreenRow[] = Array.from({ length: placeholderCount }).map(
       (_, index) => ({
         id: `skeleton-${index}`,
         investor: '',
@@ -53,4 +53,4 @@ const DistributionTable: FC<DistributionTableProps> = ({
   );
 };
 
-export default DistributionTable;
+export default PreviewScreenTable;

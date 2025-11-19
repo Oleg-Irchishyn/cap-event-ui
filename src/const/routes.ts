@@ -9,9 +9,9 @@ export const ROUTES = {
     path: '/new',
     title: 'New Cap Event',
   },
-  ALLOCATION_DISTRIBUTION: {
-    key: 'allocationDistribution',
-    path: '/allocation-distribution',
-    title: 'Allocation Distribution',
+  PREVIEW_SCREEN: {
+    key: 'previewScreen',
+    path: '/preview-screen',
+    title: 'Preview Screen',
   },
 };

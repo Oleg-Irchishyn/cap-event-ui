@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import DetailsModal from '@/app/allocation-distribution/DetailsModal';
-import { DistributionRow } from '@/app/allocation-distribution/types';
+import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';
+import { PreviewScreenRow } from '@/app/preview-screen/types';
 
 jest.mock('docx-preview', () => ({
   renderAsync: jest.fn().mockResolvedValue(undefined),
@@ -11,7 +11,7 @@ jest.mock('docx-preview', () => ({
 
 const mockCloseModal = jest.fn();
 
-const mockSelectedRow: DistributionRow = {
+const mockSelectedRow: PreviewScreenRow = {
   id: 'test-id',
   investor: 'Test Investor',
   entityId: 'entity-123',
@@ -23,13 +23,13 @@ const mockSelectedRow: DistributionRow = {
 };
 
 const renderWithTheme = (
-  selectedRow: DistributionRow | null = mockSelectedRow,
+  selectedRow: PreviewScreenRow | null = mockSelectedRow,
   closeModal = mockCloseModal,
   noticePreviewDoc: Blob | null = null,
 ) =>
   render(
     <ThemeProvider theme={theme}>
-      <DetailsModal
+      <PreviewScreenModal
         selectedRow={selectedRow}
         closeModal={closeModal}
         noticePreviewDoc={noticePreviewDoc}
@@ -37,7 +37,7 @@ const renderWithTheme = (
     </ThemeProvider>,
   );
 
-describe('DetailsModal', () => {
+describe('PreviewScreenModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

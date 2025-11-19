@@ -1,4 +1,4 @@
-import { getDistributionColumnDefs } from '@/utils/getDistributionColumnDefs';
+import { getPreviewScreenColumnDefs } from '@/utils/getPreviewScreenColumnDefs';
 import {
   ENTITY_ID_HEADER,
   ENTITY_NAME_HEADER,
@@ -14,11 +14,11 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
-} from '@/const/allocationDistribution';
+} from '@/const/previewScreen';
 
-describe('getDistributionColumnDefs', () => {
+describe('getPreviewScreenColumnDefs', () => {
   it('returns 7 columns with correct headers/fields and default multi-sort', () => {
-    const cols = getDistributionColumnDefs();
+    const cols = getPreviewScreenColumnDefs();
     expect(cols).toHaveLength(7);
 
     // 1) Entity ID
@@ -62,7 +62,7 @@ describe('getDistributionColumnDefs', () => {
   });
 
   it('Amount valueFormatter formats numbers and returns empty for non-number', () => {
-    const cols = getDistributionColumnDefs();
+    const cols = getPreviewScreenColumnDefs();
     const valueFormatter = cols[6].valueFormatter as (p: { value?: unknown }) => string;
     expect(valueFormatter({ value: 250000 })).toBe('250,000');
     expect(valueFormatter({ value: undefined })).toBe('');

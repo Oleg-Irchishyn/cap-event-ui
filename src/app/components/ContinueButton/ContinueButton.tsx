@@ -29,7 +29,7 @@ const ContinueButton = () => {
   };
 
   const onContinueClick = () => {
-    router.push(ROUTES.ALLOCATION_DISTRIBUTION.path);
+    router.push(ROUTES.PREVIEW_SCREEN.path);
   };
 
   return (
@@ -39,7 +39,7 @@ const ContinueButton = () => {
       onMouseLeave={onHideTooltip}
     >
       <Button
-        testId="allocation-distribution"
+        testId="preview-screen"
         disabled={isContinueDisabled}
         width="auto"
         onClick={onContinueClick}

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import DistributionTable from '@/app/allocation-distribution/DistributionTable';
+import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
 
 jest.mock('@/app/components/ConfigurationTable', () => ({
   __esModule: true,
@@ -35,15 +35,15 @@ jest.mock('@/app/components/ConfigurationTable', () => ({
   },
 }));
 
-describe('DistributionTable', () => {
+describe('PreviewScreenTable', () => {
   it('passes formatted testId and noRowsText to ConfigurationTable', () => {
-    render(<DistributionTable rows={[]} testId="dist" />);
+    render(<PreviewScreenTable rows={[]} testId="dist" />);
     expect(screen.getByTestId('received-testid').textContent).toBe('table-dist');
     expect(screen.getByTestId('no-rows-text').textContent).toBe('No Data to display');
   });
 
   it('provides 3 columns with expected headers', () => {
-    render(<DistributionTable rows={[]} testId="dist" />);
+    render(<PreviewScreenTable rows={[]} testId="dist" />);
     expect(screen.getByTestId('headers').textContent).toBe(
       'Entity ID|Entity Name|Investor ID|Investor Name|Investor Type I|Investor Type II|Total Capital CMNT',
     );
@@ -77,7 +77,7 @@ describe('DistributionTable', () => {
         isAggregated: true,
       },
     ];
-    render(<DistributionTable rows={rows} testId="dist" />);
+    render(<PreviewScreenTable rows={rows} testId="dist" />);
     expect(screen.getByTestId('rows-count').textContent).toBe('2');
     expect(screen.getByTestId('id-with-id').textContent).toBe('A');
     expect(screen.getByTestId('id-composed').textContent).toBe(
