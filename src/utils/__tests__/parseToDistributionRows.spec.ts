@@ -39,6 +39,10 @@ describe('parseToDistributionRows', () => {
     expect(rows[0]).toEqual({
       id: 'E1-0-C1-INV1-0',
       investor: 'INV1',
+      investorId: 'C1',
+      investorName: '',
+      classID: '',
+      additionalInvestorType: '',
       entityId: 'E1',
       entityName: 'Entity One',
       description: 'Account Desc',
@@ -47,11 +51,16 @@ describe('parseToDistributionRows', () => {
       dataPoints: undefined,
       allocatedAmount: 100,
       isAggregated: true,
+      ceBoxFileId: undefined,
     });
 
     expect(rows[1]).toEqual({
       id: 'E1-0-C2--1',
       investor: '',
+      investorId: 'C2',
+      investorName: '',
+      classID: '',
+      additionalInvestorType: '',
       entityId: 'E1',
       entityName: 'Entity One',
       description: '',
@@ -60,6 +69,7 @@ describe('parseToDistributionRows', () => {
       dataPoints: undefined,
       allocatedAmount: 0,
       isAggregated: false,
+      ceBoxFileId: undefined,
     });
   });
 
@@ -84,6 +94,10 @@ describe('parseToDistributionRows', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].id).toBe('-0---0');
     expect(rows[0].investor).toBe('');
+    expect(rows[0].investorId).toBe('');
+    expect(rows[0].investorName).toBe('');
+    expect(rows[0].classID).toBe('');
+    expect(rows[0].additionalInvestorType).toBe('');
     expect(rows[0].entityId).toBe('');
     expect(rows[0].entityName).toBe('');
     expect(rows[0].description).toBe('');
@@ -92,6 +106,7 @@ describe('parseToDistributionRows', () => {
     expect(rows[0].dataPoints).toBe(undefined);
     expect(rows[0].allocatedAmount).toBe(0);
     expect(rows[0].isAggregated).toBe(false);
+    expect(rows[0].ceBoxFileId).toBe(undefined);
   });
 
   test('handles isAggregated field correctly', () => {

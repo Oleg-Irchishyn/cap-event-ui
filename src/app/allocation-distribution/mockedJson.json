@@ -1,55 +1,77 @@
 {
-  "sponsorId": "SPONSOR123",
-  "capEventTypeId": "657475ed-b745-41d3-a864-463847900129",
-  "templateId": "987654ed-b745-41d3-a864-463847900456",
+  "sponsor": {
+    "id": "1000",
+    "name": "Golden image-Dev"
+  },
+  "capEventType": {
+    "id": "25304C41-6EDC-45E5-8BD6-503CF2401368",
+    "abbreviation": "Call",
+    "name": "Capital Call",
+    "description": "Initiate Capital Call"
+  },
+  "fundGroup": {
+    "id": "1001",
+    "name": "Gen 2 Demo Buyout Fund I"
+  },
+  "entities": [
+    {
+      "id": "1121-02",
+      "name": "Gen 2 Demo Buyout Fund I, L.P."
+    }
+  ],
+  "noticeDate": "2025-11-17",
+  "capEventFundGroupLineItems": [
+    {
+      "id": "10c18545-528c-4f7f-b0b2-020246ab66de",
+      "account": {
+        "accountNo": "0721",
+        "category": "Cont - Expense offsets",
+        "reason": "Test Reason 1",
+        "description": "Test Description 1",
+        "insideCmnt": "Yes"
+      },
+      "investment": {
+        "id": "2200",
+        "title": "",
+        "name": "IDB DEVELOPMENT CORP LTD NPV",
+        "type": ""
+      },
+      "allocationBasis": "commitment",
+      "amount": 100000,
+      "entities": "string"
+    }
+  ],
   "capEventEntityLineItems": [
     {
-      "id": "111111ed-b745-41d3-a864-463847900001",
       "entity": {
-        "id": "1100-01",
-        "name": "Sample Entity LP"
+        "id": "1121-02",
+        "name": "Gen 2 Demo Buyout Fund I, L.P."
       },
-      "noticeDate": "2024-12-01",
-      "dueDate": "2025-09-30",
-      "entityLineItemAmount": 150000,
+      "noticeDate": "2025-11-17",
+      "dueDate": "2025-11-24",
       "capEventLineItems": [
         {
-          "id": "222222ed-b745-41d3-a864-463847900002",
           "account": {
-            "accountNo": "1000",
-            "category": "Cont Call",
-            "reason": "Quarterly Cont Call",
-            "description": "First line item",
-            "insideCmnt": "Internal processing note"
+            "accountNo": "0721",
+            "category": "Cont - Expense offsets",
+            "reason": "Test Reason 1",
+            "description": "Test Description 1",
+            "insideCmnt": "Yes"
           },
           "investment": {
-            "title": "Technology Fund I",
-            "name": "Tech Fund LP Investment",
-            "id": "",
-            "type": "Private Equity"
+            "id": "2200",
+            "title": "",
+            "name": "IDB DEVELOPMENT CORP LTD NPV",
+            "type": ""
           },
           "allocationBasis": "commitment",
-          "amount": 100000
-        },
-        {
-          "id": "222222ed-b745-41d3-a864-463847900002",
-          "account": {
-            "accountNo": "1000",
-            "category": "Cont Call",
-            "reason": "Quarterly Cont Call",
-            "description": "Second line item",
-            "insideCmnt": "Internal processing note"
-          },
-          "investment": {
-            "title": "Technology Fund I",
-            "name": "Tech Fund LP Investment",
-            "id": "",
-            "type": "Private Equity"
-          },
-          "allocationBasis": "commitment",
-          "amount": 200000
+          "amount": 100000,
+          "prFlag": true,
+          "prDate": "2025-11-24",
+          "fundGroupLineItemId": "10c18545-528c-4f7f-b0b2-020246ab66de"
         }
-      ]
+      ],
+      "templateId": "dc8f1892-2931-2cb5-9c52-d1b7d559f0fd"
     }
   ]
 }

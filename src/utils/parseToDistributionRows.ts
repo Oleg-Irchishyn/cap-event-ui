@@ -18,7 +18,11 @@ export const parseToDistributionRows = (items: unknown): DistributionRow[] => {
 
       return {
         id: `${entityId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
-        investor: inv.investor || '',
+        investor: inv.investor ?? '',
+        investorId: inv.customerId ?? '',
+        investorName: inv.customerName ?? '',
+        classID: inv.classID ?? '',
+        additionalInvestorType: inv.additionalInvestorType ?? '',
         entityId,
         entityName,
         description,

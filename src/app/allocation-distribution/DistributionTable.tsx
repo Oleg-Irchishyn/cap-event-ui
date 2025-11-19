@@ -18,13 +18,18 @@ const DistributionTable: FC<DistributionTableProps> = ({
 
   const displayRows = useMemo(() => {
     if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
-      return rows;
+      // Only render aggregated rows
+      return (rows ?? []).filter((r) => r.isAggregated);
     }
     const placeholderCount = 10;
     const placeholders: DistributionRow[] = Array.from({ length: placeholderCount }).map(
       (_, index) => ({
         id: `skeleton-${index}`,
         investor: '',
+        investorId: '',
+        investorName: '',
+        classID: '',
+        additionalInvestorType: '',
         entityId: '',
         entityName: '',
         description: '',

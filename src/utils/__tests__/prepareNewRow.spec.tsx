@@ -1,20 +1,19 @@
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { prepareNewRow } from '../prepareNewRow';
+import { UUID_V4_REGEX } from '@/const/regExps';
 
-// Mock the entityDatesStore to avoid circular dependency
 jest.mock('@/stores', () => ({
   entityDatesStore: {
     getEntityDueDate: jest.fn(() => new Date('2024-01-01')),
   },
 }));
 
-import { prepareNewRow } from '../prepareNewRow';
-
 describe('prepareNewRow', () => {
   it('should return a LineItemRow with all required fields initialized', () => {
     const result = prepareNewRow();
 
     expect(result).toEqual({
-      id: expect.stringMatching(/^row-\d+-\d+$/),
+      id: expect.stringMatching(UUID_V4_REGEX),
       capitalCategory: '',
       callDistributionReason: '',
       defaultDescription: '',

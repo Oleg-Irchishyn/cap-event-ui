@@ -45,7 +45,7 @@ describe('DistributionTable', () => {
   it('provides 3 columns with expected headers', () => {
     render(<DistributionTable rows={[]} testId="dist" />);
     expect(screen.getByTestId('headers').textContent).toBe(
-      'Investor Name|Entity Name|Description|Investment|Amount',
+      'Entity ID|Entity Name|Investor ID|Investor Name|Investor Type I|Investor Type II|Total Capital CMNT',
     );
   });
 
@@ -54,21 +54,27 @@ describe('DistributionTable', () => {
       {
         id: 'A',
         investor: 'INV A',
+        investorId: 'C1',
+        investorName: 'Investor A',
         entityId: 'E1',
         entityName: 'Entity 1',
         description: 'Desc',
         investmentTitle: 'Title',
         investmentName: 'Name',
         allocatedAmount: 1,
+        isAggregated: true,
       },
       {
         investor: 'INV B',
+        investorId: 'C2',
+        investorName: 'Investor B',
         entityId: 'E2',
         entityName: 'Entity 2',
         description: 'Desc 2',
         investmentTitle: 'Title 2',
         investmentName: 'Name 2',
         allocatedAmount: 2,
+        isAggregated: true,
       },
     ];
     render(<DistributionTable rows={rows} testId="dist" />);

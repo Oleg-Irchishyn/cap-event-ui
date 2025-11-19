@@ -4,6 +4,10 @@ import { RowClickedEvent } from 'ag-grid-community';
 type DistributionRow = {
   id?: string;
   investor: string;
+  investorId?: string;
+  investorName?: string;
+  classID?: string;
+  additionalInvestorType?: string;
   entityId: string;
   entityName: string;
   description: string;

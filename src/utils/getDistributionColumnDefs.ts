@@ -1,76 +1,84 @@
 import { ColDef } from 'ag-grid-community';
 import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import {
-  AMOUNT_FIELD,
-  AMOUNT_HEADER,
-  DESCRIPTION_FIELD,
-  DESCRIPTION_HEADER,
-  ENTITY_FIELD,
+  ENTITY_ID_HEADER,
   ENTITY_NAME_HEADER,
-  INVESTMENT_FIELD,
-  INVESTMENT_HEADER,
-  INVESTOR_FIELD,
+  INVESTOR_ID_HEADER,
   INVESTOR_NAME_HEADER,
+  INVESTOR_TYPE_I_HEADER,
+  INVESTOR_TYPE_II_HEADER,
+  TOTAL_CAPITAL_CMNT_HEADER,
+  ENTITY_ID_FIELD,
+  ENTITY_NAME_FIELD,
+  INVESTOR_ID_FIELD,
+  INVESTOR_NAME_FIELD,
+  INVESTOR_TYPE_I_FIELD,
+  INVESTOR_TYPE_II_FIELD,
+  AMOUNT_FIELD,
 } from '@/const/allocationDistribution';
 
 export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
+  // Entity ID
   {
-    headerName: INVESTOR_NAME_HEADER,
-    field: INVESTOR_FIELD,
+    headerName: ENTITY_ID_HEADER,
+    field: ENTITY_ID_FIELD,
     flex: 1,
     sortable: true,
     sort: 'asc',
+    sortIndex: 0,
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
-    cellStyle: (params) => {
-      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
-    },
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 30 } } : undefined,
   },
+  // Entity Name
   {
     headerName: ENTITY_NAME_HEADER,
-    field: ENTITY_FIELD,
-    valueGetter: (params) => {
-      const id = params.data?.entityId ?? '';
-      const name = params.data?.entityName ?? '';
-      return `${id} - ${name}`;
-    },
+    field: ENTITY_NAME_FIELD,
+    flex: 1.5,
+    sortable: true,
+    cellRendererSelector: () =>
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
+  },
+  // Investor ID
+  {
+    headerName: INVESTOR_ID_HEADER,
+    field: INVESTOR_ID_FIELD,
+    flex: 1,
+    sortable: true,
+    sort: 'asc',
+    sortIndex: 1,
+    cellRendererSelector: () =>
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+  },
+  // Investor Name
+  {
+    headerName: INVESTOR_NAME_HEADER,
+    field: INVESTOR_NAME_FIELD,
     flex: 1.5,
     sortable: true,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 70 } } : undefined,
-    cellStyle: (params) => {
-      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
-    },
   },
+  // Investor Type I
   {
-    headerName: DESCRIPTION_HEADER,
-    field: DESCRIPTION_FIELD,
-    flex: 2,
-    sortable: false,
+    headerName: INVESTOR_TYPE_I_HEADER,
+    field: INVESTOR_TYPE_I_FIELD,
+    flex: 1,
+    sortable: true,
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 85 } } : undefined,
-    cellStyle: (params) => {
-      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
-    },
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
   },
+  // Investor Type II
   {
-    headerName: INVESTMENT_HEADER,
-    field: INVESTMENT_FIELD,
-    valueGetter: (params) => {
-      const title = params.data?.investmentTitle ?? '';
-      const name = params.data?.investmentName ?? '';
-      return title || name;
-    },
-    flex: 1.5,
-    sortable: false,
+    headerName: INVESTOR_TYPE_II_HEADER,
+    field: INVESTOR_TYPE_II_FIELD,
+    flex: 1.2,
+    sortable: true,
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
-    cellStyle: (params) => {
-      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
-    },
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
   },
+  // Total Capital CMNT
   {
-    headerName: AMOUNT_HEADER,
+    headerName: TOTAL_CAPITAL_CMNT_HEADER,
     field: AMOUNT_FIELD,
     flex: 1,
     sortable: true,
@@ -81,8 +89,5 @@ export const getDistributionColumnDefs = (isLoading?: boolean): ColDef[] => [
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
-    cellStyle: (params) => {
-      return params.data?.isAggregated ? { fontWeight: 'bold' } : null;
-    },
   },
 ];

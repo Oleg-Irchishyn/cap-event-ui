@@ -4,9 +4,8 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
+import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX } from '@/const/regExps';
 
-const NORMALIZE_DASHES_REGEX = /[\u2013\u2014-]/g;
-const NORMALIZE_SPACES_REGEX = /\s+/g;
 const TOOLTIP_MESSAGE = 'Not all required fields are populated';
 
 const useContinueButton = () => {

@@ -159,3 +159,8 @@
 .ag-header-cell-resize {
   right: 0px !important;
 }
+
+/* Hide multi-sort order index numbers in headers */
+.ag-theme-alpine .ag-sort-order {
+  display: none !important;
+} 

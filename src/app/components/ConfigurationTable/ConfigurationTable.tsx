@@ -184,7 +184,7 @@ const ConfigurationTable: FC<Props> = ({
         onColumnResized={handleColumnResized}
         getRowId={(params) => {
           const data = params.data as { id?: string };
-          return data.id || `row-${JSON.stringify(params.data).slice(0, 10)}`;
+          return data.id ?? JSON.stringify(params.data).slice(0, 36);
         }}
       />
     </TableWrapper>
