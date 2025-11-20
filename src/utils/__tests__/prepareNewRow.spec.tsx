@@ -45,7 +45,7 @@ describe('prepareNewRow', () => {
     expect(typeof result.investment).toBe('string');
     expect(typeof result.amount).toBe('number');
     expect(typeof result.allocationBasis).toBe('string');
-    expect(result.inheritedId).toBeUndefined();
+    expect(result.inheritedFundGroupLineItemId).toBeUndefined();
   });
 
   it('should include prFlag when level is entity', () => {

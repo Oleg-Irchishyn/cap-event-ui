@@ -7,6 +7,7 @@ import PreviewScreenDetails from '@/app/preview-screen/PreviewScreenDetails';
 import useContinueButton from '@/hooks/useContinueButton';
 
 import { ROUTES } from '@/const/routes';
+import ButtonsGroup from '../new/ButtonsGroup';
 
 const PreviewScreen = () => {
   const router = useRouter();
@@ -22,7 +23,12 @@ const PreviewScreen = () => {
     return null;
   }
 
-  return <PreviewScreenDetails />;
+  return (
+    <>
+      <ButtonsGroup />
+      <PreviewScreenDetails />
+    </>
+  );
 };
 
 export default PreviewScreen;

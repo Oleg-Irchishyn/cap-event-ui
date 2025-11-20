@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { LineItemBase } from './LineItemBase';
 export type CapEventLineItem = (LineItemBase & {
-    fundGroupLineItemId?: string;
+    inheritedFundGroupLineItemId?: string;
     prDate: string;
     prFlag: boolean;
 });

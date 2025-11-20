@@ -76,7 +76,7 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
 
   return (
     <>
-      {!props.data.inheritedId && (
+      {!props.data.inheritedFundGroupLineItemId && (
         <DeleteButton
           data-testid={prepareDataTestId('', 'delete-icon')}
           data-is-disabled={isOtherTable ? isOtherDeleteDisabled : isDeleteDisabled()}

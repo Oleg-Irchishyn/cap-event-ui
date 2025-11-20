@@ -7,9 +7,11 @@ import useContinueButton from '@/hooks/useContinueButton';
 import { ROUTES } from '@/const/routes';
 
 const replaceMock = jest.fn();
+const mockUsePathname = jest.fn();
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: replaceMock }),
   useServerInsertedHTML: jest.fn(),
+  usePathname: () => mockUsePathname(),
 }));
 
 jest.mock('@/hooks/useContinueButton', () => ({

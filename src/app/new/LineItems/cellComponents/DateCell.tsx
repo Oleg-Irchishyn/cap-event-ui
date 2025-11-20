@@ -43,7 +43,7 @@ export const DateCell: FC<ICellRendererParams> = (props) => {
   if (props.data?.isTotalRow) return null;
 
   return (
-    <DateCellWrapper data-is-inherited={!!props.data?.inheritedId}>
+    <DateCellWrapper data-is-inherited={!!props.data?.inheritedFundGroupLineItemId}>
       <DatePicker
         testId="date-picker-cell"
         compact

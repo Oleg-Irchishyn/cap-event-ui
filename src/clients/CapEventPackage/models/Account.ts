@@ -7,6 +7,6 @@ export type Account = {
     category?: string;
     reason?: string;
     description?: string;
-    insideCmnt?: string;
+    insideCmnt?: boolean;
 };
 

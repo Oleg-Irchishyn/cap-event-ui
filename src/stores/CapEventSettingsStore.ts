@@ -4,7 +4,7 @@ import { Attachment } from '@/app/new/attachments/types';
 import type { DragNDropError } from '@/app/new/attachments/types';
 import { AllocationPreviewTableData, LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
-import { Account, FundGroup, Investment } from '@/clients/ReferenceData';
+import { Account, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, _ReferenceDataServer, ReferenceDataApi } from '@/api';
 import {
@@ -23,7 +23,7 @@ class CapEventSettingsStore {
   eventTypes: DropdownItemType[] = [];
   sponsors: DropdownItemType[] = [];
   fundGroups: DropdownItemType<FundGroup>[] = [];
-  fundEntities: DropdownItemType[] = [];
+  fundEntities: DropdownItemType<Entity>[] = [];
   noticeDate: Date | null = null;
   isEntitiesDropdownOpen: boolean = false;
   isNoticeDateValid: boolean = true;
@@ -277,10 +277,10 @@ class CapEventSettingsStore {
     if (selectedCount <= 1) {
       this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
       this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
-      // Remove inherited rows for each entity; keep only manual rows (no inheritedId).
+      // Remove inherited rows for each entity; keep only manual rows (no inheritedFundGroupLineItemId).
       // If an entity has no manual rows, preserve a single fresh row for UX consistency.
       for (const [entityLabel, rows] of this.entitiesLineItem.entries()) {
-        const manualRows = (rows ?? []).filter((item) => !item.inheritedId);
+        const manualRows = (rows ?? []).filter((item) => !item.inheritedFundGroupLineItemId);
         if (manualRows.length > 0) {
           this.entitiesLineItem.set(entityLabel, manualRows);
         } else {
@@ -304,7 +304,7 @@ class CapEventSettingsStore {
 
     if (entitiesLineItems) {
       for (let i = 0; i < entitiesLineItems?.length; i++) {
-        if (!entitiesLineItems[i].inheritedId) {
+        if (!entitiesLineItems[i].inheritedFundGroupLineItemId) {
           entityManualItems.push(entitiesLineItems[i]);
         }
       }

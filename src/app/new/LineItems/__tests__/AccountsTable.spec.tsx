@@ -51,7 +51,7 @@ jest.mock('@/app/components/ConfigurationTable', () => {
 
     const inheritedRow = {
       id: 'inherited-1',
-      inheritedId: 'fg-1',
+      inheritedFundGroupLineItemId: 'fg-1',
       capitalCategory: 'Cont - Other',
       callDistributionReason: 'Other',
     };

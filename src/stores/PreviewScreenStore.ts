@@ -120,7 +120,7 @@ class PreviewScreenStore {
       category: row.capitalCategory,
       reason: row.callDistributionReason,
       description: row.defaultDescription,
-      insideCmnt: row.insideCommitment,
+      insideCmnt: row.insideCommitment === 'Yes',
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;
     const investment = this.findInvestment(row, investments) as ApiInvestment | undefined;
@@ -181,8 +181,8 @@ class PreviewScreenStore {
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
         const fundGroupLineItemId =
-          r.inheritedId && fundGroupIdMap.has(r.inheritedId)
-            ? fundGroupIdMap.get(r.inheritedId)
+          r.inheritedFundGroupLineItemId && fundGroupIdMap.has(r.inheritedFundGroupLineItemId)
+            ? fundGroupIdMap.get(r.inheritedFundGroupLineItemId)
             : undefined;
         capEventLineItems.push({
           account: base.account,

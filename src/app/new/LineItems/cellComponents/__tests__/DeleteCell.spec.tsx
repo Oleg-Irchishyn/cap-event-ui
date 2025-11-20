@@ -14,7 +14,7 @@ type Row = {
   insideCommitment: string;
   investment: string;
   allocationBasis: string;
-  inheritedId?: string;
+  inheritedFundGroupLineItemId?: string;
 };
 
 jest.mock('@/stores', () => ({
@@ -48,7 +48,7 @@ describe('DeleteCell', () => {
 
   it('does not render when row is inherited', () => {
     const props = {
-      data: { ...baseRow, inheritedId: 'inherited-1' },
+      data: { ...baseRow, inheritedFundGroupLineItemId: 'inherited-1' },
       colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey: 'e1' } },
     } as unknown as ICellRendererParams;
 

@@ -43,7 +43,7 @@ describe('ActionsCell', () => {
       insideCommitment: 'Yes',
       investment: 'Test Investment',
       allocationBasis: 'Test Basis',
-      inheritedId: undefined,
+      inheritedFundGroupLineItemId: undefined,
     },
     colDef: {
       cellEditorParams: {
@@ -76,7 +76,7 @@ describe('ActionsCell', () => {
     it('should not render delete button for inherited rows', () => {
       const propsWithInherited = {
         ...mockProps,
-        data: { ...mockProps.data, inheritedId: 'inherited-123' },
+        data: { ...mockProps.data, inheritedFundGroupLineItemId: 'inherited-123' },
       };
       render(<ActionsCell {...propsWithInherited} />);
       const buttons = screen.getAllByRole('button');

@@ -12,7 +12,7 @@ import { ITEM_STATES } from '@/const/common';
 import { LineItemTypes } from '../const';
 import { DuplicateRowButton, DuplicateRowWrapper } from '../styles';
 
-const EXCLUDED_KEYS = ['id', 'inheritedId', 'isTotalRow'];
+const EXCLUDED_KEYS = ['id', 'inheritedFundGroupLineItemId', 'isTotalRow'];
 
 const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
   const [showDuplicateRowTooltip, setDuplicateRowTooltip] = useState(false);

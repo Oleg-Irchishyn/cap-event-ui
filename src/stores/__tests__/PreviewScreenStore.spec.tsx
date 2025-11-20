@@ -75,7 +75,7 @@ const mockCapEventSettingsStore = {
           investment: '', // optional
           allocationBasis: 'commitment',
           amount: 100000,
-          inheritedId: 'row-temp-1',
+          inheritedFundGroupLineItemId: 'row-temp-1',
           prFlag: 'Yes',
           // prDate omitted -> will be taken from due date
         },
@@ -173,7 +173,7 @@ describe('PreviewScreenStore', () => {
         category: 'Cont - Expense offsets',
         reason: 'Test Reason 1',
         description: 'Test Description 1',
-        insideCmnt: 'Yes',
+        insideCmnt: true,
       }),
     );
 

@@ -3,7 +3,7 @@ import { Account } from '@/clients/ReferenceData';
 export type LineItemRow = {
   id: string;
   amount: number;
-  inheritedId?: string;
+  inheritedFundGroupLineItemId?: string;
   investment: string;
   allocationBasis: string;
   prDate?: Date;

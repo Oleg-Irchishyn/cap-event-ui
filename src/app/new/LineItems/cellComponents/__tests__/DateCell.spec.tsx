@@ -164,7 +164,7 @@ describe('DateCell', () => {
   it('should handle inherited data styling', () => {
     const inheritedProps = {
       ...mockProps,
-      data: { id: 'test-row', inheritedId: 'parent-row' },
+      data: { id: 'test-row', inheritedFundGroupLineItemId: 'parent-row' },
     };
 
     renderWithTheme(<DateCell {...inheritedProps} />);

@@ -5,10 +5,14 @@ import ButtonsGroup from '@/app/new/ButtonsGroup';
 import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
+import { ROUTES } from '@/const/routes';
+
+const mockUsePathname = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
   useServerInsertedHTML: jest.fn(),
+  usePathname: () => mockUsePathname(),
 }));
 
 jest.mock('@/app/new/FootnotesModal', () => ({
@@ -19,6 +23,20 @@ jest.mock('@/app/new/FootnotesModal', () => ({
         <button onClick={handleClose}>Close</button>
       </div>
     ) : null,
+}));
+
+jest.mock('@/app/components/ContinueButton', () => ({
+  __esModule: true,
+  default: () => (
+    <button data-testid="preview-screen" disabled>
+      Continue
+    </button>
+  ),
+}));
+
+jest.mock('@/app/components/SubmitButton', () => ({
+  __esModule: true,
+  default: () => <button data-testid="allocation-distribution">Submit</button>,
 }));
 
 jest.mock('@/stores', () => {
@@ -49,6 +67,7 @@ const renderWithTheme = (ui: React.ReactElement) =>
 describe('ButtonsGroup', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUsePathname.mockReturnValue('/new');
     (capEventSettingsStore.entitiesLineItem as Map<string, LineItemRow[]>).clear();
     (capEventSettingsStore.fundGroupsLineItem as LineItemRow[]) = [];
   });
@@ -105,5 +124,25 @@ describe('ButtonsGroup', () => {
 
     fireEvent.click(screen.getByText('Close'));
     expect(screen.queryByTestId('footnotes-modal')).not.toBeInTheDocument();
+  });
+
+  describe('renderButton', () => {
+    it('renders ContinueButton when path is /new', () => {
+      mockUsePathname.mockReturnValue(ROUTES.NEW_CAP_EVENT.path);
+
+      renderWithTheme(<ButtonsGroup />);
+
+      expect(screen.getByTestId('preview-screen')).toBeInTheDocument();
+      expect(screen.queryByTestId('allocation-distribution')).not.toBeInTheDocument();
+    });
+
+    it('renders SubmitButton when path is /preview-screen', () => {
+      mockUsePathname.mockReturnValue(ROUTES.PREVIEW_SCREEN.path);
+
+      renderWithTheme(<ButtonsGroup />);
+
+      expect(screen.getByTestId('allocation-distribution')).toBeInTheDocument();
+      expect(screen.queryByTestId('preview-screen')).not.toBeInTheDocument();
+    });
   });
 });

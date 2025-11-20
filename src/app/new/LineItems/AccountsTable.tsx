@@ -112,7 +112,7 @@ const AccountsTable: FC<Props> = ({
       }
 
       // For inherited entity rows, disable only specific fields before any enabling logic
-      if (level === LineItemTypes.entity && params.data.inheritedId) {
+      if (level === LineItemTypes.entity && params.data.inheritedFundGroupLineItemId) {
         if (
           params.colDef.field === AccountFields.callDistributionReason ||
           params.colDef.field === AccountFields.defaultDescription ||
@@ -129,7 +129,7 @@ const AccountsTable: FC<Props> = ({
 
       if (level === LineItemTypes.entity) {
         const parentFundGroup = capEventSettingsStore.fundGroupsLineItem.find(
-          (lineItem) => lineItem.id === params.data.inheritedId,
+          (lineItem) => lineItem.id === params.data.inheritedFundGroupLineItemId,
         );
         if (
           params.colDef.field === AccountFields.amount &&
@@ -153,7 +153,7 @@ const AccountsTable: FC<Props> = ({
       const rowId = params.data.id || '';
       const key = getCellKey(rowId, columnId);
 
-      if (!params.data.inheritedId && columnId === '0') return true;
+      if (!params.data.inheritedFundGroupLineItemId && columnId === '0') return true;
 
       return editableCellRef.current[key];
     },
@@ -332,7 +332,7 @@ const AccountsTable: FC<Props> = ({
       // calculate amount after updated data is set
       if (fieldName === AccountFields.amount) {
         const fundGroupRelatedItem = capEventSettingsStore.fundGroupsLineItem.find(
-          (item) => item.id === data.inheritedId,
+          (item) => item.id === data.inheritedFundGroupLineItemId,
         );
 
         // For USER-PROVIDED Allocation Basis calculate amount of inherited entities and populate it for parent fund group amount
@@ -341,7 +341,7 @@ const AccountsTable: FC<Props> = ({
             capEventSettingsStore.entitiesLineItem.values(),
           )
             .flatMap((item) => item)
-            .filter((values) => values.inheritedId === fundGroupRelatedItem?.id);
+            .filter((values) => values.inheritedFundGroupLineItemId === fundGroupRelatedItem?.id);
           const newFundGroupAmount = relatedInheritedEntities.reduce(
             (acc, item) => acc + item.amount,
             0,
@@ -406,10 +406,10 @@ const AccountsTable: FC<Props> = ({
       (entity) => entity.state === ITEM_STATES.SELECTED,
     );
 
-    const getRelatedRow = (label: string, inheritedId: string) => {
+    const getRelatedRow = (label: string, inheritedFundGroupLineItemId: string) => {
       return capEventSettingsStore.entitiesLineItem
         .get(label)
-        ?.find((item) => item.inheritedId === inheritedId);
+        ?.find((item) => item.inheritedFundGroupLineItemId === inheritedFundGroupLineItemId);
     };
 
     selectedEntities.forEach((entity, index) => {
@@ -435,7 +435,7 @@ const AccountsTable: FC<Props> = ({
                 : fgLineItem.amount,
             allocationBasis:
               fgLineItem.allocationBasis === USER_PROVIDED_OPTION ? '' : fgLineItem.allocationBasis,
-            inheritedId: fgLineItem.id,
+            inheritedFundGroupLineItemId: fgLineItem.id,
             id: `${fgLineItem.id}-${index}`,
             prFlag: YesNoOptions[0],
             prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,

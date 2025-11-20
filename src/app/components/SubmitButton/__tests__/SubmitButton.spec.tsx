@@ -1,0 +1,141 @@
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { ThemeProvider } from 'styled-components';
+import { theme } from '@/ui/globalStyles';
+import SubmitButton from '../SubmitButton';
+import { CapEventStatus } from '@/clients/CapEventPackage';
+
+const mockToast = {
+  success: jest.fn(),
+  error: jest.fn(),
+};
+
+jest.mock('@/providers/ToastProvider', () => ({
+  useToast: () => mockToast,
+}));
+
+jest.mock('@/utils/formatDate', () => ({
+  formatDate: jest.fn((date: Date | null) => (date ? '2024-01-01' : '')),
+}));
+
+const mockCreate = jest.fn();
+
+jest.mock('@/api', () => ({
+  CapEventPackageApi: {
+    default: {
+      create: (...args: unknown[]) => mockCreate(...args),
+    },
+  },
+}));
+
+jest.mock('@/stores', () => ({
+  capEventSettingsStore: {
+    investments: [{ id: 'inv1', name: 'Investment 1', title: 'Investment 1 Title', type: 'Type1' }],
+    fundEntities: [
+      { id: 'ent1', label: 'Entity 1', name: 'Entity 1', state: 'SELECTED' },
+      { id: 'ent2', label: 'Entity 2', name: 'Entity 2', state: 'NOT_SELECTED' },
+    ],
+    eventTypes: [{ id: 'type1', state: 'SELECTED' }],
+    sponsors: [{ id: 'sponsor1', state: 'SELECTED' }],
+    fundGroups: [{ id: 'group1', state: 'SELECTED' }],
+    fundGroupsLineItem: [
+      {
+        id: 'fgli1',
+        investment: 'Investment 1',
+        allocationBasis: 'Basis1',
+        amount: 1000,
+        accountNo: 'ACC001',
+        capitalCategory: 'Category1',
+        callDistributionReason: 'Reason1',
+        defaultDescription: 'Description1',
+        insideCommitment: 'Yes',
+      },
+    ],
+    entitiesLineItem: new Map([
+      [
+        'Entity 1',
+        [
+          {
+            investment: 'Investment 1',
+            allocationBasis: 'Basis1',
+            amount: 500,
+            inheritedFundGroupLineItemId: 'fgli1',
+            prDate: new Date('2024-01-01'),
+            prFlag: 'Yes',
+            accountNo: 'ACC002',
+            capitalCategory: 'Category2',
+            callDistributionReason: 'Reason2',
+            defaultDescription: 'Description2',
+            insideCommitment: 'No',
+          },
+        ],
+      ],
+    ]),
+  },
+  entityDatesStore: {
+    noticeDate: new Date('2024-01-01'),
+    entityDates: {
+      'Entity 1': {
+        noticeDate: new Date('2024-01-01'),
+        dueDate: new Date('2024-01-15'),
+      },
+    },
+  },
+}));
+
+const renderWithTheme = (ui: React.ReactElement) =>
+  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+
+describe('SubmitButton', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders submit button correctly', () => {
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('allocation-distribution');
+    expect(button).toBeInTheDocument();
+    expect(screen.getByText('Submit')).toBeInTheDocument();
+  });
+
+  it('calls API and shows success toast when submission is successful', async () => {
+    mockCreate.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('allocation-distribution');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockToast.success).toHaveBeenCalledWith('Successfully Saved');
+    });
+
+    const requestBody = mockCreate.mock.calls[0][0];
+    expect(requestBody).toHaveProperty('capEventType');
+    expect(requestBody).toHaveProperty('sponsor');
+    expect(requestBody).toHaveProperty('fundGroup');
+    expect(requestBody).toHaveProperty('entities');
+    expect(requestBody).toHaveProperty('noticeDate');
+  });
+
+  it('handles API errors gracefully without crashing', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    mockCreate.mockRejectedValue(new Error('API Error'));
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('allocation-distribution');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockToast.success).not.toHaveBeenCalled();
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+});
