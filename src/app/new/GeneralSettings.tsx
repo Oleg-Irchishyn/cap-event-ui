@@ -310,6 +310,15 @@ const GeneralSettings = () => {
   const handleFundsDropdownOpenChange = (isOpen: boolean) => {
     capEventSettingsStore.setEntitiesDropdownOpen(isOpen);
     onEntitiesDropdownOpenChange(isOpen);
+
+    if (!isOpen) {
+      const entityIds = capEventSettingsStore.fundEntities
+        .filter((item) => item.state === ITEM_STATES.SELECTED)
+        .map((item) => item.id ?? '');
+
+      capEventSettingsStore.fetchMgmtJournalEntries(entityIds);
+    }
+
     return true;
   };
 

@@ -25,6 +25,7 @@ export type { FundGroup } from './models/FundGroup';
 export type { Investment } from './models/Investment';
 export type { InvestorEntry } from './models/InvestorEntry';
 export type { LineItemBase } from './models/LineItemBase';
+export type { MgmtFeeJournalEntry } from './models/MgmtFeeJournalEntry';
 export type { Sponsor } from './models/Sponsor';
 
 export { DefaultService } from './services/DefaultService';

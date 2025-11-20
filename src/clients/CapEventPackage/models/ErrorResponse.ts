@@ -22,6 +22,7 @@ export namespace ErrorResponse {
         RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND',
         INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
         ALLOCATION_ERROR = 'ALLOCATION_ERROR',
+        CLIENT_ERROR = 'CLIENT_ERROR',
     }
 }
 

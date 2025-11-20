@@ -14,6 +14,13 @@ jest.mock('@/api', () => ({
       getSessionId: jest.fn(),
     },
   },
+  CapEventPackageApi: {
+    default: {
+      getMgmtFeeJournalEntries: jest.fn().mockReturnValue({
+        testId: [],
+      }),
+    },
+  },
 }));
 
 jest.mock('@/utils/prepareNewRow', () => ({
@@ -139,6 +146,14 @@ describe('CapEventSettingsStore', () => {
     store.setOtherEntitiesLineItems(entityKey, lineItems);
 
     expect(store.otherEntitiesLineItem.get(entityKey)).toStrictEqual(lineItems);
+  });
+
+  it('should set mgmtJournalEntries', async () => {
+    await store.fetchMgmtJournalEntries(['testId']);
+
+    expect(store.mgmtJournalEntries).toEqual({
+      testId: [],
+    });
   });
 
   it('should set otherTableAccounts', () => {

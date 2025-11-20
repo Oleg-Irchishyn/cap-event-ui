@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import DropdownMenu from './DropdownMenu';
 import ListItem from './ListItem';
-import { ListViewContainer, ListViewWrapper, ScrollContainer } from './styles';
+import { ListViewContainer, ListViewWrapper, NoData, ScrollContainer } from './styles';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 
 type ListViewProps<T> = {
@@ -25,6 +25,7 @@ type ListViewProps<T> = {
   isHideAlternativeButton: boolean;
   additionalFilters?: DropdownItemType<T>[];
   excludedTooltipMessage?: string;
+  noDataText: string;
 };
 
 const ListView = <T,>({
@@ -47,6 +48,7 @@ const ListView = <T,>({
   additionalFilters,
   onAdditionalFilterChange,
   excludedTooltipMessage,
+  noDataText,
 }: ListViewProps<T>) => {
   useEffect(() => () => onSearchChangeHandler(''), []);
 
@@ -70,6 +72,7 @@ const ListView = <T,>({
           onSelectAlternativeClickHandler={onSelectAlternativeClickHandler}
         />
         <ScrollContainer>
+          {items.length === 0 && noDataText && <NoData>{noDataText}</NoData>}
           {items.map((item) => (
             <ListItem
               key={item.label}

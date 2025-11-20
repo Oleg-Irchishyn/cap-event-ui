@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-export const DropdownWrapper = styled.div(({ theme }) => ({
+export const DropdownWrapper = styled.div<{ $isCompact: boolean }>(({ theme, $isCompact }) => ({
   position: 'relative',
-  width: '100%',
+  width: $isCompact ? 'auto' : '100%',
   height: '100%',
   minWidth: '120px',
   cursor: 'pointer',
@@ -25,16 +25,23 @@ export const DropdownWrapper = styled.div(({ theme }) => ({
   },
 }));
 
-export const FieldLabel = styled.div(({ theme }) => ({
-  color: theme.colors.textSecondary,
+export const FieldLabel = styled.div<{ $isCompact: boolean }>(({ theme, $isCompact }) => ({
+  color: $isCompact ? theme.colors.primary : theme.colors.textSecondary,
   lineHeight: '21px',
   marginBottom: '2px',
   fontSize: '14px',
+  display: 'flex',
+  gap: '4px',
 }));
 
-export const LabelContainer = styled.div(() => ({
+export const AdditionalLabel = styled.div(({ theme }) => ({
+  color: theme.colors.textSecondary,
+}));
+
+export const LabelContainer = styled.div<{ $isCompact: boolean }>(({ $isCompact }) => ({
   display: 'flex',
   justifyContent: 'space-between',
+  width: $isCompact ? 'max-content' : 'auto',
 }));
 
 export const ErrorLabel = styled.div(({ theme }) => ({
@@ -44,18 +51,18 @@ export const ErrorLabel = styled.div(({ theme }) => ({
   gap: '8px',
 }));
 
-export const InputFiledWrapper = styled.div(({ theme }) => ({
+export const InputFiledWrapper = styled.div<{ $isCompact: boolean }>(({ theme, $isCompact }) => ({
   position: 'relative',
   width: '100%',
   height: '32px',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  backgroundColor: theme.colors.white,
-  justifyContent: 'space-between',
+  backgroundColor: $isCompact ? theme.colors.lightGray : theme.colors.white,
+  justifyContent: $isCompact ? 'flex-start' : 'space-between',
   cursor: 'pointer',
-  borderRadius: '4px',
-  outline: `1px solid ${theme.colors.gray500}`,
+  borderRadius: $isCompact ? '0' : '4px',
+  outline: $isCompact ? 'none' : `1px solid ${theme.colors.gray500}`,
 
   '&[data-is-open="true"]': {
     outline: `1px solid ${theme.colors.primary}`,
@@ -75,8 +82,8 @@ export const InputFiledWrapper = styled.div(({ theme }) => ({
   },
 }));
 
-export const Placeholder = styled.div(({ theme }) => ({
-  marginLeft: '12px',
+export const Placeholder = styled.div<{ $isCompact: boolean }>(({ theme, $isCompact }) => ({
+  marginLeft: $isCompact ? '3px' : '12px',
   color: theme.colors.textDisabled,
 }));
 
@@ -84,8 +91,8 @@ export const SingleSelectInputWrapper = styled.div({
   overflow: 'hidden',
 });
 
-export const SingleSelectInput = styled.div(({ theme }) => ({
-  margin: '10px 12px',
+export const SingleSelectInput = styled.div<{ $isCompact: boolean }>(({ theme, $isCompact }) => ({
+  margin: $isCompact ? '2px' : '10px 12px',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -159,13 +166,21 @@ export const ScrollContainer = styled.div`
   overflow-x: hidden;
 `;
 
+export const NoData = styled.div(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '10px',
+  color: theme.colors.textSecondary,
+}));
+
 export const ItemWrapper = styled.div<{ $withdescription?: number }>(
   ({ theme, $withdescription }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: $withdescription ? 'space-between' : 'flex-start',
-    height: $withdescription ? '48px' : '40px',
-    paddingLeft: '12px',
+    height: $withdescription ? 'auto' : '40px',
+    padding: $withdescription ? '8px 12px' : '0 0 0 12px',
     cursor: 'pointer',
     backgroundColor: theme.colors.white,
 
@@ -252,6 +267,10 @@ export const ItemDescription = styled.div(({ theme }) => ({
   fontWeight: 400,
   lineHeight: '20px',
   marginRight: '12px',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  minWidth: 0,
 
   '&[data-is-disabled="true"]': {
     color: theme.colors.textDisabled,

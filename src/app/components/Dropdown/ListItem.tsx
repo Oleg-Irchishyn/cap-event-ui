@@ -70,7 +70,14 @@ const ListItem = <T,>({
           >
             {item.label}
           </ItemLabel>
-          {withDescription && <ItemDescription>{item.description}</ItemDescription>}
+          {withDescription && (
+            <>
+              <ItemDescription>{item.description}</ItemDescription>
+              {item.additionalDescription && (
+                <ItemDescription>{item.additionalDescription}</ItemDescription>
+              )}
+            </>
+          )}
         </LabelWrapper>
       </ItemLabelWrapper>
     </ItemWrapper>

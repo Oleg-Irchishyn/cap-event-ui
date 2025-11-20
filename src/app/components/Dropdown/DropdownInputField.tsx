@@ -35,6 +35,7 @@ interface Props<T> {
   onDeselectItemClickHandler?: (item: DropdownItemType<T>, isDisabled?: boolean) => () => void;
   openDropdownHandler: () => void;
   testId: string;
+  isCompact: boolean;
 }
 const DropdownInputField = <T,>({
   isOpen,
@@ -47,6 +48,7 @@ const DropdownInputField = <T,>({
   onDeselectItemClickHandler = () => () => {},
   openDropdownHandler,
   testId = 'dropdown-input',
+  isCompact,
 }: Props<T>) => {
   const multiselectRef = useRef<HTMLDivElement>(null);
   const truncatedLabelRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -54,7 +56,7 @@ const DropdownInputField = <T,>({
 
   const [selectedOptionsRefs, selectedOptionsRef] = prepareArrayRefs();
 
-  const visibleLabel = selectedItems[0]?.label;
+  const visibleLabel = selectedItems[0]?.displayName ?? selectedItems[0]?.label;
 
   const [hiddenOptionsCounter, setHiddenOptionsCounter] = useState(0);
 
@@ -121,12 +123,15 @@ const DropdownInputField = <T,>({
       data-is-disabled={isDisabled}
       data-is-read-only={isReadOnly}
       onClick={handleInputClick}
+      $isCompact={isCompact}
     >
-      {selectedItems.length === 0 && <Placeholder>{placeholder || 'Placeholder'}</Placeholder>}
+      {selectedItems.length === 0 && (
+        <Placeholder $isCompact={isCompact}>{placeholder || 'Placeholder'}</Placeholder>
+      )}
 
       {selectedItems.length > 0 && !isMultiSelect && (
         <SingleSelectInputWrapper>
-          <SingleSelectInput>{visibleLabel}</SingleSelectInput>
+          <SingleSelectInput $isCompact={isCompact}>{visibleLabel}</SingleSelectInput>
         </SingleSelectInputWrapper>
       )}
 

@@ -13,7 +13,7 @@ import {
   LineItemTypes,
   USER_PROVIDED_OPTION,
 } from '@/app/new/LineItems/const';
-import { AllocationInput } from '@/clients/CapEventPackage';
+import { AllocationInput, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
@@ -55,6 +55,8 @@ class CapEventSettingsStore {
 
   footnotes: FootnoteRecordType[] = [];
 
+  mgmtJournalEntries: Record<string, MgmtFeeJournalEntry[]> = {};
+
   constructor() {
     makeAutoObservable(this);
 
@@ -69,6 +71,10 @@ class CapEventSettingsStore {
 
   setOtherTableAccounts(accounts: Account[]) {
     this.otherTableAccounts = accounts;
+  }
+
+  *fetchMgmtJournalEntries(entityIds: string[]) {
+    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries(entityIds);
   }
 
   isGeneralSettingsEmpty(

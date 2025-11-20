@@ -5,6 +5,7 @@ import DetailsDate from '@/app/new/fundCapitalDetailsPanel/DetailsDate';
 import { EntityCapitalDetailsPanelProps } from './types';
 import { PanelContainer } from './style';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
+import ManagementFeeDetails from '@/app/new/fundCapitalDetailsPanel/ManagementFeeDetails';
 
 const EntityCapitalDetailsPanel: FC<EntityCapitalDetailsPanelProps> = ({
   entityLabel,
@@ -21,6 +22,7 @@ const EntityCapitalDetailsPanel: FC<EntityCapitalDetailsPanelProps> = ({
       />
       <DetailsDate entityLabel={entityLabel} dateType="notice" testId={`${testId}-notice-date`} />
       <DetailsDate entityLabel={entityLabel} dateType="due" testId={`${testId}-due-date`} />
+      <ManagementFeeDetails entityId={entityId} />
     </PanelContainer>
   );
 };

@@ -4,7 +4,7 @@ import { useExternalElementClick } from '@/hooks/useExternalElementClick';
 
 import DropdownInputField from './DropdownInputField';
 import ListView from './ListView';
-import { DropdownWrapper, ErrorLabel, FieldLabel, LabelContainer } from './styles';
+import { AdditionalLabel, DropdownWrapper, ErrorLabel, FieldLabel, LabelContainer } from './styles';
 import Image from 'next/image';
 import { ITEM_STATES } from '@/const/common';
 
@@ -12,6 +12,7 @@ export type DropdownItemType<T = object> = {
   label: string;
   displayName?: string;
   description?: string;
+  additionalDescription?: string;
   state: string;
   id?: string;
   isDisabled?: boolean;
@@ -27,6 +28,7 @@ interface Props<T> {
   isMultiSelect?: boolean;
   checkbox?: boolean;
   label: string;
+  additionalLabel?: string;
   withSearch?: boolean;
   withControls?: boolean;
   onSearchChangeHandler?: Dispatch<SetStateAction<string>>;
@@ -45,6 +47,8 @@ interface Props<T> {
   errorMessage?: string;
   additionalFilters?: DropdownItemType<T>[];
   excludedTooltipMessage?: string;
+  isCompact?: boolean;
+  noDataText?: string;
 }
 
 const Dropdown = <T,>({
@@ -57,6 +61,7 @@ const Dropdown = <T,>({
   isMultiSelect = false,
   checkbox = false,
   label = '',
+  additionalLabel = '',
   withSearch = false,
   withControls = false,
   onSearchChangeHandler = () => {},
@@ -75,6 +80,8 @@ const Dropdown = <T,>({
   additionalFilters,
   onAdditionalFilterChange,
   excludedTooltipMessage,
+  isCompact = false,
+  noDataText = '',
 }: Props<T>) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -117,9 +124,12 @@ const Dropdown = <T,>({
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <LabelContainer>
-        <FieldLabel>{label}</FieldLabel>
+    <div style={{ width: isCompact ? 'auto' : '100%' }}>
+      <LabelContainer $isCompact={isCompact}>
+        <FieldLabel $isCompact={isCompact}>
+          {label}
+          <AdditionalLabel>{additionalLabel}</AdditionalLabel>
+        </FieldLabel>
         {errorMessage && (
           <ErrorLabel>
             <Image src="icons/error-outline.svg" alt="error" width={15} height={15} />
@@ -127,10 +137,11 @@ const Dropdown = <T,>({
           </ErrorLabel>
         )}
       </LabelContainer>
-      <DropdownWrapper ref={dropdownRef}>
+      <DropdownWrapper ref={dropdownRef} $isCompact={isCompact}>
         <DropdownInputField
           testId={testId}
           isOpen={isOpen}
+          isCompact={isCompact}
           isReadOnly={isReadOnly}
           isDisabled={isDisabled}
           placeholder={placeholder}
@@ -148,6 +159,7 @@ const Dropdown = <T,>({
             checkbox={checkbox}
             withSearch={withSearch}
             searchText={searchText}
+            noDataText={noDataText}
             withControls={withControls}
             withDescription={withDescription}
             itemClickHandler={itemClickHandler}

@@ -779,6 +779,181 @@
           }
         }
       }
+    },
+    "/cap-events/line-items/mgmt-fees": {
+      "get": {
+        "summary": "Retrieve list of CELIs represents uncalled management fee entries",
+        "operationId": "feeLineItems",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "batchNo",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Batch Number to search for matching entries"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CapEventLineItem" }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "account": {
+                          "accountNo": "0721",
+                          "category": "Cont - Expense offsets",
+                          "reason": "Test Reason 1",
+                          "description": "Test Description 1",
+                          "insideCmnt": "Yes"
+                        },
+                        "investment": {
+                          "id": "2200",
+                          "title": "",
+                          "name": "IDB DEVELOPMENT CORP LTD NPV",
+                          "type": ""
+                        },
+                        "allocationBasis": "commitment",
+                        "amount": 100000,
+                        "prFlag": true,
+                        "prDate": "2025-11-24",
+                        "fundGroupLineItemId": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/journal-entries/mgmt-fee": {
+      "get": {
+        "summary": "Retrieve management fee journal entries for entities",
+        "operationId": "getMgmtFeeJournalEntries",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entityIds",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "required": true,
+            "description": "List of entity IDs to search for matching journal entries"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Map of management fee journal entries grouped by entity ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/MgmtFeeJournalEntry" }
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "ENTITY001": [
+                        {
+                          "amount": 50000.00,
+                          "batchDate": "2025-11-15",
+                          "batchTitle": "Q4 Management Fees",
+                          "batchNo": "BATCH001"
+                        },
+                        {
+                          "amount": 75000.00,
+                          "batchDate": "2025-11-20",
+                          "batchTitle": "November Management Fees",
+                          "batchNo": "BATCH002"
+                        }
+                      ],
+                      "ENTITY002": [
+                        {
+                          "amount": 30000.00,
+                          "batchDate": "2025-11-15",
+                          "batchTitle": "Q4 Management Fees",
+                          "batchNo": "BATCH001"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIds",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -807,7 +982,7 @@
         "properties": {
           "reason": {
             "type": "string",
-            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR"]
+            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR", "CLIENT_ERROR"]
           },
           "message": {
             "type": "string"
@@ -1215,6 +1390,28 @@
           },
           "amount": {
             "type": "number"
+          }
+        }
+      },
+      "MgmtFeeJournalEntry": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Management fee amount"
+          },
+          "batchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Batch date"
+          },
+          "batchTitle": {
+            "type": "string",
+            "description": "Batch title"
+          },
+          "batchNo": {
+            "type": "string",
+            "description": "Batch number"
           }
         }
       }
