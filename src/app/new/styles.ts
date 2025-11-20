@@ -93,7 +93,7 @@ export const SubLabel = styled.span(({ theme }) => ({
 }));
 
 export const ChevronIcon = styled.img.attrs({
-  src: 'icons/chevron-down-secondary.svg',
+  src: '/cap-event/icons/chevron-down-secondary.svg',
 })({
   transition: 'all .2s ease-in-out',
 

@@ -21,7 +21,7 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
   const finalTestId = testId || defaultTestId;
 
   const pickerIcon = () => (
-    <Image src="icons/calendar-black.svg" width={20} height={20} alt="calendar" />
+    <Image src="/cap-event/icons/calendar-black.svg" width={20} height={20} alt="calendar" />
   );
 
   useEffect(() => {

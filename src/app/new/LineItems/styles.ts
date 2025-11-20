@@ -315,7 +315,7 @@ export const InvestmentRefreshButton = styled.div(({ theme }) => ({
 }));
 
 export const RefreshIcon = styled.img.attrs({
-  src: 'icons/refresh-icon.svg',
+  src: '/cap-event/icons/refresh-icon.svg',
 })({
   width: '15px',
   height: '15px',
@@ -364,7 +364,7 @@ export const InvestmentNewItemButton = styled.div(({ theme }) => ({
 }));
 
 export const PlusIcon = styled.img.attrs({
-  src: 'icons/plus.svg',
+  src: '/cap-event/icons/plus.svg',
 })({
   width: '14px',
   height: '14px',
@@ -372,7 +372,7 @@ export const PlusIcon = styled.img.attrs({
 });
 
 export const RedirectIcon = styled.img.attrs({
-  src: 'icons/link.svg',
+  src: '/cap-event/icons/link.svg',
 })({
   width: '12px',
   height: '12px',
@@ -397,11 +397,11 @@ export const DeleteButton = styled.button({
   border: 0,
   padding: 0,
   cursor: 'pointer',
-  background: `url(icons/trash-enabled.svg) no-repeat center center;`,
+  background: `url(/cap-event/icons/trash-enabled.svg) no-repeat center center;`,
   backgroundSize: 'contain',
 
   '&[data-is-disabled="true"]': {
-    background: `url(icons/trash.svg) no-repeat center center;`,
+    background: `url(/cap-event/icons/trash.svg) no-repeat center center;`,
     backgroundSize: 'contain',
     cursor: 'default',
   },
@@ -413,7 +413,7 @@ export const DuplicateRowButton = styled.button({
   border: 0,
   padding: 0,
   cursor: 'pointer',
-  background: `url(icons/duplicate-row.svg) no-repeat center center;`,
+  background: `url(/cap-event/icons/duplicate-row.svg) no-repeat center center;`,
   backgroundSize: 'contain',
 
   '&[data-is-disabled="true"]': {
@@ -432,11 +432,11 @@ export const PreviewButton = styled.button({
   border: 0,
   padding: 0,
   cursor: 'pointer',
-  background: `url(icons/eye-enabled.svg) no-repeat center center;`,
+  background: `url(/cap-event/icons/eye-enabled.svg) no-repeat center center;`,
   backgroundSize: 'contain',
 
   '&[data-is-disabled="true"]': {
-    background: `url(icons/eye-disabled.svg) no-repeat center center;`,
+    background: `url(/cap-event/icons/eye-disabled.svg) no-repeat center center;`,
     backgroundSize: 'contain',
     cursor: 'default',
   },

@@ -38,7 +38,7 @@ export const SearchIconContainer = styled.div({
 });
 
 export const ClearIcon = styled.img.attrs({
-  src: 'icons/cross.svg',
+  src: '/cap-event/icons/cross.svg',
 })({
   position: 'absolute',
   top: '50%',

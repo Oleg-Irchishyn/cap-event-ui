@@ -75,7 +75,7 @@ const filterBySearch = <T,>(items: DropdownItemType<T>[], searchText: string) =>
   );
 };
 
-const pickerIcon = () => <Image src="icons/calendar.svg" width={20} height={20} alt="calendar" />;
+const pickerIcon = () => <Image src="/cap-event/icons/calendar.svg" width={20} height={20} alt="calendar" />;
 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');

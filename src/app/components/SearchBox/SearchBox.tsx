@@ -27,7 +27,7 @@ const SearchBox: FC<SearchBoxProps> = ({
   return (
     <SearchWrapper data-testid={prepareDataTestId(testId, 'SearchBox')} width={width}>
       <SearchIconContainer>
-        <Image src="icons/search.svg" width={15} height={15} alt="search" />
+        <Image src="/cap-event/icons/search.svg" width={15} height={15} alt="search" />
       </SearchIconContainer>
       <SearchInput
         data-testid={testId || 'search-block-input'}

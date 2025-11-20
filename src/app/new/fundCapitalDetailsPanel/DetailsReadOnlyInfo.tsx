@@ -32,7 +32,7 @@ const DetailsReadOnlyInfo: FC<DetailsReadOnlyInfoProps> = ({
           onMouseOver={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
         >
-          <Image src="icons/link.svg" alt="link" width={11} height={11} />
+          <Image src="/cap-event/icons/link.svg" alt="link" width={11} height={11} />
 
           <Tooltip
             tooltipMessage="Redirect to Entity profile in Intacct"

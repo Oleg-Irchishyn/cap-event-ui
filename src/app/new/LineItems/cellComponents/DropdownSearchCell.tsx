@@ -143,7 +143,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
 
   const AddNewItem = (
     <AddNewOptionWrapper onClick={handleAddSearchValue}>
-      <Image src="icons/plus.svg" alt="plus" width={13} height={13} priority={true} />
+      <Image src="/cap-event/icons/plus.svg" alt="plus" width={13} height={13} priority={true} />
       <AddLabel>Add</AddLabel> “{searchValue}”
     </AddNewOptionWrapper>
   );

@@ -25,7 +25,7 @@ import { TextArea } from '@/app/new/styles';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 
 const CloseIcon = () => (
-  <Image src="icons/cross.svg" width={10} height={10} alt="modal-close-icon" />
+  <Image src="/cap-event/icons/cross.svg" width={10} height={10} alt="modal-close-icon" />
 );
 
 type FootnoteItem = {
@@ -177,7 +177,7 @@ const FootnotesModal: FC<Props> = ({ isOpen, handleClose }) => {
           })}
         </FootnotesList>
         <ControlButton data-testid={prepareDataTestId('add-footnote')} onClick={addNewFootnote}>
-          <Image src={'icons/plus.svg'} alt="plus" width={13} height={13} priority={true} />
+          <Image src={'/cap-event/icons/plus.svg'} alt="plus" width={13} height={13} priority={true} />
           Add New Footnote
         </ControlButton>
         <ButtonsContainer>

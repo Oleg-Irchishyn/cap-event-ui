@@ -134,7 +134,7 @@ export const ChevronButton = styled.button({
   appearance: 'none',
   transition: 'all .2s ease-in-out',
   cursor: 'pointer',
-  background: `transparent url(icons/chevron-down.svg) no-repeat center center`,
+  background: `transparent url(/cap-event/icons/chevron-down.svg) no-repeat center center`,
 
   '&[data-is-open="true"]': {
     transform: 'rotate(180deg)',
@@ -225,7 +225,7 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
     transform: 'scale(0)',
     transition: '120ms transform ease-in-out',
     backgroundSize: 'contain',
-    backgroundImage: 'url(icons/marker-icon.svg)',
+    backgroundImage: 'url(/cap-event/icons/marker-icon.svg)',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
   },
@@ -235,7 +235,7 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
   },
 
   '&:disabled::before': {
-    backgroundImage: 'url(icons/marker-icon-disabled.svg)',
+    backgroundImage: 'url(/cap-event/icons/marker-icon-disabled.svg)',
   },
 
   '&:focus-visible': {
@@ -324,23 +324,23 @@ const ControlsButton = styled.button`
 `;
 
 export const SelectAllButton = styled(ControlsButton)({
-  background: `transparent url(icons/select-all.svg) no-repeat center center`,
+  background: `transparent url(/cap-event/icons/select-all.svg) no-repeat center center`,
 
   '&[data-is-disabled="true"]': {
-    background: `transparent url(icons/select-all-disabled.svg) no-repeat center center`,
+    background: `transparent url(/cap-event/icons/select-all-disabled.svg) no-repeat center center`,
   },
 });
 
 export const DeselectButton = styled(ControlsButton)({
-  background: `transparent url(icons/deselect-all.svg) no-repeat center center`,
+  background: `transparent url(/cap-event/icons/deselect-all.svg) no-repeat center center`,
 
   '&[data-is-disabled="true"]': {
-    background: `transparent url(icons/deselect-all-disabled.svg) no-repeat center center`,
+    background: `transparent url(/cap-event/icons/deselect-all-disabled.svg) no-repeat center center`,
   },
 });
 
 export const AlternativeButton = styled(ControlsButton)({
-  background: `transparent url(icons/alt.svg) no-repeat center center`,
+  background: `transparent url(/cap-event/icons/alt.svg) no-repeat center center`,
 });
 
 export const SelectedInputWrapper = styled.div(({ theme }) => ({
@@ -364,12 +364,12 @@ export const RemoveButton = styled.button(({ theme }) => ({
   padding: 0,
   cursor: 'pointer',
   appearance: 'none',
-  background: `transparent url(icons/cross.svg) no-repeat center center;`,
+  background: `transparent url(/cap-event/icons/cross.svg) no-repeat center center;`,
 
   '&[data-is-disabled="true"]': {
     cursor: 'default',
     backgroundImage: 'none',
-    mask: `url(icons/cross.svg) no-repeat 50% 50%;`,
+    mask: `url(/cap-event/icons/cross.svg) no-repeat 50% 50%;`,
     backgroundColor: theme.colors.textDisabled,
   },
 }));
@@ -379,7 +379,7 @@ export const HiddenOptions = styled.div({
   flexShrink: 0,
   paddingLeft: '28px',
   visibility: 'hidden',
-  background: 'transparent url(icons/three-dots.svg) no-repeat left 4px center',
+  background: 'transparent url(/cap-event/icons/three-dots.svg) no-repeat left 4px center',
 });
 
 export const HiddenOptionsCounter = styled.div(({ theme }) => ({

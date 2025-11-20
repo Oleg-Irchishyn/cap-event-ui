@@ -171,7 +171,7 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
     transform: 'scale(0)',
     transition: '120ms transform ease-in-out',
     backgroundSize: 'contain',
-    backgroundImage: 'url(icons/marker-icon.svg)',
+    backgroundImage: 'url(/cap-event/icons/marker-icon.svg)',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
   },
@@ -181,7 +181,7 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
   },
 
   '&:disabled::before': {
-    backgroundImage: 'url(icons/marker-icon-disabled.svg)',
+    backgroundImage: 'url(/cap-event/icons/marker-icon-disabled.svg)',
   },
 
   '&:focus-visible': {
@@ -198,21 +198,21 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
 // Icons
 
 export const DownloadArrowIcon = styled.img.attrs({
-  src: 'icons/download-arrow.svg',
+  src: '/cap-event/icons/download-arrow.svg',
 })({
   width: '15px',
   height: '15px',
 });
 
 export const TrashIcon = styled.img.attrs({
-  src: 'icons/trash.svg',
+  src: '/cap-event/icons/trash.svg',
 })({
   width: '15px',
   height: '15px',
 });
 
 export const DragIcon = styled.img.attrs({
-  src: 'icons/drag-icon.svg',
+  src: '/cap-event/icons/drag-icon.svg',
 })({
   width: '20px',
   height: '20px',

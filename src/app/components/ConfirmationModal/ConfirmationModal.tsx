@@ -16,7 +16,7 @@ import {
 } from './styles';
 
 const CloseIcon = () => (
-  <Image src="icons/cross.svg" width={10} height={10} alt="modal-close-icon" />
+  <Image src="/cap-event/icons/cross.svg" width={10} height={10} alt="modal-close-icon" />
 );
 
 const ConfirmationModal: FC<ConfirmationModalProps> = ({

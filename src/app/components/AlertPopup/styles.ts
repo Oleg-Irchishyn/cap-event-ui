@@ -44,7 +44,7 @@ export const FileName = styled.span({
 });
 
 export const ErrorIcon = styled.img.attrs({
-  src: 'icons/error-icon.svg',
+  src: '/cap-event/icons/error-icon.svg',
 })({
   width: '24px',
   height: '24px',
@@ -59,5 +59,5 @@ export const CloseButton = styled.button({
   padding: 0,
   cursor: 'pointer',
   appearance: 'none',
-  background: `transparent url(icons/cross.svg) no-repeat center center;`,
+  background: `transparent url(/cap-event/icons/cross.svg) no-repeat center center;`,
 });

@@ -132,7 +132,7 @@ const Dropdown = <T,>({
         </FieldLabel>
         {errorMessage && (
           <ErrorLabel>
-            <Image src="icons/error-outline.svg" alt="error" width={15} height={15} />
+            <Image src="/cap-event/icons/error-outline.svg" alt="error" width={15} height={15} />
             {errorMessage}
           </ErrorLabel>
         )}
