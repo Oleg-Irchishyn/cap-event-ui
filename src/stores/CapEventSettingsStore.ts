@@ -54,6 +54,7 @@ class CapEventSettingsStore {
   allocationPreviewModalAllocationBasis: string = '';
 
   footnotes: FootnoteRecordType[] = [];
+  comment: string = '';
 
   mgmtJournalEntries: Record<string, MgmtFeeJournalEntry[]> = {};
 
@@ -375,6 +376,24 @@ class CapEventSettingsStore {
 
   setAttachmentErrors(errors: DragNDropError[]) {
     this.attachmentErrors = errors;
+  }
+
+  setComment(value: string) {
+    this.comment = value ?? '';
+  }
+
+  // Reset general selections with Entities and Fund Group CELIs when returning from preview page
+  resetAfterPreview() {
+    this.fundGroups = this.fundGroups.map((fg) => ({ ...fg, state: ITEM_STATES.OPTIONAL }));
+    this.fundEntities = this.fundEntities.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
+    this.entitiesSelectedCountSnapshot = null;
+    this.noticeDate = null;
+    this.isNoticeDateValid = true;
+    this.attachments = [];
+    this.attachmentErrors = [];
+    this.comment = '';
+    this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
+    this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
   }
 }
 

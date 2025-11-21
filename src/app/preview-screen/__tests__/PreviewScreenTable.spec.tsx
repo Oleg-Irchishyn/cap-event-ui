@@ -45,7 +45,7 @@ describe('PreviewScreenTable', () => {
   it('provides 3 columns with expected headers', () => {
     render(<PreviewScreenTable rows={[]} testId="dist" />);
     expect(screen.getByTestId('headers').textContent).toBe(
-      'Entity ID|Entity Name|Investor ID|Investor Name|Investor Type I|Investor Type II|Total Capital CMNT',
+      'Entity ID|Entity Name|Investor ID|Investor Name|Investor Type I|Investor Type II|Total Allocated Amount',
     );
   });
 

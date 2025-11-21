@@ -35,6 +35,7 @@ type Props = {
   onRowClicked?: (e: RowClickedEvent) => void;
   onDragStopped?: (e: DragStoppedEvent) => void;
   headerLabel?: string;
+  height?: number | string; // when provided, grid will use internal scroll with fixed container height
 };
 
 const ConfigurationTable: FC<Props> = ({
@@ -48,6 +49,7 @@ const ConfigurationTable: FC<Props> = ({
   onRowClicked,
   onDragStopped,
   headerLabel,
+  height,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -149,6 +151,7 @@ const ConfigurationTable: FC<Props> = ({
     <TableWrapper
       data-testid={prepareDataTestId('table-wrapper', testId)}
       className={`ag-theme-alpine  ${isDisabled ? 'grid-disabled' : ''}`}
+      style={height ? { height } : undefined}
     >
       {headerLabel && <Header>{headerLabel}</Header>}
       <AgGridReact
@@ -163,7 +166,7 @@ const ConfigurationTable: FC<Props> = ({
         rowSelection="multiple"
         pagination={false}
         suppressPaginationPanel={true}
-        domLayout="autoHeight"
+        domLayout={height ? undefined : 'autoHeight'}
         suppressHorizontalScroll={false}
         suppressColumnVirtualisation={true}
         suppressRowVirtualisation={true}

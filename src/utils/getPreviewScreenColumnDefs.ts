@@ -7,7 +7,7 @@ import {
   INVESTOR_NAME_HEADER,
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
-  TOTAL_CAPITAL_CMNT_HEADER,
+  TOTAL_ALLOCATED_AMOUNT_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -78,7 +78,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   },
   // Total Capital CMNT
   {
-    headerName: TOTAL_CAPITAL_CMNT_HEADER,
+    headerName: TOTAL_ALLOCATED_AMOUNT_HEADER,
     field: AMOUNT_FIELD,
     flex: 1,
     sortable: true,

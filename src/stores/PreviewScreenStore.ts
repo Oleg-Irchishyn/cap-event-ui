@@ -29,6 +29,7 @@ import {
 import { investmentMandatoryCategories, YesNoOptions } from '@/app/new/LineItems/const';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { getValidDate } from '@/utils/getValidDate';
+import { isRowEmpty } from '@/utils/isRowEmpty';
 
 class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
@@ -39,12 +40,73 @@ class PreviewScreenStore {
     makeAutoObservable(this);
   }
 
+  // ---------- Small formatting / mapping helpers ----------
   private formatDate(date: Date | null | undefined): string | undefined {
     if (!date) return undefined;
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
+  }
+
+  private getSelectedSingle<T extends { state?: string }>(items: T[] | undefined): T | undefined {
+    return (items ?? []).find((i) => i?.state === ITEM_STATES.SELECTED);
+  }
+
+  private getSelectedMany<T extends { state?: string }>(items: T[] | undefined): T[] {
+    return (items ?? []).filter((i) => i?.state === ITEM_STATES.SELECTED);
+  }
+
+  private toApiType(
+    src:
+      | {
+          id?: unknown;
+          abbreviation?: string;
+          name?: string;
+          description?: string;
+        }
+      | undefined,
+  ): ApiCapEventType | undefined {
+    if (!src) return undefined;
+    return this.pickNonEmpty<ApiCapEventType>({
+      id: String(src.id ?? ''),
+      abbreviation: src.abbreviation,
+      name: src.name,
+      description: src.description,
+    }) as ApiCapEventType;
+  }
+
+  private toApiSponsor(src: { id?: unknown; name?: string } | undefined): ApiSponsor | undefined {
+    if (!src) return undefined;
+    return this.pickNonEmpty<ApiSponsor>({
+      id: String(src.id ?? ''),
+      name: src.name,
+    }) as ApiSponsor;
+  }
+
+  private toApiFundGroup(
+    src: { id?: unknown; name?: string } | undefined,
+  ): ApiFundGroup | undefined {
+    if (!src) return undefined;
+    return this.pickNonEmpty<ApiFundGroup>({
+      id: String(src.id ?? ''),
+      name: src.name,
+    }) as ApiFundGroup;
+  }
+
+  private toApiEntities(src: Array<{ id?: string; name?: string }> = []): ApiEntity[] {
+    return src.map(
+      (e) => this.pickNonEmpty<ApiEntity>({ id: String(e.id ?? ''), name: e.name }) as ApiEntity,
+    );
+  }
+
+  private getTopNoticeDateString(selectedEntities: Array<{ label?: string }>): string | undefined {
+    const top =
+      entityDatesStore.noticeDate ||
+      (selectedEntities.length
+        ? entityDatesStore.getEntityNoticeDate(selectedEntities[0].label ?? '')
+        : null);
+    return this.formatDate(getValidDate(top));
   }
 
   private isEntityRowValid = (row: LineItemRow): boolean => {
@@ -76,14 +138,39 @@ class PreviewScreenStore {
   }
 
   private findAccountNoForRow(row: LineItemRow, accounts: RefAccount[]): string | undefined {
-    const matches = accounts.filter(
-      (a) =>
-        a.capitalCategory === row.capitalCategory &&
-        a.callDistributionReason === row.callDistributionReason &&
-        a.defaultDescription === row.defaultDescription &&
-        a.insideCommitment === row.insideCommitment,
-    );
-    return matches[0]?.accountNo ?? undefined;
+    // Relaxed matching for partially populated rows:
+    // - Always require category match
+    // - For other account fields, match only when the row provides a value
+    const requiredCategory = row.capitalCategory ?? '';
+    if (!requiredCategory) return undefined;
+
+    const candidates = accounts.filter((a) => a.capitalCategory === requiredCategory);
+    if (candidates.length === 0) return undefined;
+
+    const fields: Array<keyof RefAccount> = [
+      'callDistributionReason',
+      'defaultDescription',
+      'insideCommitment',
+    ];
+
+    // Score candidates by how many provided fields match; pick the best match
+    let best: RefAccount | undefined;
+    let bestScore = -1;
+    for (const acc of candidates) {
+      let score = 0;
+      for (const f of fields) {
+        const rowVal = (row as unknown as Record<string, unknown>)[f];
+        if (rowVal !== undefined && rowVal !== null && rowVal !== '') {
+          if ((acc as unknown as Record<string, unknown>)[f] === rowVal) score++;
+        }
+      }
+      if (score > bestScore) {
+        best = acc;
+        bestScore = score;
+      }
+    }
+
+    return best?.accountNo ?? candidates[0]?.accountNo ?? undefined;
   }
 
   private findInvestment(
@@ -92,7 +179,9 @@ class PreviewScreenStore {
   ): Partial<ApiInvestment> | undefined {
     const id = row.investment || '';
     if (!id) return undefined;
-    const found = investments.find((inv) => String(inv.id) === String(id));
+    const found = investments.find(
+      (inv) => String(inv.name).toLowerCase() === String(id).toLowerCase(),
+    );
     if (!found) return { id };
     return this.pickNonEmpty<ApiInvestment>({
       id: String(found.id),
@@ -120,7 +209,14 @@ class PreviewScreenStore {
       category: row.capitalCategory,
       reason: row.callDistributionReason,
       description: row.defaultDescription,
-      insideCmnt: row.insideCommitment === 'Yes',
+      // insideCmnt is boolean in backend model; map "Yes"/"No" (case-insensitive) to true/false
+      insideCmnt: (() => {
+        if (typeof row.insideCommitment !== 'string') return undefined;
+        const normalized = row.insideCommitment.trim().toLowerCase();
+        if (normalized === 'yes') return true;
+        if (normalized === 'no') return false;
+        return undefined;
+      })(),
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;
     const investment = this.findInvestment(row, investments) as ApiInvestment | undefined;
@@ -136,16 +232,20 @@ class PreviewScreenStore {
   ): { items: CapEventFundGroupLineItem[]; idMap: Map<string, string> } {
     const idMap = new Map<string, string>();
     const items: CapEventFundGroupLineItem[] = [];
-    for (const row of capEventSettingsStore.fundGroupsLineItem) {
-      if (!this.isEntityRowValid(row)) continue;
+    const fgRows = capEventSettingsStore.fundGroupsLineItem || [];
+    const hasAtLeastOneValid = fgRows.some((r) => this.isEntityRowValid(r));
+    for (const row of fgRows) {
+      if (isRowEmpty(row)) continue;
       const base = this.mapLineItemBase(row, accounts, investments);
       if (!base) continue;
+      const allowed = this.isEntityRowValid(row) || hasAtLeastOneValid;
+      if (!allowed) continue;
       const uuid = this.ensureUuid(row.id);
       idMap.set(row.id, uuid);
       items.push({
         id: uuid,
         account: base.account,
-        ...(base.investment ? { investment: base.investment } : {}),
+        investment: base.investment ?? ('' as unknown as ApiInvestment),
         allocationBasis: base.allocationBasis,
         amount: base.amount,
       } as unknown as CapEventFundGroupLineItem);
@@ -163,20 +263,23 @@ class PreviewScreenStore {
     const result: CapEventEntityLineItem[] = [];
     for (const ent of selectedEntities) {
       const label = (ent as { label?: string }).label ?? '';
-      const entityRows = capEventSettingsStore.entitiesLineItem.get(label) ?? [];
+      const entityRows: LineItemRow[] = capEventSettingsStore.entitiesLineItem.get(label) ?? [];
 
       const validNotice = getValidDate(entityDatesStore.getEntityNoticeDate(label));
       const validDue = getValidDate(entityDatesStore.getEntityDueDate(label));
       const dueValid = entityDatesStore.getEntityDueDateInputValidity(label);
       const noticeValid = entityDatesStore.getEntityNoticeDateInputValidity(label);
       const datesAreValid = !!validNotice && !!validDue && dueValid && noticeValid;
-      const validRows = entityRows.filter((r) => this.isEntityRowValid(r));
-      if (!datesAreValid || validRows.length === 0) continue;
+      const hasAtLeastOneValid = entityRows.some((r) => this.isEntityRowValid(r));
+      if (!datesAreValid || !hasAtLeastOneValid) continue;
 
       const capEventLineItems: CapEventLineItem[] = [];
-      for (const r of validRows) {
+      const candidateRows: LineItemRow[] = entityRows.filter((r) => !isRowEmpty(r));
+      for (const r of candidateRows) {
         const base = this.mapLineItemBase(r, accounts, investments);
         if (!base) continue;
+        const allowed = this.isEntityRowValid(r) || hasAtLeastOneValid;
+        if (!allowed) continue;
         const prDate = this.formatDate(getValidDate((r.prDate as Date) ?? validDue));
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
@@ -184,9 +287,11 @@ class PreviewScreenStore {
           r.inheritedFundGroupLineItemId && fundGroupIdMap.has(r.inheritedFundGroupLineItemId)
             ? fundGroupIdMap.get(r.inheritedFundGroupLineItemId)
             : undefined;
+        const capEventLineItemId = this.ensureUuid((r as { id?: string }).id);
         capEventLineItems.push({
+          id: capEventLineItemId,
           account: base.account,
-          ...(base.investment ? { investment: base.investment } : {}),
+          investment: base.investment ?? ('' as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
           amount: base.amount,
           ...(fundGroupLineItemId ? { fundGroupLineItemId } : {}),
@@ -196,7 +301,9 @@ class PreviewScreenStore {
       }
 
       if (capEventLineItems.length === 0) continue;
+      const entityItemId = this.ensureUuid(undefined);
       result.push({
+        id: entityItemId,
         entity: this.pickNonEmpty<ApiEntity>({
           id: String(ent.id ?? ''),
           name: ent.name,
@@ -217,19 +324,15 @@ class PreviewScreenStore {
   }
 
   private buildPayload(): CapEvent | null {
-    // Selected general settings
-    const selectedTypeItem = capEventSettingsStore.eventTypes.find(
-      (i) => i.state === ITEM_STATES.SELECTED,
-    ) as unknown as ApiCapEventType | undefined;
-    const selectedSponsorItem = capEventSettingsStore.sponsors.find(
-      (i) => i.state === ITEM_STATES.SELECTED,
-    ) as unknown as ApiSponsor | undefined;
-    const selectedFundGroupItem = capEventSettingsStore.fundGroups.find(
-      (i) => i.state === ITEM_STATES.SELECTED,
-    ) as unknown as ApiFundGroup | undefined;
-    const selectedEntityItems = capEventSettingsStore.fundEntities.filter(
-      (i) => i.state === ITEM_STATES.SELECTED,
-    ) as unknown as (ApiEntity & { label?: string })[];
+    // Selected general settings (using helpers)
+    const selectedTypeItem = this.getSelectedSingle(capEventSettingsStore.eventTypes);
+    const selectedSponsorItem = this.getSelectedSingle(capEventSettingsStore.sponsors);
+    const selectedFundGroupItem = this.getSelectedSingle(capEventSettingsStore.fundGroups);
+    const selectedEntityItems = this.getSelectedMany(capEventSettingsStore.fundEntities) as Array<{
+      id?: string;
+      name?: string;
+      label?: string;
+    }>;
 
     if (
       !selectedTypeItem ||
@@ -240,17 +343,8 @@ class PreviewScreenStore {
       return null;
     }
 
-    const entities: ApiEntity[] = selectedEntityItems.map((e) =>
-      this.pickNonEmpty<ApiEntity>({ id: e.id, name: e.name }),
-    ) as ApiEntity[];
-
-    const topNoticeDate =
-      entityDatesStore.noticeDate ||
-      (selectedEntityItems.length
-        ? entityDatesStore.getEntityNoticeDate(selectedEntityItems[0].label ?? '')
-        : null);
-
-    const noticeDateStr = this.formatDate(getValidDate(topNoticeDate));
+    const entities = this.toApiEntities(selectedEntityItems);
+    const noticeDateStr = this.getTopNoticeDateString(selectedEntityItems);
     if (!noticeDateStr) return null;
 
     // Lookups
@@ -261,7 +355,7 @@ class PreviewScreenStore {
     const { items: capEventFundGroupLineItems, idMap: fundGroupIdMap } =
       this.buildFundGroupLineItems(accounts, investments);
     const capEventEntityLineItems = this.buildEntityLineItems(
-      selectedEntityItems as Array<{ id?: string; name?: string; label?: string }>,
+      selectedEntityItems,
       accounts,
       investments,
       fundGroupIdMap,
@@ -273,28 +367,18 @@ class PreviewScreenStore {
 
     const totalAmount = this.computeTotalAmount(capEventEntityLineItems);
 
-    const sponsorSource = selectedSponsorItem as unknown as { id?: string; name?: string };
-    const typeSource = selectedTypeItem as unknown as {
-      id?: string;
-      abbreviation?: string;
-      name?: string;
-      description?: string;
-    };
-    const fundGroupSource = selectedFundGroupItem as unknown as { id?: string; name?: string };
-
     const payload: CapEvent = {
-      sponsor: { id: String(sponsorSource.id ?? ''), name: sponsorSource.name },
-      capEventType: this.pickNonEmpty<ApiCapEventType>({
-        id: String(typeSource.id ?? ''),
-        abbreviation: typeSource.abbreviation,
-        name: typeSource.name,
-        description: typeSource.description,
-      }) as ApiCapEventType,
-      fundGroup: { id: String(fundGroupSource.id ?? ''), name: fundGroupSource.name },
+      sponsor: this.toApiSponsor(selectedSponsorItem)!,
+      capEventType: this.toApiType(selectedTypeItem)!,
+      fundGroup: this.toApiFundGroup(selectedFundGroupItem)!,
       entities,
       noticeDate: noticeDateStr,
+      status: 'DRAFT' as unknown as CapEvent['status'],
       ...(capEventFundGroupLineItems.length ? { capEventFundGroupLineItems } : {}),
       capEventEntityLineItems,
+      ...(capEventSettingsStore.comment?.trim()
+        ? { comment: capEventSettingsStore.comment.trim() }
+        : {}),
       totalAmount,
     };
 
@@ -303,7 +387,7 @@ class PreviewScreenStore {
 
   private ensureUuid(value: string | undefined): string {
     if (value && UUID_V4_REGEX.test(value)) return value;
-    // naive v4 generator
+
     return UUID_V4_TEMPLATE.replace(UUID_TEMPLATE_CHAR_REGEX, (c) => {
       const r = (Math.random() * 16) | 0;
       const v = c === 'x' ? r : (r & 0x3) | 0x8;

@@ -5,7 +5,7 @@ export const INVESTOR_ID_HEADER = 'Investor ID';
 export const INVESTOR_NAME_HEADER = 'Investor Name';
 export const INVESTOR_TYPE_I_HEADER = 'Investor Type I';
 export const INVESTOR_TYPE_II_HEADER = 'Investor Type II';
-export const TOTAL_CAPITAL_CMNT_HEADER = 'Total Capital CMNT';
+export const TOTAL_ALLOCATED_AMOUNT_HEADER = 'Total Allocated Amount';
 export const AMOUNT_HEADER = 'Amount';
 
 // Field names

@@ -40,8 +40,10 @@ jest.mock('@/stores', () => ({
 
 // Import after mocking
 import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
-import { Account } from '@/clients/ReferenceData';
+import { Account, FundGroup } from '@/clients/ReferenceData';
 import { ReferenceDataApi } from '@/api';
+import type { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import type { Attachment, DragNDropError } from '@/app/new/attachments/types';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -599,6 +601,72 @@ describe('CapEventSettingsStore', () => {
 
       store.setAttachmentErrors([]);
       expect(store.hasAttachmentErrors).toBe(false);
+    });
+  });
+
+  describe('resetAfterPreview', () => {
+    it('should clear general selections, dates, attachments and reset FG CELIs', () => {
+      const fgItems: DropdownItemType<FundGroup>[] = [
+        {
+          label: 'FG-1',
+          id: '1',
+          name: 'FG',
+          state: 'S',
+        } as unknown as DropdownItemType<FundGroup>,
+      ];
+      const entityItems: DropdownItemType[] = [
+        {
+          label: 'E-1',
+          id: 'E1',
+          state: 'S',
+        } as unknown as DropdownItemType,
+      ];
+      store.setFundGroups(fgItems);
+      store.setFundEntities(entityItems);
+      store.entitiesSelectedCountSnapshot = 2 as unknown as number;
+
+      store.setNoticeDate(new Date());
+      store.setIsNoticeDateValid(false);
+
+      store.setAttachments([{ file: { name: 'a.pdf' }, checked: true } as unknown as Attachment]);
+      store.setAttachmentErrors([{ message: 'test' } as unknown as DragNDropError]);
+
+      store.setFundGroupsLineItem([
+        {
+          id: 'row-a',
+          amount: 10,
+          investment: 'X',
+          allocationBasis: 'B',
+        } as unknown as LineItemRow,
+        {
+          id: 'row-b',
+          amount: 20,
+          investment: 'Y',
+          allocationBasis: 'C',
+        } as unknown as LineItemRow,
+      ]);
+      store.setFundGroupsStateAfterApply();
+
+      store.resetAfterPreview();
+
+      expect(store.fundGroups.every((fg) => fg.state === 'O')).toBe(true);
+      expect(store.fundEntities.every((e) => e.state === 'O')).toBe(true);
+      expect(store.entitiesSelectedCountSnapshot).toBeNull();
+
+      expect(store.noticeDate).toBeNull();
+      expect(store.isNoticeDateValid).toBe(true);
+
+      expect(store.attachments).toEqual([]);
+      expect(store.attachmentErrors).toEqual([]);
+
+      expect(store.fundGroupsLineItem).toHaveLength(1);
+      expect(store.fundGroupsLineItem[0]).toEqual(
+        expect.objectContaining({ id: 'mock-id', amount: 0, investment: '', allocationBasis: '' }),
+      );
+      expect(store.fundGroupsStateAfterApply).toHaveLength(1);
+      expect(store.fundGroupsStateAfterApply[0]).toEqual(
+        expect.objectContaining({ id: 'mock-id', amount: 0, investment: '', allocationBasis: '' }),
+      );
     });
   });
 });

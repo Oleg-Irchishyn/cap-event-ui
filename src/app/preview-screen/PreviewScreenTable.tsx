@@ -49,6 +49,7 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
       isLoading={isLoading}
       noRowsText="No Data to display"
       onRowClicked={onRowClicked}
+      height="55dvh"
     />
   );
 };

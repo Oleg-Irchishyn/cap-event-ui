@@ -6,7 +6,7 @@ import {
   INVESTOR_NAME_HEADER,
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
-  TOTAL_CAPITAL_CMNT_HEADER,
+  TOTAL_ALLOCATED_AMOUNT_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -55,8 +55,8 @@ describe('getPreviewScreenColumnDefs', () => {
     expect(cols[5].field).toBe(INVESTOR_TYPE_II_FIELD);
     expect(cols[5].sortable).toBe(true);
 
-    // 7) Total Capital CMNT
-    expect(cols[6].headerName).toBe(TOTAL_CAPITAL_CMNT_HEADER);
+    // 7) Total Allocated Amount
+    expect(cols[6].headerName).toBe(TOTAL_ALLOCATED_AMOUNT_HEADER);
     expect(cols[6].field).toBe(AMOUNT_FIELD);
     expect(cols[6].sortable).toBe(true);
   });

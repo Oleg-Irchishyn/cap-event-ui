@@ -7,6 +7,7 @@ import PreviewScreenDetails from '@/app/preview-screen/PreviewScreenDetails';
 import useContinueButton from '@/hooks/useContinueButton';
 
 import { ROUTES } from '@/const/routes';
+import { PageContainer } from '@/app/styles';
 import ButtonsGroup from '../new/ButtonsGroup';
 
 const PreviewScreen = () => {
@@ -24,10 +25,10 @@ const PreviewScreen = () => {
   }
 
   return (
-    <>
+    <PageContainer>
       <ButtonsGroup />
       <PreviewScreenDetails />
-    </>
+    </PageContainer>
   );
 };
 

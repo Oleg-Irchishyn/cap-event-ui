@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import BackgroundContainer from '@/app/components/BackgroundContainer';
 import {
+  Counter,
+  TextArea,
+  TextAreaContainer,
+  TextAreaLabel,
+  TextAreaWrapper,
   Title,
   Wrapper,
-  TextAreaWrapper,
-  TextAreaLabel,
-  TextArea,
-  Counter,
-  TextAreaContainer,
 } from '@/app/new/styles';
-import BackgroundContainer from '@/app/components/BackgroundContainer';
+import { capEventSettingsStore } from '@/stores';
+import { observer } from 'mobx-react-lite';
+import { useState } from 'react';
 
 const MAX_SYMBOLS_COUNT = 1200;
 
 const CommentsField = () => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(capEventSettingsStore.comment ?? '');
+
+  const onHandleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const v = e.target.value;
+    setValue(v);
+    capEventSettingsStore.setComment(v);
+  };
 
   return (
     <BackgroundContainer testId="comments-background">
@@ -32,7 +40,7 @@ const CommentsField = () => {
               placeholder="Enter text"
               maxLength={MAX_SYMBOLS_COUNT}
               style={{ maxHeight: '250px' }}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={onHandleChange}
             />
           </TextAreaContainer>
         </TextAreaWrapper>
@@ -41,4 +49,4 @@ const CommentsField = () => {
   );
 };
 
-export default CommentsField;
+export default observer(CommentsField);
