@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.53](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.52&targetVersion=GTv0.0.53) (2025-11-21)
+
+
+### Features
+
+* add mgmt journal entries dropdown ([ff07b75](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ff07b758cf0a9edbe02b296addc2c3499446edba)), closes [#7907](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7907) [#7916](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7916)
+* save CapEvent ([10b4103](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/10b4103ce0d7e9ce94aab62f4600a2d95f748cfe)), closes [#7738](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7738)
+
+
+### Bug Fixes
+
+* icons path ([bebc02d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/bebc02d33a2ae600faa8635a72489db81fbba61c)), closes [#8007](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8007)
+
 ### [0.0.52](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.51&targetVersion=GTv0.0.52) (2025-11-20)
 
 
