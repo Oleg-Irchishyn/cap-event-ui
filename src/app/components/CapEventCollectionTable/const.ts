@@ -1,14 +1,14 @@
 export const CAP_EVENT_COLLECTION_TABLE_CONFIG = {
-  ID: {
-    key: 'id',
-    title: 'ID',
-  },
   STATUS: {
     key: 'status',
     title: 'Status',
   },
+  EVENT_TYPE: {
+    key: 'eventType',
+    title: 'Event Type',
+  },
   CAPITAL_EVENT: {
-    key: 'capEventType',
+    key: 'capEvent',
     title: 'Capital Event',
   },
   SPONSOR: {

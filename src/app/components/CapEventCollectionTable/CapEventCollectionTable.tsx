@@ -8,6 +8,7 @@ import { TableHeaderWithTooltip } from '../TableHeaderWithTooltip/TableHeaderWit
 import { CapEvent } from '@/clients/CapEventPackage';
 import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import { TruncatedTextCell } from './TruncatedTextCell';
+import { formatAmount } from '@/utils/getAllocationPreviewColumnDefs';
 
 type Props = {
   rows: CapEvent[];
@@ -17,15 +18,14 @@ type Props = {
 
 const capEventTableColumnDefs = (): ColDef[] => [
   {
-    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.ID.title,
-    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.ID.key,
+    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.title,
+    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.key,
     flex: 1,
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.id ?? '-';
+      return data.name ?? '-';
     },
-    maxWidth: 102,
   },
   {
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.STATUS.title,
@@ -34,18 +34,18 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.status;
+      return data.status ? data.status[0].toUpperCase() + data.status.slice(1).toLowerCase() : '-';
     },
     maxWidth: 102,
   },
   {
-    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.title,
-    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.key,
+    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.title,
+    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.key,
     flex: 1,
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.capEventType?.name ?? data.capEventType?.abbreviation ?? '-';
+      return data.capEventType?.abbreviation ?? '-';
     },
     maxWidth: 120,
   },
@@ -92,7 +92,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.createdAt ?? '-';
+      return data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-';
     },
     maxWidth: 120,
   },
@@ -113,7 +113,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.totalAmount != null ? data.totalAmount.toLocaleString() : '-';
+      return data.totalAmount != null ? formatAmount(data.totalAmount) : '-';
     },
     headerComponent: TableHeaderWithTooltip,
     headerComponentParams: {
