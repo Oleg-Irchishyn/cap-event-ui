@@ -102,6 +102,7 @@ export const getAllocationPreviewColumnDefs = (
     valueGetter: (params) => {
       return formatAmount(params.data.allocatedAmount);
     },
+    cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
   },

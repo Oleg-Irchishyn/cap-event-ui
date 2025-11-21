@@ -38,6 +38,18 @@ type Props = {
   height?: number | string; // when provided, grid will use internal scroll with fixed container height
 };
 
+interface RowData {
+  id?: string;
+  value?: unknown;
+  _index: number;
+  [key: string]: unknown;
+}
+
+type GridRow = {
+  [key: string]: unknown;
+  _index: number;
+};
+
 const ConfigurationTable: FC<Props> = ({
   columnDefs,
   rowData,
@@ -117,10 +129,12 @@ const ConfigurationTable: FC<Props> = ({
     applyColumnStateFromDefsAndSaved();
   }, [applyColumnStateFromDefsAndSaved]);
 
-  const safeRowData = useMemo(() => {
-    if (!Array.isArray(rowData)) return [] as unknown[];
+  const safeRowData: GridRow[] = useMemo(() => {
+    if (!Array.isArray(rowData)) return [];
     // Avoid MobX strict-mode mutations by giving AG Grid cloned objects
-    return rowData.map((r) => (r !== null && typeof r === 'object' ? { ...r } : r));
+    return rowData.map((r, i) =>
+      r !== null && typeof r === 'object' ? { ...r, _index: i } : { value: r, _index: i },
+    );
   }, [rowData]);
 
   const effectiveColumnDefs = Array.isArray(columnDefs)
@@ -154,7 +168,7 @@ const ConfigurationTable: FC<Props> = ({
       style={height ? { height } : undefined}
     >
       {headerLabel && <Header>{headerLabel}</Header>}
-      <AgGridReact
+      <AgGridReact<RowData>
         columnDefs={effectiveColumnDefs}
         rowData={safeRowData}
         defaultColDef={defaultColDef}
@@ -186,8 +200,8 @@ const ConfigurationTable: FC<Props> = ({
         }}
         onColumnResized={handleColumnResized}
         getRowId={(params) => {
-          const data = params.data as { id?: string };
-          return data.id ?? JSON.stringify(params.data).slice(0, 36);
+          const data = params.data as GridRow & { id?: string };
+          return data.id ?? String(data._index);
         }}
       />
     </TableWrapper>
