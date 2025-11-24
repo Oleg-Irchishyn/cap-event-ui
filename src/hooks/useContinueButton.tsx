@@ -9,11 +9,6 @@ import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX } from '@/const/regExps'
 const TOOLTIP_MESSAGE = 'Not all required fields are populated';
 
 const useContinueButton = () => {
-  const isGeneralSettingsEmpty = capEventSettingsStore.isGeneralSettingsEmpty(
-    entityDatesStore.noticeDate,
-    entityDatesStore.hasDifferentDates,
-  );
-
   const isEntityRowValid = (row: LineItemRow): boolean => {
     const normalizeCategory = (value: string) =>
       (value || '')
@@ -46,15 +41,9 @@ const useContinueButton = () => {
     (e) => e.state === ITEM_STATES.SELECTED,
   );
 
+  const canRenderEntities = !!entityDatesStore.noticeDate || entityDatesStore.hasDifferentDates;
+
   const isRowEffectivelyEmpty = (row: LineItemRow): boolean => {
-    const isCategoryMandatory = investmentMandatoryCategories
-      .map((c) => c.toLowerCase())
-      .includes((row.capitalCategory ?? '').toLowerCase());
-
-    if (isCategoryMandatory) {
-      return !row.investment;
-    }
-
     return isRowEmpty(row);
   };
 
@@ -66,27 +55,50 @@ const useContinueButton = () => {
   const entityDatesAreValid = (label: string) => {
     const validNoticeDate = getValidDate(entityDatesStore.getEntityNoticeDate(label));
     const validDueDate = getValidDate(entityDatesStore.getEntityDueDate(label));
-    const isDueDateInputValid = entityDatesStore.getEntityDueDateInputValidity(label);
-    const isNoticeDateInputValid = entityDatesStore.getEntityNoticeDateInputValidity(label);
-    return !!validNoticeDate && !!validDueDate && isDueDateInputValid && isNoticeDateInputValid;
+    return !!validNoticeDate && !!validDueDate;
   };
 
-  const hasAtLeastOneValidEntity = selectedEntities.some((entity) => {
-    const label = entity.label ?? '';
-    const entityRows = capEventSettingsStore.entitiesLineItem.get(label);
+  let hasAtLeastOneValidEntity = false;
+  let hasInvalidEntity = false;
+  if (canRenderEntities) {
+    for (const entity of selectedEntities) {
+      const label = entity.label ?? '';
+      const entityRows = capEventSettingsStore.entitiesLineItem.get(label);
 
-    if (isEntityEffectivelyEmpty(entityRows)) return false;
+      if (isEntityEffectivelyEmpty(entityRows)) continue;
 
-    const hasValidRow = (entityRows ?? []).some((row) => isEntityRowValid(row));
-    const datesValid = entityDatesAreValid(label);
+      const nonEmptyRows = (entityRows ?? []).filter((row) => !isRowEffectivelyEmpty(row));
+      if (nonEmptyRows.length === 0) continue;
 
-    return hasValidRow && datesValid;
-  });
+      const allRowsValid = nonEmptyRows.every((row) => isEntityRowValid(row));
+      const datesValid = entityDatesAreValid(label);
+
+      // Only entities with valid dates are considered for blocking and for enabling
+      if (!datesValid) {
+        // Ignore entities without valid dates: they neither block nor enable
+        continue;
+      }
+
+      // At this point, dates are valid. Invalid rows block; all-valid rows enable.
+      if (!allRowsValid) {
+        hasInvalidEntity = true;
+      } else {
+        hasAtLeastOneValidEntity = true;
+      }
+    }
+  }
 
   const hasAttachmentErrors = capEventSettingsStore.hasAttachmentErrors;
 
+  // If at least one entity is fully valid, relax the global Notice Date requirement
+  // by treating "hasDifferentDates" as true for the general settings emptiness check.
+  const isGeneralSettingsEmpty = capEventSettingsStore.isGeneralSettingsEmpty(
+    entityDatesStore.noticeDate,
+    entityDatesStore.hasDifferentDates || (canRenderEntities && hasAtLeastOneValidEntity),
+  );
+
   const isContinueDisabled =
-    isGeneralSettingsEmpty || hasAttachmentErrors || !hasAtLeastOneValidEntity;
+    isGeneralSettingsEmpty || hasAttachmentErrors || hasInvalidEntity || !hasAtLeastOneValidEntity;
   const tooltipMessage = isContinueDisabled ? TOOLTIP_MESSAGE : '';
 
   return { isContinueDisabled, tooltipMessage };

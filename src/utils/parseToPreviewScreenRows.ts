@@ -6,6 +6,8 @@ export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => 
   return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';
     const entityName = item?.entity?.name ?? '';
+    // Extract the investor entries array from the line item
+    // Each line item contains multiple investor entries that need to be converted to rows
     const entries: InvestorEntry[] = Array.isArray(item && item.plInvestorEntries)
       ? (item.plInvestorEntries as InvestorEntry[])
       : [];

@@ -8,7 +8,7 @@ import useContinueButton from '@/hooks/useContinueButton';
 
 import { ROUTES } from '@/const/routes';
 import { PageContainer } from '@/app/styles';
-import ButtonsGroup from '../new/ButtonsGroup';
+import ButtonsGroup from '@/app/components/ButtonsGroup/ButtonsGroup';
 
 const PreviewScreen = () => {
   const router = useRouter();

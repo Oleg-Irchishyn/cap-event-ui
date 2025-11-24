@@ -1,4 +1,4 @@
-import { formatAmount } from '../getAllocationPreviewColumnDefs';
+import { formatAmount } from '@/utils/formatAmount';
 
 describe('formatAmount', () => {
   it('should format positive integer with comas and two decimals', () => {

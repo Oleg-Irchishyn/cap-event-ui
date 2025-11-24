@@ -7,7 +7,7 @@ import {
   INVESTOR_NAME_HEADER,
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
-  TOTAL_ALLOCATED_AMOUNT_HEADER,
+  TOTAL_AMOUNT_DUE_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -16,6 +16,7 @@ import {
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
 } from '@/const/previewScreen';
+import { formatAmount } from '@/utils/formatAmount';
 
 export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   // Entity ID
@@ -64,6 +65,10 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_TYPE_I_FIELD,
     flex: 1,
     sortable: true,
+    valueGetter: (params) => {
+      const value = params.data[INVESTOR_TYPE_I_FIELD];
+      return value && String(value).trim() ? value : '--';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
   },
@@ -73,20 +78,23 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_TYPE_II_FIELD,
     flex: 1.2,
     sortable: true,
+    valueGetter: (params) => {
+      const value = params.data[INVESTOR_TYPE_II_FIELD];
+      return value && String(value).trim() ? value : '--';
+    },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
   },
   // Total Capital CMNT
   {
-    headerName: TOTAL_ALLOCATED_AMOUNT_HEADER,
+    headerName: TOTAL_AMOUNT_DUE_HEADER,
     field: AMOUNT_FIELD,
     flex: 1,
     sortable: true,
-    valueFormatter: (params) => {
-      const value = params.value as number | undefined;
-      if (typeof value !== 'number') return '';
-      return value.toLocaleString('en-US');
+    valueGetter: (params) => {
+      return formatAmount(params.data.allocatedAmount);
     },
+    cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
   },

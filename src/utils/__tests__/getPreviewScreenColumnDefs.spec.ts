@@ -6,7 +6,7 @@ import {
   INVESTOR_NAME_HEADER,
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
-  TOTAL_ALLOCATED_AMOUNT_HEADER,
+  TOTAL_AMOUNT_DUE_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -56,15 +56,42 @@ describe('getPreviewScreenColumnDefs', () => {
     expect(cols[5].sortable).toBe(true);
 
     // 7) Total Allocated Amount
-    expect(cols[6].headerName).toBe(TOTAL_ALLOCATED_AMOUNT_HEADER);
+    expect(cols[6].headerName).toBe(TOTAL_AMOUNT_DUE_HEADER);
     expect(cols[6].field).toBe(AMOUNT_FIELD);
     expect(cols[6].sortable).toBe(true);
   });
 
-  it('Amount valueFormatter formats numbers and returns empty for non-number', () => {
+  it('Investor Type I valueGetter returns "--" when empty', () => {
     const cols = getPreviewScreenColumnDefs();
-    const valueFormatter = cols[6].valueFormatter as (p: { value?: unknown }) => string;
-    expect(valueFormatter({ value: 250000 })).toBe('250,000');
-    expect(valueFormatter({ value: undefined })).toBe('');
+    const valueGetter = cols[4].valueGetter as (p: { data: { classID?: string } }) => string;
+    expect(valueGetter({ data: { classID: 'Type A' } })).toBe('Type A');
+    expect(valueGetter({ data: { classID: '' } })).toBe('--');
+    expect(valueGetter({ data: { classID: '   ' } })).toBe('--');
+    expect(valueGetter({ data: { classID: undefined } })).toBe('--');
+    expect(valueGetter({ data: {} })).toBe('--');
+  });
+
+  it('Investor Type II valueGetter returns "--" when empty', () => {
+    const cols = getPreviewScreenColumnDefs();
+    const valueGetter = cols[5].valueGetter as (p: {
+      data: { additionalInvestorType?: string };
+    }) => string;
+    expect(valueGetter({ data: { additionalInvestorType: 'Type B' } })).toBe('Type B');
+    expect(valueGetter({ data: { additionalInvestorType: '' } })).toBe('--');
+    expect(valueGetter({ data: { additionalInvestorType: '   ' } })).toBe('--');
+    expect(valueGetter({ data: { additionalInvestorType: undefined } })).toBe('--');
+    expect(valueGetter({ data: {} })).toBe('--');
+  });
+
+  it('Amount valueGetter formats numbers using formatAmount', () => {
+    const cols = getPreviewScreenColumnDefs();
+    const valueGetter = cols[6].valueGetter as (p: {
+      data: { allocatedAmount?: number };
+    }) => string;
+    expect(valueGetter({ data: { allocatedAmount: 250000 } })).toBe('250,000.00');
+    expect(valueGetter({ data: { allocatedAmount: -100000 } })).toBe('(100,000.00)');
+    expect(valueGetter({ data: { allocatedAmount: 0 } })).toBe('0.00');
+    expect(valueGetter({ data: { allocatedAmount: undefined } })).toBe('-');
+    expect(valueGetter({ data: {} })).toBe('-');
   });
 });

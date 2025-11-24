@@ -177,7 +177,7 @@ describe('PreviewScreenStore', () => {
       }),
     );
 
-    // entity line item should link to fund group via fundGroupLineItemId and set pr fields
+    // entity line item should link to fund group via inheritedFundGroupLineItemId and set pr fields
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.entity).toEqual(expect.objectContaining({ id: 'E1' }));
     expect(entityItem.noticeDate).toBe('2025-11-17');
@@ -188,7 +188,7 @@ describe('PreviewScreenStore', () => {
         amount: 100000,
         prFlag: true,
         prDate: '2025-11-24',
-        fundGroupLineItemId: fg.id,
+        inheritedFundGroupLineItemId: fg.id,
       }),
     );
 

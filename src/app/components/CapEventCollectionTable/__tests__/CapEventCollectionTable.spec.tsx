@@ -65,6 +65,7 @@ jest.mock('@/app/components/SkeletonCellRenderer', () => ({
 describe('CapEventCollectionTable', () => {
   const createMockCapEvent = (overrides: Partial<CapEvent> = {}): CapEvent => ({
     id: '1',
+    name: 'Test Capital Event',
     status: 'DRAFT' as CapEventStatus,
     capEventType: {
       name: 'Capital Call',
@@ -110,8 +111,10 @@ describe('CapEventCollectionTable', () => {
 
     const row0 = screen.getByTestId('row-0');
 
-    expect(row0.querySelector('[data-testid="cell-id"]')).toHaveTextContent('1');
-    expect(row0.querySelector('[data-testid="cell-status"]')).toHaveTextContent('DRAFT');
+    expect(row0.querySelector('[data-testid="cell-capEvent"]')).toHaveTextContent(
+      'Test Capital Event',
+    );
+    expect(row0.querySelector('[data-testid="cell-status"]')).toHaveTextContent('Draft');
   });
 
   it('shows loading state with skeleton renderer', async () => {

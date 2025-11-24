@@ -19,17 +19,12 @@ import type { PreviewScreenRow } from '@/app/preview-screen/types';
 import { ToastApi } from '@/providers/types';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
-import {
-  NORMALIZE_DASHES_REGEX,
-  NORMALIZE_SPACES_REGEX,
-  UUID_TEMPLATE_CHAR_REGEX,
-  UUID_V4_REGEX,
-  UUID_V4_TEMPLATE,
-} from '@/const/regExps';
+import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX, UUID_V4_REGEX } from '@/const/regExps';
 import { investmentMandatoryCategories, YesNoOptions } from '@/app/new/LineItems/const';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
+import { uuidv4 } from '@/utils/uuid';
 
 class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
@@ -267,9 +262,7 @@ class PreviewScreenStore {
 
       const validNotice = getValidDate(entityDatesStore.getEntityNoticeDate(label));
       const validDue = getValidDate(entityDatesStore.getEntityDueDate(label));
-      const dueValid = entityDatesStore.getEntityDueDateInputValidity(label);
-      const noticeValid = entityDatesStore.getEntityNoticeDateInputValidity(label);
-      const datesAreValid = !!validNotice && !!validDue && dueValid && noticeValid;
+      const datesAreValid = !!validNotice && !!validDue;
       const hasAtLeastOneValid = entityRows.some((r) => this.isEntityRowValid(r));
       if (!datesAreValid || !hasAtLeastOneValid) continue;
 
@@ -283,7 +276,7 @@ class PreviewScreenStore {
         const prDate = this.formatDate(getValidDate((r.prDate as Date) ?? validDue));
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
-        const fundGroupLineItemId =
+        const inheritedFundGroupLineItemId =
           r.inheritedFundGroupLineItemId && fundGroupIdMap.has(r.inheritedFundGroupLineItemId)
             ? fundGroupIdMap.get(r.inheritedFundGroupLineItemId)
             : undefined;
@@ -294,7 +287,7 @@ class PreviewScreenStore {
           investment: base.investment ?? ('' as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
           amount: base.amount,
-          ...(fundGroupLineItemId ? { fundGroupLineItemId } : {}),
+          ...(inheritedFundGroupLineItemId ? { inheritedFundGroupLineItemId } : {}),
           prDate: prDate as string,
           prFlag,
         } as unknown as CapEventLineItem);
@@ -388,11 +381,7 @@ class PreviewScreenStore {
   private ensureUuid(value: string | undefined): string {
     if (value && UUID_V4_REGEX.test(value)) return value;
 
-    return UUID_V4_TEMPLATE.replace(UUID_TEMPLATE_CHAR_REGEX, (c) => {
-      const r = (Math.random() * 16) | 0;
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return uuidv4();
   }
 
   async processPayload(toast?: ToastApi): Promise<PreviewScreenRow[]> {

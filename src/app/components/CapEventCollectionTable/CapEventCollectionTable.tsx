@@ -8,7 +8,7 @@ import { TableHeaderWithTooltip } from '../TableHeaderWithTooltip/TableHeaderWit
 import { CapEvent } from '@/clients/CapEventPackage';
 import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import { TruncatedTextCell } from './TruncatedTextCell';
-import { formatAmount } from '@/utils/getAllocationPreviewColumnDefs';
+import { formatAmount } from '@/utils/formatAmount';
 
 type Props = {
   rows: CapEvent[];

@@ -12,18 +12,7 @@ import {
   INVESTOR_ADDITIONAL_TYPE_FIELD,
   INVESTOR_ADDITIONAL_TYPE_HEADER,
 } from '@/const/allocationPreview';
-
-export const formatAmount = (amount: number) => {
-  if (amount === 0) return '0.00';
-  if (!amount) return '-';
-
-  const formattedAmount = Math.abs(amount).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  return amount < 0 ? `(${formattedAmount})` : formattedAmount;
-};
+import { formatAmount } from '@/utils/formatAmount';
 
 export const getAllocationPreviewColumnDefs = (
   fieldName: string,

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
-import ButtonsGroup from '@/app/new/ButtonsGroup';
+import ButtonsGroup from '@/app/components/ButtonsGroup/ButtonsGroup';
 import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
