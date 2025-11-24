@@ -17,11 +17,15 @@ import {
 import { ITEM_STATES } from '@/const/common';
 import { formatDate } from '@/utils/formatDate';
 import { useToast } from '@/providers/ToastProvider';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/const/routes';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
 
   const toast = useToast();
+
+  const router = useRouter();
 
   const findInvestment = (investment: string) => {
     return capEventSettingsStore.investments.find(
@@ -109,6 +113,7 @@ const SubmitButton = () => {
       const response = await CapEventPackageApi.default.create(requestBody);
       if (response.status === CapEventStatus.SUBMITTED) {
         toast.success('Successfully Saved');
+        router.push(ROUTES.MAIN.path);
       }
     } catch (error) {
       console.error(error);
