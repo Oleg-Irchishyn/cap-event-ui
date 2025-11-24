@@ -2,8 +2,12 @@ import Dropdown from '@/app/components/Dropdown';
 import { ITEM_STATES } from '@/const/common';
 import { FC, useState } from 'react';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import { MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
+import { CapEventLineItem, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { capEventSettingsStore } from '@/stores';
+import { LineItemRow } from '@/app/new/LineItems/types';
+import { observer } from 'mobx-react-lite';
+import { CapEventPackageApi } from '@/api';
+import { useToast } from '@/providers/ToastProvider';
 
 const preparedIncludeMFOptions = [
   {
@@ -26,22 +30,44 @@ const prepareMgmtEntryOptions = (mgmtOptions?: MgmtFeeJournalEntry[]) =>
       label: item.amount?.toLocaleString() ?? '',
       displayName: `${item.amount?.toLocaleString()} (${formatedDate})`,
       description: `Posting Date: ${formatedDate}`,
-      additionalDescription: `Description: ${item.batchTitle}`,
+      additionalDescription: `Description: ${item.description}`,
     };
   }) ?? [];
 
+const prepareMgmtFeeLineItems = (mgmtFeeLineItems: CapEventLineItem[]): LineItemRow[] =>
+  mgmtFeeLineItems.map((item) => {
+    return {
+      ...item,
+      id: item.id ?? '',
+      prDate: new Date(item.prDate),
+      prFlag: item.prFlag ? 'Yes' : 'No',
+      accountNo: item.account.accountNo,
+      capitalCategory: item.account.category,
+      callDistributionReason: item.account.reason,
+      defaultDescription: item.account.description,
+      insideCommitment: item.account.insideCmnt ? 'Yes' : 'No',
+      investment: item.investment.title ?? item.investment.name ?? '',
+      mgmtFee: true,
+    };
+  });
+
 type Props = {
   entityId: string;
+  entityLabel: string;
 };
 
-const ManagementFeeDetails: FC<Props> = ({ entityId }) => {
+const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
+  const toast = useToast();
   const [includeMFOptions, setIncludeMFOptions] = useState(preparedIncludeMFOptions);
   const [MFItems, setMFItems] = useState(
     prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]),
   );
   const [searchText, setSearchText] = useState('');
 
-  const handleSelectMFItem = (item?: DropdownItemType) => {
+  const handleSelectMFItem = async (item?: DropdownItemType<MgmtFeeJournalEntry>) => {
+    const selectedItemLabel = MFItems.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
+    if (selectedItemLabel === item?.label) return;
+
     const updatedValues = MFItems.map((option) =>
       option.label === item?.label
         ? { ...option, state: ITEM_STATES.SELECTED }
@@ -49,6 +75,37 @@ const ManagementFeeDetails: FC<Props> = ({ entityId }) => {
     );
 
     setMFItems(updatedValues);
+
+    if (item?.batchNo) {
+      let mgmtFeeLineItems: CapEventLineItem[] = [];
+      try {
+        mgmtFeeLineItems = await CapEventPackageApi.default.feeLineItems(item.batchNo);
+      } catch (error) {
+        toast.error('Error getting mgmt fee line item');
+        console.error(error);
+
+        const updatedValues = MFItems.map((option) => ({ ...option, state: ITEM_STATES.OPTIONAL }));
+        setMFItems(updatedValues);
+
+        return;
+      }
+
+      const entityLineItemsWithoutMgmtFee =
+        capEventSettingsStore.entitiesLineItem.get(entityLabel)?.filter((item) => !item.mgmtFee) ??
+        [];
+
+      capEventSettingsStore.setEntitiesLineItem(entityLabel, [
+        ...entityLineItemsWithoutMgmtFee,
+        ...prepareMgmtFeeLineItems(mgmtFeeLineItems),
+      ]);
+    } else {
+      // remove mgmtFee line items
+      const filteredLineItems = (
+        capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
+      )?.filter((item) => !item.mgmtFee);
+
+      capEventSettingsStore.setEntitiesLineItem(entityLabel, filteredLineItems);
+    }
   };
 
   const handleChangeIncludeMF = (item: DropdownItemType) => {
@@ -107,4 +164,4 @@ const ManagementFeeDetails: FC<Props> = ({ entityId }) => {
   );
 };
 
-export default ManagementFeeDetails;
+export default observer(ManagementFeeDetails);

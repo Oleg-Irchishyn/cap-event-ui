@@ -75,7 +75,9 @@ const filterBySearch = <T,>(items: DropdownItemType<T>[], searchText: string) =>
   );
 };
 
-const pickerIcon = () => <Image src="/cap-event/icons/calendar.svg" width={20} height={20} alt="calendar" />;
+const pickerIcon = () => (
+  <Image src="/cap-event/icons/calendar.svg" width={20} height={20} alt="calendar" />
+);
 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
@@ -316,7 +318,7 @@ const GeneralSettings = () => {
         .filter((item) => item.state === ITEM_STATES.SELECTED)
         .map((item) => item.id ?? '');
 
-      capEventSettingsStore.fetchMgmtJournalEntries(entityIds);
+      if (entityIds.length) capEventSettingsStore.fetchMgmtJournalEntries(entityIds);
     }
 
     return true;

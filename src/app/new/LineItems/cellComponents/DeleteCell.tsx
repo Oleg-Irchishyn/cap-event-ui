@@ -9,6 +9,7 @@ import { isOtherRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { DeleteButton } from '../styles';
+import { observer } from 'mobx-react-lite';
 
 const DeleteCell: FC<ICellRendererParams> = (props) => {
   const { level, entityKey, isOtherTable } = props.colDef?.cellEditorParams ?? {};
@@ -74,9 +75,11 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
     }
   };
 
+  const shouldRender = !props.data.inheritedFundGroupLineItemId && !props.data.mgmtFee;
+
   return (
     <>
-      {!props.data.inheritedFundGroupLineItemId && (
+      {shouldRender && (
         <DeleteButton
           data-testid={prepareDataTestId('', 'delete-icon')}
           data-is-disabled={isOtherTable ? isOtherDeleteDisabled : isDeleteDisabled()}
@@ -87,4 +90,4 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
   );
 };
 
-export default DeleteCell;
+export default observer(DeleteCell);

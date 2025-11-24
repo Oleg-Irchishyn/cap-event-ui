@@ -15,6 +15,10 @@ jest.mock('@/providers/ToastProvider', () => ({
   useToast: () => mockToast,
 }));
 
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+}));
+
 jest.mock('@/utils/formatDate', () => ({
   formatDate: jest.fn((date: Date | null) => (date ? '2024-01-01' : '')),
 }));

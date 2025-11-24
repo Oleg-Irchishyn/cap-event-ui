@@ -100,6 +100,18 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (params.data?.isTotalRow) return false;
+      if (params.data?.mgmtFee) {
+        if (
+          (params.colDef.field === AccountFields.capitalCategory && !params.data.capitalCategory) ||
+          (params.colDef.field === AccountFields.callDistributionReason &&
+            !params.data.callDistributionReason) ||
+          (params.colDef.field === AccountFields.insideCommitment && !params.data.insideCommitment)
+        ) {
+          return true;
+        }
+
+        return params.colDef.field === AccountFields.defaultDescription;
+      }
 
       if (isDisabled) return false;
       if (level === LineItemTypes.group) {

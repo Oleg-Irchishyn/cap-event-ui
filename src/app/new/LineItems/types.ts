@@ -8,6 +8,7 @@ export type LineItemRow = {
   allocationBasis: string;
   prDate?: Date;
   prFlag?: string;
+  mgmtFee?: boolean;
 } & Account;
 
 export type AllocationPreviewTableProps = {

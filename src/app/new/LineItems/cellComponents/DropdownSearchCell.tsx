@@ -148,10 +148,6 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
     </AddNewOptionWrapper>
   );
 
-  const shouldShowPlaceholder = props.data?.inheritedFundGroupLineItemId
-    ? !selectedValue
-    : !isCellEditable;
-
   if (props.data?.isTotalRow) return null;
 
   return (
@@ -164,14 +160,14 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
         onClick={handleToggle}
       >
         <Label
-          data-is-placeholder={!selectedValue || shouldShowPlaceholder}
+          data-is-placeholder={!selectedValue}
           data-is-inherited={
             !!props.data?.inheritedFundGroupLineItemId &&
             props.colDef?.field !== AccountFields.allocationBasis &&
             props.colDef?.field !== AccountFields.prFlag
           }
         >
-          {shouldShowPlaceholder ? placeholder : selectedValue || placeholder}
+          {selectedValue || placeholder}
         </Label>
         {isCellEditable && <ChevronIcon data-is-open={isOpen} />}
       </DropdownWrapper>

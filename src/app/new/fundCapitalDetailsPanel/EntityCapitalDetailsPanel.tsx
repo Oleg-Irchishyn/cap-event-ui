@@ -22,7 +22,7 @@ const EntityCapitalDetailsPanel: FC<EntityCapitalDetailsPanelProps> = ({
       />
       <DetailsDate entityLabel={entityLabel} dateType="notice" testId={`${testId}-notice-date`} />
       <DetailsDate entityLabel={entityLabel} dateType="due" testId={`${testId}-due-date`} />
-      <ManagementFeeDetails entityId={entityId} />
+      <ManagementFeeDetails entityId={entityId} entityLabel={entityLabel} />
     </PanelContainer>
   );
 };

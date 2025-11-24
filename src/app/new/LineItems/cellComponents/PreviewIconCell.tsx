@@ -41,12 +41,14 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
       dueDate: dueDate || '',
       allocationBasis: ALLOCATION_BASIS_DEFAULT_OPTIONS[props.data.allocationBasis],
       accountNo:
+        props.data?.accountNo ??
         capEventSettingsStore.accounts.find(
           (acc) =>
             acc.capitalCategory === props.data.capitalCategory &&
             acc.callDistributionReason === props.data.callDistributionReason &&
             acc.insideCommitment === props.data.insideCommitment,
-        )?.accountNo ?? '',
+        )?.accountNo ??
+        '',
       investmentId:
         capEventSettingsStore.investments.find((inv) => inv.name === props.data.investment)?.id ??
         '',
