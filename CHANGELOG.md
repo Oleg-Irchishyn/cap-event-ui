@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.55](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.54&targetVersion=GTv0.0.55) (2025-11-25)
+
+
+### Features
+
+* add mgmt fee line items ([088b47f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/088b47fa528cb9fdb0475485bd8ed30fe4c0a633)), closes [#7909](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7909) [#7917](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7917)
+
+
+### Bug Fixes
+
+* [Issue-8009]: [FE] Continue button is enabled if additional row is not fully populated at Entity Level ([e0d80ae](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e0d80aee02a5bac814e034359a169dd2360c5d9c)), closes [#8009](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8009)
+* added redirect after submit CapEvent ([7533dd6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/7533dd66b02046507deb8f56963520e32e0435d0)), closes [#8042](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8042)
+
 ### [0.0.54](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.53&targetVersion=GTv0.0.54) (2025-11-22)
 
 
