@@ -4,9 +4,7 @@ FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS builder
-
 WORKDIR /app
-
 COPY package.json package-lock.json* ./
 RUN --mount=type=cache,target=/root/.npm npm i
 
@@ -21,7 +19,6 @@ RUN npm run build
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 
 RUN addgroup -g 1001 -S nodejs
@@ -34,10 +31,13 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+COPY /docker/docker-entrypoint.d/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
+RUN chmod +x /docker-entrypoint.d/entrypoint.sh
+
 USER nextjs
 
 EXPOSE 3000
-
 ENV PORT=3000
 
+ENTRYPOINT [ "/docker-entrypoint.d/entrypoint.sh" ]
 CMD HOSTNAME="0.0.0.0" node server.js
