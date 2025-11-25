@@ -1,13 +1,15 @@
 import Dropdown from '@/app/components/Dropdown';
 import { ITEM_STATES } from '@/const/common';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { CapEventLineItem, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
-import { capEventSettingsStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { observer } from 'mobx-react-lite';
 import { CapEventPackageApi } from '@/api';
 import { useToast } from '@/providers/ToastProvider';
+import { uuidv4 } from '@/utils/uuid';
+import { Loader } from '@/app/new/LineItems/styles';
 
 const preparedIncludeMFOptions = [
   {
@@ -34,19 +36,22 @@ const prepareMgmtEntryOptions = (mgmtOptions?: MgmtFeeJournalEntry[]) =>
     };
   }) ?? [];
 
-const prepareMgmtFeeLineItems = (mgmtFeeLineItems: CapEventLineItem[]): LineItemRow[] =>
+const prepareMgmtFeeLineItems = (
+  mgmtFeeLineItems: CapEventLineItem[],
+  entityLabel: string,
+): LineItemRow[] =>
   mgmtFeeLineItems.map((item) => {
     return {
       ...item,
-      id: item.id ?? '',
-      prDate: new Date(item.prDate),
+      id: item.id ?? uuidv4(),
+      prDate: new Date(item.prDate ?? entityDatesStore.getEntityDueDate(entityLabel)),
       prFlag: item.prFlag ? 'Yes' : 'No',
       accountNo: item.account.accountNo,
       capitalCategory: item.account.category,
       callDistributionReason: item.account.reason,
       defaultDescription: item.account.description,
       insideCommitment: item.account.insideCmnt ? 'Yes' : 'No',
-      investment: item.investment.title ?? item.investment.name ?? '',
+      investment: item.investment?.title ?? item.investment?.name ?? '',
       mgmtFee: true,
     };
   });
@@ -57,12 +62,18 @@ type Props = {
 };
 
 const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
+  const mgmtFeeLineItems = capEventSettingsStore.mgmtJournalEntries[entityId];
   const toast = useToast();
   const [includeMFOptions, setIncludeMFOptions] = useState(preparedIncludeMFOptions);
   const [MFItems, setMFItems] = useState(
     prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]),
   );
   const [searchText, setSearchText] = useState('');
+  const [isMgmtFeeLineItemsLoading, setMgmtFeeLineItemsLoading] = useState(false);
+
+  useEffect(() => {
+    setMFItems(prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]));
+  }, [mgmtFeeLineItems]);
 
   const handleSelectMFItem = async (item?: DropdownItemType<MgmtFeeJournalEntry>) => {
     const selectedItemLabel = MFItems.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
@@ -77,6 +88,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
     setMFItems(updatedValues);
 
     if (item?.batchNo) {
+      setMgmtFeeLineItemsLoading(true);
       let mgmtFeeLineItems: CapEventLineItem[] = [];
       try {
         mgmtFeeLineItems = await CapEventPackageApi.default.feeLineItems(item.batchNo);
@@ -86,8 +98,15 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
 
         const updatedValues = MFItems.map((option) => ({ ...option, state: ITEM_STATES.OPTIONAL }));
         setMFItems(updatedValues);
+        // remove mgmtFee line items
+        const filteredLineItems = (
+          capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
+        )?.filter((item) => !item.mgmtFee);
+        capEventSettingsStore.setEntitiesLineItem(entityLabel, filteredLineItems);
 
         return;
+      } finally {
+        setMgmtFeeLineItemsLoading(false);
       }
 
       const entityLineItemsWithoutMgmtFee =
@@ -96,7 +115,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
 
       capEventSettingsStore.setEntitiesLineItem(entityLabel, [
         ...entityLineItemsWithoutMgmtFee,
-        ...prepareMgmtFeeLineItems(mgmtFeeLineItems),
+        ...prepareMgmtFeeLineItems(mgmtFeeLineItems, entityLabel),
       ]);
     } else {
       // remove mgmtFee line items
@@ -144,21 +163,24 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
         testId="include-mf"
       />
       {isIncludedMFSetToYes && (
-        <Dropdown
-          isCompact
-          withDescription
-          withSearch={MFItems.length > 3}
-          searchText={searchText}
-          onSearchChangeHandler={setSearchText}
-          items={visibleMFItems}
-          selectedItems={visibleMFItems.filter((item) => item.state === ITEM_STATES.SELECTED)}
-          selectHandler={handleSelectMFItem}
-          placeholder="Select Option"
-          label={`MF Calculated Amount`}
-          additionalLabel={`(${MFItems.length} items available)`}
-          testId="mgmt-entries"
-          noDataText="No Data Available"
-        />
+        <>
+          <Dropdown
+            isCompact
+            withDescription
+            withSearch={MFItems.length > 3}
+            searchText={searchText}
+            onSearchChangeHandler={setSearchText}
+            items={visibleMFItems}
+            selectedItems={visibleMFItems.filter((item) => item.state === ITEM_STATES.SELECTED)}
+            selectHandler={handleSelectMFItem}
+            placeholder="Select Option"
+            label={`MF Calculated Amount`}
+            additionalLabel={`(${MFItems.length} items available)`}
+            testId="mgmt-entries"
+            noDataText="No Data Available"
+          />
+          {isMgmtFeeLineItemsLoading && <Loader />}
+        </>
       )}
     </>
   );

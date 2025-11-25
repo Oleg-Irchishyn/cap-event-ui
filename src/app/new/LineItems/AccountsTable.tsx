@@ -503,7 +503,11 @@ const AccountsTable: FC<Props> = ({
           onClick={applyFundGroupChanges}
         >
           <Image
-            src={!isApplyButtonEnabled ? '/cap-event/icons/checkmark.svg' : '/cap-event/icons/checkmark-green.svg'}
+            src={
+              !isApplyButtonEnabled
+                ? '/cap-event/icons/checkmark.svg'
+                : '/cap-event/icons/checkmark-green.svg'
+            }
             alt="checkmark"
             width={13}
             height={13}
@@ -529,7 +533,13 @@ const AccountsTable: FC<Props> = ({
         data-testid={prepareDataTestId('add-new-row', testId, entityKey)}
         onClick={addNewOtherTableRow}
       >
-        <Image src={'/cap-event/icons/plus.svg'} alt="plus" width={13} height={13} priority={true} />
+        <Image
+          src={'/cap-event/icons/plus.svg'}
+          alt="plus"
+          width={13}
+          height={13}
+          priority={true}
+        />
         Add New Row
       </ControlButton>
     </TableControls>
