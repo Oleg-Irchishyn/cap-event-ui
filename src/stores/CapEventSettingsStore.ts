@@ -63,7 +63,7 @@ class CapEventSettingsStore {
   }
 
   *initAccountsSet() {
-    this.accounts = yield this.fetchAccounts(['Capital'], ['Cont - Management fees']);
+    this.accounts = yield this.fetchAccounts(['Capital']);
   }
 
   setOtherTableAccounts(accounts: Account[]) {
