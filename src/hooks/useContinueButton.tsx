@@ -1,41 +1,14 @@
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
-import { investmentMandatoryCategories } from '@/app/new/LineItems/const';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
-import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX } from '@/const/regExps';
+import { isLineItemRowValid } from '@/utils/investment';
 
 const TOOLTIP_MESSAGE = 'Not all required fields are populated';
 
 const useContinueButton = () => {
-  const isEntityRowValid = (row: LineItemRow): boolean => {
-    const normalizeCategory = (value: string) =>
-      (value || '')
-        .replace(NORMALIZE_DASHES_REGEX, '-')
-        .replace(NORMALIZE_SPACES_REGEX, ' ')
-        .trim()
-        .toLowerCase();
-
-    const normalizedMandatory = investmentMandatoryCategories.map(normalizeCategory);
-
-    const isInvestmentRequired = normalizedMandatory.includes(
-      normalizeCategory(row.capitalCategory ?? ''),
-    );
-
-    const hasRequiredBaseFields =
-      !!row.capitalCategory &&
-      !!row.callDistributionReason &&
-      !!row.defaultDescription &&
-      !!row.insideCommitment &&
-      !!row.allocationBasis;
-
-    const hasValidAmount = row.amount !== null && row.amount !== undefined && row.amount !== 0;
-
-    const hasValidInvestment = !isInvestmentRequired || !!row.investment;
-
-    return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
-  };
+  const isEntityRowValid = (row: LineItemRow): boolean => isLineItemRowValid(row);
 
   const selectedEntities = capEventSettingsStore.fundEntities.filter(
     (e) => e.state === ITEM_STATES.SELECTED,
@@ -43,7 +16,7 @@ const useContinueButton = () => {
 
   const canRenderEntities = !!entityDatesStore.noticeDate || entityDatesStore.hasDifferentDates;
 
-  const isRowEffectivelyEmpty = (row: LineItemRow): boolean => {
+  const isRowEffectivelyEmpty = (row: LineItemRow & { isTotalRow?: boolean }): boolean => {
     return isRowEmpty(row);
   };
 
@@ -55,7 +28,10 @@ const useContinueButton = () => {
   const entityDatesAreValid = (label: string) => {
     const validNoticeDate = getValidDate(entityDatesStore.getEntityNoticeDate(label));
     const validDueDate = getValidDate(entityDatesStore.getEntityDueDate(label));
-    return !!validNoticeDate && !!validDueDate;
+    const isDueDateInputValid = entityDatesStore.getEntityDueDateInputValidity(label);
+    const isNoticeDateInputValid = entityDatesStore.getEntityNoticeDateInputValidity(label);
+
+    return !!validNoticeDate && !!validDueDate && isDueDateInputValid && isNoticeDateInputValid;
   };
 
   let hasAtLeastOneValidEntity = false;

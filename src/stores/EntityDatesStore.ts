@@ -45,6 +45,10 @@ class EntityDatesStore {
       };
     }
     this.entityDates[entityLabel].noticeDate = date;
+    // When the date is set programmatically, ensure input validity reflects the actual value
+    if (date) {
+      this.entityDates[entityLabel].isNoticeDateInputValid = true;
+    }
   }
 
   setEntityDueDate(entityLabel: string, date: Date | null) {
@@ -58,6 +62,9 @@ class EntityDatesStore {
       };
     }
     this.entityDates[entityLabel].dueDate = date;
+    if (date) {
+      this.entityDates[entityLabel].isDueDateInputValid = true;
+    }
   }
 
   setEntityDueDateManually(entityLabel: string, date: Date | null) {
@@ -72,6 +79,9 @@ class EntityDatesStore {
     }
     this.entityDates[entityLabel].dueDate = date;
     this.entityDates[entityLabel].isDueDateManuallyOverridden = true;
+    if (date) {
+      this.entityDates[entityLabel].isDueDateInputValid = true;
+    }
   }
 
   getEntityNoticeDate(entityLabel: string): Date | null {
@@ -202,6 +212,8 @@ class EntityDatesStore {
     this.setEntityDueDate(entityLabel, dueDate);
     capEventSettingsStore.updateEntityLineItemPRDate(entityLabel, dueDate);
     this.clearDueDateManualOverride(entityLabel);
+    // Ensure the due date input validity is true after calculation
+    this.setEntityDueDateInputValidity(entityLabel, true);
   }
 
   clearDueDateManualOverride(entityLabel: string) {

@@ -19,12 +19,13 @@ import type { PreviewScreenRow } from '@/app/preview-screen/types';
 import { ToastApi } from '@/providers/types';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
-import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX, UUID_V4_REGEX } from '@/const/regExps';
-import { investmentMandatoryCategories, YesNoOptions } from '@/app/new/LineItems/const';
+import { UUID_V4_REGEX } from '@/const/regExps';
+import { YesNoOptions } from '@/app/new/LineItems/const';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
 import { uuidv4 } from '@/utils/uuid';
+import { isLineItemRowValid } from '@/utils/investment';
 
 class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
@@ -105,23 +106,7 @@ class PreviewScreenStore {
   }
 
   private isEntityRowValid = (row: LineItemRow): boolean => {
-    const normalize = (v?: string) =>
-      (v ?? '')
-        .replace(NORMALIZE_DASHES_REGEX, '-')
-        .replace(NORMALIZE_SPACES_REGEX, ' ')
-        .trim()
-        .toLowerCase();
-    const normalizedMandatory = investmentMandatoryCategories.map((c) => normalize(c));
-    const isInvestmentRequired = normalizedMandatory.includes(normalize(row.capitalCategory));
-    const hasRequiredBaseFields =
-      !!row.capitalCategory &&
-      !!row.callDistributionReason &&
-      !!row.defaultDescription &&
-      !!row.insideCommitment &&
-      !!row.allocationBasis;
-    const hasValidAmount = row.amount !== null && row.amount !== undefined && row.amount !== 0;
-    const hasValidInvestment = !isInvestmentRequired || !!row.investment;
-    return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
+    return isLineItemRowValid(row);
   };
 
   private pickNonEmpty<T extends Record<string, unknown>>(obj: T): Partial<T> {

@@ -162,7 +162,18 @@ const GeneralSettings = () => {
     setNoticeInputValue(item);
     const parsed = parseValidDate(item);
     if (item === null) {
+      if (!isConfirmationModalEnabled) {
+        entityDatesStore.clearGeneralNoticeDate();
+        return;
+      }
+      const prevValue = entityDatesStore.noticeDate ? dayjs(entityDatesStore.noticeDate) : null;
+      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
+      if (!isFieldChanged) {
+        setNoticeInputValue(prevValue);
+        return;
+      }
       entityDatesStore.clearGeneralNoticeDate();
+      setNoticeInputValue(null);
       return;
     }
 

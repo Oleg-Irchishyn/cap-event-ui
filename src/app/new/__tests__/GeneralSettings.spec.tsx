@@ -57,11 +57,16 @@ jest.mock('@/app/components/Dropdown', () => {
 });
 
 jest.mock('@/app/components/DatePicker', () => {
-  type Props = { onChange: (value: Date) => void };
+  type Props = { onChange: (value: unknown) => void };
   const DatePicker = (props: Props) => (
-    <button data-testid="date-change" onClick={() => props.onChange(new Date('2025-01-02'))}>
-      change-date
-    </button>
+    <div>
+      <button data-testid="date-change" onClick={() => props.onChange(new Date('2025-01-02'))}>
+        change-date
+      </button>
+      <button data-testid="date-clear" onClick={() => props.onChange(null)}>
+        clear-date
+      </button>
+    </div>
   );
   return DatePicker;
 });
@@ -164,5 +169,30 @@ describe('GeneralSettings', () => {
 
     expect(entityDatesStore.setNoticeDate).toHaveBeenCalled();
     expect(entityDatesStore.updateEntityDatesFromGeneral).toHaveBeenCalled();
+  });
+
+  it('clearing notice date: when confirmation disabled, clears immediately', async () => {
+    confirmationHook.isConfirmationModalEnabled = false;
+
+    renderWithTheme(<GeneralSettings />);
+
+    fireEvent.click(screen.getByTestId('date-clear'));
+
+    expect(confirmationHook.confirmFieldChange).not.toHaveBeenCalled();
+    expect(entityDatesStore.clearGeneralNoticeDate).toHaveBeenCalledTimes(1);
+  });
+
+  it('clearing notice date: when confirmation enabled, respects user choice', async () => {
+    confirmationHook.isConfirmationModalEnabled = true;
+    renderWithTheme(<GeneralSettings />);
+
+    (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValueOnce(false);
+    fireEvent.click(screen.getByTestId('date-clear'));
+    await waitFor(() => expect(confirmationHook.confirmFieldChange).toHaveBeenCalled());
+    expect(entityDatesStore.clearGeneralNoticeDate).not.toHaveBeenCalled();
+
+    (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValueOnce(true);
+    fireEvent.click(screen.getByTestId('date-clear'));
+    await waitFor(() => expect(entityDatesStore.clearGeneralNoticeDate).toHaveBeenCalledTimes(1));
   });
 });
