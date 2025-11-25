@@ -88,6 +88,7 @@ export const getAllocationPreviewColumnDefs = (
     field: ALLOCATED_AMOUNT_FIELD,
     flex: 1.5,
     sortable: false,
+    headerClass: 'ag-right-aligned-header',
     valueGetter: (params) => {
       return formatAmount(params.data.allocatedAmount);
     },

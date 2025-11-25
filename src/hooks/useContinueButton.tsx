@@ -70,12 +70,13 @@ const useContinueButton = () => {
       const nonEmptyRows = (entityRows ?? []).filter((row) => !isRowEffectivelyEmpty(row));
       if (nonEmptyRows.length === 0) continue;
 
+      const someRowsValid = nonEmptyRows.some((row) => isEntityRowValid(row));
       const allRowsValid = nonEmptyRows.every((row) => isEntityRowValid(row));
       const datesValid = entityDatesAreValid(label);
 
-      // Only entities with valid dates are considered for blocking and for enabling
-      if (!datesValid) {
-        // Ignore entities without valid dates: they neither block nor enable
+      // If entity has any valid rows but invalid dates, it should disable Continue
+      if (!datesValid && someRowsValid) {
+        hasInvalidEntity = true;
         continue;
       }
 

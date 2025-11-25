@@ -6,6 +6,17 @@ import { theme } from '@/ui/globalStyles';
 import SubmitButton from '../SubmitButton';
 import { CapEventStatus } from '@/clients/CapEventPackage';
 
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    refresh: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+}));
+
 const mockToast = {
   success: jest.fn(),
   error: jest.fn(),

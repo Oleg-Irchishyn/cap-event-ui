@@ -91,6 +91,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: AMOUNT_FIELD,
     flex: 1,
     sortable: true,
+    headerClass: 'ag-right-aligned-header',
     valueGetter: (params) => {
       return formatAmount(params.data.allocatedAmount);
     },
