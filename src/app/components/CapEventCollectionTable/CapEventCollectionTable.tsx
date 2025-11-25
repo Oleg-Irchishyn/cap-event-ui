@@ -139,11 +139,26 @@ export const CapEventCollectionTable: FC<Props> = ({ rows, testId = '', isLoadin
     [isLoading],
   );
 
+  const displayRows = useMemo(() => {
+    if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
+      return rows;
+    }
+    // Create placeholder rows for skeleton loading state
+    const placeholderCount = 10;
+    const placeholders: CapEvent[] = Array.from({ length: placeholderCount }).map(
+      (_, index) =>
+        ({
+          id: `skeleton-${index}`,
+        }) as CapEvent,
+    );
+    return placeholders;
+  }, [isLoading, rows]);
+
   return (
     <ConfigurationTable
       testId={prepareDataTestId('table', testId)}
       columnDefs={columnDefs}
-      rowData={rows}
+      rowData={displayRows}
       isLoading={isLoading}
       noRowsText="No data available"
     />
