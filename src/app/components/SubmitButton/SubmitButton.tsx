@@ -19,6 +19,7 @@ import { formatDate } from '@/utils/formatDate';
 import { useToast } from '@/providers/ToastProvider';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/const/routes';
+import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
@@ -51,12 +52,13 @@ const SubmitButton = () => {
         entities: selectedEntities as Entity[],
         noticeDate: formatDate(entityDatesStore.noticeDate),
         capEventFundGroupLineItems:
-          selectedEntities.length < 2
+          selectedEntities.length < 2 ||
+          !isCapEventLineItemsFilled(capEventSettingsStore.fundGroupsStateAfterApply)
             ? []
-            : capEventSettingsStore.fundGroupsLineItem.map((fundGroupLineItem) => {
+            : capEventSettingsStore.fundGroupsStateAfterApply.map((fundGroupLineItem) => {
                 const investment = findInvestment(fundGroupLineItem.investment);
                 return {
-                  inheritedFundGroupLineItemId: fundGroupLineItem.id,
+                  id: fundGroupLineItem.id,
                   investment: {
                     id: investment?.id ?? '',
                     name: investment?.name,
