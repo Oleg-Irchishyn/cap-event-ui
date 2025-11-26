@@ -117,6 +117,12 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
 
   const defaultValue = inputValue;
 
+  const warningMessage =
+    dateType === DATE_TYPES.DUE && !entityDatesStore.getEntityDueDate(entityLabel)
+      ? 'Please select Date manually as required configuration \n' +
+        'is missing on the Setup Screen in Intacct'
+      : '';
+
   return (
     <DatePicker
       label={getLabel()}
@@ -130,6 +136,7 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
       {...datePickerStyles}
       inputColor={isValid ? theme.colors.textPrimary : theme.colors.error}
       maxWidth={defaultValue === null ? '115px' : datePickerStyles.maxWidth}
+      warningMessage={warningMessage}
     />
   );
 };

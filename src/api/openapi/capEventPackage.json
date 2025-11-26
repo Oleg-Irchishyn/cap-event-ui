@@ -164,6 +164,8 @@
                         "capEventLineItems": [
                           {
                             "id": "222222ed-b745-41d3-a864-463847900002",
+                            "batchNo": 7174,
+                            "originAccountKey" : "223",
                             "fundGroupLineItemId": "222222ed-b745-41d3-a864-4638479000112",
                             "account": {
                               "accountNo": "ACC123456",
@@ -306,38 +308,25 @@
                           "description": "Initiate Distribution"
                         },
                         "sponsor": {
-                          "id": "Golden Image DEV1",
-                          "name": null
+                          "id": "73300",
+                          "name": "Golden image-Dev"
                         },
                         "fundGroup": {
-                          "id": "FG001",
-                          "name": null
+                          "id": "73300",
+                          "name": "73300 - Golden Image DEV Admin"
                         },
-                        "entities": [
-                          {
-                            "id": "1141-02",
-                            "name": null
-                          },
-                          {
-                            "id": "1141-03",
-                            "name": null
-                          },
-                          {
-                            "id": "1141-01",
-                            "name": null
-                          }
-                        ],
+                        "entities": [],
                         "noticeDate": "2025-08-14",
-                        "status": "SUBMITTED",
+                        "status": "DRAFT",
                         "comment": "",
                         "footnotes": {},
                         "capEventFundGroupLineItems": [],
                         "capEventEntityLineItems": [],
                         "totalAmount": 750000000,
                         "createdAt": "2025-11-13",
-                        "createdBy": "willie.jennings@example.com",
+                        "createdBy": "example@mail.test",
                         "modifiedAt": "2025-11-13",
-                        "modifiedBy": "willie.jennings@example.com"
+                        "modifiedBy": "example@mail.test"
                       },
                       {
                         "id": "6528116c-9517-44a2-8aed-e831cd04625e",
@@ -349,21 +338,21 @@
                           "description": "Initiate Capital Call"
                         },
                         "sponsor": {
-                          "id": "Golden Image DEV",
-                          "name": null
+                          "id": "73300",
+                          "name": "Golden image-Dev"
                         },
                         "fundGroup": {
-                          "id": "FG001",
-                          "name": null
+                          "id": "73301",
+                          "name": "73301 - Fund I"
                         },
                         "entities": [
                           {
-                            "id": "1141-02",
-                            "name": null
+                            "id": "73301-02",
+                            "name": "Gen II Testing Entity Parallel Fund"
                           },
                           {
-                            "id": "1141-01",
-                            "name": null
+                            "id": "73301-01",
+                            "name": "Gen II Testing Entity Main Fund"
                           }
                         ],
                         "noticeDate": "2025-08-14",
@@ -374,9 +363,9 @@
                         "capEventEntityLineItems": [],
                         "totalAmount": 550000000,
                         "createdAt": "2025-11-13",
-                        "createdBy": "willie.jennings@example.com",
+                        "createdBy": "example@mail.test",
                         "modifiedAt": "2025-11-13",
-                        "modifiedBy": "willie.jennings@example.com"
+                        "modifiedBy": "example@mail.test"
                       }
                     ]
                   }
@@ -783,7 +772,7 @@
     "/cap-events/line-items/mgmt-fees": {
       "get": {
         "summary": "Retrieve list of CELIs represents uncalled management fee entries",
-        "operationId": "feeLineItems",
+        "operationId": "getMgmtFeeLineItems",
         "parameters": [
           {
             "in": "query",
@@ -808,24 +797,45 @@
                   "example": {
                     "value": [
                       {
+                        "id": null,
                         "account": {
-                          "accountNo": "0721",
-                          "category": "Cont - Expense offsets",
-                          "reason": "Test Reason 1",
-                          "description": "Test Description 1",
-                          "insideCmnt": "Yes"
+                          "accountNo": "3010",
+                          "category": "Cont - Management fees",
+                          "reason": "Gross Mngmt fees",
+                          "description": "Gross Management fees",
+                          "insideCmnt": true
+                        },
+                        "investment": null,
+                        "allocationBasis": "Management Fee",
+                        "amount": -250000,
+                        "batchNo": 6985,
+                        "originAccountKey": "107",
+                        "inheritedFundGroupLineItemId": null,
+                        "prDate": null,
+                        "prFlag": true
+                      },
+                      {
+                        "id": null,
+                        "account": {
+                          "accountNo": "3010-03",
+                          "category": "Cont - Management fee offsets",
+                          "reason": "Advisory Fee Offset",
+                          "description": "Advisory fee offset",
+                          "insideCmnt": true
                         },
                         "investment": {
-                          "id": "2200",
-                          "title": "",
-                          "name": "IDB DEVELOPMENT CORP LTD NPV",
-                          "type": ""
+                          "title": "QA Test Investment Title",
+                          "name": "QA Test Investment",
+                          "id": "1103-99",
+                          "type": "QA Type"
                         },
-                        "allocationBasis": "commitment",
-                        "amount": 100000,
-                        "prFlag": true,
-                        "prDate": "2025-11-24",
-                        "fundGroupLineItemId": null
+                        "allocationBasis": "Commitment",
+                        "amount": 50000,
+                        "batchNo": 6985,
+                        "originAccountKey": "227",
+                        "inheritedFundGroupLineItemId": null,
+                        "prDate": null,
+                        "prFlag": true
                       }
                     ]
                   }
@@ -926,6 +936,102 @@
                   "message": "Validation failed for argument",
                   "details": {
                     "field": "entityIds",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/fund-group/allocate": {
+      "post": {
+        "summary": "Allocate entities for fund group data",
+        "operationId": "allocateEntities",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundGroupAllocationInput"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "entityAllocationInput": [
+                      {
+                        "entityId": "ENTITY001",
+                        "dueDate": "2024-12-15"
+                      },
+                      {
+                        "entityId": "ENTITY002",
+                        "dueDate": "2024-12-20"
+                      }
+                    ],
+                    "allocationBasis": "commitment",
+                    "amount": 1000000.00
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Map of entity IDs to allocated amounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "ENTITY001": 400000.00,
+                      "ENTITY002": 350000.00,
+                      "ENTITY003": 250000.00
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIdsDueDateMap",
                     "reason": "INVALID_VALUE",
                     "message": "must not be empty"
                   },
@@ -1097,7 +1203,7 @@
           }
         }
       },
-      "LineItemBase" : {
+      "LineItemBase": {
         "type": "object",
         "required": ["entities","account", "investment", "allocationBasis", "amount"],
         "properties": {
@@ -1169,6 +1275,12 @@
             "type": "object",
             "required": ["prFlag", "prDate"],
             "properties": {
+              "batchNo":  {
+                "type": "integer"
+              },
+              "originAccountKey":  {
+                "type": "string"
+              },
               "inheritedFundGroupLineItemId": {
                 "type": "string",
                 "format": "uuid"
@@ -1412,6 +1524,37 @@
           "batchNo": {
             "type": "integer",
             "description": "Batch number"
+          }
+        }
+      },
+      "FundGroupAllocationInput": {
+        "type": "object",
+        "required": ["entityAllocationInput", "allocationBasis", "amount"],
+        "properties": {
+          "entityAllocationInput": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EntityAllocationInput" }
+          },
+          "allocationBasis": {
+            "type": "string",
+            "description": "Allocation basis for the entities"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Total amount to allocate"
+          }
+        }
+      },
+      "EntityAllocationInput": {
+        "type": "object",
+        "required": ["entityId", "dueDate"],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
           }
         }
       }

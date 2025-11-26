@@ -243,6 +243,10 @@ class EntityDatesStore {
 
     return result;
   }
+
+  get isAllDueDatesFilled() {
+    return !Object.values(this.entityDates).some((item) => !item.dueDate);
+  }
 }
 
 export default EntityDatesStore;

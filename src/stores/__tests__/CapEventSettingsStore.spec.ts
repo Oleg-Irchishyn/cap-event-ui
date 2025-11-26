@@ -175,7 +175,7 @@ describe('CapEventSettingsStore', () => {
   });
 
   it('should call initAccountsSet', () => {
-    store.initAccountsSet();
+    store.initAccountsSet('mockId');
 
     expect(ReferenceDataApi.accounts.getAccounts).toHaveBeenCalled();
   });

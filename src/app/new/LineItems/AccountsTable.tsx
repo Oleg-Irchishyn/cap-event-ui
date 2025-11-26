@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
-import { CellValueChangedEvent, EditableCallbackParams, DragStoppedEvent } from 'ag-grid-community';
+import { CellValueChangedEvent, DragStoppedEvent, EditableCallbackParams } from 'ag-grid-community';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/styles';
@@ -12,13 +12,13 @@ import { prepareNewRow } from '@/utils/prepareNewRow';
 import { ITEM_STATES } from '@/const/common';
 import useAccountsTableRowData from '@/hooks/useAccountsTableRowData';
 import {
-  AccountFields,
   AccountFieldIds,
-  USER_PROVIDED_OPTION,
+  AccountFields,
   LineItemTypes,
-  YesNoOptions,
-  TEXT_INPUT_MAX_LENGTH,
   OtherAccountFields,
+  TEXT_INPUT_MAX_LENGTH,
+  USER_PROVIDED_OPTION,
+  YesNoOptions,
 } from '@/app/new/LineItems/const';
 import {
   entityColumnDef,
@@ -28,6 +28,13 @@ import {
 import { isRowEmpty } from '@/utils/isRowEmpty';
 import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
 import CustomSwitch from '@/app/components/CustomSwitch/CustomSwitch';
+import { CapEventPackageApi } from '@/api';
+import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import { Entity } from '@/clients/ReferenceData';
+import { formatDate } from '@/utils/formatDate';
+import { COMMITMENT_OPTION } from '@/const/allocationBasisOptions';
+import { useToast } from '@/providers/ToastProvider';
+import { ApiError } from '@/clients/CapEventPackage';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -93,6 +100,7 @@ const AccountsTable: FC<Props> = ({
   onDragStopped,
   onOtherDragStopped,
 }) => {
+  const toast = useToast();
   const accounts = capEventSettingsStore.accounts;
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
@@ -128,7 +136,9 @@ const AccountsTable: FC<Props> = ({
         if (
           params.colDef.field === AccountFields.callDistributionReason ||
           params.colDef.field === AccountFields.defaultDescription ||
-          params.colDef.field === AccountFields.insideCommitment
+          params.colDef.field === AccountFields.insideCommitment ||
+          (params.colDef.field === AccountFields.amount &&
+            params.data.allocationBasis === COMMITMENT_OPTION)
         ) {
           return false;
         }
@@ -405,13 +415,49 @@ const AccountsTable: FC<Props> = ({
   );
 
   const isApplyButtonEnabled =
-    (capEventSettingsStore.fundGroupsLineItem.length === 1 &&
-      isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0]) &&
-      capEventSettingsStore.isFundGroupLineItemsChanged) ||
-    (capEventSettingsStore.isFundGroupLineItemsFilled &&
-      capEventSettingsStore.isFundGroupLineItemsChanged);
+    capEventSettingsStore.isFundGroupLineItemsChanged &&
+    entityDatesStore.isAllDueDatesFilled &&
+    ((capEventSettingsStore.fundGroupsLineItem.length === 1 &&
+      isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])) ||
+      capEventSettingsStore.isFundGroupLineItemsFilled);
 
-  const applyFundGroupChanges = () => {
+  const entitiesAllocatedAmount = async (selectedEntities: DropdownItemType<Entity>[]) => {
+    const getAllocateEntitiesRequestBody = (
+      selectedEntities: DropdownItemType<Entity>[],
+      allocationBasis: string,
+      amount: number,
+    ) => ({
+      allocationBasis,
+      amount,
+      entityAllocationInput: selectedEntities.map((item) => ({
+        entityId: item.id ?? '',
+        dueDate: formatDate(entityDatesStore.getEntityDueDate(item.label)),
+      })),
+    });
+
+    const commitmentFundGroups = capEventSettingsStore.fundGroupsLineItem.filter(
+      (item) => item.allocationBasis === COMMITMENT_OPTION,
+    );
+
+    try {
+      return await Promise.all(
+        commitmentFundGroups.map((fundGroupItem) => {
+          return CapEventPackageApi.default.allocateEntities(
+            getAllocateEntitiesRequestBody(
+              selectedEntities,
+              fundGroupItem.allocationBasis,
+              fundGroupItem.amount,
+            ),
+          );
+        }),
+      );
+    } catch (error) {
+      if (error instanceof ApiError) toast.error(error.body?.message);
+      console.error('Error allocating entities:', error);
+    }
+  };
+
+  const applyFundGroupChanges = async () => {
     if (!isApplyButtonEnabled) return;
 
     const selectedEntities = capEventSettingsStore.fundEntities.filter(
@@ -424,6 +470,8 @@ const AccountsTable: FC<Props> = ({
         ?.find((item) => item.inheritedFundGroupLineItemId === inheritedFundGroupLineItemId);
     };
 
+    const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
+
     selectedEntities.forEach((entity, index) => {
       if (
         capEventSettingsStore.fundGroupsLineItem.length === 1 &&
@@ -434,17 +482,22 @@ const AccountsTable: FC<Props> = ({
         return;
       }
 
-      capEventSettingsStore.setEntitiesLineItem(
-        entity.label,
-        capEventSettingsStore.fundGroupsLineItem.map((fgLineItem) => {
+      const entityLineItemsToApply = capEventSettingsStore.fundGroupsLineItem.map(
+        (fgLineItem, fgLineItemIndex) => {
           const relatedRowAmount = getRelatedRow(entity.label, fgLineItem.id)?.amount || 0;
+
+          const allocatedAmount = allocatedEntitiesAmount?.[fgLineItemIndex]?.[entity.id ?? ''];
+
+          const getEntityAmount = () => {
+            if (fgLineItem.allocationBasis === USER_PROVIDED_OPTION) return relatedRowAmount;
+            if (fgLineItem.allocationBasis === COMMITMENT_OPTION)
+              return allocatedAmount ?? fgLineItem.amount;
+            return fgLineItem.amount;
+          };
 
           return {
             ...fgLineItem,
-            amount:
-              fgLineItem.allocationBasis === USER_PROVIDED_OPTION
-                ? relatedRowAmount
-                : fgLineItem.amount,
+            amount: getEntityAmount(),
             allocationBasis:
               fgLineItem.allocationBasis === USER_PROVIDED_OPTION ? '' : fgLineItem.allocationBasis,
             inheritedFundGroupLineItemId: fgLineItem.id,
@@ -452,9 +505,10 @@ const AccountsTable: FC<Props> = ({
             prFlag: YesNoOptions[0],
             prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,
           };
-        }),
-        true,
+        },
       );
+
+      capEventSettingsStore.setEntitiesLineItem(entity.label, entityLineItemsToApply, true);
     });
 
     capEventSettingsStore.setFundGroupsStateAfterApply();
@@ -465,8 +519,11 @@ const AccountsTable: FC<Props> = ({
   const handleOtherSwitchPress = async () => {
     setShowOtherTable((prev) => !prev);
 
-    if (capEventSettingsStore.otherTableAccounts.length === 0) {
-      const otherAccounts = await capEventSettingsStore.fetchAccounts();
+    const sponsorId = capEventSettingsStore.sponsors.find(
+      (item) => item.state === ITEM_STATES.SELECTED,
+    )?.id;
+    if (capEventSettingsStore.otherTableAccounts.length === 0 && sponsorId) {
+      const otherAccounts = await capEventSettingsStore.fetchAccounts(sponsorId);
       capEventSettingsStore.setOtherTableAccounts(otherAccounts);
     }
   };

@@ -229,6 +229,10 @@ export const Label = styled.span(({ theme }) => ({
   '&[data-is-inherited="true"]': {
     color: theme.colors.textSecondary,
   },
+
+  '&[data-is-clickable="false"]': {
+    color: theme.colors.textSecondary,
+  },
 }));
 
 export const DropdownMenu = styled.div(({ theme }) => ({

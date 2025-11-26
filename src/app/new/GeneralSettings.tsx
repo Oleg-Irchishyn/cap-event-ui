@@ -235,6 +235,7 @@ const GeneralSettings = () => {
     capEventSettingsStore.setSponsors(updatedValues);
     if (item.id) {
       getFundGroups(item.id);
+      capEventSettingsStore.initAccountsSet(item.id);
     }
   };
 

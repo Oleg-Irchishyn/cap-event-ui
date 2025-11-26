@@ -8,6 +8,7 @@ import type { CapEventLineItem } from '../models/CapEventLineItem';
 import type { CapEventLineItemResponse } from '../models/CapEventLineItemResponse';
 import type { CapEventStatus } from '../models/CapEventStatus';
 import type { CapEventType } from '../models/CapEventType';
+import type { FundGroupAllocationInput } from '../models/FundGroupAllocationInput';
 import type { InvestorEntry } from '../models/InvestorEntry';
 import type { MgmtFeeJournalEntry } from '../models/MgmtFeeJournalEntry';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -122,7 +123,7 @@ export class DefaultService {
      * @returns CapEventLineItem List of management fee entries
      * @throws ApiError
      */
-    public feeLineItems(
+    public getMgmtFeeLineItems(
         batchNo: number,
     ): CancelablePromise<Array<CapEventLineItem>> {
         return this.httpRequest.request({
@@ -151,6 +152,26 @@ export class DefaultService {
             query: {
                 'entityIds': entityIds,
             },
+            errors: {
+                400: `Bad request`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Allocate entities for fund group data
+     * @param requestBody
+     * @returns number Map of entity IDs to allocated amounts
+     * @throws ApiError
+     */
+    public allocateEntities(
+        requestBody: FundGroupAllocationInput,
+    ): CancelablePromise<Record<string, number>> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/cap-events/fund-group/allocate',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 400: `Bad request`,
                 500: `Server error`,

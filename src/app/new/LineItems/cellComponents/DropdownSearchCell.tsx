@@ -166,6 +166,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
             props.colDef?.field !== AccountFields.allocationBasis &&
             props.colDef?.field !== AccountFields.prFlag
           }
+          data-is-clickable={isCellEditable}
         >
           {selectedValue || placeholder}
         </Label>

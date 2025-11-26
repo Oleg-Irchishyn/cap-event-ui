@@ -22,6 +22,7 @@ jest.mock('@/stores', () => ({
   },
   entityDatesStore: {
     getEntityDueDate: jest.fn(),
+    isAllDueDatesFilled: jest.fn().mockReturnValue(true),
   },
 }));
 

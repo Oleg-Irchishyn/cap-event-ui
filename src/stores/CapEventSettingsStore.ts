@@ -57,13 +57,12 @@ class CapEventSettingsStore {
   constructor() {
     makeAutoObservable(this);
 
-    this.initAccountsSet();
     this.fetchInvestments();
     this.fetchSessionId();
   }
 
-  *initAccountsSet() {
-    this.accounts = yield this.fetchAccounts(['Capital']);
+  *initAccountsSet(sponsorId: string) {
+    this.accounts = yield this.fetchAccounts(sponsorId, ['Capital']);
   }
 
   setOtherTableAccounts(accounts: Account[]) {
@@ -149,10 +148,14 @@ class CapEventSettingsStore {
     return Array.from(new Set(allDescriptions)).sort((a, b) => a.localeCompare(b));
   }
 
-  async fetchAccounts(fsGroupings: string[] = [], capitalCategories: string[] = []) {
+  async fetchAccounts(
+    sponsorId: string,
+    fsGroupings: string[] = [],
+    capitalCategories: string[] = [],
+  ) {
     try {
       const accounts: Account[] = await ReferenceDataApi.accounts.getAccounts(
-        'Golden Image DEV',
+        sponsorId,
         fsGroupings,
         capitalCategories,
       );

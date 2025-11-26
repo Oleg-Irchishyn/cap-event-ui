@@ -91,7 +91,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       setMgmtFeeLineItemsLoading(true);
       let mgmtFeeLineItems: CapEventLineItem[] = [];
       try {
-        mgmtFeeLineItems = await CapEventPackageApi.default.feeLineItems(item.batchNo);
+        mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(item.batchNo);
       } catch (error) {
         toast.error('Error getting mgmt fee line item');
         console.error(error);

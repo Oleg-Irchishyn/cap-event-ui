@@ -20,8 +20,10 @@ export type { CapEventLineItemResponse } from './models/CapEventLineItemResponse
 export { CapEventStatus } from './models/CapEventStatus';
 export type { CapEventType } from './models/CapEventType';
 export type { Entity } from './models/Entity';
+export type { EntityAllocationInput } from './models/EntityAllocationInput';
 export { ErrorResponse } from './models/ErrorResponse';
 export type { FundGroup } from './models/FundGroup';
+export type { FundGroupAllocationInput } from './models/FundGroupAllocationInput';
 export type { Investment } from './models/Investment';
 export type { InvestorEntry } from './models/InvestorEntry';
 export type { LineItemBase } from './models/LineItemBase';

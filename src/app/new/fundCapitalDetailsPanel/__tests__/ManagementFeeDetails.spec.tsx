@@ -10,7 +10,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 jest.mock('@/api', () => ({
   CapEventPackageApi: {
     default: {
-      feeLineItems: jest.fn(),
+      getMgmtFeeLineItems: jest.fn(),
     },
   },
 }));
@@ -66,7 +66,7 @@ describe('ManagementFeeDetails', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockCapEventSettingsStore.entitiesLineItem.clear();
-    (mockCapEventPackageApi.default.feeLineItems as jest.Mock).mockResolvedValue([]);
+    (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue([]);
   });
 
   it('renders the "Include Uncalled Mgmt Fee" dropdown with default "No" selected', () => {
@@ -150,7 +150,7 @@ describe('ManagementFeeDetails', () => {
           },
         },
       ];
-      (mockCapEventPackageApi.default.feeLineItems as jest.Mock).mockResolvedValue(
+      (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue(
         mockMgmtFeeLineItems,
       );
 
@@ -185,7 +185,7 @@ describe('ManagementFeeDetails', () => {
 
       // Wait for the API call
       await waitFor(() => {
-        expect(mockCapEventPackageApi.default.feeLineItems).toHaveBeenCalledWith(batchNo);
+        expect(mockCapEventPackageApi.default.getMgmtFeeLineItems).toHaveBeenCalledWith(batchNo);
       });
 
       // Verify setEntitiesLineItem was called with merged items

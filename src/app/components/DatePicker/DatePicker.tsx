@@ -1,12 +1,14 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateValidationError, DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { theme } from '@/ui/globalStyles';
 import { PickerValue } from '@mui/x-date-pickers/internals';
-import { FieldLabel, Wrapper } from '@/app/components/DatePicker/styles';
+import { FieldLabel, IconWrapper, Wrapper } from '@/app/components/DatePicker/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Image from 'next/image';
+import Tooltip from '@/app/components/Tooltip';
 
 const INVALID_DATE_ERROR = 'invalidDate';
 
@@ -45,6 +47,7 @@ type DatePickerProps = DatePickerStyleProps & {
   pickerIcon?: () => React.ReactNode;
   format?: string;
   compact?: boolean;
+  warningMessage?: string;
 };
 
 export const DatePicker: FC<DatePickerProps> = ({
@@ -59,6 +62,7 @@ export const DatePicker: FC<DatePickerProps> = ({
   pickerIcon,
   format,
   compact = false,
+  warningMessage,
   ...styleProps
 }) => {
   const {
@@ -77,6 +81,8 @@ export const DatePicker: FC<DatePickerProps> = ({
     backgroundColor = theme.colors.white,
     disabledColor = theme.colors.textSecondary,
   } = styleProps;
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   const onSetIsValidDate = (newError: DateValidationError) => {
     if (newError === INVALID_DATE_ERROR) return;
@@ -95,6 +101,21 @@ export const DatePicker: FC<DatePickerProps> = ({
           data-testid={prepareDataTestId(testId, 'DatePicker', 'Label')}
         >
           {label}
+          {warningMessage && (
+            <IconWrapper
+              ref={tooltipRef}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <Tooltip
+                showTooltip={showTooltip}
+                tooltipMessage={warningMessage}
+                targetRef={tooltipRef}
+                position="center"
+              />
+              <Image src={'/cap-event/icons/warning.svg'} alt="warning" width={16} height={16} />
+            </IconWrapper>
+          )}
         </FieldLabel>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
