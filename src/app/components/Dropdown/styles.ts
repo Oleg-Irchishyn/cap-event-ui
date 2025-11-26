@@ -160,6 +160,12 @@ export const ListViewContainer = styled.div`
   position: relative;
 `;
 
+export const LoaderWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
+  padding: '10px 12px',
+});
+
 export const ScrollContainer = styled.div`
   max-height: 240px;
   overflow-y: auto;

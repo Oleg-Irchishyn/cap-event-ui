@@ -2,14 +2,22 @@ import React, { useEffect } from 'react';
 
 import DropdownMenu from './DropdownMenu';
 import ListItem from './ListItem';
-import { ListViewContainer, ListViewWrapper, NoData, ScrollContainer } from './styles';
+import {
+  ListViewContainer,
+  ListViewWrapper,
+  LoaderWrapper,
+  NoData,
+  ScrollContainer,
+} from './styles';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import { Loader } from '@/app/new/LineItems/styles';
 
 type ListViewProps<T> = {
   testId: string;
   items: DropdownItemType<T>[];
   itemClickHandler: (item: DropdownItemType<T>) => () => void;
   onAdditionalFilterChange?: (item: DropdownItemType<T>) => () => void;
+  isLoadingItems: boolean;
   checkbox: boolean;
   withSearch: boolean;
   searchPlaceholder?: string;
@@ -32,6 +40,7 @@ const ListView = <T,>({
   testId = 'ListView',
   items,
   itemClickHandler,
+  isLoadingItems,
   checkbox,
   withSearch,
   searchPlaceholder,
@@ -52,6 +61,34 @@ const ListView = <T,>({
 }: ListViewProps<T>) => {
   useEffect(() => () => onSearchChangeHandler(''), []);
 
+  const displayDropdownContent = () => {
+    if (isLoadingItems)
+      return (
+        <LoaderWrapper>
+          <Loader />
+        </LoaderWrapper>
+      );
+
+    if (items.length === 0 && noDataText) {
+      return <NoData>{noDataText}</NoData>;
+    }
+
+    return (
+      <>
+        {items.map((item) => (
+          <ListItem
+            key={item.label}
+            item={item}
+            checkbox={checkbox}
+            withDescription={withDescription}
+            itemClickHandler={itemClickHandler}
+            excludedTooltipMessage={excludedTooltipMessage}
+          />
+        ))}
+      </>
+    );
+  };
+
   return (
     <ListViewWrapper data-testid={testId}>
       <ListViewContainer>
@@ -71,19 +108,7 @@ const ListView = <T,>({
           onAdditionalFilterChange={onAdditionalFilterChange}
           onSelectAlternativeClickHandler={onSelectAlternativeClickHandler}
         />
-        <ScrollContainer>
-          {items.length === 0 && noDataText && <NoData>{noDataText}</NoData>}
-          {items.map((item) => (
-            <ListItem
-              key={item.label}
-              item={item}
-              checkbox={checkbox}
-              withDescription={withDescription}
-              itemClickHandler={itemClickHandler}
-              excludedTooltipMessage={excludedTooltipMessage}
-            />
-          ))}
-        </ScrollContainer>
+        <ScrollContainer>{displayDropdownContent()}</ScrollContainer>
       </ListViewContainer>
     </ListViewWrapper>
   );

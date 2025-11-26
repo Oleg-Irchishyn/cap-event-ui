@@ -81,6 +81,7 @@ const pickerIcon = () => (
 
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
+  const [isLoadingFundEntities, setIsLoadingFundEntities] = useState(false);
   const [noticeInputValue, setNoticeInputValue] = useState<PickerValue>(
     entityDatesStore.hasDifferentDates
       ? null
@@ -123,6 +124,7 @@ const GeneralSettings = () => {
 
   const updateFundEntities = async (id: string) => {
     try {
+      setIsLoadingFundEntities(true);
       const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
         id,
         '',
@@ -132,6 +134,8 @@ const GeneralSettings = () => {
       capEventSettingsStore.setFundEntities(prepareFundEntities(entitiesRelatedToGroup));
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoadingFundEntities(false);
     }
   };
 
@@ -382,6 +386,8 @@ const GeneralSettings = () => {
           label={`${GENERAL_SETTINGS_FIELDS.ENTITIES}*`}
           items={visibleFunds}
           searchText={searchText}
+          isLoadingItems={isLoadingFundEntities}
+          noDataText={'No Data Available'}
           placeholder={'Select Entity(ies)'}
           selectHandler={selectFundsHandler}
           deselectItem={deselectFundsHandler}

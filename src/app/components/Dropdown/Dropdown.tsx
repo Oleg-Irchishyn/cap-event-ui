@@ -22,6 +22,7 @@ interface Props<T> {
   items: DropdownItemType<T>[];
   selectedItems: DropdownItemType<T>[];
   selectHandler: (item: DropdownItemType<T>) => void;
+  isLoadingItems?: boolean;
   placeholder: string;
   isReadOnly?: boolean;
   isDisabled?: boolean;
@@ -55,6 +56,7 @@ const Dropdown = <T,>({
   items,
   selectedItems,
   selectHandler = () => {},
+  isLoadingItems = false,
   placeholder,
   isReadOnly = false,
   isDisabled = false,
@@ -160,6 +162,7 @@ const Dropdown = <T,>({
             withSearch={withSearch}
             searchText={searchText}
             noDataText={noDataText}
+            isLoadingItems={isLoadingItems}
             withControls={withControls}
             withDescription={withDescription}
             itemClickHandler={itemClickHandler}
