@@ -54,7 +54,7 @@ describe('useContinueButton', () => {
     expect(out.tooltipMessage).toBe('Not all required fields are populated');
   });
 
-  it('enables when at least one entity is valid and others are effectively empty', () => {
+  it('is disabled unless all selected entities have valid dates and at least one valid row', () => {
     // Selected entities
     capEventSettingsStore.fundEntities = [
       { label: 'E1', state: 'S' },
@@ -87,7 +87,7 @@ describe('useContinueButton', () => {
 
     render(<TestComponent />);
     const out = JSON.parse(screen.getByTestId('out').textContent || '{}');
-    expect(out.isContinueDisabled).toBe(false);
+    expect(out.isContinueDisabled).toBe(true);
   });
 
   it('returns disabled when there are attachment errors even with a valid entity', () => {

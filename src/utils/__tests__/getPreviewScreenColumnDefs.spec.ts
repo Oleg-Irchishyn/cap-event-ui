@@ -14,6 +14,8 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
+  EMPTY_INVESTOR_TYPE_ONE_VALUE,
+  EMPTY_INVESTOR_TYPE_TWO_VALUE,
 } from '@/const/previewScreen';
 
 describe('getPreviewScreenColumnDefs', () => {
@@ -61,26 +63,32 @@ describe('getPreviewScreenColumnDefs', () => {
     expect(cols[6].sortable).toBe(true);
   });
 
-  it('Investor Type I valueGetter returns "--" when empty', () => {
+  it('Investor Type I valueGetter returns configured empty value when empty', () => {
     const cols = getPreviewScreenColumnDefs();
     const valueGetter = cols[4].valueGetter as (p: { data: { classID?: string } }) => string;
     expect(valueGetter({ data: { classID: 'Type A' } })).toBe('Type A');
-    expect(valueGetter({ data: { classID: '' } })).toBe('--');
-    expect(valueGetter({ data: { classID: '   ' } })).toBe('--');
-    expect(valueGetter({ data: { classID: undefined } })).toBe('--');
-    expect(valueGetter({ data: {} })).toBe('--');
+    expect(valueGetter({ data: { classID: '' } })).toBe(EMPTY_INVESTOR_TYPE_ONE_VALUE);
+    expect(valueGetter({ data: { classID: '   ' } })).toBe(EMPTY_INVESTOR_TYPE_ONE_VALUE);
+    expect(valueGetter({ data: { classID: undefined } })).toBe(EMPTY_INVESTOR_TYPE_ONE_VALUE);
+    expect(valueGetter({ data: {} })).toBe(EMPTY_INVESTOR_TYPE_ONE_VALUE);
   });
 
-  it('Investor Type II valueGetter returns "--" when empty', () => {
+  it('Investor Type II valueGetter returns configured empty value when empty', () => {
     const cols = getPreviewScreenColumnDefs();
     const valueGetter = cols[5].valueGetter as (p: {
       data: { additionalInvestorType?: string };
     }) => string;
     expect(valueGetter({ data: { additionalInvestorType: 'Type B' } })).toBe('Type B');
-    expect(valueGetter({ data: { additionalInvestorType: '' } })).toBe('--');
-    expect(valueGetter({ data: { additionalInvestorType: '   ' } })).toBe('--');
-    expect(valueGetter({ data: { additionalInvestorType: undefined } })).toBe('--');
-    expect(valueGetter({ data: {} })).toBe('--');
+    expect(valueGetter({ data: { additionalInvestorType: '' } })).toBe(
+      EMPTY_INVESTOR_TYPE_TWO_VALUE,
+    );
+    expect(valueGetter({ data: { additionalInvestorType: '   ' } })).toBe(
+      EMPTY_INVESTOR_TYPE_TWO_VALUE,
+    );
+    expect(valueGetter({ data: { additionalInvestorType: undefined } })).toBe(
+      EMPTY_INVESTOR_TYPE_TWO_VALUE,
+    );
+    expect(valueGetter({ data: {} })).toBe(EMPTY_INVESTOR_TYPE_TWO_VALUE);
   });
 
   it('Amount valueGetter formats numbers using formatAmount', () => {

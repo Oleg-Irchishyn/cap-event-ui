@@ -15,6 +15,8 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
+  EMPTY_INVESTOR_TYPE_ONE_VALUE,
+  EMPTY_INVESTOR_TYPE_TWO_VALUE,
 } from '@/const/previewScreen';
 import { formatAmount } from '@/utils/formatAmount';
 
@@ -67,7 +69,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     sortable: true,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_I_FIELD];
-      return value && String(value).trim() ? value : '--';
+      return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_ONE_VALUE;
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
@@ -80,12 +82,12 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     sortable: true,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_II_FIELD];
-      return value && String(value).trim() ? value : '--';
+      return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_TWO_VALUE;
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
   },
-  // Total Capital CMNT
+  // Total Amount Due
   {
     headerName: TOTAL_AMOUNT_DUE_HEADER,
     field: AMOUNT_FIELD,

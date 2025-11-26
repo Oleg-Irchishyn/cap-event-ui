@@ -17,6 +17,10 @@ export const INVESTOR_TYPE_I_FIELD = 'classID';
 export const INVESTOR_TYPE_II_FIELD = 'additionalInvestorType';
 export const AMOUNT_FIELD = 'allocatedAmount';
 
+// Empty values
+export const EMPTY_INVESTOR_TYPE_ONE_VALUE = 'LP';
+export const EMPTY_INVESTOR_TYPE_TWO_VALUE = '--';
+
 // Deprecated (kept for compatibility where referenced previously)
 export const DESCRIPTION_HEADER = 'Description';
 export const INVESTMENT_HEADER = 'Investment';

@@ -56,7 +56,7 @@ export const getAllocationPreviewColumnDefs = (
     flex: 2,
     sortable: false,
     valueGetter: (params) => {
-      return params.data.classID ?? '-';
+      return params.data.classID ?? 'LP';
     },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 85 } } : undefined,
@@ -77,9 +77,11 @@ export const getAllocationPreviewColumnDefs = (
     field: fieldName,
     flex: 1,
     sortable: true,
+    headerClass: 'ag-right-aligned-header',
     valueGetter: (params) => {
       return formatAmount(params.data[fieldName]);
     },
+    cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
   },
