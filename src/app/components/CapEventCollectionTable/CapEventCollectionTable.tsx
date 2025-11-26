@@ -133,7 +133,15 @@ export const CapEventCollectionTable: FC<Props> = ({ rows, testId = '', isLoadin
         ...colDef,
         cellRendererSelector: () =>
           isLoading
-            ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } }
+            ? {
+                component: SkeletonCellRenderer,
+                params: {
+                  widthPercent: 50,
+                  ...(typeof colDef.cellRendererParams === 'object'
+                    ? colDef.cellRendererParams
+                    : {}),
+                },
+              }
             : { component: TruncatedTextCell },
       })),
     [isLoading],

@@ -99,6 +99,8 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     },
     cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+      isLoading
+        ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
+        : undefined,
   },
 ];

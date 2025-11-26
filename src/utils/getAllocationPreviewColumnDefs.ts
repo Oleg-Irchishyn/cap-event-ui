@@ -83,7 +83,9 @@ export const getAllocationPreviewColumnDefs = (
     },
     cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+      isLoading
+        ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
+        : undefined,
   },
   {
     headerName: ALLOCATED_AMOUNT_HEADER,
@@ -96,7 +98,9 @@ export const getAllocationPreviewColumnDefs = (
     },
     cellStyle: { textAlign: 'right' },
     cellRendererSelector: () =>
-      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
+      isLoading
+        ? { component: SkeletonCellRenderer, params: { widthPercent: 60, textAlign: 'end' } }
+        : undefined,
   },
   // ALLOCATED_AMOUNT_BASE column is temporarily hidden
   // {
