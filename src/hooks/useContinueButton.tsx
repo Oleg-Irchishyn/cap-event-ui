@@ -38,8 +38,8 @@ const useContinueButton = () => {
   let hasInvalidEntity = false;
   if (canRenderEntities) {
     for (const entity of selectedEntities) {
-      const label = entity.label ?? '';
-      const entityRows = capEventSettingsStore.entitiesLineItem.get(label);
+    const label = entity.label ?? '';
+    const entityRows = capEventSettingsStore.entitiesLineItem.get(label);
 
       if (isEntityEffectivelyEmpty(entityRows)) continue;
 
@@ -48,7 +48,7 @@ const useContinueButton = () => {
 
       const someRowsValid = nonEmptyRows.some((row) => isEntityRowValid(row));
       const allRowsValid = nonEmptyRows.every((row) => isEntityRowValid(row));
-      const datesValid = entityDatesAreValid(label);
+    const datesValid = entityDatesAreValid(label);
 
       // If entity has any valid rows but invalid dates, it should disable Continue
       if (!datesValid && someRowsValid) {

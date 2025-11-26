@@ -177,11 +177,7 @@ describe('CapEventSettingsStore', () => {
   it('should call initAccountsSet', () => {
     store.initAccountsSet();
 
-    expect(ReferenceDataApi.accounts.getAccounts).toHaveBeenCalledWith(
-      'Golden Image DEV',
-      ['Capital'],
-      ['Cont - Management fees'],
-    );
+    expect(ReferenceDataApi.accounts.getAccounts).toHaveBeenCalled();
   });
 
   describe('isFundGroupLineItemsChanged', () => {

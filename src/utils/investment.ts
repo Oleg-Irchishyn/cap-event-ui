@@ -29,3 +29,22 @@ export const isLineItemRowValid = (row: LineItemRow): boolean => {
 
   return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
 };
+
+export const isFundGroupRowValid = (row: LineItemRow, userProvidedOptionLabel: string): boolean => {
+  const hasRequiredBaseFields =
+    !!row.capitalCategory &&
+    !!row.callDistributionReason &&
+    !!row.defaultDescription &&
+    !!row.insideCommitment &&
+    !!row.allocationBasis;
+
+  // For FG rows, amount is optional when allocation basis is "User-Provided"
+  const amountOptional = String(row.allocationBasis) === String(userProvidedOptionLabel);
+  const hasValidAmount =
+    amountOptional || (row.amount !== null && row.amount !== undefined && row.amount !== 0);
+
+  const isInvestmentRequired = isInvestmentRequiredForCategory(row.capitalCategory);
+  const hasValidInvestment = !isInvestmentRequired || !!row.investment;
+
+  return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
+};

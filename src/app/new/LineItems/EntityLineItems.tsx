@@ -41,7 +41,11 @@ const EntityLineItems = () => {
 
   const onDragStopped = (entityKey: string, isOtherTable?: boolean) => (e: DragStoppedEvent) => {
     const newValue: LineItemRow[] = [];
-    e.api.forEachNode((node) => newValue.push(node.data));
+    e.api.forEachNode((node) => {
+      const data = node.data as LineItemRow & { isTotalRow?: boolean };
+      if (data?.isTotalRow) return;
+      newValue.push(data);
+    });
     if (isOtherTable) {
       capEventSettingsStore.setOtherEntitiesLineItems(entityKey, newValue);
     } else {

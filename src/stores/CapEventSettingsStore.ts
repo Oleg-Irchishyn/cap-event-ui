@@ -7,10 +7,10 @@ import { ITEM_STATES } from '@/const/common';
 import { Account, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, _ReferenceDataServer, ReferenceDataApi } from '@/api';
-import { AccountFields, LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
+import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
 import { AllocationInput, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
-import { isInvestmentRequiredForCategory } from '@/utils/investment';
+import { isFundGroupRowValid } from '@/utils/investment';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -100,20 +100,7 @@ class CapEventSettingsStore {
   get isFundGroupLineItemsFilled() {
     return (
       !!this.fundGroupsLineItem.length &&
-      this.fundGroupsLineItem.every((item) =>
-        Object.entries(item).every(([key, value]) => {
-          if (key === AccountFields.investment) {
-            const isInvestmentRequired = isInvestmentRequiredForCategory(item.capitalCategory);
-            if (!isInvestmentRequired) return true;
-          }
-
-          if (key === AccountFields.amount && item.allocationBasis === USER_PROVIDED_OPTION) {
-            return true;
-          }
-
-          return value !== null && value !== undefined && value !== '' && value !== 0;
-        }),
-      )
+      this.fundGroupsLineItem.every((row) => isFundGroupRowValid(row, USER_PROVIDED_OPTION))
     );
   }
 
