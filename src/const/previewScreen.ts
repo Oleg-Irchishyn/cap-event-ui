@@ -6,6 +6,7 @@ export const INVESTOR_NAME_HEADER = 'Investor Name';
 export const INVESTOR_TYPE_I_HEADER = 'Investor Type I';
 export const INVESTOR_TYPE_II_HEADER = 'Investor Type II';
 export const TOTAL_AMOUNT_DUE_HEADER = 'Total Amount Due';
+export const TOTAL_CAPITAL_COMMITMENT_HEADER = 'Total Capital Commitment';
 export const AMOUNT_HEADER = 'Amount';
 
 // Field names
@@ -16,6 +17,7 @@ export const INVESTOR_NAME_FIELD = 'investorName';
 export const INVESTOR_TYPE_I_FIELD = 'classID';
 export const INVESTOR_TYPE_II_FIELD = 'additionalInvestorType';
 export const AMOUNT_FIELD = 'allocatedAmount';
+export const COMMITMENT_FIELD = 'commitment';
 
 // Empty values
 export const EMPTY_INVESTOR_TYPE_ONE_VALUE = 'LP';

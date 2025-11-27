@@ -8,6 +8,7 @@ import {
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
   TOTAL_AMOUNT_DUE_HEADER,
+  TOTAL_CAPITAL_COMMITMENT_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -15,6 +16,7 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
+  COMMITMENT_FIELD,
   EMPTY_INVESTOR_TYPE_ONE_VALUE,
   EMPTY_INVESTOR_TYPE_TWO_VALUE,
 } from '@/const/previewScreen';
@@ -27,6 +29,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: ENTITY_ID_FIELD,
     flex: 1,
     sortable: true,
+    resizable: true,
     sort: 'asc',
     sortIndex: 0,
     cellRendererSelector: () =>
@@ -36,8 +39,9 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: ENTITY_NAME_HEADER,
     field: ENTITY_NAME_FIELD,
-    flex: 1.5,
+    flex: 1,
     sortable: true,
+    resizable: true,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
   },
@@ -47,6 +51,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_ID_FIELD,
     flex: 1,
     sortable: true,
+    resizable: true,
     sort: 'asc',
     sortIndex: 1,
     cellRendererSelector: () =>
@@ -58,6 +63,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_NAME_FIELD,
     flex: 1.5,
     sortable: true,
+    resizable: true,
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 70 } } : undefined,
   },
@@ -67,6 +73,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_TYPE_I_FIELD,
     flex: 1,
     sortable: true,
+    resizable: true,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_I_FIELD];
       return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_ONE_VALUE;
@@ -80,6 +87,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     field: INVESTOR_TYPE_II_FIELD,
     flex: 1.2,
     sortable: true,
+    resizable: true,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_II_FIELD];
       return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_TWO_VALUE;
@@ -87,12 +95,30 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 50 } } : undefined,
   },
+  // Total Capital Commitment
+  {
+    headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
+    field: COMMITMENT_FIELD,
+    flex: 1.5,
+    sortable: true,
+    resizable: true,
+    headerClass: 'ag-right-aligned-header',
+    valueGetter: (params) => {
+      return formatAmount(params.data.commitment);
+    },
+    cellStyle: { textAlign: 'right' },
+    cellRendererSelector: () =>
+      isLoading
+        ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
+        : undefined,
+  },
   // Total Amount Due
   {
     headerName: TOTAL_AMOUNT_DUE_HEADER,
     field: AMOUNT_FIELD,
     flex: 1,
     sortable: true,
+    resizable: true,
     headerClass: 'ag-right-aligned-header',
     valueGetter: (params) => {
       return formatAmount(params.data.allocatedAmount);

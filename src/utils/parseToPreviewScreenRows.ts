@@ -31,6 +31,7 @@ export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => 
         investmentTitle,
         investmentName,
         dataPoints: inv.dataPoints,
+        commitment: inv.commitment ?? 0,
         allocatedAmount: inv.allocatedAmount || 0,
         isAggregated: inv.isAggregated || false,
         ceBoxFileId: inv.isAggregated ? inv.ceBoxFileId : undefined,

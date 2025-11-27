@@ -14,6 +14,7 @@ type PreviewScreenRow = {
   investmentTitle?: string;
   investmentName?: string;
   allocatedAmount: number;
+  commitment?: number;
   isAggregated?: boolean;
   ceBoxFileId?: string;
 };

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { renderAsync } from 'docx-preview';
 import Image from 'next/image';
 
@@ -7,12 +7,14 @@ import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
 import {
   DocxContainer,
+  LoaderWrapper,
   ModalCloseButton,
   ModalContainer,
   ModalContent,
   ModalHeader,
   ModalTitle,
   ModalWrapper,
+  PreviewLoader,
 } from './styles';
 import { PreviewScreenRow } from './types';
 
@@ -31,25 +33,34 @@ const PreviewScreenModal: FC<PreviewScreenModalProps> = ({
   noticePreviewDoc,
   closeModal,
   selectedRow,
-  testId = 'details-modal',
+  testId = 'preview-screen-modal',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const docxContainerRef = useRef<HTMLDivElement | null>(null);
+  const docxContentRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!noticePreviewDoc || !docxContainerRef.current) {
-      if (!docxContainerRef.current) return;
+    if (!docxContentRef.current) return;
+    if (!noticePreviewDoc) {
+      setIsLoading(true);
+      return;
     }
-
-    docxContainerRef.current.innerHTML = 'Loading Notice preview...';
-    void renderAsync(noticePreviewDoc, docxContainerRef.current, undefined, {
+    setIsLoading(true);
+    void renderAsync(noticePreviewDoc, docxContentRef.current, undefined, {
       className: 'docx-preview',
       inWrapper: true,
       ignoreWidth: false,
       ignoreHeight: true,
-      useBase64URL: false,
-      breakPages: false,
-    }).catch(() => {});
+      useBase64URL: true,
+      breakPages: true,
+      renderHeaders: true,
+      renderFooters: true,
+      // rely on document-provided page breaks; do not override
+    })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [noticePreviewDoc]);
 
   useExternalElementClick(modalRef, () => {
@@ -68,10 +79,14 @@ const PreviewScreenModal: FC<PreviewScreenModalProps> = ({
           </ModalCloseButton>
         </ModalHeader>
         <ModalContent>
-          <DocxContainer
-            ref={docxContainerRef}
-            data-testid={prepareDataTestId('notice-preview', testId)}
-          />
+          <DocxContainer data-testid={prepareDataTestId('notice-preview', testId)}>
+            {isLoading && (
+              <LoaderWrapper data-testid={prepareDataTestId('loader', testId)}>
+                <PreviewLoader />
+              </LoaderWrapper>
+            )}
+            <div ref={docxContentRef} data-testid={prepareDataTestId('docx', testId)} />
+          </DocxContainer>
         </ModalContent>
       </ModalContainer>
     </ModalWrapper>

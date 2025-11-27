@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 const ModalWrapper = styled.div(({ theme }) => ({
   position: 'fixed',
@@ -62,6 +62,7 @@ const ModalButtonContainer = styled.div({
 });
 
 const DocxContainer = styled.div(({ theme }) => ({
+  position: 'relative',
   maxHeight: '65dvh',
   overflow: 'auto',
   margin: '16px 0',
@@ -89,6 +90,33 @@ const DocxContainer = styled.div(({ theme }) => ({
   },
 }));
 
+const LoaderWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '10px 12px',
+  zIndex: 100,
+});
+
+const spin = keyframes({
+  from: { transform: 'rotate(0deg)' },
+  to: { transform: 'rotate(360deg)' },
+});
+
+const PreviewLoader = styled.span`
+  width: 32px;
+  height: 32px;
+  border: 4px solid ${({ theme }) => theme.colors.gray500};
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: ${css`
+    ${spin} 1s linear infinite
+  `};
+`;
+
 export {
   DocxContainer,
   ModalButtonContainer,
@@ -98,4 +126,6 @@ export {
   ModalHeader,
   ModalTitle,
   ModalWrapper,
+  LoaderWrapper,
+  PreviewLoader,
 };

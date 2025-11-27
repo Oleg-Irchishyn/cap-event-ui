@@ -159,6 +159,30 @@ export class DefaultService {
         });
     }
     /**
+     * Retrieve allocated journal entry
+     * @param batchNo Batch number to filter journal entry
+     * @param accountKey Account key to filter journal entry
+     * @returns InvestorEntry List of management fee journal entries grouped by entity ID
+     * @throws ApiError
+     */
+    public getAllocatedMgmtFeeJournalEntries(
+        batchNo: number,
+        accountKey: string,
+    ): CancelablePromise<Array<InvestorEntry>> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/cap-events/journal-entries/mgmt-fee/allocate',
+            query: {
+                'batchNo': batchNo,
+                'accountKey': accountKey,
+            },
+            errors: {
+                400: `Bad request`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
      * Allocate entities for fund group data
      * @param requestBody
      * @returns number Map of entity IDs to allocated amounts

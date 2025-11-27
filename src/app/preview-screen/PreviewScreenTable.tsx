@@ -10,7 +10,7 @@ import { PreviewScreenTableProps, PreviewScreenRow } from './types';
 
 const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
   rows,
-  testId = 'distribution-table',
+  testId = 'preview-screen-table',
   isLoading = false,
   onRowClicked,
 }) => {
@@ -21,25 +21,16 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
       // Only render aggregated rows
       return (rows ?? []).filter((r) => r.isAggregated);
     }
-    const placeholderCount = 10;
+
+    const placeholderCount = columnDefs.length;
     const placeholders: PreviewScreenRow[] = Array.from({ length: placeholderCount }).map(
-      (_, index) => ({
-        id: `skeleton-${index}`,
-        investor: '',
-        investorId: '',
-        investorName: '',
-        classID: '',
-        additionalInvestorType: '',
-        entityId: '',
-        entityName: '',
-        description: '',
-        investmentTitle: '',
-        investmentName: '',
-        allocatedAmount: 0,
-      }),
+      (_, index) =>
+        ({
+          id: `skeleton-${index}`,
+        }) as PreviewScreenRow,
     );
     return placeholders;
-  }, [isLoading, rows]);
+  }, [columnDefs.length, isLoading, rows]);
 
   return (
     <ConfigurationTable

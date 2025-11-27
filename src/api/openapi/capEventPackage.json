@@ -965,6 +965,118 @@
         }
       }
     },
+    "/cap-events/journal-entries/mgmt-fee/allocate": {
+      "get": {
+        "summary": "Retrieve allocated journal entry",
+        "operationId": "getAllocatedMgmtFeeJournalEntries",
+        "parameters": [
+          {
+            "name": "batchNo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Batch number to filter journal entry"
+          },
+          {
+            "name": "accountKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Account key to filter journal entry"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of management fee journal entries grouped by entity ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InvestorEntry"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "optOut": false,
+                      "readOnly": null,
+                      "rounded": true,
+                      "investor": "DEF Endowment",
+                      "classID": "Class A",
+                      "additionalInvestorType": "Educational",
+                      "customerId": "CUST003",
+                      "customerName": "DEF University Endowment",
+                      "department": "Investment Office",
+                      "commitment": 3000000.00,
+                      "investedCapital": null,
+                      "unfunded": null,
+                      "managementFee": 30000.00,
+                      "managementFeePercentage": 2.0,
+                      "amount": 150000.00,
+                      "originalAmount": null,
+                      "allocatedAmount": 150000.00,
+                      "allocatedAmountNotRounded": 150000.00,
+                      "isTransferEntry": false,
+                      "trType": 1,
+                      "hasZeroCtb": false,
+                      "investorToRound": true,
+                      "location": "Massachusetts",
+                      "dataPoints": null,
+                      "isAggregated": null,
+                      "allocationBasis": "Management Fee",
+                      "lineItemAmount": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "entityIds",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be empty"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cap-events/fund-group/allocate": {
       "post": {
         "summary": "Allocate entities for fund group data",

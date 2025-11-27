@@ -7,6 +7,7 @@ import {
   INVESTOR_TYPE_I_HEADER,
   INVESTOR_TYPE_II_HEADER,
   TOTAL_AMOUNT_DUE_HEADER,
+  TOTAL_CAPITAL_COMMITMENT_HEADER,
   ENTITY_ID_FIELD,
   ENTITY_NAME_FIELD,
   INVESTOR_ID_FIELD,
@@ -14,14 +15,15 @@ import {
   INVESTOR_TYPE_I_FIELD,
   INVESTOR_TYPE_II_FIELD,
   AMOUNT_FIELD,
+  COMMITMENT_FIELD,
   EMPTY_INVESTOR_TYPE_ONE_VALUE,
   EMPTY_INVESTOR_TYPE_TWO_VALUE,
 } from '@/const/previewScreen';
 
 describe('getPreviewScreenColumnDefs', () => {
-  it('returns 7 columns with correct headers/fields and default multi-sort', () => {
+  it('returns 8 columns with correct headers/fields and default multi-sort', () => {
     const cols = getPreviewScreenColumnDefs();
-    expect(cols).toHaveLength(7);
+    expect(cols).toHaveLength(8);
 
     // 1) Entity ID
     expect(cols[0].headerName).toBe(ENTITY_ID_HEADER);
@@ -57,10 +59,15 @@ describe('getPreviewScreenColumnDefs', () => {
     expect(cols[5].field).toBe(INVESTOR_TYPE_II_FIELD);
     expect(cols[5].sortable).toBe(true);
 
-    // 7) Total Allocated Amount
-    expect(cols[6].headerName).toBe(TOTAL_AMOUNT_DUE_HEADER);
-    expect(cols[6].field).toBe(AMOUNT_FIELD);
+    // 7) Total Capital Commitment
+    expect(cols[6].headerName).toBe(TOTAL_CAPITAL_COMMITMENT_HEADER);
+    expect(cols[6].field).toBe(COMMITMENT_FIELD);
     expect(cols[6].sortable).toBe(true);
+
+    // 8) Total Amount Due
+    expect(cols[7].headerName).toBe(TOTAL_AMOUNT_DUE_HEADER);
+    expect(cols[7].field).toBe(AMOUNT_FIELD);
+    expect(cols[7].sortable).toBe(true);
   });
 
   it('Investor Type I valueGetter returns configured empty value when empty', () => {
@@ -93,7 +100,8 @@ describe('getPreviewScreenColumnDefs', () => {
 
   it('Amount valueGetter formats numbers using formatAmount', () => {
     const cols = getPreviewScreenColumnDefs();
-    const valueGetter = cols[6].valueGetter as (p: {
+    const amountCol = cols.find((c) => c.headerName === TOTAL_AMOUNT_DUE_HEADER)!;
+    const valueGetter = amountCol.valueGetter as (p: {
       data: { allocatedAmount?: number };
     }) => string;
     expect(valueGetter({ data: { allocatedAmount: 250000 } })).toBe('250,000.00');
