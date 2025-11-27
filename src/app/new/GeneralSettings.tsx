@@ -82,6 +82,7 @@ const pickerIcon = () => (
 const GeneralSettings = () => {
   const [searchText, setSearchText] = useState('');
   const [isLoadingFundEntities, setIsLoadingFundEntities] = useState(false);
+  const [isLoadingFundGroups, setIsLoadingFundGroups] = useState(false);
   const [noticeInputValue, setNoticeInputValue] = useState<PickerValue>(
     entityDatesStore.hasDifferentDates
       ? null
@@ -101,10 +102,13 @@ const GeneralSettings = () => {
 
   const getFundGroups = async (sponsorId: string) => {
     try {
+      setIsLoadingFundGroups(true);
       const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(sponsorId);
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoadingFundGroups(false);
     }
   };
 
@@ -227,6 +231,11 @@ const GeneralSettings = () => {
   };
 
   const selectSponsorHandler = (item: DropdownItemType) => {
+    const isSameItem =
+      item.label === sponsors.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
+    if (isSameItem) return;
+    capEventSettingsStore.setFundGroups([]);
+    capEventSettingsStore.setFundEntities([]);
     const updatedValues = sponsors.map((sponsor) =>
       sponsor.label === item.label
         ? { ...sponsor, state: ITEM_STATES.SELECTED }
@@ -360,6 +369,7 @@ const GeneralSettings = () => {
           label={`${GENERAL_SETTINGS_FIELDS.SPONSOR}*`}
           items={sponsors}
           placeholder="Select Sponsor"
+          noDataText="No Data Available"
           selectHandler={selectSponsorHandler}
           selectedItems={capEventSettingsStore.sponsors.filter(
             (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
@@ -373,6 +383,8 @@ const GeneralSettings = () => {
           searchText={searchText}
           items={visibleFundGroups}
           placeholder="Select Fund Group"
+          noDataText="No Data Available"
+          isLoadingItems={isLoadingFundGroups}
           onSearchChangeHandler={setSearchText}
           selectHandler={selectFundGroupHandler}
           selectedItems={fundGroups.filter((fundGroup) => fundGroup.state === ITEM_STATES.SELECTED)}
