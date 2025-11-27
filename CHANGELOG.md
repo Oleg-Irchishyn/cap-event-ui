@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.57](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.56&targetVersion=GTv0.0.57) (2025-11-27)
+
+
+### Features
+
+* [TASK-8151]: [FE] Implement story ([e64b519](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e64b519443b49cc5dc2f876941919fa5ab0e62ff)), closes [#8151](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8151) [#8158](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8158) [#8177](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8177) [#8203](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8203)
+* added loading state to dropdowns ([6fb1b18](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6fb1b1834a311b21bffe3f0fae5f47212790da34)), closes [#8150](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8150)
+* allocate fund group amount ([9680990](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9680990a353b28f64e47e175793b48bdd8403f03)), closes [#8149](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8149)
+
+
+### Bug Fixes
+
+* [Issue-8205]: [FE] Reloading lines are not aligned with the amounts should be in Allocation Preview modal ([08e2eb1](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/08e2eb1d5a92bbc5e8b7b4b8679cbb53ea5b7cd5)), closes [#8205](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8205)
+* [Issue-NO-TASK]: [FE] fixing issues with Continue and Apply buttons ([23f2248](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/23f2248b810a0f1ae8266ce20d3ed4b002337023)), closes [#8010](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8010)
+
 ### [0.0.56](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.55&targetVersion=GTv0.0.56) (2025-11-26)
 
 
