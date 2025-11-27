@@ -71,17 +71,20 @@ jest.mock('@/app/components/DatePicker', () => {
   return DatePicker;
 });
 
-jest.mock('@/api', () => ({
-  CapEventPackageApi: { default: { getCapEventTypes: jest.fn() } },
-  ReferenceDataApi: {
-    fundGroups: { searchFundGroupsBySponsor: jest.fn() },
-    entities: { getEntitiesByFundGroup: jest.fn() },
-    sponsors: { getSponsors: jest.fn() },
-  },
-  TemplateLibraryApi: {
-    template: { getStandardTemplatesMetadata: jest.fn() },
-  },
-}));
+jest.mock('@/api', () => {
+  const CapEventPackageApi = { default: { getCapEventTypes: jest.fn() } };
+  return {
+    CapEventPackageApi,
+    ReferenceDataApi: {
+      fundGroups: { searchFundGroupsBySponsor: jest.fn() },
+      entities: { getEntitiesByFundGroup: jest.fn() },
+      sponsors: { getSponsors: jest.fn() },
+    },
+    TemplateLibraryApi: {
+      template: { getStandardTemplatesMetadata: jest.fn() },
+    },
+  };
+});
 
 jest.mock('@/stores', () => {
   type Item = { label: string; id?: string; state?: string };
@@ -142,7 +145,6 @@ describe('GeneralSettings', () => {
 
   it('fetches event types and sponsors on mount', async () => {
     renderWithTheme(<GeneralSettings />);
-
     await waitFor(() => expect(CapEventPackageApi.default.getCapEventTypes).toHaveBeenCalled());
     await waitFor(() => expect(ReferenceDataApi.sponsors.getSponsors).toHaveBeenCalled());
     expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();

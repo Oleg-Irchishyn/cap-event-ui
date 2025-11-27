@@ -6,10 +6,10 @@ import { CapEventLineItem, MgmtFeeJournalEntry } from '@/clients/CapEventPackage
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { observer } from 'mobx-react-lite';
-import { CapEventPackageApi } from '@/api';
 import { useToast } from '@/providers/ToastProvider';
 import { uuidv4 } from '@/utils/uuid';
 import { Loader } from '@/app/new/LineItems/styles';
+import { CapEventPackageApi } from '@/api';
 
 const preparedIncludeMFOptions = [
   {

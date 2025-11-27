@@ -5,7 +5,7 @@ import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import Image from 'next/image';
 import Tooltip from '@/app/components/Tooltip';
 import { generateIntacctLink } from '@/utils/generateIntacctLink';
-import { capEventSettingsStore } from '@/stores';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const DetailsReadOnlyInfo: FC<DetailsReadOnlyInfoProps> = ({
   title,
@@ -17,10 +17,8 @@ const DetailsReadOnlyInfo: FC<DetailsReadOnlyInfoProps> = ({
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleLinkClick = () => {
-    window.open(
-      generateIntacctLink({ sessionId: capEventSettingsStore.sessionId, type: 'entity', entityId }),
-      '_blank',
-    );
+    const sessionId = getStoredSessionId() ?? '';
+    window.open(generateIntacctLink({ sessionId, type: 'entity', entityId }), '_blank');
   };
 
   return (

@@ -11,8 +11,8 @@ import { Title } from '@/app/new/styles';
 import { capEventSettingsStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
 import { ApiError, CapEvent } from '@/clients/CapEventPackage';
-import { CapEventPackageApi } from '@/api';
 import { useToast } from '@/providers/ToastProvider';
+import { CapEventPackageApi } from '@/api';
 
 export default function Page() {
   const router = useRouter();

@@ -6,7 +6,7 @@ import { AllocationPreviewTableData, LineItemRow } from '@/app/new/LineItems/typ
 import { ITEM_STATES } from '@/const/common';
 import { Account, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
-import { CapEventPackageApi, _ReferenceDataServer, ReferenceDataApi } from '@/api';
+import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
 import { AllocationInput, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
@@ -39,8 +39,6 @@ class CapEventSettingsStore {
   // user inputs in line item table dropdown
   userInputs = new Map<string, string[]>(); // Key: cellKey (rowId-columnId), Value: array of user inputs
 
-  sessionId: string = '';
-
   // Allocation Preview
   isAllocationPreviewModalLoading: boolean = false;
   isAllocationPreviewModalOpen: boolean = false;
@@ -58,7 +56,6 @@ class CapEventSettingsStore {
     makeAutoObservable(this);
 
     this.fetchInvestments();
-    this.fetchSessionId();
   }
 
   *initAccountsSet(sponsorId: string) {
@@ -175,17 +172,6 @@ class CapEventSettingsStore {
       this.investments = [];
     } finally {
       this.areInvestmentsLoading = false;
-    }
-  }
-
-  *fetchSessionId() {
-    try {
-      this.sessionId = yield _ReferenceDataServer.get('/session', {
-        params: { id: this.sessionId },
-      });
-    } catch (error) {
-      console.error(error);
-      this.sessionId = '';
     }
   }
 

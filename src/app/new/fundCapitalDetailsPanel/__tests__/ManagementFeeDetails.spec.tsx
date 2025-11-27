@@ -7,13 +7,12 @@ import { theme } from '@/ui/globalStyles';
 import { CapEventLineItem } from '@/clients/CapEventPackage';
 import { LineItemRow } from '@/app/new/LineItems/types';
 
-jest.mock('@/api', () => ({
-  CapEventPackageApi: {
-    default: {
-      getMgmtFeeLineItems: jest.fn(),
-    },
-  },
-}));
+jest.mock('@/api', () => {
+  const CapEventPackageApi = { default: { getMgmtFeeLineItems: jest.fn() } };
+  return {
+    CapEventPackageApi,
+  };
+});
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
@@ -40,8 +39,8 @@ jest.mock('@/stores', () => ({
   },
 }));
 
-import { CapEventPackageApi } from '@/api';
 import { capEventSettingsStore } from '@/stores';
+import { CapEventPackageApi } from '@/api';
 
 const mockCapEventPackageApi = CapEventPackageApi as jest.Mocked<typeof CapEventPackageApi>;
 const mockCapEventSettingsStore = capEventSettingsStore as unknown as {
@@ -65,6 +64,7 @@ describe('ManagementFeeDetails', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
     mockCapEventSettingsStore.entitiesLineItem.clear();
     (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue([]);
   });

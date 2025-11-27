@@ -29,6 +29,7 @@ import { observer } from 'mobx-react-lite';
 import { capEventSettingsStore } from '@/stores';
 import { generateIntacctLink } from '@/utils/generateIntacctLink';
 import Tooltip from '@/app/components/Tooltip';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -155,6 +156,8 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
 
   if (props.data?.isTotalRow) return null;
 
+  const sessionId = getStoredSessionId() ?? '';
+
   return (
     <DropdownContainer>
       <DropdownWrapper
@@ -209,7 +212,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
 
             <LinkButtonWrapper
               href={generateIntacctLink({
-                sessionId: capEventSettingsStore.sessionId,
+                sessionId,
                 type: 'view',
               })}
               target="_blank"
@@ -234,7 +237,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                           <InvestmentLabel>{label}</InvestmentLabel>
                           <LinkButtonWrapper
                             href={generateIntacctLink({
-                              sessionId: capEventSettingsStore.sessionId,
+                              sessionId,
                               type: 'edit',
                               investmentId: option.id,
                             })}

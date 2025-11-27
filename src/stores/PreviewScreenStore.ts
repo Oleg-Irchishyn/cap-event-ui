@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import axios from 'axios';
-import { CapEventPackageApi, BoxConnectorApi } from '@/api';
+import { BoxConnectorApi, CapEventPackageApi } from '@/api';
 import {
   CapEvent,
   CapEventEntityLineItem,

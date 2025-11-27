@@ -4,7 +4,6 @@ import { observer } from 'mobx-react-lite';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 
 import { SubmitButtonWrapper } from './styles';
-import { CapEventPackageApi } from '@/api';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import {
   CapEvent,
@@ -20,6 +19,7 @@ import { useToast } from '@/providers/ToastProvider';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/const/routes';
 import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
+import { CapEventPackageApi } from '@/api';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
