@@ -900,22 +900,22 @@
                         {
                           "amount": 50000.00,
                           "batchDate": "2025-11-15",
-                          "description": "Q4 Management Fees",
-                          "batchNo": 1234
+                          "batchTitle": "Q4 Management Fees",
+                          "batchNo": "BATCH001"
                         },
                         {
                           "amount": 75000.00,
                           "batchDate": "2025-11-20",
-                          "description": "November Management Fees",
-                          "batchNo": 1235
+                          "batchTitle": "November Management Fees",
+                          "batchNo": "BATCH002"
                         }
                       ],
                       "ENTITY002": [
                         {
                           "amount": 30000.00,
                           "batchDate": "2025-11-15",
-                          "description": "Q4 Management Fees",
-                          "batchNo": 1236
+                          "batchTitle": "Q4 Management Fees",
+                          "batchNo": "BATCH001"
                         }
                       ]
                     }
@@ -1587,6 +1587,9 @@
           "lineItemAmount": {
             "type": "number"
           },
+          "allocationBasis": {
+            "type": "string"
+          },
           "ceBoxFileId": {
             "type": "string"
           }
@@ -1629,12 +1632,12 @@
             "format": "date",
             "description": "Batch date"
           },
-          "description": {
+          "batchTitle": {
             "type": "string",
-            "description": "Description"
+            "description": "Batch title"
           },
           "batchNo": {
-            "type": "integer",
+            "type": "string",
             "description": "Batch number"
           }
         }

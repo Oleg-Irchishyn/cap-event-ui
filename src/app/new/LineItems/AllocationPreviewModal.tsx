@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import {
   ModalButtonContainer,
@@ -9,29 +9,100 @@ import {
 } from './styles';
 import { Title } from '../styles';
 import AllocationPreviewTable from './AllocationPreviewTable';
-import { capEventSettingsStore } from '@/stores';
-import { AllocationPreviewTableData } from './types';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
+import { observer } from 'mobx-react-lite';
+import { CapEventPackageApi } from '@/api';
+import { getValidDate } from '@/utils/getValidDate';
+import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
+import { AllocationInput } from '@/clients/CapEventPackage';
 
-interface EntityPreviewModalProps {
-  isOpen: boolean;
-  title: string;
-  data: AllocationPreviewTableData[];
-}
+const AllocationPreviewModal: FC = () => {
+  const [allocationBasis, setAllocationBasis] = useState<string>('');
+  const [isDataLoading, setIsDataLoading] = useState(false);
 
-const AllocationPreviewModal: FC<EntityPreviewModalProps> = ({ isOpen, title, data }) => {
-  if (!isOpen) return null;
+  const isModalOpen = capEventSettingsStore.isAllocationPreviewModalOpen;
 
   const handleCancel = () => {
     capEventSettingsStore.setAllocationPreviewOpen(false);
     capEventSettingsStore.setAllocationPreviewModalData([]);
-    capEventSettingsStore.setAllocationPreviewModalAllocationBasis('');
   };
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const entityKey = capEventSettingsStore.allocationPreviewModalTitle;
+
+    const previewEntityData = capEventSettingsStore.entitiesLineItem
+      .get(entityKey)
+      ?.find((entity) => entity.id === capEventSettingsStore.allocationPreviewModalEntityId);
+
+    const fetchTableData = async () => {
+      try {
+        setIsDataLoading(true);
+        if (previewEntityData) {
+          setAllocationBasis(previewEntityData.allocationBasis);
+
+          if (previewEntityData.allocationBasis === 'Management Fee') {
+            const { batchNo, originAccountKey } = previewEntityData;
+
+            if (batchNo !== undefined && originAccountKey !== undefined) {
+              const data = await CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
+                batchNo,
+                originAccountKey,
+              );
+              capEventSettingsStore.setAllocationPreviewModalData(data);
+            }
+          } else {
+            const validDueDate = getValidDate(entityDatesStore.getEntityDueDate(entityKey));
+            const date = validDueDate ?? new Date();
+            const dueDate =
+              date.getFullYear() +
+              '-' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '-' +
+              String(date.getDate()).padStart(2, '0');
+
+            const requestBody: AllocationInput = {
+              entityId: entityKey.split(' - ')[0],
+              dueDate: dueDate || '',
+              allocationBasis: ALLOCATION_BASIS_DEFAULT_OPTIONS[previewEntityData.allocationBasis],
+              accountNo:
+                previewEntityData.accountNo ??
+                capEventSettingsStore.accounts.find(
+                  (acc) =>
+                    acc.capitalCategory === previewEntityData.capitalCategory &&
+                    acc.callDistributionReason === previewEntityData.callDistributionReason &&
+                    acc.insideCommitment === previewEntityData.insideCommitment,
+                )?.accountNo ??
+                '',
+              investmentId:
+                capEventSettingsStore.investments.find(
+                  (inv) => inv.name === previewEntityData.investment,
+                )?.id ?? '',
+              amount: previewEntityData.amount,
+            };
+
+            const data = await CapEventPackageApi.default.allocateLineItem(requestBody);
+            capEventSettingsStore.setAllocationPreviewModalData(data);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+
+    fetchTableData();
+  }, [isModalOpen]);
+
+  if (!isModalOpen) return null;
 
   return (
     <ModalWrapper>
       <ModalContainer>
         <ModalHeader>
-          <Title>{`Preview - ${title}`}</Title>
+          <Title>{`Preview - ${capEventSettingsStore.allocationPreviewModalTitle}`}</Title>
           <ModalButtonContainer>
             <Button
               testId="confirmation-modal-cancel"
@@ -44,11 +115,15 @@ const AllocationPreviewModal: FC<EntityPreviewModalProps> = ({ isOpen, title, da
           </ModalButtonContainer>
         </ModalHeader>
         <ModalContent>
-          <AllocationPreviewTable rows={data} />
+          <AllocationPreviewTable
+            isLoading={isDataLoading}
+            allocationBasis={allocationBasis}
+            rows={capEventSettingsStore.allocationPreviewModalData}
+          />
         </ModalContent>
       </ModalContainer>
     </ModalWrapper>
   );
 };
 
-export default AllocationPreviewModal;
+export default observer(AllocationPreviewModal);

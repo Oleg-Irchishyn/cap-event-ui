@@ -32,7 +32,7 @@ const prepareMgmtEntryOptions = (mgmtOptions?: MgmtFeeJournalEntry[]) =>
       label: item.amount?.toLocaleString() ?? '',
       displayName: `${item.amount?.toLocaleString()} (${formatedDate})`,
       description: `Posting Date: ${formatedDate}`,
-      additionalDescription: `Description: ${item.description}`,
+      additionalDescription: `Description: ${item.batchTitle}`,
     };
   }) ?? [];
 
@@ -91,7 +91,9 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       setMgmtFeeLineItemsLoading(true);
       let mgmtFeeLineItems: CapEventLineItem[] = [];
       try {
-        mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(item.batchNo);
+        mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(
+          Number(item.batchNo),
+        );
       } catch (error) {
         toast.error('Error getting mgmt fee line item');
         console.error(error);

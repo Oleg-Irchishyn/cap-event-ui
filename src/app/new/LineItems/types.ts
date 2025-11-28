@@ -1,3 +1,4 @@
+import { InvestorEntry } from '@/clients/CapEventPackage';
 import { Account } from '@/clients/ReferenceData';
 
 export type LineItemRow = {
@@ -9,16 +10,19 @@ export type LineItemRow = {
   prDate?: Date;
   prFlag?: string;
   mgmtFee?: boolean;
+  batchNo?: number;
+  originAccountKey?: string;
 } & Account;
 
 export type AllocationPreviewTableProps = {
-  rows: AllocationPreviewTableData[];
+  rows: InvestorEntry[];
   testId?: string;
   isLoading?: boolean;
+  allocationBasis: string;
 };
 
 export type AllocationPreviewTableData = {
-  optOut: boolean;
+  optOut?: boolean;
   readOnly: boolean;
   rounded: boolean;
   investor: string;

@@ -4,28 +4,26 @@ import React, { FC, useMemo } from 'react';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { AllocationPreviewTableData, AllocationPreviewTableProps } from './types';
+import { AllocationPreviewTableProps } from './types';
 import { getAllocationPreviewColumnDefs } from '@/utils/getAllocationPreviewColumnDefs';
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
-import { capEventSettingsStore } from '@/stores';
 import { observer } from 'mobx-react-lite';
+import { InvestorEntry } from '@/clients/CapEventPackage';
 
 const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   rows,
+  isLoading,
+  allocationBasis,
   testId = 'allocation-preview-table',
 }) => {
-  const fieldName = defineColumnForAllocationPreview(
-    capEventSettingsStore.allocationPreviewModalAllocationBasis,
-  );
-
-  const isLoading = capEventSettingsStore.isAllocationPreviewModalLoading;
+  const fieldName = defineColumnForAllocationPreview(allocationBasis);
 
   const displayRows = useMemo(() => {
     if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
       return rows;
     }
     const placeholderCount = 5;
-    const placeholders: AllocationPreviewTableData[] = Array.from({ length: placeholderCount }).map(
+    const placeholders: InvestorEntry[] = Array.from({ length: placeholderCount }).map(
       (_, index) => ({
         id: `skeleton-${index}`,
         optOut: false,
@@ -60,13 +58,8 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   }, [isLoading, rows]);
 
   const columnDefs = useMemo(
-    () =>
-      getAllocationPreviewColumnDefs(
-        fieldName,
-        capEventSettingsStore.allocationPreviewModalAllocationBasis,
-        isLoading,
-      ),
-    [isLoading, fieldName],
+    () => getAllocationPreviewColumnDefs(fieldName, allocationBasis, isLoading),
+    [isLoading, fieldName, allocationBasis],
   );
 
   return (

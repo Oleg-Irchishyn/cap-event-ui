@@ -17,7 +17,6 @@ const EntityLineItems = () => {
   const wasDropdownOpenRef = useRef(capEventSettingsStore.isEntitiesDropdownOpen);
 
   const isDropdownOpen = capEventSettingsStore.isEntitiesDropdownOpen;
-  const { isAllocationPreviewModalOpen } = capEventSettingsStore;
 
   if (!isDropdownOpen && wasDropdownOpenRef.current) {
     entitiesSnapshotRef.current = capEventSettingsStore.fundEntities;
@@ -110,11 +109,7 @@ const EntityLineItems = () => {
           />
         )}
       </BackgroundContainer>
-      <AllocationPreviewModal
-        title={capEventSettingsStore.allocationPreviewModalTitle}
-        isOpen={isAllocationPreviewModalOpen}
-        data={capEventSettingsStore.allocationPreviewModalData}
-      />
+      <AllocationPreviewModal />
     </>
   );
 };

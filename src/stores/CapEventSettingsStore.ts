@@ -2,13 +2,13 @@ import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
 import type { DragNDropError } from '@/app/new/attachments/types';
-import { AllocationPreviewTableData, LineItemRow } from '@/app/new/LineItems/types';
+import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
-import { AllocationInput, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
+import { InvestorEntry, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 import { isFundGroupRowValid } from '@/utils/investment';
 
@@ -43,9 +43,9 @@ class CapEventSettingsStore {
   isAllocationPreviewModalLoading: boolean = false;
   isAllocationPreviewModalOpen: boolean = false;
   attachmentErrors: DragNDropError[] = [];
-  allocationPreviewModalData: AllocationPreviewTableData[] = [];
+  allocationPreviewModalEntityId: string = '';
+  allocationPreviewModalData: InvestorEntry[] = [];
   allocationPreviewModalTitle: string = '';
-  allocationPreviewModalAllocationBasis: string = '';
 
   footnotes: FootnoteRecordType[] = [];
   comment: string = '';
@@ -172,18 +172,6 @@ class CapEventSettingsStore {
       this.investments = [];
     } finally {
       this.areInvestmentsLoading = false;
-    }
-  }
-
-  *fetchAllocationPreviewData(requestBody: AllocationInput) {
-    try {
-      this.isAllocationPreviewModalLoading = true;
-      this.allocationPreviewModalData =
-        yield CapEventPackageApi.default.allocateLineItem(requestBody);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isAllocationPreviewModalLoading = false;
     }
   }
 
@@ -324,20 +312,20 @@ class CapEventSettingsStore {
     }
   }
 
-  setAllocationPreviewOpen(isOpen: boolean, requestBody?: AllocationInput, title?: string) {
+  setAllocationPreviewOpen(isOpen: boolean) {
     this.isAllocationPreviewModalOpen = isOpen;
-    if (requestBody && title) {
-      this.fetchAllocationPreviewData(requestBody);
-      this.allocationPreviewModalTitle = title;
-    }
   }
 
-  setAllocationPreviewModalData(data: AllocationPreviewTableData[]) {
+  setAllocationPreviewModalEntityId(id: string) {
+    this.allocationPreviewModalEntityId = id;
+  }
+
+  setAllocationPreviewModalTitle(title: string) {
+    this.allocationPreviewModalTitle = title;
+  }
+
+  setAllocationPreviewModalData(data: InvestorEntry[]) {
     this.allocationPreviewModalData = data;
-  }
-
-  setAllocationPreviewModalAllocationBasis(value: string) {
-    this.allocationPreviewModalAllocationBasis = value;
   }
 
   setFootnotes(data: FootnoteRecordType[]) {

@@ -9,6 +9,8 @@ export const UNFUNDED_HEADER = 'Unfunded';
 export const INVESTED_CAPITAL_HEADER = 'Invested Capital';
 export const ALLOCATED_AMOUNT_HEADER = 'Allocated Amount';
 export const ALLOCATED_AMOUNT_BASE_HEADER = 'Allocated amount (Base)';
+export const MANAGEMENT_FEE_HEADER = 'Management Fee';
+export const MANAGEMENT_FEE_PERCENT_HEADER = 'MF %';
 
 // Field names
 export const INVESTOR_ID_FIELD = 'customerId';
@@ -17,6 +19,8 @@ export const INVESTOR_CLASS_ID_FIELD = 'classID';
 export const INVESTOR_ADDITIONAL_TYPE_FIELD = 'additionalInvestorType';
 export const COMMITMENT_FIELD = 'commitment';
 export const ALLOCATED_AMOUNT_FIELD = 'allocatedAmount';
+export const MANAGEMENT_FEE_FIELD = 'managementFee';
+export const MANAGEMENT_FEE_PERCENT_FIELD = 'managementFeePercentage';
 
 // Fields for dynamic column
 export const UNFUNDED = 'unfunded';

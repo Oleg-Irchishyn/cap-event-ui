@@ -9,8 +9,6 @@ import { hasRequiredFieldsForPreview } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
 import { PreviewButton, PreviewWrapper } from '../styles';
-import { AllocationInput } from '@/clients/CapEventPackage';
-import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 import { getValidDate } from '@/utils/getValidDate';
 
 const PreviewIconCell: FC<ICellRendererParams> = (props) => {
@@ -28,34 +26,9 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
 
   const handlePreviewClick = () => {
     if (isPreviewDisabled) return;
-    const date = validDueDate ?? new Date();
-    const dueDate =
-      date.getFullYear() +
-      '-' +
-      String(date.getMonth() + 1).padStart(2, '0') +
-      '-' +
-      String(date.getDate()).padStart(2, '0');
-
-    const requestBody: AllocationInput = {
-      entityId: entityKey.split(' - ')[0],
-      dueDate: dueDate || '',
-      allocationBasis: ALLOCATION_BASIS_DEFAULT_OPTIONS[props.data.allocationBasis],
-      accountNo:
-        props.data?.accountNo ??
-        capEventSettingsStore.accounts.find(
-          (acc) =>
-            acc.capitalCategory === props.data.capitalCategory &&
-            acc.callDistributionReason === props.data.callDistributionReason &&
-            acc.insideCommitment === props.data.insideCommitment,
-        )?.accountNo ??
-        '',
-      investmentId:
-        capEventSettingsStore.investments.find((inv) => inv.name === props.data.investment)?.id ??
-        '',
-      amount: props.data.amount,
-    };
-    capEventSettingsStore.setAllocationPreviewModalAllocationBasis(props.data.allocationBasis);
-    capEventSettingsStore.setAllocationPreviewOpen(true, requestBody, entityKey);
+    capEventSettingsStore.setAllocationPreviewModalEntityId(props.data.id);
+    capEventSettingsStore.setAllocationPreviewModalTitle(entityKey);
+    capEventSettingsStore.setAllocationPreviewOpen(true);
   };
 
   const onShowTooltip = () => {
