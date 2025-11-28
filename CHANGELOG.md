@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.58](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.57&targetVersion=GTv0.0.58) (2025-11-28)
+
+
+### Features
+
+* [TASK-8148]: [FE] Add total capital commitment column ([74550a9](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/74550a9199a40d7f888e35946a0dce1f1329beaa)), closes [#8148](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8148)
+* added session id header ([ab44fdd](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ab44fdd596f3528cc18004f72ff9020b013304bf)), closes [#8147](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8147) [#8223](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8223)
+
+
+### Bug Fixes
+
+* reset entities on sponsor change ([2d68303](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2d683032f5620a5d3d99a5799a50967c9d75f74b)), closes [#8243](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8243)
+
 ### [0.0.57](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.56&targetVersion=GTv0.0.57) (2025-11-27)
 
 
