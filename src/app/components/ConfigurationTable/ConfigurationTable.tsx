@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { AgGridReact } from 'ag-grid-react';
 import {
@@ -16,6 +16,7 @@ import {
   DragStoppedEvent,
   ColumnState,
   ColumnResizedEvent,
+  RowStyle,
   PostSortRowsParams,
 } from 'ag-grid-community';
 
@@ -25,7 +26,7 @@ import { prepareDataTestId } from '@/utils/prepareDataTestId';
 ModuleRegistry.registerModules([AllCommunityModule]);
 provideGlobalGridOptions({ theme: themeAlpine });
 
-type Props = {
+type Props<T> = {
   columnDefs: ColDef[];
   rowData: unknown[];
   onCellValueChanged?: (e: CellValueChangedEvent) => void;
@@ -37,6 +38,7 @@ type Props = {
   onDragStopped?: (e: DragStoppedEvent) => void;
   headerLabel?: string;
   height?: number | string; // when provided, grid will use internal scroll with fixed container height
+  pinnedBottomRowData?: T[];
   postSortRows?: (params: PostSortRowsParams) => void;
 };
 
@@ -52,7 +54,7 @@ type GridRow = {
   _index: number;
 };
 
-const ConfigurationTable: FC<Props> = ({
+const ConfigurationTable = <T,>({
   columnDefs,
   rowData,
   onCellValueChanged,
@@ -64,8 +66,9 @@ const ConfigurationTable: FC<Props> = ({
   onDragStopped,
   headerLabel,
   height,
+  pinnedBottomRowData,
   postSortRows,
-}) => {
+}: Props<T>) => {
   const defaultColDef = useMemo(
     () => ({
       resizable: false,
@@ -206,6 +209,13 @@ const ConfigurationTable: FC<Props> = ({
         getRowId={(params) => {
           const data = params.data as GridRow & { id?: string };
           return data.id ?? String(data._index);
+        }}
+        pinnedBottomRowData={pinnedBottomRowData}
+        getRowStyle={(params): RowStyle | undefined => {
+          if (params.node.rowPinned) {
+            return { fontWeight: 'bold' };
+          }
+          return undefined;
         }}
       />
     </TableWrapper>

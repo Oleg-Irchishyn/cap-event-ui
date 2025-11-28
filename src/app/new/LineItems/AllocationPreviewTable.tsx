@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { AllocationPreviewTableProps } from './types';
+import { AllocationPreviewTableProps, PreviewModalTotalRow } from './types';
 import { getAllocationPreviewColumnDefs } from '@/utils/getAllocationPreviewColumnDefs';
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
 import { observer } from 'mobx-react-lite';
@@ -62,13 +62,35 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
     [isLoading, fieldName, allocationBasis],
   );
 
+  const calculateAmount = (rows: InvestorEntry[]): number => {
+    return rows.reduce((sum, row) => {
+      let amount = row.allocatedAmount;
+      if (amount === undefined) return sum;
+      if (row.trType === -1) {
+        amount *= row.trType;
+      }
+      return sum + amount;
+    }, 0);
+  };
+
+  const pinnedBottomRowData: PreviewModalTotalRow[] = useMemo(
+    () => [
+      {
+        customerId: 'Total',
+        allocatedAmount: calculateAmount(displayRows),
+      },
+    ],
+    [displayRows],
+  );
+
   return (
-    <ConfigurationTable
+    <ConfigurationTable<PreviewModalTotalRow>
       testId={prepareDataTestId('table', testId)}
       columnDefs={columnDefs}
       rowData={displayRows}
       isLoading={isLoading}
       noRowsText="No Data to display"
+      pinnedBottomRowData={pinnedBottomRowData}
     />
   );
 };

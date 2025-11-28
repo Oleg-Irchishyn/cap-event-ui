@@ -49,3 +49,8 @@ export type AllocationPreviewTableData = {
   isAggregated: boolean;
   lineItemAmount: number;
 };
+
+export interface PreviewModalTotalRow {
+  customerId: string;
+  allocatedAmount: number;
+}

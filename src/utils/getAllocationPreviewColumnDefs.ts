@@ -51,6 +51,7 @@ export const getAllocationPreviewColumnDefs = (
       flex: 1.5,
       sortable: true,
       valueGetter: (params) => {
+        if (params.node?.rowPinned) return '';
         return params.data.customerName ?? '-';
       },
       cellRendererSelector: () =>
@@ -62,6 +63,7 @@ export const getAllocationPreviewColumnDefs = (
       flex: 2,
       sortable: false,
       valueGetter: (params) => {
+        if (params.node?.rowPinned) return '';
         return params.data.classID ?? 'LP';
       },
       cellRendererSelector: () =>
@@ -73,6 +75,7 @@ export const getAllocationPreviewColumnDefs = (
       flex: 1.5,
       sortable: false,
       valueGetter: (params) => {
+        if (params.node?.rowPinned) return '';
         return params.data.additionalInvestorType ?? '-';
       },
       cellRendererSelector: () =>
@@ -85,6 +88,7 @@ export const getAllocationPreviewColumnDefs = (
       sortable: true,
       headerClass: 'ag-right-aligned-header',
       valueGetter: (params) => {
+        if (params.node?.rowPinned) return '';
         return formatAmount(params.data[fieldName]);
       },
       cellStyle: { textAlign: 'right' },
@@ -136,6 +140,7 @@ export const getAllocationPreviewColumnDefs = (
         headerClass: 'ag-right-aligned-header',
         cellStyle: { textAlign: 'right' },
         valueGetter: (params) => {
+          if (params.node?.rowPinned) return '';
           return params.data.managementFeePercentage ?? '-';
         },
         cellRendererSelector: () =>
@@ -151,6 +156,7 @@ export const getAllocationPreviewColumnDefs = (
         headerClass: 'ag-right-aligned-header',
         cellStyle: { textAlign: 'right' },
         valueGetter: (params) => {
+          if (params.node?.rowPinned) return '';
           return formatAmount(params.data.managementFee) ?? '-';
         },
         cellRendererSelector: () =>
