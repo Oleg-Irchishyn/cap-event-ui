@@ -100,7 +100,11 @@ export const getAllocationPreviewColumnDefs = (
       sortable: false,
       headerClass: 'ag-right-aligned-header',
       valueGetter: (params) => {
-        return formatAmount(params.data.allocatedAmount);
+        const calculatedAmount =
+          params.data.trType === -1
+            ? params.data.allocatedAmount * params.data.trType
+            : params.data.allocatedAmount;
+        return formatAmount(calculatedAmount);
       },
       cellStyle: { textAlign: 'right' },
       cellRendererSelector: () =>
@@ -147,7 +151,7 @@ export const getAllocationPreviewColumnDefs = (
         headerClass: 'ag-right-aligned-header',
         cellStyle: { textAlign: 'right' },
         valueGetter: (params) => {
-          return params.data.managementFee ?? '-';
+          return formatAmount(params.data.managementFee) ?? '-';
         },
         cellRendererSelector: () =>
           isLoading
