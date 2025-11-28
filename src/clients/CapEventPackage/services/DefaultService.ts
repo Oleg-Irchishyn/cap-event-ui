@@ -54,43 +54,55 @@ export class DefaultService {
     }
     /**
      * Retrieve Capital event list with optional filters: Sponsor ID and Status list
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param sponsorId Optional Sponsor ID filter to search for matching entries
      * @param statuses Optional Status List filter to search for matching entries
      * @returns CapEvent List of capital events
      * @throws ApiError
      */
     public getCapEventList(
+        sessionId: string,
         sponsorId?: string,
         statuses?: Array<CapEventStatus>,
     ): CancelablePromise<Array<CapEvent>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/cap-events',
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'sponsorId': sponsorId,
                 'statuses': statuses,
             },
             errors: {
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });
     }
     /**
      * Process capital event
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
      * @returns CapEventLineItemResponse List of capital event line items with investor entries
      * @throws ApiError
      */
     public process(
+        sessionId: string,
         requestBody: CapEvent,
     ): CancelablePromise<Array<CapEventLineItemResponse>> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events/process',
+            headers: {
+                'Session-Id': sessionId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 404: `Resource not found`,
                 500: `Server error`,
             },
@@ -98,20 +110,26 @@ export class DefaultService {
     }
     /**
      * Allocate investors for cap event line item
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
      * @returns InvestorEntry List of allocated investor entries
      * @throws ApiError
      */
     public allocateLineItem(
+        sessionId: string,
         requestBody: AllocationInput,
     ): CancelablePromise<Array<InvestorEntry>> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events/line-items/allocate',
+            headers: {
+                'Session-Id': sessionId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 404: `Resource not found`,
                 500: `Server error`,
             },
@@ -120,19 +138,25 @@ export class DefaultService {
     /**
      * Retrieve list of CELIs represents uncalled management fee entries
      * @param batchNo Batch Number to search for matching entries
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns CapEventLineItem List of management fee entries
      * @throws ApiError
      */
     public getMgmtFeeLineItems(
         batchNo: number,
+        sessionId: string,
     ): CancelablePromise<Array<CapEventLineItem>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/cap-events/line-items/mgmt-fees',
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'batchNo': batchNo,
             },
             errors: {
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });
@@ -140,20 +164,26 @@ export class DefaultService {
     /**
      * Retrieve management fee journal entries for entities
      * @param entityIds List of entity IDs to search for matching journal entries
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns MgmtFeeJournalEntry Map of management fee journal entries grouped by entity ID
      * @throws ApiError
      */
     public getMgmtFeeJournalEntries(
         entityIds: Array<string>,
+        sessionId: string,
     ): CancelablePromise<Record<string, Array<MgmtFeeJournalEntry>>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/cap-events/journal-entries/mgmt-fee',
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'entityIds': entityIds,
             },
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });
@@ -162,42 +192,54 @@ export class DefaultService {
      * Retrieve allocated journal entry
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns InvestorEntry List of management fee journal entries grouped by entity ID
      * @throws ApiError
      */
     public getAllocatedMgmtFeeJournalEntries(
         batchNo: number,
         accountKey: string,
+        sessionId: string,
     ): CancelablePromise<Array<InvestorEntry>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/cap-events/journal-entries/mgmt-fee/allocate',
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
             },
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });
     }
     /**
      * Allocate entities for fund group data
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
      * @returns number Map of entity IDs to allocated amounts
      * @throws ApiError
      */
     public allocateEntities(
+        sessionId: string,
         requestBody: FundGroupAllocationInput,
     ): CancelablePromise<Record<string, number>> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events/fund-group/allocate',
+            headers: {
+                'Session-Id': sessionId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });

@@ -26,6 +26,10 @@ jest.mock('@/utils/parseToPreviewScreenRows', () => ({
   parseToPreviewScreenRows: (...args: unknown[]) => parseMock(...args),
 }));
 
+jest.mock('@/utils/sessionIdStorage', () => ({
+  getStoredSessionId: jest.fn().mockReturnValue(''),
+}));
+
 // Mock stores used by PreviewScreenStore
 const mockCapEventSettingsStore = {
   eventTypes: [
@@ -150,7 +154,7 @@ describe('PreviewScreenStore', () => {
 
     // Assert API called with expected shape
     expect(processMock).toHaveBeenCalledTimes(1);
-    const sentPayload = processMock.mock.calls[0][0];
+    const sentPayload = processMock.mock.calls[0][1];
     expect(sentPayload).toEqual(
       expect.objectContaining({
         sponsor: expect.objectContaining({ id: 'SP1' }),

@@ -42,6 +42,7 @@ export namespace ErrorResponse {
         UNAUTHORIZED = 'UNAUTHORIZED',
         FORBIDDEN = 'FORBIDDEN',
         BAD_REQUEST = 'BAD_REQUEST',
+        CONFLICT = 'CONFLICT',
     }
 }
 

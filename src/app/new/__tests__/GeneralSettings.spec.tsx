@@ -98,6 +98,7 @@ jest.mock('@/stores', () => {
     setFundGroups: jest.fn(),
     setFundEntities: jest.fn(),
     setEntitiesDropdownOpen: jest.fn(),
+    fetchInvestments: jest.fn(),
   };
   const entityDatesStore = {
     noticeDate: null as Date | null,
@@ -140,7 +141,6 @@ describe('GeneralSettings', () => {
       { id: 'FG1', name: 'Group 1' },
     ]);
     (ReferenceDataApi.entities.getEntitiesByFundGroup as jest.Mock).mockResolvedValue([]);
-    (TemplateLibraryApi.template.getStandardTemplatesMetadata as jest.Mock).mockResolvedValue([]);
   });
 
   it('fetches event types and sponsors on mount', async () => {

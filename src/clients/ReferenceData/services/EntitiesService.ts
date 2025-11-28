@@ -9,16 +9,16 @@ export class EntitiesService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Get entities by fund group ID
-     * @param fundGroupId
      * @param sessionId Session identifier
+     * @param fundGroupId
      * @param statuses Filter by entity statuses
      * @param typesToExclude Exclude specific entity types
      * @returns Entity List of entities found
      * @throws ApiError
      */
     public getEntitiesByFundGroup(
+        sessionId: string,
         fundGroupId: string,
-        sessionId?: string,
         statuses?: Array<string>,
         typesToExclude?: Array<string>,
     ): CancelablePromise<Array<Entity>> {
@@ -37,6 +37,7 @@ export class EntitiesService {
             },
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 404: `No entities found`,
                 500: `Server error`,
             },

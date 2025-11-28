@@ -23,6 +23,7 @@ export namespace ErrorResponse {
         INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
         ALLOCATION_ERROR = 'ALLOCATION_ERROR',
         CLIENT_ERROR = 'CLIENT_ERROR',
+        UNAUTHORIZED = 'UNAUTHORIZED',
     }
 }
 

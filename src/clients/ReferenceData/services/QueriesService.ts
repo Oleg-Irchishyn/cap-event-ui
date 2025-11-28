@@ -11,12 +11,14 @@ export class QueriesService {
     /**
      * Execute query with id and arguments from request and obtain results
      * @param queryId Query identifier
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param _arguments Arguments for query execution
      * @returns QueryResults Query executed
      * @throws ApiError
      */
     public executeQuery(
         queryId: string,
+        sessionId: string,
         _arguments?: Record<string, string>,
     ): CancelablePromise<QueryResults> {
         return this.httpRequest.request({
@@ -25,8 +27,14 @@ export class QueriesService {
             path: {
                 'queryId': queryId,
             },
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'arguments': _arguments,
+            },
+            errors: {
+                401: `Intacct SessionId is not valid`,
             },
         });
     }

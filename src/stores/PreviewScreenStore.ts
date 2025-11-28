@@ -26,6 +26,7 @@ import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
 import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
@@ -381,9 +382,10 @@ class PreviewScreenStore {
           return [];
         }
 
+        const sessionId = getStoredSessionId() ?? '';
         this.isLoading = true;
         this.rows = [];
-        const response = await CapEventPackageApi.default.process(requestPayload);
+        const response = await CapEventPackageApi.default.process(sessionId, requestPayload);
         const parsed = parseToPreviewScreenRows(response);
         this.rows = parsed;
         return parsed;

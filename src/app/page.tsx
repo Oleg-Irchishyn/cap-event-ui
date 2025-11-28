@@ -13,6 +13,7 @@ import { ITEM_STATES } from '@/const/common';
 import { ApiError, CapEvent } from '@/clients/CapEventPackage';
 import { useToast } from '@/providers/ToastProvider';
 import { CapEventPackageApi } from '@/api';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 export default function Page() {
   const router = useRouter();
@@ -29,7 +30,12 @@ export default function Page() {
         const selectedSponsorId = capEventSettingsStore.sponsors.find(
           (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
         )?.id;
-        const capEvents = await CapEventPackageApi.default.getCapEventList(selectedSponsorId);
+        const sessionId = getStoredSessionId() ?? '';
+
+        const capEvents = await CapEventPackageApi.default.getCapEventList(
+          sessionId,
+          selectedSponsorId,
+        );
         setEvents(capEvents);
       } catch (error) {
         console.error(error);
@@ -39,7 +45,7 @@ export default function Page() {
       }
     };
     getCapEvents();
-  }, []);
+  }, [toast]);
 
   return (
     <PageContainer>

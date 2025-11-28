@@ -284,6 +284,15 @@
             },
             "required": false,
             "description": "Optional Status List filter to search for matching entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -373,6 +382,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -397,6 +423,17 @@
       "post": {
         "summary": "Process capital event",
         "operationId": "process",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -574,6 +611,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found",
             "content": {
@@ -615,6 +669,17 @@
       "post": {
         "summary": "Allocate investors for cap event line item",
         "operationId": "allocateLineItem",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -732,6 +797,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found",
             "content": {
@@ -782,6 +864,15 @@
             },
             "required": true,
             "description": "Batch Number to search for matching entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -843,6 +934,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -879,6 +987,15 @@
             },
             "required": true,
             "description": "List of entity IDs to search for matching journal entries"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -945,6 +1062,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -987,6 +1121,15 @@
               "type": "string"
             },
             "description": "Account key to filter journal entry"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1057,6 +1200,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -1081,6 +1241,17 @@
       "post": {
         "summary": "Allocate entities for fund group data",
         "operationId": "allocateEntities",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1153,6 +1324,23 @@
               }
             }
           },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -1200,7 +1388,7 @@
         "properties": {
           "reason": {
             "type": "string",
-            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR", "CLIENT_ERROR"]
+            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR", "CLIENT_ERROR", "UNAUTHORIZED"]
           },
           "message": {
             "type": "string"

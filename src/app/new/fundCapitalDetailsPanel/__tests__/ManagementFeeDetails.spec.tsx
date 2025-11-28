@@ -185,7 +185,10 @@ describe('ManagementFeeDetails', () => {
 
       // Wait for the API call
       await waitFor(() => {
-        expect(mockCapEventPackageApi.default.getMgmtFeeLineItems).toHaveBeenCalledWith(batchNo);
+        expect(mockCapEventPackageApi.default.getMgmtFeeLineItems).toHaveBeenCalledWith(
+          batchNo,
+          '',
+        );
       });
 
       // Verify setEntitiesLineItem was called with merged items

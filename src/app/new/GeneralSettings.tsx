@@ -18,6 +18,7 @@ import useConfirmationModal from '@/hooks/useConfirmationModal';
 import { Entity, FundGroup, Sponsor } from '@/clients/ReferenceData';
 import { CapEventType } from '@/clients/CapEventPackage';
 import { DropdownWrapper, Title } from './styles';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const prepareEventType = (eventTypes: CapEventType[]) => {
   return eventTypes?.map((eventType) => ({
@@ -91,6 +92,8 @@ const GeneralSettings = () => {
         : null,
   );
 
+  const sessionId = getStoredSessionId() ?? '';
+
   const getEventTypes = async () => {
     try {
       const eventTypes = await CapEventPackageApi.default.getCapEventTypes();
@@ -103,7 +106,10 @@ const GeneralSettings = () => {
   const getFundGroups = async (sponsorId: string) => {
     try {
       setIsLoadingFundGroups(true);
-      const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(sponsorId);
+      const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(
+        sessionId,
+        sponsorId,
+      );
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
       console.error(error);
@@ -130,8 +136,8 @@ const GeneralSettings = () => {
     try {
       setIsLoadingFundEntities(true);
       const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
+        sessionId,
         id,
-        '',
         ['ACTIVE'],
         ['ADMIN', 'ELIMINATION'],
       );
@@ -145,6 +151,7 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     initFetch();
+    capEventSettingsStore.fetchInvestments();
   }, [initFetch]);
 
   const { eventTypes, sponsors, fundGroups, fundEntities } = capEventSettingsStore;

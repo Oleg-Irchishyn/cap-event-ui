@@ -35,6 +35,7 @@ import { formatDate } from '@/utils/formatDate';
 import { COMMITMENT_OPTION } from '@/const/allocationBasisOptions';
 import { useToast } from '@/providers/ToastProvider';
 import { ApiError } from '@/clients/CapEventPackage';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -104,6 +105,7 @@ const AccountsTable: FC<Props> = ({
   const accounts = capEventSettingsStore.accounts;
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
+  const sessionId = getStoredSessionId() ?? '';
 
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
@@ -443,6 +445,7 @@ const AccountsTable: FC<Props> = ({
       return await Promise.all(
         commitmentFundGroups.map((fundGroupItem) => {
           return CapEventPackageApi.default.allocateEntities(
+            sessionId,
             getAllocateEntitiesRequestBody(
               selectedEntities,
               fundGroupItem.allocationBasis,

@@ -12,7 +12,7 @@ export class TemplateLibraryClient {
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = AxiosHttpRequest) {
         this.request = new HttpRequest({
-            BASE: config?.BASE ?? '/api/v1',
+            BASE: config?.BASE ?? 'http://localhost:8080/api/v1',
             VERSION: config?.VERSION ?? '1.0.0',
             WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
             CREDENTIALS: config?.CREDENTIALS ?? 'include',

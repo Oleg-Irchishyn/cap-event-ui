@@ -10,6 +10,7 @@ import { useToast } from '@/providers/ToastProvider';
 import { uuidv4 } from '@/utils/uuid';
 import { Loader } from '@/app/new/LineItems/styles';
 import { CapEventPackageApi } from '@/api';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const preparedIncludeMFOptions = [
   {
@@ -70,10 +71,11 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
   );
   const [searchText, setSearchText] = useState('');
   const [isMgmtFeeLineItemsLoading, setMgmtFeeLineItemsLoading] = useState(false);
+  const sessionId = getStoredSessionId() ?? '';
 
   useEffect(() => {
     setMFItems(prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]));
-  }, [mgmtFeeLineItems]);
+  }, [entityId, mgmtFeeLineItems]);
 
   const handleSelectMFItem = async (item?: DropdownItemType<MgmtFeeJournalEntry>) => {
     const selectedItemLabel = MFItems.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
@@ -93,6 +95,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       try {
         mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(
           Number(item.batchNo),
+          sessionId,
         );
       } catch (error) {
         toast.error('Error getting mgmt fee line item');

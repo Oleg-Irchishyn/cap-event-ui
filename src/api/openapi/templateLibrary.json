@@ -13,17 +13,549 @@
   ],
   "servers": [
     {
-      "url": "/api/v1",
+      "url": "http://localhost:8080/api/v1",
       "description": "v1 API base path"
     }
   ],
   "paths": {
-    "/templates/metadata": {
+    "/templates": {
       "get": {
         "tags": ["Template"],
-        "summary": "Get standard templates metadata",
-        "description": "This endpoint retrieves a list of template metadata based on sponsor ID and event type ID.",
-        "operationId": "getStandardTemplatesMetadata",
+        "summary": "Get list of the available and allowed templates.",
+        "description": "This endpoint retrieves a list of the available and allowed templates.",
+        "operationId": "getTemplates",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of the templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Template"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "1d577e4d-7590-4559-8151-e38d2143c1d1",
+                    "boxFile": {
+                      "id": "349216691219",
+                      "info": {
+                        "name": "Standard Template.dotx",
+                        "parentForlderId": "349216691219",
+                        "modifiedAt": "2025-11-06T12:57:04.204Z",
+                        "createdAt": "2025-11-06T12:57:04.204Z",
+                        "size": 14
+                      },
+                      "content": "contentcontent"
+                    },
+                    "sourceTemplate": {
+                      "id": "f93c2a53-6ff3-4fd3-adaf-7f2abfef06b1"
+                    },
+                    "sponsor": {
+                      "id": "sponsor-123",
+                      "name": "The Best Sponsor"
+                    },
+                    "entityGroup": {
+                      "id": "entity-group-222",
+                      "name": "Charities"
+                    },
+                    "entity": {
+                      "id": "entity-321",
+                      "name": "Charity"
+                    },
+                    "createdBy": "user.email@gen2fund.com",
+                    "modifiedBy": "user.email@gen2fund.com",
+                    "status": "Active"
+                  },
+                  {
+                    "id": "f93c2a53-6ff3-4fd3-adaf-7f2abfef06b1",
+                    "boxFile": {
+                      "documentId": "2036227281530",
+                      "name": "System Base Template"
+                    },
+                    "sponsor": null,
+                    "entityGroup": null,
+                    "entity": null,
+                    "createdBy": "system",
+                    "modifiedBy": "user.email@gen2fund.com",
+                    "status": "Active"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access to get templates",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error retrieving template metadata from database",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+
+        }
+      },
+      "post": {
+        "tags": ["Template"],
+        "summary": "Create new template",
+        "description": "This endpoint creates a new template for selected assignment level",
+        "operationId": "createTemplate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sponsorId": {
+                    "type": "string",
+                    "description": "ID of the sponsor (required)"
+                  },
+                  "sponsorName": {
+                    "type": "string",
+                    "description": "Name of the sponsor (required)"
+                  },
+                  "fundGroupId": {
+                    "type": "string",
+                    "description": "ID of the fund group (optional)"
+                  },
+                  "entityId": {
+                    "type": "string",
+                    "description": "ID of the entity (optional)"
+                  },
+                  "newTemplate": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Template file to upload"
+                  }
+                },
+                "required": ["sponsorId", "sponsorName", "newTemplate"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Template created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - file already exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity - validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/templates/{templateId}": {
+      "put": {
+        "tags": ["Template"],
+        "summary": "Upload a new version of the template.",
+        "description": "Upload a new version of the template. Even if template is identical it will create a new template version.",
+        "operationId": "updateTemplate",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "schema": {
+              "type":"string"
+            },
+            "required": true,
+            "description": "ID of the template whichi should be updated."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns information about the successfully uploaded template.",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access to get templates",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error uploading the new template",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/templates/content": {
+      "get": {
+        "tags": ["Template"],
+        "summary": "Returns template by sponsor, group, and entity IDs.",
+        "description": "Returns ZIP archive with the template and the CSV file with available datapoints. Searches for a template matching the provided IDs, or falls back to a default template if not found.",
+        "operationId": "getTemplateContentByParameters",
+        "parameters" : [
+          {
+            "name": "sponsorId",
+            "in": "query",
+            "schema": {
+              "type":"string"
+            },
+            "required": true,
+            "description": "ID of the sponsor."
+          },
+          {
+            "name": "fundGroupId",
+            "in": "query",
+            "schema": {
+              "type":"string"
+            },
+            "required": false,
+            "description": "ID of the fund group."
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "schema": {
+              "type":"string"
+            },
+            "required": false,
+            "description": "ID of the entity."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ZIP file with the MS Word template and the CSV file with available datapoints.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access to get templates",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Template not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "NOT_FOUND",
+                  "message": "No template found for the provided parameters and no default template available",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-notfound-001"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error retrieving template and dependend data.",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/templates/{templateId}/content": {
+      "get": {
+        "tags": ["Template"],
+        "summary": "Returns required template.",
+        "description": "Returns ZIP archive with the required template and the CSV file with available endpoints.",
+        "operationId": "getTemplateContent",
+        "parameters" : [
+          {
+            "name": "templateId",
+            "in": "path",
+            "schema": {
+              "type":"string"
+            },
+            "required": true,
+            "description": "ID of the template whichi should be updated."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ZIP file with the MS Word template and the CSV file with available endpoints.",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access to get templates",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error retrieving template and dependend data.",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/template/metadata": {
+      "get": {
+        "tags": ["Template"],
+        "summary": "Get template metadata",
+        "description": "This endpoint retrieves a template metadata based on sponsor ID, fund group ID and entity ID.",
+        "operationId": "getTemplateMetadata",
         "parameters": [
           {
             "name": "sponsorId",
@@ -35,38 +567,37 @@
             "description": "ID of the sponsor"
           },
           {
-            "name": "eventTypeId",
+            "name": "fundGroupId",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             },
-            "description": "ID of the event type in UUID format"
+            "description": "ID of the fund group id"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the entity"
           }
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved list of template metadata",
+            "description": "Successfully retrieved template metadata",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TemplateMetadata"
-                  }
+                  "$ref": "#/components/schemas/TemplateMetadata"
                 },
-                "example": [
-                  {
-                    "id": 101,
-                    "box_id": "template-box-001",
-                    "name": "Standard Distribution Template"
-                  },
-                  {
-                    "id": 102,
-                    "box_id": "template-box-002",
-                    "name": "Capital Call Template"
-                  }
-                ]
+                "example": {
+                  "id": 101,
+                  "box_id": "template-box-001",
+                  "name": "Standard Distribution Template"
+                }
               }
             }
           },
@@ -206,13 +737,150 @@
           "name"
         ]
       },
+      "CeBoxItemInfo": {
+        "type":"object",
+        "description": "The general information about box item.",
+        "properties": {
+          "name": {
+            "description": "The name of the file.",
+            "type": "string"
+          },
+          "parentFolderId": {
+            "description": "The id of the parent item to access in the box service.",
+            "type": "string"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp of the last item modification."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp of item creation."
+          },
+          "size": {
+            "type": "long",
+            "description": "The required disk space to store the file"
+          }
+        }
+      },
+      "CeBoxItem": {
+        "type": "object",
+        "description": "The common information about box item.",
+        "properties": {
+          "id": {
+            "description": "The id of the item to access in the box service.",
+            "type": "string"
+          },
+          "info": {
+            "$ref": "#/components/schemas/CeBoxItemInfo"
+          }
+        }
+      },
+      "CeBoxFile": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CeBoxItem"
+          },
+          {
+            "type":"object",
+            "description": "The content of the file int the box.",
+            "properties": {
+              "content": {
+                "type" : "string",
+                "format": "binary"
+              }
+            }
+          }
+        ]
+      },
+      "NamedObject": {
+        "type": "object",
+        "description": "The common structure of the object with name and id.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique id of the object in the system."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the object in the system."
+          }
+        }
+      },
+      "Sponsor": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NamedObject"
+          }
+        ]
+      },
+      "FundGroup": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NamedObject"
+          }
+        ]
+      },
+      "Entity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NamedObject"
+          }
+        ]
+      },
+      "Template": {
+        "type": "object",
+        "description": "The information about template in the system.",
+        "properties": {
+          "id":{
+            "type": "string",
+            "description": "The id of the template registered in the library in UUID format."
+          },
+          "boxFile": {
+            "$ref": "#/components/schemas/CeBoxFile"
+          },
+          "description": {
+            "type": "string",
+            "description": "The user description of the template."
+          },
+          "sourceTemplate": {
+            "$ref": "#/components/schemas/Template"
+          },
+          "sponsor": {
+            "$ref": "#/components/schemas/Sponsor"
+          },
+          "fundGroup": {
+            "$ref": "#/components/schemas/FundGroup"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The name or id of the user who created a template."
+          },
+          "modifiedBy": {
+            "type": "string",
+            "description": "The name or id of the user who make the last changes in a template."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Active", "Inactive"],
+            "description": "The status of the template."
+          }
+        },
+        "required": ["id"]
+      },
       "ErrorResponse": {
         "type": "object",
         "description": "Object that represents errors details",
         "properties": {
           "reason": {
             "type": "string",
-            "enum": ["VALIDATION_ERROR", "NOT_FOUND", "INTERNAL_SERVER_ERROR", "UNAUTHORIZED", "FORBIDDEN", "BAD_REQUEST"],
+            "enum": ["VALIDATION_ERROR", "NOT_FOUND", "INTERNAL_SERVER_ERROR", "UNAUTHORIZED", "FORBIDDEN", "BAD_REQUEST", "CONFLICT"],
             "description": "Error reason code"
           },
           "message": {

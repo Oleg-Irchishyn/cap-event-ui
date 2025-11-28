@@ -10,6 +10,7 @@ export class AccountsService {
     /**
      * Retrieve list of accounts
      * @param sponsorId Sponsor ID which accounts to retrieve
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param fsGroupings Financial Groupings to include
      * @param capitalCategories Capital Categories to exclude
      * @returns Account List of accounts
@@ -17,18 +18,50 @@ export class AccountsService {
      */
     public getAccounts(
         sponsorId: string,
+        sessionId: string,
         fsGroupings?: Array<string>,
         capitalCategories?: Array<string>,
     ): CancelablePromise<Array<Account>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/accounts',
+            headers: {
+                'Session-Id': sessionId,
+            },
             query: {
                 'sponsorId': sponsorId,
                 'fsGroupings': fsGroupings,
                 'capitalCategories': capitalCategories,
             },
             errors: {
+                401: `Intacct SessionId is not valid`,
+                404: `No resourse found`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Get mapped account
+     * @param id Source account ID to search for mapped account
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
+     * @returns Account List of accounts
+     * @throws ApiError
+     */
+    public getMappedAccount(
+        id: string,
+        sessionId: string,
+    ): CancelablePromise<Account> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/accounts/mapped/{id}',
+            path: {
+                'id': id,
+            },
+            headers: {
+                'Session-Id': sessionId,
+            },
+            errors: {
+                401: `Intacct SessionId is not valid`,
                 404: `No resourse found`,
                 500: `Server error`,
             },

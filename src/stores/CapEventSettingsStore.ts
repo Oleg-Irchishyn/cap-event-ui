@@ -11,6 +11,7 @@ import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
 import { InvestorEntry, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 import { isFundGroupRowValid } from '@/utils/investment';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -54,8 +55,6 @@ class CapEventSettingsStore {
 
   constructor() {
     makeAutoObservable(this);
-
-    this.fetchInvestments();
   }
 
   *initAccountsSet(sponsorId: string) {
@@ -67,7 +66,11 @@ class CapEventSettingsStore {
   }
 
   *fetchMgmtJournalEntries(entityIds: string[]) {
-    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries(entityIds);
+    const sessionId = getStoredSessionId() ?? '';
+    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries(
+      entityIds,
+      sessionId,
+    );
   }
 
   isGeneralSettingsEmpty(
@@ -151,8 +154,10 @@ class CapEventSettingsStore {
     capitalCategories: string[] = [],
   ) {
     try {
+      const sessionId = getStoredSessionId() ?? '';
       const accounts: Account[] = await ReferenceDataApi.accounts.getAccounts(
         sponsorId,
+        sessionId,
         fsGroupings,
         capitalCategories,
       );
@@ -165,8 +170,9 @@ class CapEventSettingsStore {
 
   *fetchInvestments() {
     try {
+      const sessionId = getStoredSessionId() ?? '';
       this.areInvestmentsLoading = true;
-      this.investments = yield ReferenceDataApi.investments.getInvestments();
+      this.investments = yield ReferenceDataApi.investments.getInvestments(sessionId);
     } catch (error) {
       console.error(error);
       this.investments = [];

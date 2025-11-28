@@ -9,6 +9,7 @@ import { AccountsService } from './services/AccountsService';
 import { EntitiesService } from './services/EntitiesService';
 import { FundGroupsService } from './services/FundGroupsService';
 import { InvestmentsService } from './services/InvestmentsService';
+import { JournalEntryService } from './services/JournalEntryService';
 import { QueriesService } from './services/QueriesService';
 import { SponsorsService } from './services/SponsorsService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
@@ -17,12 +18,13 @@ export class ReferenceDataClient {
     public readonly entities: EntitiesService;
     public readonly fundGroups: FundGroupsService;
     public readonly investments: InvestmentsService;
+    public readonly journalEntry: JournalEntryService;
     public readonly queries: QueriesService;
     public readonly sponsors: SponsorsService;
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = AxiosHttpRequest) {
         this.request = new HttpRequest({
-            BASE: config?.BASE ?? '/api/v1/reference-data',
+            BASE: config?.BASE ?? 'http://localhost:8080/api/v1/reference-data',
             VERSION: config?.VERSION ?? '1',
             WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,
             CREDENTIALS: config?.CREDENTIALS ?? 'include',
@@ -36,6 +38,7 @@ export class ReferenceDataClient {
         this.entities = new EntitiesService(this.request);
         this.fundGroups = new FundGroupsService(this.request);
         this.investments = new InvestmentsService(this.request);
+        this.journalEntry = new JournalEntryService(this.request);
         this.queries = new QueriesService(this.request);
         this.sponsors = new SponsorsService(this.request);
     }

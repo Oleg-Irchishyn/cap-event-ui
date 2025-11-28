@@ -15,10 +15,12 @@ import { CapEventPackageApi } from '@/api';
 import { getValidDate } from '@/utils/getValidDate';
 import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 import { AllocationInput } from '@/clients/CapEventPackage';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const AllocationPreviewModal: FC = () => {
   const [allocationBasis, setAllocationBasis] = useState<string>('');
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const sessionId = getStoredSessionId() ?? '';
 
   const isModalOpen = capEventSettingsStore.isAllocationPreviewModalOpen;
 
@@ -49,6 +51,7 @@ const AllocationPreviewModal: FC = () => {
               const data = await CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
                 batchNo,
                 originAccountKey,
+                sessionId,
               );
               capEventSettingsStore.setAllocationPreviewModalData(data);
             }
@@ -82,7 +85,7 @@ const AllocationPreviewModal: FC = () => {
               amount: previewEntityData.amount,
             };
 
-            const data = await CapEventPackageApi.default.allocateLineItem(requestBody);
+            const data = await CapEventPackageApi.default.allocateLineItem(sessionId, requestBody);
             capEventSettingsStore.setAllocationPreviewModalData(data);
           }
         }

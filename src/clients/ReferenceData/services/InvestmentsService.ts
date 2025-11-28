@@ -9,15 +9,22 @@ export class InvestmentsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Retrieve list of investments
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns Investment List of investments
      * @throws ApiError
      */
-    public getInvestments(): CancelablePromise<Array<Investment>> {
+    public getInvestments(
+        sessionId: string,
+    ): CancelablePromise<Array<Investment>> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/investments',
+            headers: {
+                'Session-Id': sessionId,
+            },
             errors: {
                 400: `Bad request`,
+                401: `Intacct SessionId is not valid`,
                 500: `Server error`,
             },
         });

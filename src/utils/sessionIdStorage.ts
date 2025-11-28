@@ -4,7 +4,9 @@ const SESSION_ID_STORAGE_KEY = 'cap-event-session-id';
 let fetchPromise: Promise<string | undefined> | null = null;
 
 /**
- * Gets the stored sessionId from sessionStorage
+ * Gets the stored sessionId from sessionStorage, with fallback to URL
+ * This ensures that when navigating to a page with a new sessionId in the URL,
+ * the new sessionId is returned even if initializeSessionId hasn't completed yet.
  * @returns sessionId string or undefined if not found
  */
 export const getStoredSessionId = (): string | undefined => {
@@ -13,6 +15,19 @@ export const getStoredSessionId = (): string | undefined => {
   }
 
   try {
+    // First check URL for sessionId (takes priority when navigating with new sessionId)
+    const params = new URLSearchParams(window.location.search);
+    const urlSessionId = params.get('sess') ?? params.get('sessionId') ?? undefined;
+    if (urlSessionId) {
+      // Update sessionStorage with the URL sessionId if it's different
+      const storedSessionId = sessionStorage.getItem(SESSION_ID_STORAGE_KEY);
+      if (storedSessionId !== urlSessionId) {
+        sessionStorage.setItem(SESSION_ID_STORAGE_KEY, urlSessionId);
+      }
+      return urlSessionId;
+    }
+
+    // Fallback to sessionStorage
     return sessionStorage.getItem(SESSION_ID_STORAGE_KEY) ?? undefined;
   } catch {
     return undefined;

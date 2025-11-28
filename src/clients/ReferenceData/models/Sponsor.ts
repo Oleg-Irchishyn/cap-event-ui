@@ -7,6 +7,7 @@ export type Sponsor = {
     name?: string;
     status?: Sponsor.status;
     salesforceId?: string;
+    companyIds?: Array<string>;
 };
 export namespace Sponsor {
     export enum status {
