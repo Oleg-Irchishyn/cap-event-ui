@@ -16,6 +16,7 @@ import {
   DragStoppedEvent,
   ColumnState,
   ColumnResizedEvent,
+  PostSortRowsParams,
 } from 'ag-grid-community';
 
 import { Header, TableWrapper } from './styles';
@@ -36,6 +37,7 @@ type Props = {
   onDragStopped?: (e: DragStoppedEvent) => void;
   headerLabel?: string;
   height?: number | string; // when provided, grid will use internal scroll with fixed container height
+  postSortRows?: (params: PostSortRowsParams) => void;
 };
 
 interface RowData {
@@ -62,6 +64,7 @@ const ConfigurationTable: FC<Props> = ({
   onDragStopped,
   headerLabel,
   height,
+  postSortRows,
 }) => {
   const defaultColDef = useMemo(
     () => ({
@@ -199,6 +202,7 @@ const ConfigurationTable: FC<Props> = ({
           applyColumnStateFromDefsAndSaved();
         }}
         onColumnResized={handleColumnResized}
+        postSortRows={postSortRows}
         getRowId={(params) => {
           const data = params.data as GridRow & { id?: string };
           return data.id ?? String(data._index);

@@ -221,16 +221,16 @@ export const Label = styled.span(({ theme }) => ({
   whiteSpace: 'nowrap',
   fontWeight: 400,
 
+  '&[data-is-clickable="false"]': {
+    color: theme.colors.textSecondary,
+  },
+
   '&[data-is-placeholder="true"]': {
     color: theme.colors.textDisabled,
     fontStyle: 'italic',
   },
 
   '&[data-is-inherited="true"]': {
-    color: theme.colors.textSecondary,
-  },
-
-  '&[data-is-clickable="false"]': {
     color: theme.colors.textSecondary,
   },
 }));

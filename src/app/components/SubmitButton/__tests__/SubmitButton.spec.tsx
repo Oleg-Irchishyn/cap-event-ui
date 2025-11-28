@@ -46,6 +46,7 @@ jest.mock('@/api', () => ({
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
+    resetAfterPreview: jest.fn(),
     investments: [{ id: 'inv1', name: 'Investment 1', title: 'Investment 1 Title', type: 'Type1' }],
     fundEntities: [
       { id: 'ent1', label: 'Entity 1', name: 'Entity 1', state: 'SELECTED' },
@@ -89,6 +90,7 @@ jest.mock('@/stores', () => ({
     ]),
   },
   entityDatesStore: {
+    resetAllDates: jest.fn(),
     noticeDate: new Date('2024-01-01'),
     entityDates: {
       'Entity 1': {

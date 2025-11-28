@@ -6,7 +6,7 @@ import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 import { getPreviewScreenColumnDefs } from '@/utils/getPreviewScreenColumnDefs';
 
-import { PreviewScreenTableProps, PreviewScreenRow } from './types';
+import { PreviewScreenRow, PreviewScreenTableProps } from './types';
 
 const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
   rows,

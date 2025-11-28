@@ -1,4 +1,4 @@
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import {
   ENTITY_ID_HEADER,
@@ -21,6 +21,7 @@ import {
   EMPTY_INVESTOR_TYPE_TWO_VALUE,
 } from '@/const/previewScreen';
 import { formatAmount } from '@/utils/formatAmount';
+import { TotalCell } from '@/app/preview-screen/TotalCell';
 
 export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   // Entity ID
@@ -128,5 +129,120 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
       isLoading
         ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
         : undefined,
+  },
+];
+
+const amountCellRendererSelector = (params: ICellRendererParams, isLoading?: boolean) => {
+  if (isLoading)
+    return { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } };
+  if (params.data?.isTotalRow) return { component: TotalCell };
+  return undefined;
+};
+
+const nameCellRendererSelector = (params: ICellRendererParams, isLoading?: boolean) => {
+  if (isLoading) return { component: SkeletonCellRenderer, params: { widthPercent: 60 } };
+  if (params.data?.isTotalRow)
+    return { component: TotalCell, params: { ...params, textAlign: 'left' } };
+  return undefined;
+};
+
+export const getPreviewSubTotalColumnDefs = (isLoading?: boolean): ColDef[] => [
+  // Entity Name - aligns with column 2 from first table
+  {
+    headerName: ENTITY_NAME_HEADER,
+    field: ENTITY_NAME_FIELD,
+    flex: 2,
+    sortable: true,
+    resizable: true,
+    cellRendererSelector: (params: ICellRendererParams) =>
+      nameCellRendererSelector(params, isLoading),
+  },
+  // Empty spacer column to align with Entity ID column from first table
+  {
+    headerName: '',
+    flex: 1,
+    sortable: false,
+    resizable: false,
+    suppressHeaderMenuButton: true,
+    suppressMovable: true,
+    suppressSizeToFit: true,
+    cellStyle: { visibility: 'hidden' },
+    headerClass: 'ag-hidden-header',
+  },
+  // Empty spacer column to align with Investor ID column from first table
+  {
+    headerName: '',
+    flex: 1,
+    sortable: false,
+    resizable: false,
+    suppressHeaderMenuButton: true,
+    suppressMovable: true,
+    suppressSizeToFit: true,
+    cellStyle: { visibility: 'hidden' },
+    headerClass: 'ag-hidden-header',
+  },
+  // Empty spacer column to align with Investor Name column from first table
+  {
+    headerName: '',
+    flex: 1.5,
+    sortable: false,
+    resizable: false,
+    suppressHeaderMenuButton: true,
+    suppressMovable: true,
+    suppressSizeToFit: true,
+    cellStyle: { visibility: 'hidden' },
+    headerClass: 'ag-hidden-header',
+  },
+  // Empty spacer column to align with Investor Type I column from first table
+  {
+    headerName: '',
+    flex: 1,
+    sortable: false,
+    resizable: false,
+    suppressHeaderMenuButton: true,
+    suppressMovable: true,
+    suppressSizeToFit: true,
+    cellStyle: { visibility: 'hidden' },
+    headerClass: 'ag-hidden-header',
+  },
+  // Empty spacer column to align with Investor Type II column from first table
+  {
+    headerName: '',
+    flex: 1.2,
+    sortable: false,
+    resizable: false,
+    suppressHeaderMenuButton: true,
+    suppressMovable: true,
+    suppressSizeToFit: true,
+    cellStyle: { visibility: 'hidden' },
+    headerClass: 'ag-hidden-header',
+  },
+  // Total Capital Commitment - aligns with column 7 from first table
+  {
+    headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
+    field: COMMITMENT_FIELD,
+    flex: 1.5,
+    sortable: true,
+    resizable: true,
+    headerClass: 'ag-right-aligned-header',
+    valueGetter: (params) => {
+      return formatAmount(params.data.commitment);
+    },
+    cellStyle: { textAlign: 'right' },
+    cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
+  },
+  // Total Amount Due - aligns with column 8 from first table
+  {
+    headerName: TOTAL_AMOUNT_DUE_HEADER,
+    field: AMOUNT_FIELD,
+    flex: 1,
+    sortable: true,
+    resizable: true,
+    headerClass: 'ag-right-aligned-header',
+    valueGetter: (params) => {
+      return formatAmount(params.data.allocatedAmount);
+    },
+    cellStyle: { textAlign: 'right' },
+    cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
   },
 ];

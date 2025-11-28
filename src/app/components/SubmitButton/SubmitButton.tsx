@@ -114,6 +114,9 @@ const SubmitButton = () => {
       };
       const response = await CapEventPackageApi.default.create(requestBody);
       if (response.status === CapEventStatus.SUBMITTED) {
+        // Reset selections and dates when leaving the preview screen, till we don't have local data base
+        capEventSettingsStore.resetAfterPreview();
+        entityDatesStore.resetAllDates();
         toast.success('Successfully Saved');
         router.push(ROUTES.MAIN.path);
       }

@@ -26,4 +26,9 @@ interface PreviewScreenTableProps {
   onRowClicked?: (e: RowClickedEvent) => void;
 }
 
-export type { PreviewScreenRow, PreviewScreenTableProps };
+type SubTotalTableRow = Pick<
+  PreviewScreenRow,
+  'id' | 'entityName' | 'allocatedAmount' | 'commitment'
+>;
+
+export type { PreviewScreenRow, PreviewScreenTableProps, SubTotalTableRow };

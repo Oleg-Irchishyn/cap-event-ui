@@ -5,7 +5,6 @@ import { RowClickedEvent } from 'ag-grid-community';
 import { observer } from 'mobx-react-lite';
 
 import { previewScreenStore } from '@/stores/PreviewScreenStore';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';
@@ -13,27 +12,40 @@ import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
 import { Title, Wrapper } from '@/app/new/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
-import { PreviewScreenRow } from './types';
+import { PreviewScreenRow, SubTotalTableRow } from './types';
+import PreviewSubTotalTable from '@/app/preview-screen/PreviewSubTotalTable';
 
 const PreviewScreenDetails = () => {
   const toast = useToast();
   const [rows, setRows] = useState<PreviewScreenRow[]>([]);
   const [selectedRow, setSelectedRow] = useState<PreviewScreenRow | null>(null);
   const [noticePreviewDoc, setNoticePreviewDoc] = useState<Blob | null>(null);
+  const [subTotalRows, setSubTotalRows] = useState<SubTotalTableRow[]>([]);
 
   useEffect(() => {
     const process = async () => {
       setRows([]);
       const newRows = await previewScreenStore.processPayload(toast);
       setRows(newRows);
+      const temp = newRows.reduce((acc, row) => {
+        if (!row.isAggregated) return acc;
+        const existing = acc.find((item) => item.entityName === row.entityName);
+        if (existing) {
+          existing.allocatedAmount += row.allocatedAmount ?? 0;
+          existing.commitment = (existing.commitment ?? 0) + (row.commitment ?? 0);
+        } else {
+          acc.push({
+            id: row.id,
+            entityName: row.entityName,
+            allocatedAmount: row.allocatedAmount ?? 0,
+            commitment: row.commitment ?? 0,
+          } as SubTotalTableRow);
+        }
+        return acc;
+      }, [] as SubTotalTableRow[]);
+      setSubTotalRows(temp);
     };
     process();
-
-    // Reset selections and dates when leaving the preview screen, till we don't have local data base
-    return () => {
-      capEventSettingsStore.resetAfterPreview();
-      entityDatesStore.resetAllDates();
-    };
   }, [toast]);
 
   const onRowClicked = async (e: RowClickedEvent) => {
@@ -60,6 +72,11 @@ const PreviewScreenDetails = () => {
             rows={rows}
             isLoading={previewScreenStore.isLoading}
             onRowClicked={onRowClicked}
+          />
+          <PreviewSubTotalTable
+            rows={subTotalRows}
+            testId={prepareDataTestId('sub-total-table', 'preview-screen')}
+            isLoading={previewScreenStore.isLoading}
           />
         </Wrapper>
       </BackgroundContainer>
