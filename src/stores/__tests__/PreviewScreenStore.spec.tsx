@@ -1,23 +1,22 @@
 import axios from 'axios';
 import type { ToastApi } from '@/providers/types';
 import { ITEM_STATES } from '@/const/common';
+import type { PreviewScreenRow } from '@/app/preview-screen/types';
 
 const processMock = jest.fn();
 const parseMock = jest.fn();
-const axiosGetMock = jest.fn();
+const axiosPostMock = jest.fn();
 
 jest.mock('axios', () => ({
   __esModule: true,
-  default: { get: (...args: unknown[]) => axiosGetMock(...args) },
+  default: { post: (...args: unknown[]) => axiosPostMock(...args) },
 }));
 
 jest.mock('@/api', () => ({
   CapEventPackageApi: {
     default: { process: (...args: unknown[]) => processMock(...args) },
-  },
-  BoxConnectorApi: {
     request: {
-      config: { BASE: 'https://api.example.com', WITH_CREDENTIALS: true },
+      config: { BASE: 'https://cap.example.com', WITH_CREDENTIALS: true },
     },
   },
 }));
@@ -115,8 +114,8 @@ describe('PreviewScreenStore', () => {
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
-    axiosGetMock.mockReset();
-    (axios as unknown as { get: jest.Mock }).get = axiosGetMock as unknown as jest.Mock;
+    axiosPostMock.mockReset();
+    (axios as unknown as { post: jest.Mock }).post = axiosPostMock as unknown as jest.Mock;
   });
 
   const importStore = async () => {
@@ -231,31 +230,110 @@ describe('PreviewScreenStore', () => {
     expect(store.isLoading).toBe(false);
   });
 
-  it('fetchDoc success returns blob and uses BoxConnectorApi config', async () => {
+  it('fetchDoc success posts to investor document endpoint and returns blob', async () => {
     const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
-    // Use environment-agnostic Blob constructor
-    const blob = new (BlobCtor as new (...args: unknown[]) => unknown)();
-    axiosGetMock.mockResolvedValueOnce({ data: blob });
 
-    const result = await store.fetchDoc('file-123', toast);
+    // Arrange: process response with entity and multiple investors
+    const processResponse = [
+      {
+        entity: { id: 'E1', name: 'Entity 1' },
+        plInvestorEntries: [
+          { customerId: 'INV1', investor: 'INV1-Name' },
+          { customerId: 'INV2', investor: 'INV2-Name' },
+        ],
+      },
+    ];
+    processMock.mockResolvedValueOnce(processResponse);
+    parseMock.mockReturnValueOnce([]);
+    await store.processPayload(toast);
 
-    expect(axiosGetMock).toHaveBeenCalledWith('https://api.example.com/files/file-123/content', {
-      responseType: 'blob',
-      headers: { Accept: 'application/octet-stream' },
-      withCredentials: true,
+    // Arrange axios POST blob response
+    const blob = new (BlobCtor as new (...args: unknown[]) => unknown)(['x'], {
+      type: 'application/octet-stream',
+    } as unknown);
+    axiosPostMock.mockResolvedValueOnce({
+      data: blob,
+      headers: { 'content-type': 'application/octet-stream' },
     });
+
+    // Call with aggregated row selecting INV1 of entity E1
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investor: 'INV1-Name',
+        investorId: 'INV1',
+        entityId: 'E1',
+        entityName: 'Entity 1',
+        description: '',
+        allocatedAmount: 0,
+        isAggregated: true,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(axiosPostMock).toHaveBeenCalledTimes(1);
+    const [url, body, options] = axiosPostMock.mock.calls[0];
+    expect(url).toBe('https://cap.example.com/cap-events/investors/document');
+    expect(options).toEqual(
+      expect.objectContaining({
+        responseType: 'blob',
+        withCredentials: true,
+      }),
+    );
+    expect(options.headers).toEqual(
+      expect.objectContaining({
+        Accept: 'application/octet-stream, application/json',
+        'Content-Type': 'application/json',
+        'Session-Id': '',
+      }),
+    );
+    // body must include capEvent and filtered lineItem with only INV1
+    expect(body).toEqual(
+      expect.objectContaining({
+        capEvent: expect.any(Object),
+        lineItem: expect.objectContaining({
+          entity: expect.objectContaining({ id: 'E1' }),
+          plInvestorEntries: [expect.objectContaining({ customerId: 'INV1' })],
+        }),
+      }),
+    );
     expect(result).toBeInstanceOf(BlobCtor);
   });
 
-  it('fetchDoc error shows toast and returns undefined', async () => {
+  it('fetchDoc json error surfaces toast and returns undefined', async () => {
     const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
-    axiosGetMock.mockRejectedValueOnce(new Error('Oops'));
 
-    const result = await store.fetchDoc('file-123', toast);
+    // Prepare process context
+    processMock.mockResolvedValueOnce([
+      { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
+    ]);
+    parseMock.mockReturnValueOnce([]);
+    await store.processPayload(toast);
 
-    expect(toast.error).toHaveBeenCalledWith('Failed to fetch Box file content');
+    // Simulate JSON error response body with a .text() reader (matches store's parsing path)
+    const errorBody = { text: async () => JSON.stringify({ message: 'Bad request' }) };
+    axiosPostMock.mockResolvedValueOnce({
+      data: errorBody,
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investor: 'INV1-Name',
+        investorId: 'INV1',
+        entityId: 'E1',
+        entityName: 'Entity 1',
+        description: '',
+        allocatedAmount: 0,
+        isAggregated: true,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith('Bad request');
     expect(result).toBeUndefined();
   });
 });

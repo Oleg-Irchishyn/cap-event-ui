@@ -9,6 +9,7 @@ import type { CapEventLineItemResponse } from '../models/CapEventLineItemRespons
 import type { CapEventStatus } from '../models/CapEventStatus';
 import type { CapEventType } from '../models/CapEventType';
 import type { FundGroupAllocationInput } from '../models/FundGroupAllocationInput';
+import type { InvestorDocumentInput } from '../models/InvestorDocumentInput';
 import type { InvestorEntry } from '../models/InvestorEntry';
 import type { MgmtFeeJournalEntry } from '../models/MgmtFeeJournalEntry';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -240,6 +241,32 @@ export class DefaultService {
             errors: {
                 400: `Bad request`,
                 401: `Intacct SessionId is not valid`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Generate document content for Investor. Request line item should contain plInvestorEntries related to only one Investor
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
+     * @param requestBody
+     * @returns binary Binary data of generated investor document
+     * @throws ApiError
+     */
+    public investorDocumentContent(
+        sessionId: string,
+        requestBody: InvestorDocumentInput,
+    ): CancelablePromise<Blob> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/cap-events/investors/document',
+            headers: {
+                'Session-Id': sessionId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad request`,
+                404: `Resource not found`,
                 500: `Server error`,
             },
         });

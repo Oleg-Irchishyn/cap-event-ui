@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
+
+import { CapEventPackageApi } from '@/api';
 import axios from 'axios';
-import { BoxConnectorApi, CapEventPackageApi } from '@/api';
 import {
   CapEvent,
   CapEventEntityLineItem,
@@ -12,6 +13,8 @@ import {
   Sponsor as ApiSponsor,
   FundGroup as ApiFundGroup,
   CapEventType as ApiCapEventType,
+  CapEventLineItemResponse,
+  InvestorDocumentInput,
 } from '@/clients/CapEventPackage';
 import { Account as RefAccount, Investment as RefInvestment } from '@/clients/ReferenceData';
 import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
@@ -32,6 +35,8 @@ class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
   isLoading = false;
   private inFlightProcess: Promise<PreviewScreenRow[]> | null = null;
+  private lastProcessResponse: CapEventLineItemResponse[] = [];
+  private lastCapEvent: CapEvent | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -386,6 +391,9 @@ class PreviewScreenStore {
         this.isLoading = true;
         this.rows = [];
         const response = await CapEventPackageApi.default.process(sessionId, requestPayload);
+        this.lastCapEvent = requestPayload;
+        this.lastProcessResponse = Array.isArray(response) ? response : [];
+
         const parsed = parseToPreviewScreenRows(response);
         this.rows = parsed;
         return parsed;
@@ -393,6 +401,7 @@ class PreviewScreenStore {
         const message = err instanceof Error ? err.message : 'Processing failed. Please try again.';
         toast?.error?.(message);
         this.rows = [];
+        this.lastCapEvent = null;
         return [];
       } finally {
         this.isLoading = false;
@@ -402,19 +411,85 @@ class PreviewScreenStore {
     return this.inFlightProcess;
   }
 
-  async fetchDoc(ceBoxFileId: string, toast?: ToastApi): Promise<Blob | undefined> {
+  async fetchDoc(
+    selectedRow: PreviewScreenRow | null | undefined,
+    toast?: ToastApi,
+  ): Promise<Blob | undefined> {
     try {
-      if (!ceBoxFileId) return;
-      const base = BoxConnectorApi.request.config.BASE ?? '';
-      const url = `${base}/files/${encodeURIComponent(ceBoxFileId)}/content`;
-      const resp = await axios.get(url, {
+      if (!selectedRow?.isAggregated || !selectedRow.entityId || !selectedRow.investorId) {
+        toast?.error?.('Please select an aggregated investor row to generate a document');
+        return;
+      }
+
+      // Use capEvent payload from the last successful process call
+      const capEventPayload = this.lastCapEvent;
+      if (!capEventPayload) {
+        toast?.error?.('No processed cap event found. Please re-run preview.');
+        return;
+      }
+
+      // Find corresponding entity-level line item from last process response
+      const entityLineItem = (this.lastProcessResponse || []).find(
+        (li) => (li?.entity?.id ?? '') === selectedRow.entityId,
+      );
+
+      if (!entityLineItem) {
+        toast?.error?.('No processed data found for selected entity. Please re-run preview.');
+        return;
+      }
+
+      // Filter investor entries for the selected investorId
+      const filteredEntries = (
+        Array.isArray(entityLineItem.plInvestorEntries) ? entityLineItem.plInvestorEntries : []
+      ).filter((e) => (e?.customerId ?? '') === selectedRow.investorId);
+
+      if (filteredEntries.length === 0) {
+        toast?.error?.('No investor entries found for the selected investor');
+        return;
+      }
+
+      const lineItem: CapEventLineItemResponse = {
+        ...entityLineItem,
+        plInvestorEntries: filteredEntries,
+      };
+
+      const requestBody: InvestorDocumentInput = {
+        capEvent: capEventPayload,
+        lineItem,
+      };
+
+      const sessionId = getStoredSessionId() ?? '';
+      const base = CapEventPackageApi.request.config.BASE ?? '';
+      const url = `${base}/cap-events/investors/document`;
+
+      const resp = await axios.post(url, requestBody, {
         responseType: 'blob',
-        headers: { Accept: 'application/octet-stream' },
-        withCredentials: BoxConnectorApi.request.config.WITH_CREDENTIALS ?? false,
+        headers: {
+          Accept: 'application/octet-stream, application/json',
+          'Content-Type': 'application/json',
+          'Session-Id': sessionId,
+        },
+        withCredentials: CapEventPackageApi.request.config.WITH_CREDENTIALS ?? false,
       });
+
+      const contentType = String(resp.headers?.['content-type'] || '');
+      if (contentType.includes('application/json')) {
+        const text = await (resp.data as Blob).text().catch(() => '');
+        try {
+          const parsed = text ? JSON.parse(text) : {};
+          const msg =
+            (parsed && (parsed.message || parsed.error || parsed.detail)) ||
+            'Failed to generate investor document';
+          toast?.error?.(msg);
+        } catch {
+          toast?.error?.('Failed to generate investor document');
+        }
+        return;
+      }
+
       return resp.data as Blob;
     } catch {
-      toast?.error?.('Failed to fetch Box file content');
+      toast?.error?.('Failed to generate investor document');
       return;
     }
   }

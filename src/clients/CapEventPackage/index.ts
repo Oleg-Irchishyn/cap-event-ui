@@ -25,6 +25,7 @@ export { ErrorResponse } from './models/ErrorResponse';
 export type { FundGroup } from './models/FundGroup';
 export type { FundGroupAllocationInput } from './models/FundGroupAllocationInput';
 export type { Investment } from './models/Investment';
+export type { InvestorDocumentInput } from './models/InvestorDocumentInput';
 export type { InvestorEntry } from './models/InvestorEntry';
 export type { LineItemBase } from './models/LineItemBase';
 export type { MgmtFeeJournalEntry } from './models/MgmtFeeJournalEntry';

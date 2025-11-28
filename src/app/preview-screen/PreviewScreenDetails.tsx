@@ -39,7 +39,7 @@ const PreviewScreenDetails = () => {
   const onRowClicked = async (e: RowClickedEvent) => {
     if (e.data?.isAggregated) {
       setSelectedRow(e.data);
-      const blob = await previewScreenStore.fetchDoc(e.data.ceBoxFileId);
+      const blob = await previewScreenStore.fetchDoc(e.data, toast);
       setNoticePreviewDoc(blob ?? null);
     }
   };

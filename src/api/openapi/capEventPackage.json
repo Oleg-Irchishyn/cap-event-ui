@@ -1017,22 +1017,22 @@
                         {
                           "amount": 50000.00,
                           "batchDate": "2025-11-15",
-                          "batchTitle": "Q4 Management Fees",
-                          "batchNo": "BATCH001"
+                          "description": "Q4 Management Fees",
+                          "batchNo": 1234
                         },
                         {
                           "amount": 75000.00,
                           "batchDate": "2025-11-20",
-                          "batchTitle": "November Management Fees",
-                          "batchNo": "BATCH002"
+                          "description": "November Management Fees",
+                          "batchNo": 1235
                         }
                       ],
                       "ENTITY002": [
                         {
                           "amount": 30000.00,
                           "batchDate": "2025-11-15",
-                          "batchTitle": "Q4 Management Fees",
-                          "batchNo": "BATCH001"
+                          "description": "Q4 Management Fees",
+                          "batchNo": 1236
                         }
                       ]
                     }
@@ -1337,6 +1337,104 @@
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
                   "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/investors/document": {
+      "post": {
+        "summary": "Generate document content for Investor. Request line item should contain plInvestorEntries related to only one Investor",
+        "operationId": "investorDocumentContent",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvestorDocumentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Binary data of generated investor document",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "example": {
+                  "file": "01000101011101010100110"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Resource not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
                 }
               }
             }
@@ -1775,9 +1873,6 @@
           "lineItemAmount": {
             "type": "number"
           },
-          "allocationBasis": {
-            "type": "string"
-          },
           "ceBoxFileId": {
             "type": "string"
           }
@@ -1820,12 +1915,12 @@
             "format": "date",
             "description": "Batch date"
           },
-          "batchTitle": {
+          "description": {
             "type": "string",
-            "description": "Batch title"
+            "description": "Description"
           },
           "batchNo": {
-            "type": "string",
+            "type": "integer",
             "description": "Batch number"
           }
         }
@@ -1858,6 +1953,18 @@
           "dueDate": {
             "type": "string",
             "format": "date"
+          }
+        }
+      },
+      "InvestorDocumentInput": {
+        "type": "object",
+        "required": ["capEvent", "lineItem"],
+        "properties": {
+          "capEvent": {
+            "$ref": "#/components/schemas/CapEvent"
+          },
+          "lineItem": {
+            "$ref": "#/components/schemas/CapEventLineItemResponse"
           }
         }
       }

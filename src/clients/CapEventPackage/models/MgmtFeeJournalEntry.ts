@@ -12,12 +12,12 @@ export type MgmtFeeJournalEntry = {
      */
     batchDate?: string;
     /**
-     * Batch title
+     * Description
      */
-    batchTitle?: string;
+    description?: string;
     /**
      * Batch number
      */
-    batchNo?: string;
+    batchNo?: number;
 };
 

@@ -33,7 +33,7 @@ const prepareMgmtEntryOptions = (mgmtOptions?: MgmtFeeJournalEntry[]) =>
       label: item.amount?.toLocaleString() ?? '',
       displayName: `${item.amount?.toLocaleString()} (${formatedDate})`,
       description: `Posting Date: ${formatedDate}`,
-      additionalDescription: `Description: ${item.batchTitle}`,
+      additionalDescription: `Description: ${item.description}`,
     };
   }) ?? [];
 
