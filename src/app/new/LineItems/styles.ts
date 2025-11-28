@@ -1,3 +1,4 @@
+import { theme } from '@/ui/globalStyles';
 import styled, { css, keyframes } from 'styled-components';
 
 const spin = keyframes({
@@ -493,6 +494,17 @@ export const ModalButtonContainer = styled.div({
 
 export const ModalContent = styled.div({
   marginBottom: '24px',
-  overflowY: 'scroll',
+  overflow: 'auto',
   maxHeight: '400px',
+
+  '&::-webkit-scrollbar': {
+    width: '7px',
+    height: '7px',
+    backgroundColor: 'transparent',
+  },
+
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: `${theme.colors.gray300}`,
+    borderRadius: '10px',
+  },
 });
