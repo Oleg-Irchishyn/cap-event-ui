@@ -1,4 +1,4 @@
 apiVersion: v2
 name: cap-event-ui
-version: 0.0.58
-appVersion: 0.0.58
+version: 0.0.59
+appVersion: 0.0.59

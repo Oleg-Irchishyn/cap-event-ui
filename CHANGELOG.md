@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.59](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.58&targetVersion=GTv0.0.59) (2025-11-29)
+
+
+### Features
+
+* [TASK-8172]: [FE] Implement Notice Preview optimization ([8747677](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/874767702b0b8c72b4c7997efaa6957bde453d0e)), closes [#8172](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8172)
+* add preview screen subtotal table ([a10a2a4](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a10a2a4d647e7ecc07e5cf5274484a2089b47a7d)), closes [#8256](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8256)
+* added total amount field to Preview Modal ([13a47bb](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/13a47bb8871ceece9fecc8221ab69b56345e4526)), closes [#6979](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6979)
+* added two MF columns to preview ([68bdb67](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/68bdb6776ce06e7193f9ab371b1534da6dea2da5)), closes [#7915](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7915)
+* pass sessionId as param ([ea86960](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ea869607f69991edc7abb724f64ae22f94c952d3)), closes [#8223](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8223)
+
+
+### Bug Fixes
+
+* [Issue-8242]: [FE] Scroll arrows are present on the Allocation preview modal, even if it's not needed ([3aef8e3](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/3aef8e3cad87492cb24cef77f6f3f826d1432b72)), closes [#8242](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8242)
+* MF/Allocated amount format ([b7baa2f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/b7baa2f59d100b0be5afd20f3381cf7a89afe2f0)), closes [#8271](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8271)
+
 ### [0.0.58](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.57&targetVersion=GTv0.0.58) (2025-11-28)
 
 
