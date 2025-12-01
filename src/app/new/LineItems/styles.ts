@@ -471,7 +471,7 @@ export const ModalWrapper = styled.div(({ theme }) => ({
 
 export const ModalContainer = styled.div(({ theme }) => ({
   position: 'relative',
-  background: theme.colors.white,
+  background: theme.colors.lightGray,
   padding: '24px',
   borderRadius: '8px',
   width: '100%',
@@ -493,7 +493,6 @@ export const ModalButtonContainer = styled.div({
 });
 
 export const ModalContent = styled.div({
-  marginBottom: '24px',
   overflow: 'auto',
   maxHeight: '400px',
 
@@ -507,4 +506,11 @@ export const ModalContent = styled.div({
     backgroundColor: `${theme.colors.gray300}`,
     borderRadius: '10px',
   },
+});
+
+export const TotalItemsRow = styled.div({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  fontSize: '14px',
+  fontWeight: '400',
 });

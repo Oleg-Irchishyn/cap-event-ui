@@ -6,6 +6,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalWrapper,
+  TotalItemsRow,
 } from './styles';
 import { Title } from '../styles';
 import AllocationPreviewTable from './AllocationPreviewTable';
@@ -101,6 +102,8 @@ const AllocationPreviewModal: FC = () => {
 
   if (!isModalOpen) return null;
 
+  const itemCount = capEventSettingsStore.allocationPreviewModalData.length;
+
   return (
     <ModalWrapper>
       <ModalContainer>
@@ -124,6 +127,11 @@ const AllocationPreviewModal: FC = () => {
             rows={capEventSettingsStore.allocationPreviewModalData}
           />
         </ModalContent>
+        {!isDataLoading && itemCount > 0 && (
+          <TotalItemsRow>
+            {itemCount} {itemCount === 1 ? 'item' : 'items'} shown
+          </TotalItemsRow>
+        )}
       </ModalContainer>
     </ModalWrapper>
   );
