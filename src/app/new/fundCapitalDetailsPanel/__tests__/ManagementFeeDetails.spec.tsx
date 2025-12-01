@@ -187,6 +187,7 @@ describe('ManagementFeeDetails', () => {
       await waitFor(() => {
         expect(mockCapEventPackageApi.default.getMgmtFeeLineItems).toHaveBeenCalledWith(
           batchNo,
+          'entity-1',
           '',
         );
       });

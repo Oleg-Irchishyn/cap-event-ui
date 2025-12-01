@@ -866,6 +866,15 @@
             "description": "Batch Number to search for matching entries"
           },
           {
+            "in": "query",
+            "name": "entityId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Entity ID to search for matching entries"
+          },
+          {
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",

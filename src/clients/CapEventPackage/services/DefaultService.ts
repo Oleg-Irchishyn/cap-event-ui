@@ -139,12 +139,14 @@ export class DefaultService {
     /**
      * Retrieve list of CELIs represents uncalled management fee entries
      * @param batchNo Batch Number to search for matching entries
+     * @param entityId Entity ID to search for matching entries
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns CapEventLineItem List of management fee entries
      * @throws ApiError
      */
     public getMgmtFeeLineItems(
         batchNo: number,
+        entityId: string,
         sessionId: string,
     ): CancelablePromise<Array<CapEventLineItem>> {
         return this.httpRequest.request({
@@ -155,6 +157,7 @@ export class DefaultService {
             },
             query: {
                 'batchNo': batchNo,
+                'entityId': entityId,
             },
             errors: {
                 401: `Intacct SessionId is not valid`,

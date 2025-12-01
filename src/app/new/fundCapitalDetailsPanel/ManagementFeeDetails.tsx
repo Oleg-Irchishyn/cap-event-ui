@@ -95,6 +95,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       try {
         mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(
           Number(item.batchNo),
+          entityId,
           sessionId,
         );
       } catch (error) {
