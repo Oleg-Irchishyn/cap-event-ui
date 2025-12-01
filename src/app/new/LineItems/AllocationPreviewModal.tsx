@@ -52,6 +52,7 @@ const AllocationPreviewModal: FC = () => {
               const data = await CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
                 batchNo,
                 originAccountKey,
+                previewEntityData.allocationBasis,
                 sessionId,
               );
               capEventSettingsStore.setAllocationPreviewModalData(data);

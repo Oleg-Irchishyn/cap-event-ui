@@ -201,6 +201,7 @@ export class DefaultService {
      * Retrieve allocated journal entry
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
+     * @param allocationBasis Allocation basis to filter journal entry
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns InvestorEntry List of management fee journal entries grouped by entity ID
      * @throws ApiError
@@ -208,6 +209,7 @@ export class DefaultService {
     public getAllocatedMgmtFeeJournalEntries(
         batchNo: number,
         accountKey: string,
+        allocationBasis: string,
         sessionId: string,
     ): CancelablePromise<Array<InvestorEntry>> {
         return this.httpRequest.request({
@@ -219,6 +221,7 @@ export class DefaultService {
             query: {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
+                'allocationBasis': allocationBasis,
             },
             errors: {
                 400: `Bad request`,

@@ -19,7 +19,7 @@ export type CapEvent = {
      * The list with IDs of selected entities
      */
     entities: Array<Entity>;
-    noticeDate: string;
+    noticeDate?: string;
     status?: CapEventStatus;
     comment?: string;
     footnotes?: Record<string, string>;
