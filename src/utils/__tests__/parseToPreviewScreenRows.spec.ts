@@ -52,7 +52,6 @@ describe('parseToPreviewScreenRows', () => {
       commitment: 0,
       allocatedAmount: 100,
       isAggregated: true,
-      ceBoxFileId: undefined,
     });
 
     expect(rows[1]).toEqual({
@@ -71,7 +70,6 @@ describe('parseToPreviewScreenRows', () => {
       commitment: 0,
       allocatedAmount: 0,
       isAggregated: false,
-      ceBoxFileId: undefined,
     });
   });
 
@@ -108,7 +106,6 @@ describe('parseToPreviewScreenRows', () => {
     expect(rows[0].dataPoints).toBe(undefined);
     expect(rows[0].allocatedAmount).toBe(0);
     expect(rows[0].isAggregated).toBe(false);
-    expect(rows[0].ceBoxFileId).toBe(undefined);
   });
 
   test('handles isAggregated field correctly', () => {

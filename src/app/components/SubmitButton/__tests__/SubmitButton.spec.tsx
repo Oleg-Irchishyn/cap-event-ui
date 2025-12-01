@@ -130,7 +130,7 @@ describe('SubmitButton', () => {
       expect(mockToast.success).toHaveBeenCalledWith('Successfully Saved');
     });
 
-    const requestBody = mockCreate.mock.calls[0][0];
+    const requestBody = mockCreate.mock.calls[0][1];
     expect(requestBody).toHaveProperty('capEventType');
     expect(requestBody).toHaveProperty('sponsor');
     expect(requestBody).toHaveProperty('fundGroup');

@@ -106,6 +106,17 @@
       "post": {
         "summary": "Stores capital event",
         "operationId": "create",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1881,9 +1892,6 @@
           },
           "lineItemAmount": {
             "type": "number"
-          },
-          "ceBoxFileId": {
-            "type": "string"
           }
         }
       },

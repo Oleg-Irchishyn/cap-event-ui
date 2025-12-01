@@ -21,7 +21,6 @@ const mockSelectedRow: PreviewScreenRow = {
   description: 'Test Description',
   allocatedAmount: 1000,
   isAggregated: true,
-  ceBoxFileId: 'file-123',
 };
 
 const renderWithTheme = (

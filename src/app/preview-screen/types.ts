@@ -16,7 +16,6 @@ type PreviewScreenRow = {
   allocatedAmount: number;
   commitment?: number;
   isAggregated?: boolean;
-  ceBoxFileId?: string;
 };
 
 interface PreviewScreenTableProps {

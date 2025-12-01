@@ -34,16 +34,21 @@ export class DefaultService {
     }
     /**
      * Stores capital event
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
      * @returns CapEvent The CapEvent object stored in the system.
      * @throws ApiError
      */
     public create(
+        sessionId: string,
         requestBody: CapEvent,
     ): CancelablePromise<CapEvent> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events',
+            headers: {
+                'Session-Id': sessionId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {

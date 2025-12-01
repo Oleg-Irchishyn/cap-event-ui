@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/const/routes';
 import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
 import { CapEventPackageApi } from '@/api';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
@@ -36,6 +37,8 @@ const SubmitButton = () => {
 
   const handleSaveCapEvent = async () => {
     try {
+      const sessionId = getStoredSessionId() ?? '';
+
       const selectedEntities = capEventSettingsStore.fundEntities.filter(
         (ent) => ent.state === ITEM_STATES.SELECTED,
       );
@@ -112,7 +115,7 @@ const SubmitButton = () => {
           },
         ),
       };
-      const response = await CapEventPackageApi.default.create(requestBody);
+      const response = await CapEventPackageApi.default.create(sessionId, requestBody);
       if (response.status === CapEventStatus.SUBMITTED) {
         // Reset selections and dates when leaving the preview screen, till we don't have local data base
         capEventSettingsStore.resetAfterPreview();
