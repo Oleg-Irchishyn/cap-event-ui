@@ -105,7 +105,7 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
       rowData={displayRows}
       isLoading={isLoading}
       noRowsText="No Data to display"
-      pinnedBottomRowData={pinnedBottomRowData}
+      pinnedBottomRowData={displayRows.length ? pinnedBottomRowData : undefined}
     />
   );
 };
