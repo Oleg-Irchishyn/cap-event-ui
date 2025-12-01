@@ -40,7 +40,7 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
       isLoading={isLoading}
       noRowsText="No Data to display"
       onRowClicked={onRowClicked}
-      height="75dvh"
+      height={displayRows.length > 10 ? '60vh' : undefined}
     />
   );
 };
