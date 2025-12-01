@@ -88,7 +88,6 @@ export const getAllocationPreviewColumnDefs = (
       sortable: true,
       headerClass: 'ag-right-aligned-header',
       valueGetter: (params) => {
-        if (params.node?.rowPinned) return '';
         return formatAmount(params.data[fieldName]);
       },
       cellStyle: { textAlign: 'right' },
@@ -156,7 +155,6 @@ export const getAllocationPreviewColumnDefs = (
         headerClass: 'ag-right-aligned-header',
         cellStyle: { textAlign: 'right' },
         valueGetter: (params) => {
-          if (params.node?.rowPinned) return '';
           return formatAmount(params.data.managementFee) ?? '-';
         },
         cellRendererSelector: () =>

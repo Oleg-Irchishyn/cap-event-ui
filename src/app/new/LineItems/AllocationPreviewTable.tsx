@@ -4,11 +4,18 @@ import React, { FC, useMemo } from 'react';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { AllocationPreviewTableProps, PreviewModalTotalRow } from './types';
+import {
+  AllocatedAmountFieldTypes,
+  AllocationPreviewTableProps,
+  DynamicFieldType,
+  ManagementFeeFieldType,
+  PreviewModalTotalRow,
+} from './types';
 import { getAllocationPreviewColumnDefs } from '@/utils/getAllocationPreviewColumnDefs';
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
 import { observer } from 'mobx-react-lite';
 import { InvestorEntry } from '@/clients/CapEventPackage';
+import { ALLOCATED_AMOUNT_FIELD, MANAGEMENT_FEE_FIELD } from '@/const/allocationPreview';
 
 const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   rows,
@@ -16,7 +23,7 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   allocationBasis,
   testId = 'allocation-preview-table',
 }) => {
-  const fieldName = defineColumnForAllocationPreview(allocationBasis);
+  const dynamicColumn: DynamicFieldType = defineColumnForAllocationPreview(allocationBasis);
 
   const displayRows = useMemo(() => {
     if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
@@ -58,16 +65,22 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   }, [isLoading, rows]);
 
   const columnDefs = useMemo(
-    () => getAllocationPreviewColumnDefs(fieldName, allocationBasis, isLoading),
-    [isLoading, fieldName, allocationBasis],
+    () => getAllocationPreviewColumnDefs(dynamicColumn, allocationBasis, isLoading),
+    [isLoading, dynamicColumn, allocationBasis],
   );
 
-  const calculateAmount = (rows: InvestorEntry[]): number => {
+  const calculateField = (
+    rows: InvestorEntry[],
+    field: DynamicFieldType | ManagementFeeFieldType | AllocatedAmountFieldTypes,
+  ): number => {
     return rows.reduce((sum, row) => {
-      let amount = row.allocatedAmount;
+      let amount = row[field];
       if (amount === undefined) return sum;
-      if (row.trType === -1) {
-        amount *= row.trType;
+
+      if (field === ALLOCATED_AMOUNT_FIELD) {
+        if (row.trType === -1) {
+          amount *= row.trType;
+        }
       }
       return sum + amount;
     }, 0);
@@ -77,10 +90,12 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
     () => [
       {
         customerId: 'Total',
-        allocatedAmount: calculateAmount(displayRows),
+        allocatedAmount: calculateField(displayRows, ALLOCATED_AMOUNT_FIELD),
+        [dynamicColumn]: calculateField(displayRows, dynamicColumn),
+        managementFee: calculateField(displayRows, MANAGEMENT_FEE_FIELD),
       },
     ],
-    [displayRows],
+    [displayRows, dynamicColumn],
   );
 
   return (

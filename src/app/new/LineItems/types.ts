@@ -54,3 +54,7 @@ export interface PreviewModalTotalRow {
   customerId: string;
   allocatedAmount: number;
 }
+
+export type DynamicFieldType = 'unfunded' | 'investedCapital' | 'commitment';
+export type ManagementFeeFieldType = 'managementFee';
+export type AllocatedAmountFieldTypes = 'allocatedAmount';
