@@ -3,6 +3,7 @@ import {
   getBySelectedCategoryAndReason,
   formatValue,
   getKeyValuesByAccountName,
+  findAccountByCategoryReasonDescription,
 } from '../utils';
 import { Account } from '@/clients/ReferenceData';
 import { OtherAccountFields } from '@/app/new/LineItems/const';
@@ -118,6 +119,54 @@ describe('LineItems/utils', () => {
 
       expect(result1).toHaveLength(4);
       expect(result2).toEqual(['Description 3']);
+    });
+  });
+
+  describe('findAccountByCategoryReasonDescription', () => {
+    it('returns the matching acc when category, reason and description match', () => {
+      const result = findAccountByCategoryReasonDescription(
+        'Category A',
+        'Reason 1',
+        'Description 1',
+        mockAccounts,
+      );
+      expect(result).toEqual({
+        capitalCategory: 'Category A',
+        callDistributionReason: 'Reason 1',
+        defaultDescription: 'Description 1',
+        insideCommitment: 'Inside 1',
+        accountName: 'Account 1',
+      });
+    });
+
+    it('returns undefined when no acc matches', () => {
+      const result = findAccountByCategoryReasonDescription(
+        'Invalid',
+        'Whatever',
+        'Hello',
+        mockAccounts,
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it('handles empty acc array', () => {
+      const result = findAccountByCategoryReasonDescription(
+        'Category A',
+        'Reason 1',
+        'Description 1',
+        [],
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it('requires all three fields to match', () => {
+      const result = findAccountByCategoryReasonDescription(
+        'Category A',
+        'Reason 1',
+        'Wrong Description',
+        [],
+      );
+      expect(result).toBeUndefined();
     });
   });
 });

@@ -31,7 +31,11 @@ import {
   otherEntityColumnDef,
 } from '@/app/new/LineItems/accountsTableConfiguration';
 import { isRowEmpty } from '@/utils/isRowEmpty';
-import { getBySelectedCategoryAndReason, getReasons } from '@/app/new/LineItems/utils';
+import {
+  findAccountByCategoryReasonDescription,
+  getBySelectedCategoryAndReason,
+  getReasons,
+} from '@/app/new/LineItems/utils';
 import CustomSwitch from '@/app/components/CustomSwitch/CustomSwitch';
 import { CapEventPackageApi } from '@/api';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
@@ -334,6 +338,20 @@ const AccountsTable: FC<Props> = ({
                 getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
               );
             }
+          }
+
+          if (
+            updatedRow.capitalCategory &&
+            updatedRow.callDistributionReason &&
+            updatedRow.defaultDescription
+          ) {
+            const account = findAccountByCategoryReasonDescription(
+              updatedRow.capitalCategory,
+              updatedRow.callDistributionReason,
+              updatedRow.defaultDescription,
+              accounts,
+            );
+            updatedRow.accountNo = account.accountNo;
           }
 
           if (

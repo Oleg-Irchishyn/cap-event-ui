@@ -15,6 +15,7 @@ export const prepareNewRow = (level?: string): LineItemRow => {
     investment: '',
     amount: 0,
     allocationBasis: '',
+    accountNo: '',
     ...levelSpecificColumns,
   };
 };

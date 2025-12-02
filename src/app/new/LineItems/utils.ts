@@ -78,3 +78,17 @@ export const getKeyValuesByAccountName = (
     ),
   );
 };
+
+export const findAccountByCategoryReasonDescription = (
+  category: string,
+  reason: string,
+  description: string,
+  accounts: Account[],
+): Account => {
+  return accounts.find(
+    (acc) =>
+      acc.capitalCategory === category &&
+      acc.callDistributionReason === reason &&
+      acc.defaultDescription === description,
+  ) as Account;
+};
