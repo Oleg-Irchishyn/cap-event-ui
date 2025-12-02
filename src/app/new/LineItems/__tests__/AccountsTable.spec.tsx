@@ -6,6 +6,9 @@ import { theme } from '@/ui/globalStyles';
 import AccountsTable from '../AccountsTable';
 import { capEventSettingsStore } from '@/stores';
 import { ICellRendererParams } from 'ag-grid-community';
+import { COMMITMENT_OPTION } from '@/const/allocationBasisOptions';
+
+let __inheritedAllocationBasis: string | undefined;
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
@@ -32,6 +35,7 @@ jest.mock('@/app/components/ConfigurationTable', () => {
     columnDefs,
     rowData,
     onCellValueChanged,
+    postSortRows,
   }: unknown) {
     const defs = (columnDefs as unknown as Array<Record<string, unknown>>) || [];
     const getDefByField = (field: string) => defs.find((d) => d.field === field);
@@ -55,6 +59,8 @@ jest.mock('@/app/components/ConfigurationTable', () => {
       inheritedFundGroupLineItemId: 'fg-1',
       capitalCategory: 'Cont - Other',
       callDistributionReason: 'Other',
+      // Allow tests to inject allocation basis for inherited row
+      allocationBasis: __inheritedAllocationBasis,
     };
 
     const normalRow = {
@@ -81,6 +87,23 @@ jest.mock('@/app/components/ConfigurationTable', () => {
       editableNormal[f] = evaluateEditable(f, normalRow);
     });
 
+    const [postSortIds, setPostSortIds] = React.useState<string[]>([]);
+    const triggerPostSort = () => {
+      if (typeof postSortRows !== 'function') return;
+      const nodes = [
+        { data: { id: 'row-1' } },
+        { data: { id: 'total-row', isTotalRow: true } },
+        { data: { id: 'row-2' } },
+      ] as Array<{ data: Record<string, unknown> }>;
+      // simulate AG Grid postSortRows hook
+      (postSortRows as (args: { nodes: Array<{ data: Record<string, unknown> }> }) => void)({
+        nodes,
+      });
+      setPostSortIds(
+        nodes.map((n) => (typeof n.data.id === 'string' ? (n.data.id as string) : 'unknown')),
+      );
+    };
+
     return (
       <div data-testid={testId}>
         <div data-testid="column-defs">{JSON.stringify(columnDefs.length)}</div>
@@ -93,6 +116,7 @@ jest.mock('@/app/components/ConfigurationTable', () => {
         </div>
         <div data-testid="editable-map-inherited">{JSON.stringify(editableInherited)}</div>
         <div data-testid="editable-map-normal">{JSON.stringify(editableNormal)}</div>
+        <div data-testid="post-sort-result">{JSON.stringify(postSortIds)}</div>
         <button
           data-testid="trigger-cell-change"
           onClick={() => {
@@ -107,6 +131,9 @@ jest.mock('@/app/components/ConfigurationTable', () => {
           }}
         >
           Trigger Cell Change
+        </button>
+        <button data-testid="trigger-post-sort" onClick={triggerPostSort}>
+          Trigger Post Sort
         </button>
       </div>
     );
@@ -126,8 +153,8 @@ jest.mock('@/app/new/LineItems/cellComponents/AmountCell', () => {
 });
 
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, ...props }: unknown) {
-    return <img src={src} alt={alt} {...props} />;
+  return function MockImage() {
+    return <div data-testid="mock-next-image" />;
   };
 });
 
@@ -294,7 +321,7 @@ describe('AccountsTable', () => {
   });
 
   describe('Editability for inherited rows', () => {
-    it('disables Call/Distribution Reason, Notice Line Description, and Inside CMNT for inherited rows', () => {
+    it('disables Call/Distribution Reason, Notice Line Description, Inside CMNT and Investmentfor inherited rows', () => {
       renderWithTheme(<AccountsTable {...defaultProps} />);
       const inheritedJson = screen.getByTestId('editable-map-inherited').textContent || '{}';
       const inherited = JSON.parse(inheritedJson);
@@ -302,6 +329,7 @@ describe('AccountsTable', () => {
       expect(inherited.callDistributionReason).toBe(false);
       expect(inherited.defaultDescription).toBe(false);
       expect(inherited.insideCommitment).toBe(false);
+      expect(inherited.investment).toBe(false);
     });
 
     it('allows other fields to follow normal rules on inherited rows', () => {
@@ -312,7 +340,6 @@ describe('AccountsTable', () => {
       expect(inherited.allocationBasis).toBe(true);
       expect(inherited.prDate).toBe(true);
       expect(inherited.prFlag).toBe(true);
-      expect(inherited.investment).toBe(true);
       expect(inherited.amount).toBe(true);
     });
 
@@ -324,6 +351,33 @@ describe('AccountsTable', () => {
       expect(normal.callDistributionReason).toBe(true);
       expect(normal.defaultDescription).toBe(true);
       expect(normal.insideCommitment).toBe(true);
+    });
+  });
+
+  describe('Total row post-sort behavior', () => {
+    it('moves total row to the end after sorting', () => {
+      renderWithTheme(<AccountsTable {...defaultProps} />);
+
+      fireEvent.click(screen.getByTestId('trigger-post-sort'));
+
+      const resultJson = screen.getByTestId('post-sort-result').textContent || '[]';
+      const ids = JSON.parse(resultJson) as string[];
+
+      expect(ids.length).toBe(3);
+      expect(ids[ids.length - 1]).toBe('total-row');
+    });
+  });
+  describe('Amount editability on inherited rows for Commitment basis', () => {
+    it('disables Amount for inherited rows when allocation basis is Commitment', () => {
+      __inheritedAllocationBasis = COMMITMENT_OPTION;
+
+      renderWithTheme(<AccountsTable {...defaultProps} />);
+
+      const inheritedJson = screen.getByTestId('editable-map-inherited').textContent || '{}';
+      const inherited = JSON.parse(inheritedJson);
+
+      expect(inherited.amount).toBe(false);
+      __inheritedAllocationBasis = undefined;
     });
   });
 });

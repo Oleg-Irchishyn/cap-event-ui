@@ -1,5 +1,10 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
-import { CellValueChangedEvent, DragStoppedEvent, EditableCallbackParams } from 'ag-grid-community';
+import {
+  CellValueChangedEvent,
+  DragStoppedEvent,
+  EditableCallbackParams,
+  PostSortRowsParams,
+} from 'ag-grid-community';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ApplyText, ControlButton, TableControls } from '@/app/new/LineItems/styles';
@@ -139,6 +144,7 @@ const AccountsTable: FC<Props> = ({
           params.colDef.field === AccountFields.callDistributionReason ||
           params.colDef.field === AccountFields.defaultDescription ||
           params.colDef.field === AccountFields.insideCommitment ||
+          params.colDef.field === AccountFields.investment ||
           (params.colDef.field === AccountFields.amount &&
             params.data.allocationBasis === COMMITMENT_OPTION)
         ) {
@@ -618,6 +624,19 @@ const AccountsTable: FC<Props> = ({
 
   const tableData = useAccountsTableRowData(level, lineItems);
 
+  const handlePostSortRows = useCallback((params: PostSortRowsParams) => {
+    const { nodes } = params;
+    const totalRowNode = nodes.find((node) => (node.data as { isTotalRow?: boolean })?.isTotalRow);
+
+    if (totalRowNode) {
+      const totalRowIndex = nodes.indexOf(totalRowNode);
+      if (totalRowIndex > -1 && totalRowIndex !== nodes.length - 1) {
+        nodes.splice(totalRowIndex, 1);
+        nodes.push(totalRowNode);
+      }
+    }
+  }, []);
+
   return (
     <>
       <ConfigurationTable
@@ -627,6 +646,7 @@ const AccountsTable: FC<Props> = ({
         rowData={tableData}
         onCellValueChanged={onCellValueChanged}
         onDragStopped={onDragStopped}
+        postSortRows={level === LineItemTypes.entity ? handlePostSortRows : undefined}
       />
       {TableFooter}
       {showOtherTable && (
