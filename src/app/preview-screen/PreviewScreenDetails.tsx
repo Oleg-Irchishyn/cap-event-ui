@@ -52,7 +52,11 @@ const PreviewScreenDetails = () => {
     if (e.data?.isAggregated) {
       setSelectedRow(e.data);
       const blob = await previewScreenStore.fetchDoc(e.data, toast);
-      setNoticePreviewDoc(blob ?? null);
+      if (blob) {
+        setNoticePreviewDoc(blob);
+      } else {
+        closeModal();
+      }
     }
   };
 

@@ -99,7 +99,7 @@ const AllocationPreviewModal: FC = () => {
     };
 
     fetchTableData();
-  }, [isModalOpen]);
+  }, [isModalOpen, sessionId]);
 
   if (!isModalOpen) return null;
 

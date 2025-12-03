@@ -21,8 +21,11 @@ const ModalContainer = styled.div(({ theme }) => ({
   borderRadius: '8px',
   maxWidth: '900px',
   minHeight: '90dvh',
+  maxHeight: '95dvh',
   width: '100%',
   boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const ModalTitle = styled.div(({ theme }) => ({
@@ -52,7 +55,10 @@ const ModalCloseButton = styled.button({
 });
 
 const ModalContent = styled.div({
-  marginBottom: '24px',
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: 0, // Allow flex item to shrink below content size
 });
 
 const ModalButtonContainer = styled.div({
@@ -63,7 +69,7 @@ const ModalButtonContainer = styled.div({
 
 const DocxContainer = styled.div(({ theme }) => ({
   position: 'relative',
-  maxHeight: '65dvh',
+  flex: 1,
   overflow: 'auto',
   margin: '16px 0',
 
