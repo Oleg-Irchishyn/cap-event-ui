@@ -49,7 +49,7 @@ parameters:
 trigger:
   branches:
     include:
-      - master
+#      - master
       - release/*
   paths:
     exclude:
