@@ -67,6 +67,24 @@ describe('ManagementFeeDetails', () => {
 
     mockCapEventSettingsStore.entitiesLineItem.clear();
     (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue([]);
+
+    // Reset mgmtJournalEntries to a known default between tests
+    mockCapEventSettingsStore.mgmtJournalEntries = {
+      'entity-1': [
+        {
+          amount: 1000,
+          batchDate: '2025-01-15',
+          batchNo: 123,
+          description: 'Q1 Management Fee Description',
+        },
+        {
+          amount: 2000,
+          batchDate: '2025-02-15',
+          batchNo: 456,
+          description: 'Q2 Management Fee Description',
+        },
+      ],
+    };
   });
 
   it('renders the "Include Uncalled Mgmt Fee" dropdown with default "No" selected', () => {
@@ -218,6 +236,69 @@ describe('ManagementFeeDetails', () => {
       const callArgs = mockCapEventSettingsStore.setEntitiesLineItem.mock.calls[0];
       const mergedItems = callArgs[1] as LineItemRow[];
       expect(mergedItems.find((item) => item.id === '2')).toBeUndefined();
+    });
+  });
+
+  describe('MF selection persistence on options refresh', () => {
+    const openIncludeDropdownAndSelectYes = async () => {
+      fireEvent.click(screen.getByText('No'));
+      const yesOption = await waitFor(() => screen.getByText('Yes'));
+      fireEvent.click(yesOption);
+
+      await waitFor(() => {
+        expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
+      });
+    };
+
+    const openMFDropdownAndSelectFirst = async (labelText: string) => {
+      const buttons = screen.getAllByRole('button');
+      const mfDropdownButton = buttons[1];
+      fireEvent.click(mfDropdownButton);
+
+      const firstOption = await waitFor(() => screen.getByText(labelText));
+      fireEvent.click(firstOption);
+
+      fireEvent.click(mfDropdownButton);
+      const selectedInList = await waitFor(() => {
+        const el = screen.getByText(labelText).closest('[data-is-selected="true"]');
+        return el;
+      });
+      expect(selectedInList).toBeTruthy();
+    };
+
+    it('keeps the selected MF item when the same label still exists', async () => {
+      const utils = renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
+
+      await openIncludeDropdownAndSelectYes();
+      await openMFDropdownAndSelectFirst('1,000');
+
+      mockCapEventSettingsStore.mgmtJournalEntries['entity-1'] = [
+        {
+          amount: 1000,
+          batchDate: '2025-03-01',
+          batchNo: 789,
+          description: 'Reposted',
+        },
+        {
+          amount: 3000,
+          batchDate: '2025-04-01',
+          batchNo: 101112,
+          description: 'Q3 Fee',
+        },
+      ];
+
+      utils.rerender(
+        <ThemeProvider theme={theme}>
+          <ManagementFeeDetails {...defaultProps} />
+        </ThemeProvider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
+      });
+
+      const visibleSelection = await screen.findByText(/1,000\s*\(/);
+      expect(visibleSelection).toBeInTheDocument();
     });
   });
 });

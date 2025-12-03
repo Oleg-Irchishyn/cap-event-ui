@@ -74,12 +74,31 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
   const sessionId = getStoredSessionId() ?? '';
 
   useEffect(() => {
-    setMFItems(prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]));
+    setMFItems((prev) => {
+      const previouslySelectedLabel =
+        prev.find((opt) => opt.state === ITEM_STATES.SELECTED)?.label ?? '';
+      const freshOptions = prepareMgmtEntryOptions(
+        capEventSettingsStore.mgmtJournalEntries[entityId],
+      );
+
+      if (!previouslySelectedLabel) {
+        return freshOptions;
+      }
+
+      const stillExists = freshOptions.some((opt) => opt.label === previouslySelectedLabel);
+      if (!stillExists) {
+        return freshOptions;
+      }
+
+      return freshOptions.map((opt) =>
+        opt.label === previouslySelectedLabel ? { ...opt, state: ITEM_STATES.SELECTED } : opt,
+      );
+    });
   }, [entityId, mgmtFeeLineItems]);
 
   const handleSelectMFItem = async (item?: DropdownItemType<MgmtFeeJournalEntry>) => {
-    const selectedItemLabel = MFItems.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
-    if (selectedItemLabel === item?.label) return;
+    const selectedItemLabel = MFItems.find((opt) => opt.state === ITEM_STATES.SELECTED)?.label;
+    if (item && selectedItemLabel === item.label) return;
 
     const updatedValues = MFItems.map((option) =>
       option.label === item?.label
@@ -142,6 +161,8 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
     setIncludeMFOptions(updatedValues);
 
     if (item.label === 'No') {
+      // Clear any MF selection in the dropdown UI
+      setMFItems((prev) => prev.map((opt) => ({ ...opt, state: ITEM_STATES.OPTIONAL })));
       // call with no params to reset selected item
       handleSelectMFItem();
     }

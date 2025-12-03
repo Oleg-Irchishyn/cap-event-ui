@@ -18,6 +18,7 @@ import {
   ColumnResizedEvent,
   RowStyle,
   PostSortRowsParams,
+  SortChangedEvent,
 } from 'ag-grid-community';
 
 import { Header, TableWrapper } from './styles';
@@ -110,8 +111,20 @@ const ConfigurationTable = <T,>({
         applyOrder: false,
       });
     }
-    // Then apply any saved widths/order/etc
-    if (lastColumnStateRef.current?.length) {
+    const hasSavedSort =
+      lastColumnStateRef.current?.some((s) => s.sort != null && s.sort !== undefined) ?? false;
+    // Only clear sorts and reapply if we actually have saved sort state.
+    if (hasSavedSort) {
+      gridApi.applyColumnState({
+        defaultState: { sort: null, sortIndex: null },
+        state: [],
+        applyOrder: false,
+      });
+      if (lastColumnStateRef.current?.length) {
+        gridApi.applyColumnState({ state: lastColumnStateRef.current, applyOrder: false });
+      }
+    } else if (lastColumnStateRef.current?.length) {
+      // Apply saved widths/order/etc without touching sorts
       gridApi.applyColumnState({ state: lastColumnStateRef.current, applyOrder: false });
     }
   }, [gridApi, columnDefs]);
@@ -147,11 +160,20 @@ const ConfigurationTable = <T,>({
     ? columnDefs.map((def) => {
         const colId = def.colId ?? (typeof def.field === 'string' ? def.field : undefined);
         if (!colId) return def;
+        // If we have any saved sort state, strip default sort/sortIndex from defs
+        // so AG Grid does not re-apply initial sorts on re-mount/re-render.
+        const hasSavedSort =
+          lastColumnStateRef.current?.some((s) => s.sort != null && s.sort !== undefined) ?? false;
+        let derivedDef = def;
+        if (hasSavedSort && derivedDef.sortable) {
+          // remove default sort indicators coming from definitions
+          derivedDef = { ...derivedDef, sort: undefined, sortIndex: undefined };
+        }
         const saved = lastColumnStateRef.current?.find((s) => s.colId === colId);
         if (saved && manuallyResizedColsRef.current.has(colId) && saved.width) {
-          return { ...def, width: saved.width, flex: undefined };
+          return { ...derivedDef, width: saved.width, flex: undefined };
         }
-        return def;
+        return derivedDef;
       })
     : columnDefs;
 
@@ -206,6 +228,9 @@ const ConfigurationTable = <T,>({
         }}
         onColumnResized={handleColumnResized}
         postSortRows={postSortRows}
+        onSortChanged={(e: SortChangedEvent) => {
+          lastColumnStateRef.current = e.api.getColumnState();
+        }}
         getRowId={(params) => {
           const data = params.data as GridRow & { id?: string };
           return data.id ?? String(data._index);
