@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.60](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.59&targetVersion=GTv0.0.60) (2025-12-03)
+
+
+### Features
+
+* added item counter to preview modal table ([2d3cd8f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2d3cd8f6a790946ff1858c9bbeda8300824af823)), closes [#6980](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6980)
+
+
+### Bug Fixes
+
+* [Issue-7465]: [FE] Incorrect state for dropdowns at Entity level if rows are inherited from Fund Group level ([00255c6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/00255c643787e0eb8787edd264d6bf7033effa03)), closes [#7465](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7465) [#8157](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8157)
+* added accountNo to payload for submit ([e7845e0](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e7845e0b0a30ecd1eb04b6e65c2d02baa4970b7a)), closes [#8357](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8357)
+* added allocationBasis query param ([a1f485a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a1f485a63a8bd2d415521b150a376bd3ab927fbc))
+* added two extra column to Total Row ([33f8549](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/33f8549be235642e7bd1b1c4f3cf6dcd3ec820ff)), closes [#8280](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8280)
+* change mf-line-items contract ([faeeb73](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/faeeb73d5c5f2ddf03d0d54eb1496f6044258f99)), closes [#8279](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8279)
+* preview screen table scroll height ([32b80ef](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/32b80eff3661144f6c5e1a8ec0af6250f6596962)), closes [#8144](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8144)
+* removed Total row when no data ([4d6b52a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4d6b52a425955e372a72fe4a2cbab38ba7ef12f8)), closes [#8334](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8334)
+* update cep create contract ([09c1b32](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/09c1b32a05da20f1ab2c2ada40f4ea8c7ac629cc)), closes [#8144](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8144)
+
 ### [0.0.59](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.58&targetVersion=GTv0.0.59) (2025-11-29)
 
 
