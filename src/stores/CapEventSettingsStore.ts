@@ -12,6 +12,7 @@ import { InvestorEntry, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 import { isFundGroupRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { showErrorToast } from '@/utils/showErrorToast';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -163,6 +164,7 @@ class CapEventSettingsStore {
       );
       return accounts;
     } catch (error) {
+      showErrorToast(error);
       console.error(error);
       return [];
     }
@@ -174,6 +176,7 @@ class CapEventSettingsStore {
       this.areInvestmentsLoading = true;
       this.investments = yield ReferenceDataApi.investments.getInvestments(sessionId);
     } catch (error) {
+      showErrorToast(error);
       console.error(error);
       this.investments = [];
     } finally {

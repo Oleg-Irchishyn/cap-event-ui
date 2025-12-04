@@ -164,7 +164,7 @@ class PreviewScreenStore {
     row: LineItemRow,
     investments: RefInvestment[],
   ): Partial<ApiInvestment> | undefined {
-    const id = row.investment.id || '';
+    const id = row.investment?.id || '';
     if (!id) return undefined;
     const found = investments.find(
       (inv) => String(inv.id).toLowerCase() === String(id).toLowerCase(),

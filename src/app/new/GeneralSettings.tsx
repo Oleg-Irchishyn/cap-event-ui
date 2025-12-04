@@ -19,6 +19,7 @@ import { Entity, FundGroup, Sponsor } from '@/clients/ReferenceData';
 import { CapEventType } from '@/clients/CapEventPackage';
 import { DropdownWrapper, Title } from './styles';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { showErrorToast } from '@/utils/showErrorToast';
 
 const prepareEventType = (eventTypes: CapEventType[]) => {
   return eventTypes?.map((eventType) => ({
@@ -112,6 +113,7 @@ const GeneralSettings = () => {
       );
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
+      showErrorToast(error);
       console.error(error);
     } finally {
       setIsLoadingFundGroups(false);
@@ -143,6 +145,7 @@ const GeneralSettings = () => {
       );
       capEventSettingsStore.setFundEntities(prepareFundEntities(entitiesRelatedToGroup));
     } catch (error) {
+      showErrorToast(error);
       console.error(error);
     } finally {
       setIsLoadingFundEntities(false);
