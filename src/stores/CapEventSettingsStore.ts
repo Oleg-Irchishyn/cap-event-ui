@@ -276,6 +276,9 @@ class CapEventSettingsStore {
           entityManualItems.push(entitiesLineItems[i]);
         }
       }
+    } else {
+      // push empty row if entities line items not exist
+      entityManualItems.push(prepareNewRow(LineItemTypes.entity));
     }
 
     this.entitiesLineItem.set(key, [...data, ...entityManualItems]);

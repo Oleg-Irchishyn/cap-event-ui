@@ -11,6 +11,8 @@ import { uuidv4 } from '@/utils/uuid';
 import { Loader } from '@/app/new/LineItems/styles';
 import { CapEventPackageApi } from '@/api';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { prepareNewRow } from '@/utils/prepareNewRow';
+import { LineItemTypes } from '@/app/new/LineItems/const';
 
 const preparedIncludeMFOptions = [
   {
@@ -139,8 +141,12 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
           .get(entityLabel)
           ?.filter((item) => !item.isMfLineItem) ?? [];
 
+      const entityToUse = entityLineItemsWithoutMgmtFee.length
+        ? entityLineItemsWithoutMgmtFee
+        : [prepareNewRow(LineItemTypes.entity)];
+
       capEventSettingsStore.setEntitiesLineItem(entityLabel, [
-        ...entityLineItemsWithoutMgmtFee,
+        ...entityToUse,
         ...prepareMgmtFeeLineItems(mgmtFeeLineItems, entityLabel),
       ]);
     } else {
