@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.61](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.60&targetVersion=GTv0.0.61) (2025-12-04)
+
+
+### Bug Fixes
+
+* [Issue-8282]: [FE] MF line items are not removed after Include Uncalled Mgmt Fee toggle changed to No ([6b1ae47](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/6b1ae47de00b101945ef05a759ca40c8c3e28ff0)), closes [#8282](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8282)
+* notice indentation ([289565e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/289565e2e9add101d8d26a9b2081e9127fd4e3c0)), closes [#8169](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8169)
+
 ### [0.0.60](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.59&targetVersion=GTv0.0.60) (2025-12-03)
 
 
