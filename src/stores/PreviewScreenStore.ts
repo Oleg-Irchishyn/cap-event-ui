@@ -30,6 +30,7 @@ import { isRowEmpty } from '@/utils/isRowEmpty';
 import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 
 class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
@@ -177,6 +178,22 @@ class PreviewScreenStore {
     });
   }
 
+  private mapAllocationBasisToProcessPayload(value: string | undefined): string {
+    const inputValue = (value ?? '').toString().trim();
+    if (!inputValue) return '';
+
+    const allocationBasisLabel = ALLOCATION_BASIS_DEFAULT_OPTIONS[inputValue];
+    if (allocationBasisLabel) return allocationBasisLabel;
+
+    const allocationBasisValues = Object.values(ALLOCATION_BASIS_DEFAULT_OPTIONS).map((c) =>
+      String(c).toLowerCase(),
+    );
+    const inputValueLowerCase = inputValue.toLowerCase();
+    if (allocationBasisValues.includes(inputValueLowerCase)) return inputValueLowerCase;
+
+    return inputValue;
+  }
+
   private mapLineItemBase(
     row: LineItemRow,
     accounts: RefAccount[],
@@ -206,7 +223,7 @@ class PreviewScreenStore {
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;
     const investment = this.findInvestment(row, investments) as ApiInvestment | undefined;
-    const allocationBasis = row.allocationBasis;
+    const allocationBasis = this.mapAllocationBasisToProcessPayload(row.allocationBasis);
     const amount = row.amount;
     return { account, investment, allocationBasis, amount };
   }
@@ -424,8 +441,7 @@ class PreviewScreenStore {
         return;
       }
 
-      // Use capEvent payload from the last successful process call
-      const capEventPayload = this.lastCapEvent;
+      const capEventPayload = this.lastCapEvent ?? this.buildPayload();
       if (!capEventPayload) {
         toast?.error?.('No processed cap event found. Please re-run preview.');
         return;

@@ -351,7 +351,7 @@ const AccountsTable: FC<Props> = ({
               updatedRow.defaultDescription,
               accounts,
             );
-            updatedRow.accountNo = account.accountNo;
+            updatedRow.accountNo = account?.accountNo ?? '';
           }
 
           if (
