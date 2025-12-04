@@ -94,7 +94,7 @@ const SubmitButton = () => {
                   inheritedFundGroupLineItemId: entityLineItem.inheritedFundGroupLineItemId,
                   prDate: formatDate(entityLineItem.prDate),
                   prFlag: entityLineItem.prFlag === 'Yes',
-                  isMfLineItem: entityLineItem.isMfLineItem,
+                  isMfLineItem: entityLineItem.isMfLineItem ?? false,
                   batchNo: entityLineItem.batchNo,
                   originAccountKey: entityLineItem.accountKey,
                   account: {
