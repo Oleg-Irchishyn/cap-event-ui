@@ -124,12 +124,7 @@ describe('LineItems/utils', () => {
 
   describe('findAccountByCategoryReasonDescription', () => {
     it('returns the matching acc when category, reason and description match', () => {
-      const result = findAccountByCategoryReasonDescription(
-        'Category A',
-        'Reason 1',
-        'Description 1',
-        mockAccounts,
-      );
+      const result = findAccountByCategoryReasonDescription('Category A', 'Reason 1', mockAccounts);
       expect(result).toEqual({
         capitalCategory: 'Category A',
         callDistributionReason: 'Reason 1',
@@ -140,32 +135,17 @@ describe('LineItems/utils', () => {
     });
 
     it('returns undefined when no acc matches', () => {
-      const result = findAccountByCategoryReasonDescription(
-        'Invalid',
-        'Whatever',
-        'Hello',
-        mockAccounts,
-      );
+      const result = findAccountByCategoryReasonDescription('Invalid', 'Whatever', mockAccounts);
       expect(result).toBeUndefined();
     });
 
     it('handles empty acc array', () => {
-      const result = findAccountByCategoryReasonDescription(
-        'Category A',
-        'Reason 1',
-        'Description 1',
-        [],
-      );
+      const result = findAccountByCategoryReasonDescription('Category A', 'Reason 1', []);
       expect(result).toBeUndefined();
     });
 
     it('requires all three fields to match', () => {
-      const result = findAccountByCategoryReasonDescription(
-        'Category A',
-        'Reason 1',
-        'Wrong Description',
-        [],
-      );
+      const result = findAccountByCategoryReasonDescription('Category A', 'Reason 1', []);
       expect(result).toBeUndefined();
     });
   });

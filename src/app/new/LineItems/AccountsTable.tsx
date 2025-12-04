@@ -348,7 +348,6 @@ const AccountsTable: FC<Props> = ({
             const account = findAccountByCategoryReasonDescription(
               updatedRow.capitalCategory,
               updatedRow.callDistributionReason,
-              updatedRow.defaultDescription,
               accounts,
             );
             updatedRow.accountNo = account?.accountNo ?? '';
