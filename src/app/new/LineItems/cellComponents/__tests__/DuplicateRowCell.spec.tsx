@@ -49,7 +49,7 @@ const emptyRow = {
   callDistributionReason: '',
   defaultDescription: '',
   insideCommitment: '',
-  investment: '',
+  investment: { id: '' },
   allocationBasis: '',
 };
 

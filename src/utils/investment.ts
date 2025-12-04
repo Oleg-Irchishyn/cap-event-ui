@@ -25,7 +25,7 @@ export const isLineItemRowValid = (row: LineItemRow): boolean => {
   const hasValidAmount = row.amount !== null && row.amount !== undefined && row.amount !== 0;
 
   const isInvestmentRequired = isInvestmentRequiredForCategory(row.capitalCategory);
-  const hasValidInvestment = !isInvestmentRequired || !!row.investment;
+  const hasValidInvestment = !isInvestmentRequired || !!row.investment.id;
 
   return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
 };
@@ -44,7 +44,7 @@ export const isFundGroupRowValid = (row: LineItemRow, userProvidedOptionLabel: s
     amountOptional || (row.amount !== null && row.amount !== undefined && row.amount !== 0);
 
   const isInvestmentRequired = isInvestmentRequiredForCategory(row.capitalCategory);
-  const hasValidInvestment = !isInvestmentRequired || !!row.investment;
+  const hasValidInvestment = !isInvestmentRequired || !!row.investment.id;
 
   return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
 };

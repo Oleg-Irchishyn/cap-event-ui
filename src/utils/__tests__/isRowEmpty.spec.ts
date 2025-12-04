@@ -6,7 +6,7 @@ const mockedEmptyRow = {
   callDistributionReason: '',
   defaultDescription: '',
   insideCommitment: '',
-  investment: '',
+  investment: { id: '' },
   allocationBasis: '',
   amount: 0,
 } as LineItemRow;
@@ -16,7 +16,7 @@ const mockedPartiallyRow = {
   callDistributionReason: 'Value 1',
   defaultDescription: '',
   insideCommitment: '',
-  investment: '',
+  investment: { id: '' },
   allocationBasis: '',
   amount: 0,
 } as LineItemRow;
@@ -26,7 +26,7 @@ const mockedRowWithSpaces = {
   callDistributionReason: ' ',
   defaultDescription: ' ',
   insideCommitment: ' ',
-  investment: ' ',
+  investment: { id: ' ' },
   allocationBasis: ' ',
   amount: 0,
 } as LineItemRow;

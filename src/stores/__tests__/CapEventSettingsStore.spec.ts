@@ -103,7 +103,7 @@ describe('CapEventSettingsStore', () => {
         callDistributionReason: 'Reason',
         defaultDescription: 'Desc',
         insideCommitment: 'Yes',
-        investment: 'Investment',
+        investment: { id: '', name: '' },
         allocationBasis: 'Basis',
       },
     ];
@@ -121,7 +121,7 @@ describe('CapEventSettingsStore', () => {
         callDistributionReason: 'Reason',
         defaultDescription: 'Desc',
         insideCommitment: 'Yes',
-        investment: 'Investment',
+        investment: { id: '', name: '' },
         allocationBasis: 'Basis',
       },
     ];
@@ -140,7 +140,7 @@ describe('CapEventSettingsStore', () => {
         callDistributionReason: 'Reason',
         defaultDescription: 'Desc',
         insideCommitment: 'Yes',
-        investment: 'Investment',
+        investment: { id: '', name: '' },
         allocationBasis: 'Basis',
       },
     ];
@@ -184,7 +184,7 @@ describe('CapEventSettingsStore', () => {
     const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
       id: '1',
       amount: 100,
-      investment: 'Investment A',
+      investment: { id: '', name: '' },
       allocationBasis: 'Basis A',
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',
@@ -235,11 +235,15 @@ describe('CapEventSettingsStore', () => {
     });
 
     it('should return true when investment differs', () => {
-      const lineItems = [createMockLineItem({ investment: 'Investment A' })];
+      const lineItems = [createMockLineItem({ investment: { id: '123', name: 'Investment A' } })];
       store.setFundGroupsLineItem(lineItems);
       store.setFundGroupsStateAfterApply();
 
-      store.setFundGroupsLineItem([createMockLineItem({ investment: 'Investment B' })]);
+      store.setFundGroupsLineItem([
+        createMockLineItem({
+          investment: { id: '234', name: 'Investment B' },
+        }),
+      ]);
 
       expect(store.isFundGroupLineItemsChanged).toBe(true);
     });
@@ -313,7 +317,7 @@ describe('CapEventSettingsStore', () => {
     const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
       id: '1',
       amount: 100,
-      investment: 'Investment A',
+      investment: { id: '', name: '' },
       allocationBasis: 'Basis A',
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',
@@ -337,7 +341,7 @@ describe('CapEventSettingsStore', () => {
     const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
       id: '1',
       amount: 100,
-      investment: 'Investment A',
+      investment: { id: '', name: '' },
       allocationBasis: 'Basis A',
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',
@@ -378,7 +382,7 @@ describe('CapEventSettingsStore', () => {
     it('should return true when investment is empty but capitalCategory is not mandatory', () => {
       const lineItems = [
         createMockLineItem({
-          investment: '',
+          investment: { id: '', name: '' },
           capitalCategory: 'Non-mandatory category',
         }),
       ];
@@ -389,7 +393,7 @@ describe('CapEventSettingsStore', () => {
     it('should return false when investment is empty and capitalCategory is mandatory', () => {
       const lineItems = [
         createMockLineItem({
-          investment: '',
+          investment: { id: '', name: '' },
           capitalCategory: 'Cont - Investments',
         }),
       ];
@@ -509,7 +513,7 @@ describe('CapEventSettingsStore', () => {
     const createMockLineItem = (overrides: Partial<LineItemRow> = {}): LineItemRow => ({
       id: '1',
       amount: 100,
-      investment: 'Investment A',
+      investment: { id: '', name: '' },
       allocationBasis: 'Basis A',
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',

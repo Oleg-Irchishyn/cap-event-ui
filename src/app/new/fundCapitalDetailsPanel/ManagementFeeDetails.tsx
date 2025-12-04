@@ -52,7 +52,7 @@ const prepareMgmtFeeLineItems = (
       callDistributionReason: item.account.reason,
       defaultDescription: item.account.description,
       insideCommitment: item.account.insideCmnt ? 'Yes' : 'No',
-      investment: item.investment?.title ?? item.investment?.name ?? '',
+      investment: item.investment,
       mgmtFee: true,
     };
   });

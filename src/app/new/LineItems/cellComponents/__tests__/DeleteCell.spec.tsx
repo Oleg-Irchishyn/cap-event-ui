@@ -35,7 +35,7 @@ const baseRow = {
   callDistributionReason: 'Reason',
   defaultDescription: 'Desc',
   insideCommitment: 'Yes',
-  investment: 'Inv',
+  investment: { id: '123', name: 'Inv', title: 'Inv' },
   allocationBasis: 'Basis',
 };
 
@@ -64,7 +64,7 @@ describe('DeleteCell', () => {
       callDistributionReason: '',
       defaultDescription: '',
       insideCommitment: '',
-      investment: '',
+      investment: { id: '' },
       allocationBasis: '',
     };
 

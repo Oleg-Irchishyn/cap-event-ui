@@ -80,10 +80,7 @@ const AllocationPreviewModal: FC = () => {
                     acc.insideCommitment === previewEntityData.insideCommitment,
                 )?.accountNo ??
                 '',
-              investmentId:
-                capEventSettingsStore.investments.find(
-                  (inv) => inv.name === previewEntityData.investment,
-                )?.id ?? '',
+              investmentId: previewEntityData.investment?.id ?? '',
               amount: previewEntityData.amount,
             };
 

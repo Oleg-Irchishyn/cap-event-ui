@@ -106,7 +106,17 @@ describe('InvestmentDropdown', () => {
     });
 
     it('should render with selected value when provided', () => {
-      renderWithTheme(<InvestmentDropdown {...defaultProps} value="Investment Title 1" />);
+      renderWithTheme(
+        <InvestmentDropdown
+          {...defaultProps}
+          value={{
+            id: '123',
+            name: 'Investment Title 1',
+            title: 'Investment Title 1',
+            type: 'type',
+          }}
+        />,
+      );
 
       expect(screen.getByText('Investment Title 1')).toBeInTheDocument();
     });
@@ -174,7 +184,12 @@ describe('InvestmentDropdown', () => {
       const option = screen.getByText('Investment Title 1');
       fireEvent.click(option);
 
-      expect(mockSetValue).toHaveBeenCalledWith('Investment Title 1');
+      expect(mockSetValue).toHaveBeenCalledWith({
+        id: '1',
+        name: 'Investment 1',
+        title: 'Investment Title 1',
+        type: 'Equity',
+      });
       expect(screen.queryByText('Refresh List')).not.toBeInTheDocument();
     });
 
@@ -185,7 +200,15 @@ describe('InvestmentDropdown', () => {
 
       rerender(
         <ThemeProvider theme={theme}>
-          <InvestmentDropdown {...defaultProps} value="Investment Title 2" />
+          <InvestmentDropdown
+            {...defaultProps}
+            value={{
+              id: '123',
+              name: 'Investment Title 2',
+              title: 'Investment Title 2',
+              type: 'type',
+            }}
+          />
         </ThemeProvider>,
       );
 

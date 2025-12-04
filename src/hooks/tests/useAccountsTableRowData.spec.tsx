@@ -15,7 +15,7 @@ describe('useAccountsTableRowData', () => {
       {
         id: '1',
         amount: 10,
-        investment: '',
+        investment: { id: '131231', name: 'jsgfjshf' },
         allocationBasis: '',
         capitalCategory: 'Cat',
         callDistributionReason: '',
@@ -36,7 +36,7 @@ describe('useAccountsTableRowData', () => {
       {
         id: 'a',
         amount: 100,
-        investment: '',
+        investment: { id: '131231', name: 'jsgfjshf' },
         allocationBasis: '',
         capitalCategory: 'Cat',
         callDistributionReason: '',
@@ -46,7 +46,7 @@ describe('useAccountsTableRowData', () => {
       {
         id: 'b',
         amount: 50,
-        investment: '',
+        investment: { id: '131231', name: 'jsgfjshf' },
         allocationBasis: '',
         capitalCategory: 'Cat',
         callDistributionReason: '',
@@ -70,7 +70,7 @@ describe('useAccountsTableRowData', () => {
       {
         id: 'x',
         amount: -200,
-        investment: '',
+        investment: {},
         allocationBasis: '',
         capitalCategory: 'Cat',
         callDistributionReason: '',

@@ -18,8 +18,9 @@ describe('prepareNewRow', () => {
       callDistributionReason: '',
       defaultDescription: '',
       insideCommitment: '',
-      investment: '',
+      investment: { id: '', name: '' },
       amount: 0,
+      accountNo: '',
       allocationBasis: '',
     });
   });
@@ -42,7 +43,7 @@ describe('prepareNewRow', () => {
     expect(typeof result.callDistributionReason).toBe('string');
     expect(typeof result.defaultDescription).toBe('string');
     expect(typeof result.insideCommitment).toBe('string');
-    expect(typeof result.investment).toBe('string');
+    expect(typeof result.investment).toBe('object');
     expect(typeof result.amount).toBe('number');
     expect(typeof result.allocationBasis).toBe('string');
     expect(result.inheritedFundGroupLineItemId).toBeUndefined();

@@ -6,7 +6,7 @@ export const isRowEmpty = (data: LineItemRow) => {
     data.callDistributionReason === '' &&
     data.defaultDescription === '' &&
     data.insideCommitment === '' &&
-    data.investment === '' &&
+    data.investment.id === '' &&
     data.allocationBasis === '' &&
     data.amount === 0
   );

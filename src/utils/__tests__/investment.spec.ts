@@ -40,7 +40,7 @@ describe('investment utils', () => {
       callDistributionReason: 'Permanent ROC',
       defaultDescription: 'Return of capital',
       insideCommitment: 'Yes',
-      investment: 'Investment A',
+      investment: { id: '123', name: 'Investment A' },
       allocationBasis: 'Commitment',
       amount: 100,
     } as unknown as LineItemRow;
@@ -67,7 +67,7 @@ describe('investment utils', () => {
       expect(
         isLineItemRowValid({
           ...baseRow,
-          investment: '',
+          investment: { id: '' },
         }),
       ).toBe(false);
     });
@@ -76,7 +76,7 @@ describe('investment utils', () => {
       const nonMandatoryRow: LineItemRow = {
         ...baseRow,
         capitalCategory: 'Cont - Management fees',
-        investment: '',
+        investment: { id: '' },
       } as unknown as LineItemRow;
       expect(isLineItemRowValid(nonMandatoryRow)).toBe(true);
     });
@@ -90,7 +90,7 @@ describe('investment utils', () => {
       callDistributionReason: 'Permanent ROC',
       defaultDescription: 'Return of capital',
       insideCommitment: 'Yes',
-      investment: 'Investment A',
+      investment: { id: '123', name: 'Investment A' },
       allocationBasis: 'Commitment',
       amount: 100,
     } as unknown as LineItemRow;
@@ -100,12 +100,20 @@ describe('investment utils', () => {
     });
 
     it('returns false when amount is 0 and basis is not User-Provided', () => {
-      const row = { ...baseRow, amount: 0, allocationBasis: 'Commitment' } as unknown as LineItemRow;
+      const row = {
+        ...baseRow,
+        amount: 0,
+        allocationBasis: 'Commitment',
+      } as unknown as LineItemRow;
       expect(isFundGroupRowValid(row, USER_PROVIDED_OPTION)).toBe(false);
     });
 
     it('returns true when amount is 0 but basis is User-Provided', () => {
-      const row = { ...baseRow, amount: 0, allocationBasis: USER_PROVIDED_OPTION } as unknown as LineItemRow;
+      const row = {
+        ...baseRow,
+        amount: 0,
+        allocationBasis: USER_PROVIDED_OPTION,
+      } as unknown as LineItemRow;
       expect(isFundGroupRowValid(row, USER_PROVIDED_OPTION)).toBe(true);
     });
 

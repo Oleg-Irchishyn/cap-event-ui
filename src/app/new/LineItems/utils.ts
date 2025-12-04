@@ -50,7 +50,7 @@ export const isOtherRowEmpty = (data: LineItemRow) =>
   data.accountName === '' &&
   data.defaultDescription === '' &&
   data.insideCommitment === '' &&
-  data.investment === '';
+  Object.keys(data.investment).length === 0;
 
 export const formatValue = (value: number | string, isTotalRowAmount: boolean = false) => {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;

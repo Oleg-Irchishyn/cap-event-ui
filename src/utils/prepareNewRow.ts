@@ -12,7 +12,7 @@ export const prepareNewRow = (level?: string): LineItemRow => {
     callDistributionReason: '',
     defaultDescription: '',
     insideCommitment: '',
-    investment: '',
+    investment: { name: '', id: '' },
     amount: 0,
     allocationBasis: '',
     accountNo: '',

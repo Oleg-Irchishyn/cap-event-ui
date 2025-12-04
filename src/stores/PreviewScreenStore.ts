@@ -163,10 +163,10 @@ class PreviewScreenStore {
     row: LineItemRow,
     investments: RefInvestment[],
   ): Partial<ApiInvestment> | undefined {
-    const id = row.investment || '';
+    const id = row.investment.id || '';
     if (!id) return undefined;
     const found = investments.find(
-      (inv) => String(inv.name).toLowerCase() === String(id).toLowerCase(),
+      (inv) => String(inv.id).toLowerCase() === String(id).toLowerCase(),
     );
     if (!found) return { id };
     return this.pickNonEmpty<ApiInvestment>({

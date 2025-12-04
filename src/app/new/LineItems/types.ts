@@ -1,11 +1,11 @@
-import { InvestorEntry } from '@/clients/CapEventPackage';
+import { Investment, InvestorEntry } from '@/clients/CapEventPackage';
 import { Account } from '@/clients/ReferenceData';
 
 export type LineItemRow = {
   id: string;
   amount: number;
   inheritedFundGroupLineItemId?: string;
-  investment: string;
+  investment: Investment;
   allocationBasis: string;
   prDate?: Date;
   prFlag?: string;

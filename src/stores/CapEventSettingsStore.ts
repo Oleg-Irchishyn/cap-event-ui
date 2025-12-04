@@ -115,7 +115,7 @@ class CapEventSettingsStore {
         return (
           !stateItem ||
           amountCheckBasedOnBasis ||
-          item.investment !== stateItem.investment ||
+          item.investment.id !== stateItem.investment.id ||
           item.allocationBasis !== stateItem.allocationBasis ||
           item.capitalCategory !== stateItem.capitalCategory ||
           item.defaultDescription !== stateItem.defaultDescription ||

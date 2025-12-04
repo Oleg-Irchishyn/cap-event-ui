@@ -30,11 +30,12 @@ import { capEventSettingsStore } from '@/stores';
 import { generateIntacctLink } from '@/utils/generateIntacctLink';
 import Tooltip from '@/app/components/Tooltip';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { Investment } from '@/clients/ReferenceData';
 
 export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [selectedValue, setSelectedValue] = useState(props.value || '');
+  const [selectedValue, setSelectedValue] = useState(props.value || ({} as Investment));
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -60,13 +61,11 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
       ? props.colDef?.editable(props as EditableCallbackParams)
       : props.colDef?.editable;
 
-  const handleSelect = (value?: string) => {
-    if (value) {
-      setSelectedValue(value);
-      props.setValue?.(value);
-      setIsOpen(false);
-      setSearchValue('');
-    }
+  const handleSelect = (value: Investment) => {
+    setSelectedValue(value);
+    props.setValue?.(value);
+    setIsOpen(false);
+    setSearchValue('');
   };
 
   // Handle dropdown toggle
@@ -167,10 +166,10 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
         onClick={handleToggle}
       >
         <Label
-          data-is-placeholder={!selectedValue}
+          data-is-placeholder={!(selectedValue.title || selectedValue.name)}
           data-is-inherited={!!props.data?.inheritedFundGroupLineItemId}
         >
-          {selectedValue || placeholder}
+          {selectedValue.title || selectedValue.name || placeholder}
         </Label>
         {isCellEditable && <ChevronIcon data-is-open={isOpen} />}
       </DropdownWrapper>
@@ -229,7 +228,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                   return (
                     <Option
                       key={option.id}
-                      onClick={() => handleSelect(label)}
+                      onClick={() => handleSelect(option)}
                       data-is-selected={label === selectedValue}
                     >
                       <InvestmentOptionWrapper>

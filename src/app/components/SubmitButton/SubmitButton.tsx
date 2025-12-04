@@ -29,12 +29,6 @@ const SubmitButton = () => {
 
   const router = useRouter();
 
-  const findInvestment = (investment: string) => {
-    return capEventSettingsStore.investments.find(
-      (inv) => inv.name === investment || inv.title === investment,
-    );
-  };
-
   const handleSaveCapEvent = async () => {
     try {
       const sessionId = getStoredSessionId() ?? '';
@@ -59,7 +53,7 @@ const SubmitButton = () => {
           !isCapEventLineItemsFilled(capEventSettingsStore.fundGroupsStateAfterApply)
             ? []
             : capEventSettingsStore.fundGroupsStateAfterApply.map((fundGroupLineItem) => {
-                const investment = findInvestment(fundGroupLineItem.investment);
+                const investment = fundGroupLineItem.investment;
                 return {
                   id: fundGroupLineItem.id,
                   investment: {
@@ -89,7 +83,7 @@ const SubmitButton = () => {
               noticeDate: formatDate(entityDatesStore.entityDates[key].noticeDate),
               dueDate: formatDate(entityDatesStore.entityDates[key].dueDate),
               capEventLineItems: entityLineItems.map((entityLineItem) => {
-                const investment = findInvestment(entityLineItem.investment);
+                const investment = entityLineItem.investment;
                 return {
                   allocationBasis: entityLineItem.allocationBasis,
                   amount: entityLineItem.amount,
