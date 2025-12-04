@@ -281,6 +281,9 @@ class PreviewScreenStore {
           ...(inheritedFundGroupLineItemId ? { inheritedFundGroupLineItemId } : {}),
           prDate: prDate as string,
           prFlag,
+          isMfLineItem: r.isMfLineItem,
+          batchNo: r.batchNo,
+          originAccountKey: r.accountKey,
         } as unknown as CapEventLineItem);
       }
 

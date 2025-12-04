@@ -45,7 +45,7 @@ const AllocationPreviewModal: FC = () => {
         if (previewEntityData) {
           setAllocationBasis(previewEntityData.allocationBasis);
 
-          if (previewEntityData.mgmtFee) {
+          if (previewEntityData.isMfLineItem) {
             const { batchNo, originAccountKey } = previewEntityData;
 
             if (batchNo !== undefined && originAccountKey !== undefined) {

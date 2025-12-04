@@ -22,6 +22,7 @@ describe('prepareNewRow', () => {
       amount: 0,
       accountNo: '',
       allocationBasis: '',
+      accountNo: '',
     });
   });
 

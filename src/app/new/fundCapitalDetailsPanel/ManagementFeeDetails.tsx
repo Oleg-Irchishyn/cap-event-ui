@@ -53,7 +53,7 @@ const prepareMgmtFeeLineItems = (
       defaultDescription: item.account.description,
       insideCommitment: item.account.insideCmnt ? 'Yes' : 'No',
       investment: item.investment,
-      mgmtFee: true,
+      isMfLineItem: true,
     };
   });
 
@@ -123,10 +123,10 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
 
         const updatedValues = MFItems.map((option) => ({ ...option, state: ITEM_STATES.OPTIONAL }));
         setMFItems(updatedValues);
-        // remove mgmtFee line items
+        // remove isMfLineItem line items
         const filteredLineItems = (
           capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
-        )?.filter((item) => !item.mgmtFee);
+        )?.filter((item) => !item.isMfLineItem);
         capEventSettingsStore.setEntitiesLineItem(entityLabel, filteredLineItems);
 
         return;
@@ -135,18 +135,19 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       }
 
       const entityLineItemsWithoutMgmtFee =
-        capEventSettingsStore.entitiesLineItem.get(entityLabel)?.filter((item) => !item.mgmtFee) ??
-        [];
+        capEventSettingsStore.entitiesLineItem
+          .get(entityLabel)
+          ?.filter((item) => !item.isMfLineItem) ?? [];
 
       capEventSettingsStore.setEntitiesLineItem(entityLabel, [
         ...entityLineItemsWithoutMgmtFee,
         ...prepareMgmtFeeLineItems(mgmtFeeLineItems, entityLabel),
       ]);
     } else {
-      // remove mgmtFee line items
+      // remove isMfLineItem line items
       const filteredLineItems = (
         capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
-      )?.filter((item) => !item.mgmtFee);
+      )?.filter((item) => !item.isMfLineItem);
 
       capEventSettingsStore.setEntitiesLineItem(entityLabel, filteredLineItems);
     }

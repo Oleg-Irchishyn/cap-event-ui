@@ -10,5 +10,6 @@ export type LineItemBase = {
     investment: Investment;
     allocationBasis: string;
     amount: number;
+    isMfLineItem?: boolean;
 };
 

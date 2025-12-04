@@ -9,7 +9,7 @@ export type LineItemRow = {
   allocationBasis: string;
   prDate?: Date;
   prFlag?: string;
-  mgmtFee?: boolean;
+  isMfLineItem?: boolean;
   batchNo?: number;
   originAccountKey?: string;
 } & Account;

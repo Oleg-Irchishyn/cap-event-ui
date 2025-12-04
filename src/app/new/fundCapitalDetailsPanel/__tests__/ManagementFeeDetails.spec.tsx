@@ -129,7 +129,7 @@ describe('ManagementFeeDetails', () => {
           insideCommitment: 'Yes',
           investment: 'Investment1',
           allocationBasis: 'basis1',
-          mgmtFee: false,
+          isMfLineItem: false,
         },
         {
           id: '2',
@@ -141,7 +141,7 @@ describe('ManagementFeeDetails', () => {
           insideCommitment: 'No',
           investment: 'Investment2',
           allocationBasis: 'basis2',
-          mgmtFee: true, // This should be filtered out
+          isMfLineItem: true, // This should be filtered out
         },
       ];
       mockCapEventSettingsStore.entitiesLineItem.set(entityLabel, existingLineItems);
@@ -218,12 +218,12 @@ describe('ManagementFeeDetails', () => {
             // Should include the non-mgmtFee item
             expect.objectContaining({
               id: '1',
-              mgmtFee: false,
+              isMfLineItem: false,
             }),
             // Should include the new mgmtFee item (converted from CapEventLineItem)
             expect.objectContaining({
               id: '3',
-              mgmtFee: true,
+              isMfLineItem: true,
               accountNo: 'ACC-003',
               capitalCategory: 'Category3',
               prFlag: 'Yes',

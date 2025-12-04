@@ -119,7 +119,7 @@ const AccountsTable: FC<Props> = ({
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (params.data?.isTotalRow) return false;
-      if (params.data?.mgmtFee) {
+      if (params.data?.isMfLineItem) {
         if (
           (params.colDef.field === AccountFields.capitalCategory && !params.data.capitalCategory) ||
           (params.colDef.field === AccountFields.callDistributionReason &&
