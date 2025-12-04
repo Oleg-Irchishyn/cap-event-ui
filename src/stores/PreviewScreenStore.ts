@@ -178,22 +178,6 @@ class PreviewScreenStore {
     });
   }
 
-  private mapAllocationBasisToProcessPayload(value: string | undefined): string {
-    const inputValue = (value ?? '').toString().trim();
-    if (!inputValue) return '';
-
-    const allocationBasisLabel = ALLOCATION_BASIS_DEFAULT_OPTIONS[inputValue];
-    if (allocationBasisLabel) return allocationBasisLabel;
-
-    const allocationBasisValues = Object.values(ALLOCATION_BASIS_DEFAULT_OPTIONS).map((c) =>
-      String(c).toLowerCase(),
-    );
-    const inputValueLowerCase = inputValue.toLowerCase();
-    if (allocationBasisValues.includes(inputValueLowerCase)) return inputValueLowerCase;
-
-    return inputValue;
-  }
-
   private mapLineItemBase(
     row: LineItemRow,
     accounts: RefAccount[],
@@ -223,7 +207,7 @@ class PreviewScreenStore {
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;
     const investment = this.findInvestment(row, investments) as ApiInvestment | undefined;
-    const allocationBasis = this.mapAllocationBasisToProcessPayload(row.allocationBasis);
+    const allocationBasis = row.allocationBasis;
     const amount = row.amount;
     return { account, investment, allocationBasis, amount };
   }
@@ -300,7 +284,7 @@ class PreviewScreenStore {
           prFlag,
           isMfLineItem: r.isMfLineItem,
           batchNo: r.batchNo,
-          originAccountKey: r.accountKey,
+          originAccountKey: r.originAccountKey,
         } as unknown as CapEventLineItem);
       }
 

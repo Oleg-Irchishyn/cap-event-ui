@@ -21,6 +21,8 @@ import { ROUTES } from '@/const/routes';
 import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
 import { CapEventPackageApi } from '@/api';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { isLineItemRowValid } from '@/utils/investment';
+import { showErrorToast } from '@/utils/showErrorToast';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
@@ -36,6 +38,7 @@ const SubmitButton = () => {
       const selectedEntities = capEventSettingsStore.fundEntities.filter(
         (ent) => ent.state === ITEM_STATES.SELECTED,
       );
+
       const requestBody: CapEvent = {
         capEventType: capEventSettingsStore.eventTypes.find(
           (type) => type.state === ITEM_STATES.SELECTED,
@@ -75,6 +78,7 @@ const SubmitButton = () => {
               }),
         capEventEntityLineItems: [...capEventSettingsStore.entitiesLineItem].map(
           ([key, entityLineItems]) => {
+            const validLineItems = entityLineItems.filter(isLineItemRowValid);
             return {
               entity: {
                 id: capEventSettingsStore.fundEntities.find((ent) => ent.label === key)?.id ?? '',
@@ -82,7 +86,7 @@ const SubmitButton = () => {
               },
               noticeDate: formatDate(entityDatesStore.entityDates[key].noticeDate),
               dueDate: formatDate(entityDatesStore.entityDates[key].dueDate),
-              capEventLineItems: entityLineItems.map((entityLineItem) => {
+              capEventLineItems: validLineItems.map((entityLineItem) => {
                 const investment = entityLineItem.investment;
                 return {
                   allocationBasis: entityLineItem.allocationBasis,
@@ -121,6 +125,7 @@ const SubmitButton = () => {
         router.push(ROUTES.MAIN.path);
       }
     } catch (error) {
+      showErrorToast(error);
       console.error(error);
     }
   };

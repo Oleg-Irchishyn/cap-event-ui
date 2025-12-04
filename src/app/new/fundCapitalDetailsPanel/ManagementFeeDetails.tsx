@@ -56,6 +56,7 @@ const prepareMgmtFeeLineItems = (
       insideCommitment: item.account.insideCmnt ? 'Yes' : 'No',
       investment: item.investment,
       isMfLineItem: true,
+      originAccountKey: item.originAccountKey,
     };
   });
 
