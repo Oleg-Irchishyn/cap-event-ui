@@ -21,7 +21,7 @@ export const COMMITMENT_FIELD = 'commitment';
 
 // Empty values
 export const EMPTY_INVESTOR_TYPE_ONE_VALUE = 'LP';
-export const EMPTY_INVESTOR_TYPE_TWO_VALUE = '--';
+export const EMPTY_INVESTOR_TYPE_TWO_VALUE = '-';
 
 // Deprecated (kept for compatibility where referenced previously)
 export const DESCRIPTION_HEADER = 'Description';

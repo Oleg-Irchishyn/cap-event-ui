@@ -22,6 +22,10 @@ export const ALLOCATED_AMOUNT_FIELD = 'allocatedAmount';
 export const MANAGEMENT_FEE_FIELD = 'managementFee';
 export const MANAGEMENT_FEE_PERCENT_FIELD = 'managementFeePercentage';
 
+// Empty values
+export const EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE = 'LP';
+export const EMPTY_INVESTOR_ADDITIONAL_TYPE_FIELD_VALUE = '-';
+
 // Fields for dynamic column
 export const UNFUNDED = 'unfunded';
 export const INVESTED_CAPITAL = 'investedCapital';

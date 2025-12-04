@@ -16,6 +16,8 @@ import {
   MANAGEMENT_FEE_FIELD,
   MANAGEMENT_FEE_HEADER,
   COMMITMENT_HEADER,
+  EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE,
+  EMPTY_INVESTOR_ADDITIONAL_TYPE_FIELD_VALUE,
 } from '@/const/allocationPreview';
 import { formatAmount } from '@/utils/formatAmount';
 
@@ -64,7 +66,8 @@ export const getAllocationPreviewColumnDefs = (
       sortable: false,
       valueGetter: (params) => {
         if (params.node?.rowPinned) return '';
-        return params.data.classID ?? 'LP';
+        const value = params.data[INVESTOR_CLASS_ID_FIELD];
+        return value && String(value).trim() ? value : EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE;
       },
       cellRendererSelector: () =>
         isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 85 } } : undefined,
@@ -76,7 +79,8 @@ export const getAllocationPreviewColumnDefs = (
       sortable: false,
       valueGetter: (params) => {
         if (params.node?.rowPinned) return '';
-        return params.data.additionalInvestorType ?? '-';
+        const value = params.data[INVESTOR_ADDITIONAL_TYPE_FIELD];
+        return value && String(value).trim() ? value : EMPTY_INVESTOR_ADDITIONAL_TYPE_FIELD_VALUE;
       },
       cellRendererSelector: () =>
         isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
