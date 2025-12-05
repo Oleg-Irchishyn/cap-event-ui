@@ -20,6 +20,7 @@ import {
   EMPTY_INVESTOR_ADDITIONAL_TYPE_FIELD_VALUE,
 } from '@/const/allocationPreview';
 import { formatAmount } from '@/utils/formatAmount';
+import { formatPercents } from './formatPercents';
 
 export const getAllocationPreviewColumnDefs = (
   fieldName: string,
@@ -144,7 +145,7 @@ export const getAllocationPreviewColumnDefs = (
         cellStyle: { textAlign: 'right' },
         valueGetter: (params) => {
           if (params.node?.rowPinned) return '';
-          return params.data.managementFeePercentage ?? '-';
+          return formatPercents(params.data.managementFeePercentage) ?? '-';
         },
         cellRendererSelector: () =>
           isLoading
