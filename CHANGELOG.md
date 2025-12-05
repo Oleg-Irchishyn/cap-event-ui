@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.62](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.61&targetVersion=GTv0.0.62) (2025-12-05)
+
+
+### Bug Fixes
+
+* [Issue-8358]: [FE] Empty 'Investor Type II' values are displayed incorrect in Allocation Preview modal and Preview Screen table ([4455f92](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4455f92fd31b8c42b94a6b236fd742a47c324cc0)), closes [#8358](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8358)
+* add isMfLineItems for submit ([ccfd682](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ccfd6820408dbb9ba00e22bc21f16b5a5139d740)), closes [#8566](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8566)
+* add mgmtFee field for submit and process ([495b59f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/495b59fdc7b22de88590713b3ea34ea73db0b2df)), closes [#8395](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8395)
+* add toast message on failed request ([55d4a76](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/55d4a764692bfd0ffd41ec3a6cea48d864958e00)), closes [#8284](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8284)
+* empty table row ([613b4a0](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/613b4a04797b4bbe5a6f53c1a1c07651113fc834)), closes [#6883](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6883)
+* incorrect process payload ([ba677e0](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ba677e016b0d85f17957b2f696bcf4da2075033b)), closes [#8566](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8566)
+* refactored Investments ([5b1b82d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5b1b82d979981c721af78b8eb3052fbc94befd82)), closes [#8418](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8418)
+* removed description from agrs ([4cb7f39](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4cb7f391930dc8d1f0a90459949880250c85c8e6)), closes [#8527](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8527)
+
 ### [0.0.61](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.60&targetVersion=GTv0.0.61) (2025-12-04)
 
 
