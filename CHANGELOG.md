@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.63](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.62&targetVersion=GTv0.0.63) (2025-12-06)
+
+
+### Features
+
+* format percents on Preview Modal ([1801f23](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/1801f23aa7cd326994442ee8a929c832b55cb7e7)), closes [#8609](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8609)
+
 ### [0.0.62](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.61&targetVersion=GTv0.0.62) (2025-12-05)
 
 
