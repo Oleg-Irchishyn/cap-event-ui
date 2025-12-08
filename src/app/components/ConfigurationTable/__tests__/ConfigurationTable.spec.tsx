@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable linebreak-style */
+ 
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import ConfigurationTable from '..';

@@ -118,7 +118,7 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
         });
       }
     }
-  }, [options.length]);
+  }, [options.length, withSearch]);
 
   useEffect(() => {
     document.addEventListener('scroll', updateDropdownPosition);

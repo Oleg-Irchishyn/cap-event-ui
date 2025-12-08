@@ -177,7 +177,13 @@ const FootnotesModal: FC<Props> = ({ isOpen, handleClose }) => {
           })}
         </FootnotesList>
         <ControlButton data-testid={prepareDataTestId('add-footnote')} onClick={addNewFootnote}>
-          <Image src={'/cap-event/icons/plus.svg'} alt="plus" width={13} height={13} priority={true} />
+          <Image
+            src={'/cap-event/icons/plus.svg'}
+            alt="plus"
+            width={13}
+            height={13}
+            priority={true}
+          />
           Add New Footnote
         </ControlButton>
         <ButtonsContainer>

@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 
 import GeneralSettings from '@/app/new/GeneralSettings';
-import { CapEventPackageApi, ReferenceDataApi, TemplateLibraryApi } from '@/api';
+import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 
 jest.mock('next/image', () => ({

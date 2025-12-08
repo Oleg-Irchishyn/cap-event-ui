@@ -59,7 +59,7 @@ const ListView = <T,>({
   excludedTooltipMessage,
   noDataText,
 }: ListViewProps<T>) => {
-  useEffect(() => () => onSearchChangeHandler(''), []);
+  useEffect(() => () => onSearchChangeHandler(''), [onSearchChangeHandler]);
 
   const displayDropdownContent = () => {
     if (isLoadingItems)

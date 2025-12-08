@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
   compiler: {
     styledComponents: true,
   },
-  eslint: {
-    dirs: ['app'],
-  },
 };
 
 export default nextConfig;

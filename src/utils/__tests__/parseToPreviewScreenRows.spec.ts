@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
 
 describe('parseToPreviewScreenRows', () => {

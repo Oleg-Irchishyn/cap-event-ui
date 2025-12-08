@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
@@ -60,7 +60,7 @@ const DropdownInputField = <T,>({
 
   const [hiddenOptionsCounter, setHiddenOptionsCounter] = useState(0);
 
-  const handleHiddenOptions = () => {
+  const handleHiddenOptions = useCallback(() => {
     let counter = 0;
 
     const remainItemsCount = selectedOptionsRefs.slice(9).length;
@@ -70,7 +70,6 @@ const DropdownInputField = <T,>({
       e.style.display = 'flex';
     });
 
-    // eslint-disable-next-line no-unsafe-optional-chaining
     const countWidth = (hiddenOptionsCountRef?.current?.offsetWidth || 0) + VIEWPORT_GAP;
     const elementsWidth = slicedSelectedOptionsRefs.reduce(
       (acc, { offsetWidth = 0 }) => acc + offsetWidth + VIEWPORT_GAP,
@@ -105,11 +104,11 @@ const DropdownInputField = <T,>({
     counter = hiddenCount + remainItemsCount;
 
     if (hiddenOptionsCounter !== counter) setHiddenOptionsCounter(counter);
-  };
+  }, [hiddenOptionsCounter, selectedOptionsRefs]);
 
   useEffect(() => {
     handleHiddenOptions();
-  }, [selectedItems, hiddenOptionsCounter]);
+  }, [selectedItems, hiddenOptionsCounter, handleHiddenOptions]);
 
   const handleInputClick = (e: React.MouseEvent<HTMLElement>) => {
     if (!isReadOnly && !(e.target as HTMLElement).className.includes('RemoveButton'))

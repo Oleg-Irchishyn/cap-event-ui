@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const SearchWrapper = styled.div<{ width?: number }>(({ theme, width }) => ({
+export const SearchWrapper = styled.div<{ width?: number }>(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   justifyContent: 'center',

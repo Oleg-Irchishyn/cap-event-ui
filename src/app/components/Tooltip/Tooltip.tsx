@@ -136,7 +136,7 @@ const Tooltip: FC<TooltipProps> = ({
     });
 
     return () => cancelAnimationFrame(rafId);
-  }, [showTooltip, position, tooltipMessage]);
+  }, [showTooltip, position, tooltipMessage, calculateCenterPosition]);
 
   return showTooltip && tooltipMessage
     ? createPortal(
