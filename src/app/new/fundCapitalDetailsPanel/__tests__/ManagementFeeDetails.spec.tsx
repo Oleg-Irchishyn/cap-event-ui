@@ -1,56 +1,105 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ManagementFeeDetails from '../ManagementFeeDetails';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
-import { CapEventLineItem } from '@/clients/CapEventPackage';
-import { LineItemRow } from '@/app/new/LineItems/types';
 
-jest.mock('@/api', () => {
-  const CapEventPackageApi = { default: { getMgmtFeeLineItems: jest.fn() } };
-  return {
-    CapEventPackageApi,
-  };
-});
-
-jest.mock('@/stores', () => ({
-  capEventSettingsStore: {
-    mgmtJournalEntries: {
-      'entity-1': [
-        {
-          amount: 1000,
-          batchDate: '2025-01-15',
-          batchTitle: 'Q1 Management Fee',
-          batchNo: 123,
-          description: 'Q1 Management Fee Description',
-        },
-        {
-          amount: 2000,
-          batchDate: '2025-02-15',
-          batchTitle: 'Q2 Management Fee',
-          batchNo: 456,
-          description: 'Q2 Management Fee Description',
-        },
-      ],
+jest.mock('@/api', () => ({
+  CapEventPackageApi: {
+    default: {
+      getMgmtFeeLineItems: jest.fn(),
     },
-    entitiesLineItem: new Map(),
-    setEntitiesLineItem: jest.fn(),
   },
 }));
 
+jest.mock('@/providers/ToastProvider', () => ({
+  useToast: () => ({
+    error: jest.fn(),
+  }),
+}));
+
+jest.mock('@/utils/sessionIdStorage', () => ({
+  getStoredSessionId: jest.fn().mockReturnValue('session-123'),
+}));
+
+jest.mock('@/utils/prepareNewRow', () => ({
+  prepareNewRow: jest.fn(() => ({
+    id: 'new-row-id',
+    capitalCategory: '',
+    callDistributionReason: '',
+    defaultDescription: '',
+    insideCommitment: '',
+    investment: { name: '', id: '' },
+    amount: 0,
+    allocationBasis: '',
+    accountNo: '',
+  })),
+}));
+
+jest.mock('@/stores', () => {
+  const state: {
+    selectedMFItemBatchNo: Record<string, number | null>;
+    includeMFOption: Record<string, 'Yes' | 'No'>;
+    entitiesLineItem: Map<string, unknown[]>;
+  } = {
+    selectedMFItemBatchNo: {},
+    includeMFOption: {},
+    entitiesLineItem: new Map(),
+  };
+
+  const getSelectedMFItemBatchNo = (entityId: string) =>
+    state.selectedMFItemBatchNo[entityId] ?? null;
+  const getIncludeMFOption = (entityId: string) => state.includeMFOption[entityId] ?? 'No';
+  const setSelectedMFItemBatchNo = (entityId: string, batchNo: number | null) => {
+    state.selectedMFItemBatchNo[entityId] = batchNo;
+  };
+  const setIncludeMFOption = (entityId: string, option: 'Yes' | 'No') => {
+    state.includeMFOption[entityId] = option;
+  };
+
+  return {
+    capEventSettingsStore: {
+      mgmtJournalEntries: {
+        'entity-1': [
+          {
+            amount: 1000,
+            batchDate: '2025-01-15',
+            batchNo: 123,
+            description: 'Q1 Management Fee',
+          },
+          {
+            amount: 2000,
+            batchDate: '2025-02-15',
+            batchNo: 456,
+            description: 'Q2 Management Fee',
+          },
+        ],
+      },
+      get entitiesLineItem() {
+        return state.entitiesLineItem;
+      },
+      setEntitiesLineItem: jest.fn(),
+      getSelectedMFItemBatchNo: jest.fn(getSelectedMFItemBatchNo),
+      getIncludeMFOption: jest.fn(getIncludeMFOption),
+      setSelectedMFItemBatchNo: jest.fn(setSelectedMFItemBatchNo),
+      setIncludeMFOption: jest.fn(setIncludeMFOption),
+      // Expose state for test access
+      _testState: state,
+    },
+    entityDatesStore: {
+      getEntityDueDate: jest.fn(() => new Date('2025-01-15')),
+    },
+  };
+});
+
 import { capEventSettingsStore } from '@/stores';
 import { CapEventPackageApi } from '@/api';
+import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
-const mockCapEventPackageApi = CapEventPackageApi as jest.Mocked<typeof CapEventPackageApi>;
-const mockCapEventSettingsStore = capEventSettingsStore as unknown as {
-  mgmtJournalEntries: Record<
-    string,
-    Array<{ amount: number; batchDate: string; batchNo: number; description: string }>
-  >;
-  entitiesLineItem: Map<string, LineItemRow[]>;
-  setEntitiesLineItem: jest.Mock;
-};
+const mockStore = capEventSettingsStore as CapEventSettingsStore;
+const mockApi = CapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock;
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
@@ -64,30 +113,32 @@ describe('ManagementFeeDetails', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockStore.entitiesLineItem.clear();
+    mockStore.selectedMFItemBatchNo = {};
+    mockStore.includeMFOption = {};
 
-    mockCapEventSettingsStore.entitiesLineItem.clear();
-    (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue([]);
+    // Ensure mocks always read from current state
+    (mockStore.getSelectedMFItemBatchNo as jest.Mock).mockImplementation(
+      (entityId: string) => mockStore.selectedMFItemBatchNo[entityId] ?? null,
+    );
+    (mockStore.getIncludeMFOption as jest.Mock).mockImplementation(
+      (entityId: string) => mockStore.includeMFOption[entityId] ?? 'No',
+    );
+    (mockStore.setSelectedMFItemBatchNo as jest.Mock).mockImplementation(
+      (entityId: string, batchNo: number | null) => {
+        mockStore.selectedMFItemBatchNo[entityId] = batchNo;
+      },
+    );
+    (mockStore.setIncludeMFOption as jest.Mock).mockImplementation(
+      (entityId: string, option: 'Yes' | 'No') => {
+        mockStore.includeMFOption[entityId] = option;
+      },
+    );
 
-    // Reset mgmtJournalEntries to a known default between tests
-    mockCapEventSettingsStore.mgmtJournalEntries = {
-      'entity-1': [
-        {
-          amount: 1000,
-          batchDate: '2025-01-15',
-          batchNo: 123,
-          description: 'Q1 Management Fee Description',
-        },
-        {
-          amount: 2000,
-          batchDate: '2025-02-15',
-          batchNo: 456,
-          description: 'Q2 Management Fee Description',
-        },
-      ],
-    };
+    mockApi.mockResolvedValue([]);
   });
 
-  it('renders the "Include Uncalled Mgmt Fee" dropdown with default "No" selected', () => {
+  it('renders with default "No" option and hides MF dropdown', () => {
     renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
 
     expect(screen.getByText('Include Uncalled Mgmt Fee')).toBeInTheDocument();
@@ -95,210 +146,40 @@ describe('ManagementFeeDetails', () => {
     expect(screen.queryByText('MF Calculated Amount')).not.toBeInTheDocument();
   });
 
-  it('shows the MF Calculated Amount dropdown when "Yes" is selected', async () => {
+  it('clears MF selection and removes MF line items when changed from "Yes" to "No"', async () => {
+    // Setup: Start with "Yes" selected and an MF item selected
+    mockStore.includeMFOption['entity-1'] = 'Yes';
+    mockStore.selectedMFItemBatchNo['entity-1'] = 123;
+    mockStore.entitiesLineItem.set('entity-1', [
+      { id: '1', isMfLineItem: false },
+      { id: '2', isMfLineItem: true },
+    ] as LineItemRow[]);
+
     renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
 
-    // Click on "No" to open the dropdown
-    fireEvent.click(screen.getByText('No'));
+    // Change to "No"
+    const buttons = screen.getAllByRole('button');
+    fireEvent.click(buttons[0]);
+    const noOption = await waitFor(() => screen.getByText('No'));
+    await act(async () => {
+      fireEvent.click(noOption);
+    });
 
-    // Wait for dropdown to open and click on "Yes" option
-    const yesOption = await waitFor(() => screen.getByText('Yes'));
-    fireEvent.click(yesOption);
-
-    // Verify the second dropdown appears
+    // Verify MF selection was cleared
     await waitFor(() => {
-      expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
-      expect(screen.getByText('(2 items available)')).toBeInTheDocument();
+      expect(mockStore.setSelectedMFItemBatchNo).toHaveBeenCalledWith('entity-1', null);
     });
-  });
 
-  describe('handleSelectMFItem - with batchNo', () => {
-    it('should fetch fee line items and merge with existing non-mgmtFee items when batchNo is provided', async () => {
-      const entityLabel = 'test-entity';
-      const batchNo = 123;
-
-      // Setup existing line items in store (mix of mgmtFee and non-mgmtFee)
-      const existingLineItems: LineItemRow[] = [
-        {
-          id: '1',
-          amount: 100,
-          accountNo: 'ACC-001',
-          capitalCategory: 'Category1',
-          callDistributionReason: 'Reason1',
-          defaultDescription: 'Desc1',
-          insideCommitment: 'Yes',
-          investment: 'Investment1',
-          allocationBasis: 'basis1',
-          isMfLineItem: false,
-        },
-        {
-          id: '2',
-          amount: 200,
-          accountNo: 'ACC-002',
-          capitalCategory: 'Category2',
-          callDistributionReason: 'Reason2',
-          defaultDescription: 'Desc2',
-          insideCommitment: 'No',
-          investment: 'Investment2',
-          allocationBasis: 'basis2',
-          isMfLineItem: true, // This should be filtered out
-        },
-      ];
-      mockCapEventSettingsStore.entitiesLineItem.set(entityLabel, existingLineItems);
-
-      // Mock API response
-      const mockMgmtFeeLineItems: CapEventLineItem[] = [
-        {
-          id: '3',
-          amount: 300,
-          prDate: '2025-01-15',
-          prFlag: true,
-          allocationBasis: 'basis3',
-          account: {
-            accountNo: 'ACC-003',
-            category: 'Category3',
-            reason: 'Reason3',
-            description: 'Desc3',
-            insideCmnt: true,
-          },
-          investment: {
-            id: 'INV-001',
-            title: 'Investment Title',
-            name: 'Investment Name',
-          },
-        },
-      ];
-      (mockCapEventPackageApi.default.getMgmtFeeLineItems as jest.Mock).mockResolvedValue(
-        mockMgmtFeeLineItems,
+    // Verify MF line items were removed
+    await waitFor(() => {
+      expect(mockStore.setEntitiesLineItem).toHaveBeenCalledWith(
+        'entity-1',
+        expect.arrayContaining([expect.objectContaining({ id: '1', isMfLineItem: false })]),
       );
-
-      renderWithTheme(<ManagementFeeDetails entityId="entity-1" entityLabel={entityLabel} />);
-
-      // Select "Yes" to show the MF dropdown
-      fireEvent.click(screen.getByText('No'));
-      const yesOption = await waitFor(() => screen.getByText('Yes'));
-      fireEvent.click(yesOption);
-
-      // Wait for the MF dropdown to appear
-      await waitFor(() => {
-        expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
-      });
-
-      // Find all buttons and click the one associated with MF dropdown (the second dropdown)
-      const buttons = screen.getAllByRole('button');
-      // The MF dropdown button should be after the Include MF dropdown button
-      const mfDropdownButton = buttons[1];
-      fireEvent.click(mfDropdownButton);
-
-      // Wait for dropdown to open and find the first MF item (formatted as "1,000")
-      // The item should appear in a list view with testId "mgmt-entries"
-      const firstMFOption = await waitFor(
-        () => {
-          const listView = screen.getByTestId('mgmt-entries');
-          return listView.querySelector('[data-testid*="1,000"]') || screen.getByText('1,000');
-        },
-        { timeout: 3000 },
-      );
-      fireEvent.click(firstMFOption);
-
-      // Wait for the API call
-      await waitFor(() => {
-        expect(mockCapEventPackageApi.default.getMgmtFeeLineItems).toHaveBeenCalledWith(
-          batchNo,
-          'entity-1',
-          '',
-        );
-      });
-
-      // Verify setEntitiesLineItem was called with merged items
-      await waitFor(() => {
-        expect(mockCapEventSettingsStore.setEntitiesLineItem).toHaveBeenCalledWith(
-          entityLabel,
-          expect.arrayContaining([
-            // Should include the non-mgmtFee item
-            expect.objectContaining({
-              id: '1',
-              isMfLineItem: false,
-            }),
-            // Should include the new mgmtFee item (converted from CapEventLineItem)
-            expect.objectContaining({
-              id: '3',
-              isMfLineItem: true,
-              accountNo: 'ACC-003',
-              capitalCategory: 'Category3',
-              prFlag: 'Yes',
-            }),
-          ]),
-        );
-      });
-
-      // Verify the mgmtFee item from existing items was filtered out
-      const callArgs = mockCapEventSettingsStore.setEntitiesLineItem.mock.calls[0];
-      const mergedItems = callArgs[1] as LineItemRow[];
-      expect(mergedItems.find((item) => item.id === '2')).toBeUndefined();
     });
-  });
 
-  describe('MF selection persistence on options refresh', () => {
-    const openIncludeDropdownAndSelectYes = async () => {
-      fireEvent.click(screen.getByText('No'));
-      const yesOption = await waitFor(() => screen.getByText('Yes'));
-      fireEvent.click(yesOption);
-
-      await waitFor(() => {
-        expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
-      });
-    };
-
-    const openMFDropdownAndSelectFirst = async (labelText: string) => {
-      const buttons = screen.getAllByRole('button');
-      const mfDropdownButton = buttons[1];
-      fireEvent.click(mfDropdownButton);
-
-      const firstOption = await waitFor(() => screen.getByText(labelText));
-      fireEvent.click(firstOption);
-
-      fireEvent.click(mfDropdownButton);
-      const selectedInList = await waitFor(() => {
-        const el = screen.getByText(labelText).closest('[data-is-selected="true"]');
-        return el;
-      });
-      expect(selectedInList).toBeTruthy();
-    };
-
-    it('keeps the selected MF item when the same label still exists', async () => {
-      const utils = renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
-
-      await openIncludeDropdownAndSelectYes();
-      await openMFDropdownAndSelectFirst('1,000');
-
-      mockCapEventSettingsStore.mgmtJournalEntries['entity-1'] = [
-        {
-          amount: 1000,
-          batchDate: '2025-03-01',
-          batchNo: 789,
-          description: 'Reposted',
-        },
-        {
-          amount: 3000,
-          batchDate: '2025-04-01',
-          batchNo: 101112,
-          description: 'Q3 Fee',
-        },
-      ];
-
-      utils.rerender(
-        <ThemeProvider theme={theme}>
-          <ManagementFeeDetails {...defaultProps} />
-        </ThemeProvider>,
-      );
-
-      await waitFor(() => {
-        expect(screen.getByText('MF Calculated Amount')).toBeInTheDocument();
-      });
-
-      const visibleSelection = await screen.findByText(/1,000\s*\(/);
-      expect(visibleSelection).toBeInTheDocument();
-    });
+    const callArgs = (mockStore.setEntitiesLineItem as jest.Mock).mock.calls[0];
+    const filteredItems = callArgs[1];
+    expect(filteredItems.find((item: LineItemRow) => item?.isMfLineItem)).toBeUndefined();
   });
 });

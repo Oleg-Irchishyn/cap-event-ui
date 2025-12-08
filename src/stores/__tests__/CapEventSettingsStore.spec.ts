@@ -44,6 +44,7 @@ import { Account, FundGroup } from '@/clients/ReferenceData';
 import { ReferenceDataApi } from '@/api';
 import type { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import type { Attachment, DragNDropError } from '@/app/new/attachments/types';
+import RootStore from '@/stores/RootStore';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -56,7 +57,8 @@ describe('CapEventSettingsStore', () => {
   ];
 
   beforeEach(() => {
-    store = new CapEventSettingsStore();
+    const rootStore = new RootStore();
+    store = rootStore.capEventSettingsStore;
   });
 
   it('should set funds', () => {

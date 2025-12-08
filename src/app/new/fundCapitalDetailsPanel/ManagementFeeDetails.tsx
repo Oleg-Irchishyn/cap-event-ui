@@ -1,6 +1,6 @@
 import Dropdown from '@/app/components/Dropdown';
 import { ITEM_STATES } from '@/const/common';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { CapEventLineItem, MgmtFeeJournalEntry } from '@/clients/CapEventPackage';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
@@ -14,24 +14,16 @@ import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemTypes } from '@/app/new/LineItems/const';
 
-const preparedIncludeMFOptions = [
-  {
-    label: 'Yes',
-    state: ITEM_STATES.OPTIONAL,
-  },
-  {
-    label: 'No',
-    state: ITEM_STATES.SELECTED,
-  },
-];
-
-const prepareMgmtEntryOptions = (mgmtOptions?: MgmtFeeJournalEntry[]) =>
+const prepareMgmtEntryOptions = (
+  mgmtOptions?: MgmtFeeJournalEntry[],
+  selectedBatchNo: number | null = null,
+) =>
   mgmtOptions?.map((item) => {
     const formatedDate = new Date(item.batchDate ?? '').toLocaleDateString();
 
     return {
       ...item,
-      state: ITEM_STATES.OPTIONAL,
+      state: item.batchNo === selectedBatchNo ? ITEM_STATES.SELECTED : ITEM_STATES.OPTIONAL,
       label: item.amount?.toLocaleString() ?? '',
       displayName: `${item.amount?.toLocaleString()} (${formatedDate})`,
       description: `Posting Date: ${formatedDate}`,
@@ -66,53 +58,40 @@ type Props = {
 };
 
 const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
-  const mgmtFeeLineItems = capEventSettingsStore.mgmtJournalEntries[entityId];
+  const mgmtJournalEntries = capEventSettingsStore.mgmtJournalEntries[entityId];
+  const selectedBatchNo = capEventSettingsStore.getSelectedMFItemBatchNo(entityId);
+  const includeMFOption = capEventSettingsStore.getIncludeMFOption(entityId);
   const toast = useToast();
-  const [includeMFOptions, setIncludeMFOptions] = useState(preparedIncludeMFOptions);
-  const [MFItems, setMFItems] = useState(
-    prepareMgmtEntryOptions(capEventSettingsStore.mgmtJournalEntries[entityId]),
-  );
   const [searchText, setSearchText] = useState('');
   const [isMgmtFeeLineItemsLoading, setMgmtFeeLineItemsLoading] = useState(false);
   const sessionId = getStoredSessionId() ?? '';
 
-  useEffect(() => {
-    setMFItems((prev) => {
-      const previouslySelectedLabel =
-        prev.find((opt) => opt.state === ITEM_STATES.SELECTED)?.label ?? '';
-      const freshOptions = prepareMgmtEntryOptions(
-        capEventSettingsStore.mgmtJournalEntries[entityId],
-      );
+  const includeMFOptions = useMemo(
+    () => [
+      {
+        label: 'Yes',
+        state: includeMFOption === 'Yes' ? ITEM_STATES.SELECTED : ITEM_STATES.OPTIONAL,
+      },
+      {
+        label: 'No',
+        state: includeMFOption === 'No' ? ITEM_STATES.SELECTED : ITEM_STATES.OPTIONAL,
+      },
+    ],
+    [includeMFOption],
+  );
 
-      if (!previouslySelectedLabel) {
-        return freshOptions;
-      }
-
-      const stillExists = freshOptions.some((opt) => opt.label === previouslySelectedLabel);
-      if (!stillExists) {
-        return freshOptions;
-      }
-
-      return freshOptions.map((opt) =>
-        opt.label === previouslySelectedLabel ? { ...opt, state: ITEM_STATES.SELECTED } : opt,
-      );
-    });
-  }, [entityId, mgmtFeeLineItems]);
+  const MFItems = useMemo(
+    () => prepareMgmtEntryOptions(mgmtJournalEntries, selectedBatchNo),
+    [mgmtJournalEntries, selectedBatchNo],
+  );
 
   const handleSelectMFItem = async (item?: DropdownItemType<MgmtFeeJournalEntry>) => {
-    const selectedItemLabel = MFItems.find((opt) => opt.state === ITEM_STATES.SELECTED)?.label;
-    if (item && selectedItemLabel === item.label) return;
-
-    const updatedValues = MFItems.map((option) =>
-      option.label === item?.label
-        ? { ...option, state: ITEM_STATES.SELECTED }
-        : { ...option, state: ITEM_STATES.OPTIONAL },
-    );
-
-    setMFItems(updatedValues);
+    const currentSelectedBatchNo = capEventSettingsStore.getSelectedMFItemBatchNo(entityId);
+    if (item?.batchNo && currentSelectedBatchNo === item.batchNo) return;
 
     if (item?.batchNo) {
       setMgmtFeeLineItemsLoading(true);
+      capEventSettingsStore.setSelectedMFItemBatchNo(entityId, item?.batchNo);
       let mgmtFeeLineItems: CapEventLineItem[] = [];
       try {
         mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(
@@ -124,8 +103,7 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
         toast.error('Error getting mgmt fee line item');
         console.error(error);
 
-        const updatedValues = MFItems.map((option) => ({ ...option, state: ITEM_STATES.OPTIONAL }));
-        setMFItems(updatedValues);
+        capEventSettingsStore.setSelectedMFItemBatchNo(entityId, null);
         // remove isMfLineItem line items
         const filteredLineItems = (
           capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
@@ -161,23 +139,18 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
   };
 
   const handleChangeIncludeMF = (item: DropdownItemType) => {
-    const updatedValues = includeMFOptions.map((option) =>
-      option.label === item.label
-        ? { ...option, state: ITEM_STATES.SELECTED }
-        : { ...option, state: ITEM_STATES.OPTIONAL },
-    );
-    setIncludeMFOptions(updatedValues);
+    const option = item.label as 'Yes' | 'No';
+    capEventSettingsStore.setIncludeMFOption(entityId, option);
 
     if (item.label === 'No') {
-      // Clear any MF selection in the dropdown UI
-      setMFItems((prev) => prev.map((opt) => ({ ...opt, state: ITEM_STATES.OPTIONAL })));
+      // Clear any MF selection
+      capEventSettingsStore.setSelectedMFItemBatchNo(entityId, null);
       // call with no params to reset selected item
       handleSelectMFItem();
     }
   };
 
-  const isIncludedMFSetToYes =
-    includeMFOptions.find((item) => item.state === ITEM_STATES.SELECTED)?.label === 'Yes';
+  const isIncludedMFSetToYes = includeMFOption === 'Yes';
 
   const visibleMFItems = MFItems.filter(
     (item) =>

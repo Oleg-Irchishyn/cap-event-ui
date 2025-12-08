@@ -35,7 +35,7 @@ import { Investment } from '@/clients/ReferenceData';
 export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [selectedValue, setSelectedValue] = useState(props.value || ({} as Investment));
+  const [selectedValue, setSelectedValue] = useState<Investment>(props.value || ({} as Investment));
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -229,7 +229,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
                     <Option
                       key={option.id}
                       onClick={() => handleSelect(option)}
-                      data-is-selected={label === selectedValue}
+                      data-is-selected={option.id === selectedValue.id}
                     >
                       <InvestmentOptionWrapper>
                         <InvestmentTitleWrapper>

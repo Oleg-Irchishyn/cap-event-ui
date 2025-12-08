@@ -9,7 +9,7 @@ import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import FootnotesModal from '@/app/new/FootnotesModal';
 import ContinueButton from '@/app/components/ContinueButton';
 import SubmitButton from '@/app/components/SubmitButton';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ButtonContainer } from '@/app/styles';
 import { ROUTES } from '@/const/routes';
 
@@ -17,6 +17,7 @@ const ButtonsGroup = () => {
   const [isFootnotesModalOpen, setFootnotesModalOpen] = useState(false);
 
   const path = usePathname();
+  const router = useRouter();
 
   const renderButton = () => {
     if (path === ROUTES.NEW_CAP_EVENT.path) {
@@ -26,6 +27,22 @@ const ButtonsGroup = () => {
       return <SubmitButton />;
     }
   };
+
+  const handleBackPress = () => {
+    router.push(ROUTES.NEW_CAP_EVENT.path);
+  };
+
+  const renderBackButton =
+    path === ROUTES.PREVIEW_SCREEN.path ? (
+      <Button
+        testId="back"
+        width="auto"
+        onClick={handleBackPress}
+        buttonTheme={BUTTON_THEMES.secondary}
+      >
+        Back
+      </Button>
+    ) : null;
 
   const isDescriptionPresentedInEntities = Array.from(
     capEventSettingsStore.entitiesLineItem.values(),
@@ -42,6 +59,7 @@ const ButtonsGroup = () => {
   return (
     <>
       <ButtonContainer>
+        {renderBackButton}
         <Button
           testId="cancel"
           disabled

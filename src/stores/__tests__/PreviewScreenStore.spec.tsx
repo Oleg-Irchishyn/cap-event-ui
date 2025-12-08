@@ -2,6 +2,8 @@ import axios from 'axios';
 import type { ToastApi } from '@/providers/types';
 import { ITEM_STATES } from '@/const/common';
 import type { PreviewScreenRow } from '@/app/preview-screen/types';
+import RootStore from '@/stores/RootStore';
+import PreviewScreenStore from '@/stores/PreviewScreenStore';
 
 const processMock = jest.fn();
 const parseMock = jest.fn();
@@ -85,6 +87,7 @@ const mockCapEventSettingsStore = {
       ],
     ],
   ]),
+  comment: '',
 };
 
 const mockEntityDatesStore: {
@@ -101,33 +104,43 @@ const mockEntityDatesStore: {
   getEntityNoticeDateInputValidity: jest.fn(() => true),
 };
 
-jest.mock('@/stores', () => ({
-  capEventSettingsStore: mockCapEventSettingsStore,
-  entityDatesStore: mockEntityDatesStore,
-}));
-
 describe('PreviewScreenStore', () => {
   const BlobCtor: new (...args: unknown[]) => unknown =
     (global as unknown as { Blob?: new (...args: unknown[]) => unknown }).Blob ??
     (class MockBlob {} as unknown as new (...args: unknown[]) => unknown);
+
+  let store: PreviewScreenStore;
+  let rootStore: RootStore;
 
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
     axiosPostMock.mockReset();
     (axios as unknown as { post: jest.Mock }).post = axiosPostMock as unknown as jest.Mock;
-  });
 
-  const importStore = async () => {
-    const mod = await import('@/stores/PreviewScreenStore');
-    return mod.previewScreenStore;
-  };
+    // Reset mock functions
+    mockEntityDatesStore.getEntityNoticeDate.mockReturnValue(new Date('2025-11-17'));
+    mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date('2025-11-24'));
+    mockEntityDatesStore.getEntityDueDateInputValidity.mockReturnValue(true);
+    mockEntityDatesStore.getEntityNoticeDateInputValidity.mockReturnValue(true);
+
+    // Create RootStore instance
+    rootStore = new RootStore();
+
+    // Replace child stores with mocks so PreviewScreenStore can access them via this.root.*
+    rootStore.capEventSettingsStore =
+      mockCapEventSettingsStore as unknown as typeof rootStore.capEventSettingsStore;
+    rootStore.entityDatesStore =
+      mockEntityDatesStore as unknown as typeof rootStore.entityDatesStore;
+
+    // Get PreviewScreenStore from the RootStore
+    store = rootStore.previewScreenStore;
+  });
 
   it('processPayload: when not enough data, shows toast and does not call API', async () => {
     // Temporarily make entities invalid (no selected entities)
     const prevEntities = mockCapEventSettingsStore.fundEntities;
     (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities = [];
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
     const result = await store.processPayload(toast);
@@ -143,7 +156,6 @@ describe('PreviewScreenStore', () => {
   });
 
   it('processPayload success: builds payload from stores, calls API once, updates rows', async () => {
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
     const apiResponse = [{ any: 'response' }];
     processMock.mockResolvedValueOnce(apiResponse);
@@ -203,7 +215,6 @@ describe('PreviewScreenStore', () => {
   });
 
   it('processPayload concurrent calls use in-flight guard and call API only once', async () => {
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
     processMock.mockResolvedValueOnce([{ any: 'response' }]);
     parseMock.mockReturnValue([{ id: 'r1' }]);
@@ -218,7 +229,6 @@ describe('PreviewScreenStore', () => {
   });
 
   it('processPayload API error shows toast and clears rows', async () => {
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
     processMock.mockRejectedValueOnce(new Error('Boom'));
 
@@ -231,7 +241,6 @@ describe('PreviewScreenStore', () => {
   });
 
   it('fetchDoc success posts to investor document endpoint and returns blob', async () => {
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
     // Arrange: process response with entity and multiple investors
@@ -302,7 +311,6 @@ describe('PreviewScreenStore', () => {
   });
 
   it('fetchDoc json error surfaces toast and returns undefined', async () => {
-    const store = await importStore();
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
     // Prepare process context

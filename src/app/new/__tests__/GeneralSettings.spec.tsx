@@ -99,6 +99,7 @@ jest.mock('@/stores', () => {
     setFundEntities: jest.fn(),
     setEntitiesDropdownOpen: jest.fn(),
     fetchInvestments: jest.fn(),
+    investments: [],
   };
   const entityDatesStore = {
     noticeDate: null as Date | null,

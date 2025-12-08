@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { RowClickedEvent } from 'ag-grid-community';
 import { observer } from 'mobx-react-lite';
 
-import { previewScreenStore } from '@/stores/PreviewScreenStore';
+import { previewScreenStore } from '@/stores';
 import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';

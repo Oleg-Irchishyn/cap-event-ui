@@ -20,7 +20,6 @@ import { Account as RefAccount, Investment as RefInvestment } from '@/clients/Re
 import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
 import type { PreviewScreenRow } from '@/app/preview-screen/types';
 import { ToastApi } from '@/providers/types';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
 import { UUID_V4_REGEX } from '@/const/regExps';
 import { YesNoOptions } from '@/app/new/LineItems/const';
@@ -30,16 +29,20 @@ import { isRowEmpty } from '@/utils/isRowEmpty';
 import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
-import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
+import RootStore from '@/stores/RootStore';
 
 class PreviewScreenStore {
+  root: RootStore;
+
   rows: PreviewScreenRow[] = [];
   isLoading = false;
   private inFlightProcess: Promise<PreviewScreenRow[]> | null = null;
   private lastProcessResponse: CapEventLineItemResponse[] = [];
   private lastCapEvent: CapEvent | null = null;
 
-  constructor() {
+  constructor(root: RootStore) {
+    this.root = root;
+
     makeAutoObservable(this);
   }
 
@@ -105,9 +108,9 @@ class PreviewScreenStore {
 
   private getTopNoticeDateString(selectedEntities: Array<{ label?: string }>): string | undefined {
     const top =
-      entityDatesStore.noticeDate ||
+      this.root.entityDatesStore.noticeDate ||
       (selectedEntities.length
-        ? entityDatesStore.getEntityNoticeDate(selectedEntities[0].label ?? '')
+        ? this.root.entityDatesStore.getEntityNoticeDate(selectedEntities[0].label ?? '')
         : null);
     return this.formatDate(getValidDate(top));
   }
@@ -219,7 +222,7 @@ class PreviewScreenStore {
   ): { items: CapEventFundGroupLineItem[]; idMap: Map<string, string> } {
     const idMap = new Map<string, string>();
     const items: CapEventFundGroupLineItem[] = [];
-    const fgRows = capEventSettingsStore.fundGroupsLineItem || [];
+    const fgRows = this.root.capEventSettingsStore.fundGroupsLineItem || [];
     const hasAtLeastOneValid = fgRows.some((r) => this.isEntityRowValid(r));
     for (const row of fgRows) {
       if (isRowEmpty(row)) continue;
@@ -250,10 +253,11 @@ class PreviewScreenStore {
     const result: CapEventEntityLineItem[] = [];
     for (const ent of selectedEntities) {
       const label = (ent as { label?: string }).label ?? '';
-      const entityRows: LineItemRow[] = capEventSettingsStore.entitiesLineItem.get(label) ?? [];
+      const entityRows: LineItemRow[] =
+        this.root.capEventSettingsStore.entitiesLineItem.get(label) ?? [];
 
-      const validNotice = getValidDate(entityDatesStore.getEntityNoticeDate(label));
-      const validDue = getValidDate(entityDatesStore.getEntityDueDate(label));
+      const validNotice = getValidDate(this.root.entityDatesStore.getEntityNoticeDate(label));
+      const validDue = getValidDate(this.root.entityDatesStore.getEntityDueDate(label));
       const datesAreValid = !!validNotice && !!validDue;
       const hasAtLeastOneValid = entityRows.some((r) => this.isEntityRowValid(r));
       if (!datesAreValid || !hasAtLeastOneValid) continue;
@@ -313,10 +317,14 @@ class PreviewScreenStore {
 
   private buildPayload(): CapEvent | null {
     // Selected general settings (using helpers)
-    const selectedTypeItem = this.getSelectedSingle(capEventSettingsStore.eventTypes);
-    const selectedSponsorItem = this.getSelectedSingle(capEventSettingsStore.sponsors);
-    const selectedFundGroupItem = this.getSelectedSingle(capEventSettingsStore.fundGroups);
-    const selectedEntityItems = this.getSelectedMany(capEventSettingsStore.fundEntities) as Array<{
+    const selectedTypeItem = this.getSelectedSingle(this.root.capEventSettingsStore.eventTypes);
+    const selectedSponsorItem = this.getSelectedSingle(this.root.capEventSettingsStore.sponsors);
+    const selectedFundGroupItem = this.getSelectedSingle(
+      this.root.capEventSettingsStore.fundGroups,
+    );
+    const selectedEntityItems = this.getSelectedMany(
+      this.root.capEventSettingsStore.fundEntities,
+    ) as Array<{
       id?: string;
       name?: string;
       label?: string;
@@ -336,8 +344,8 @@ class PreviewScreenStore {
     if (!noticeDateStr) return null;
 
     // Lookups
-    const accounts: RefAccount[] = capEventSettingsStore.accounts;
-    const investments: RefInvestment[] = capEventSettingsStore.investments;
+    const accounts: RefAccount[] = this.root.capEventSettingsStore.accounts;
+    const investments: RefInvestment[] = this.root.capEventSettingsStore.investments;
 
     // Build line items via helpers
     const { items: capEventFundGroupLineItems, idMap: fundGroupIdMap } =
@@ -364,8 +372,8 @@ class PreviewScreenStore {
       status: 'DRAFT' as unknown as CapEvent['status'],
       ...(capEventFundGroupLineItems.length ? { capEventFundGroupLineItems } : {}),
       capEventEntityLineItems,
-      ...(capEventSettingsStore.comment?.trim()
-        ? { comment: capEventSettingsStore.comment.trim() }
+      ...(this.root.capEventSettingsStore.comment?.trim()
+        ? { comment: this.root.capEventSettingsStore.comment.trim() }
         : {}),
       totalAmount,
     };
@@ -498,4 +506,4 @@ class PreviewScreenStore {
   }
 }
 
-export const previewScreenStore = new PreviewScreenStore();
+export default PreviewScreenStore;

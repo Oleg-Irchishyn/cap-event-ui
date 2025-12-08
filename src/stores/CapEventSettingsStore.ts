@@ -13,10 +13,13 @@ import { FootnoteRecordType } from '@/app/new/FootnotesModal/types';
 import { isFundGroupRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { showErrorToast } from '@/utils/showErrorToast';
+import RootStore from '@/stores/RootStore';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
+  root: RootStore;
+
   // General settings
   eventTypes: DropdownItemType[] = [];
   sponsors: DropdownItemType[] = [];
@@ -53,8 +56,12 @@ class CapEventSettingsStore {
   comment: string = '';
 
   mgmtJournalEntries: Record<string, MgmtFeeJournalEntry[]> = {};
+  selectedMFItemBatchNo: Record<string, number | null> = {};
+  includeMFOption: Record<string, 'Yes' | 'No'> = {};
 
-  constructor() {
+  constructor(root: RootStore) {
+    this.root = root;
+
     makeAutoObservable(this);
   }
 
@@ -352,8 +359,26 @@ class CapEventSettingsStore {
     this.comment = value ?? '';
   }
 
+  setSelectedMFItemBatchNo(entityId: string, batchNo: number | null) {
+    this.selectedMFItemBatchNo[entityId] = batchNo;
+  }
+
+  getSelectedMFItemBatchNo(entityId: string): number | null {
+    return this.selectedMFItemBatchNo[entityId] ?? null;
+  }
+
+  setIncludeMFOption(entityId: string, option: 'Yes' | 'No') {
+    this.includeMFOption[entityId] = option;
+  }
+
+  getIncludeMFOption(entityId: string): 'Yes' | 'No' {
+    return this.includeMFOption[entityId] ?? 'No';
+  }
+
   // Reset general selections with Entities and Fund Group CELIs when returning from preview page
   resetAfterPreview() {
+    this.eventTypes = this.eventTypes.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
+    this.sponsors = this.sponsors.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
     this.fundGroups = this.fundGroups.map((fg) => ({ ...fg, state: ITEM_STATES.OPTIONAL }));
     this.fundEntities = this.fundEntities.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
     this.entitiesSelectedCountSnapshot = null;
@@ -362,8 +387,11 @@ class CapEventSettingsStore {
     this.attachments = [];
     this.attachmentErrors = [];
     this.comment = '';
+    this.entitiesLineItem = new Map();
     this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
     this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
+    this.selectedMFItemBatchNo = {};
+    this.includeMFOption = {};
   }
 }
 

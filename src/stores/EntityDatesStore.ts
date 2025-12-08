@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { ITEM_STATES } from '@/const/common';
 import { DAY_TYPES, DISTRIBUTION_EVENT_TYPE_DAYS } from '@/const/dateTypes';
-import { capEventSettingsStore } from '@/stores/index';
+import RootStore from '@/stores/RootStore';
 
 interface EntityDates {
   [entityLabel: string]: {
@@ -20,12 +20,16 @@ interface ExtendedDropdownItemType extends DropdownItemType {
 }
 
 class EntityDatesStore {
+  root: RootStore;
+
   noticeDate: Date | null = null;
   entityDates: EntityDates = {};
   hasDifferentDates: boolean = false;
   selectedEventType: string = '';
 
-  constructor() {
+  constructor(root: RootStore) {
+    this.root = root;
+
     makeAutoObservable(this);
   }
 
@@ -210,7 +214,7 @@ class EntityDatesStore {
     const dueDate = this.addDaysToDate(noticeDate, numberOfDays, dateType);
 
     this.setEntityDueDate(entityLabel, dueDate);
-    capEventSettingsStore.updateEntityLineItemPRDate(entityLabel, dueDate);
+    this.root.capEventSettingsStore.updateEntityLineItemPRDate(entityLabel, dueDate);
     this.clearDueDateManualOverride(entityLabel);
     // Ensure the due date input validity is true after calculation
     this.setEntityDueDateInputValidity(entityLabel, true);

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import EntityDatesStore from '@/stores/EntityDatesStore';
 import { ITEM_STATES } from '@/const/common';
+import RootStore from '@/stores/RootStore';
 
 jest.mock('@/stores', () => ({
   entityDatesStore: {
@@ -18,7 +19,8 @@ describe('EntityDatesStore', () => {
   let store: EntityDatesStore;
 
   beforeEach(() => {
-    store = new EntityDatesStore();
+    const rootStore = new RootStore();
+    store = rootStore.entityDatesStore;
   });
 
   it('sets general notice date and resets different dates state', () => {

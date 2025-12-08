@@ -97,6 +97,10 @@ const GeneralSettings = () => {
 
   const getEventTypes = async () => {
     try {
+      // Only fetch if event types are empty to preserve existing selections
+      if (capEventSettingsStore.eventTypes.length > 0) {
+        return;
+      }
       const eventTypes = await CapEventPackageApi.default.getCapEventTypes();
       capEventSettingsStore.setEventTypes(prepareEventType(eventTypes));
     } catch (error) {
@@ -122,6 +126,10 @@ const GeneralSettings = () => {
 
   const getSponsors = async () => {
     try {
+      // Only fetch if sponsors are empty to preserve existing selections
+      if (capEventSettingsStore.sponsors.length > 0) {
+        return;
+      }
       const sponsors = await ReferenceDataApi.sponsors.getSponsors();
       capEventSettingsStore.setSponsors(prepareSponsors(sponsors));
     } catch (error) {
@@ -143,7 +151,20 @@ const GeneralSettings = () => {
         ['ACTIVE'],
         ['ADMIN', 'ELIMINATION'],
       );
-      capEventSettingsStore.setFundEntities(prepareFundEntities(entitiesRelatedToGroup));
+      const preparedEntities = prepareFundEntities(entitiesRelatedToGroup);
+
+      // Preserve existing selections when updating fund entities
+      const existingEntities = capEventSettingsStore.fundEntities;
+      if (existingEntities.length > 0) {
+        const existingSelections = new Map(existingEntities.map((e) => [e.label, e.state]));
+        const merged = preparedEntities.map((e) => ({
+          ...e,
+          state: existingSelections.get(e.label) ?? e.state,
+        }));
+        capEventSettingsStore.setFundEntities(merged);
+      } else {
+        capEventSettingsStore.setFundEntities(preparedEntities);
+      }
     } catch (error) {
       showErrorToast(error);
       console.error(error);
@@ -154,7 +175,9 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     initFetch();
-    capEventSettingsStore.fetchInvestments();
+    if (!capEventSettingsStore.investments.length) {
+      capEventSettingsStore.fetchInvestments();
+    }
   }, [initFetch]);
 
   const { eventTypes, sponsors, fundGroups, fundEntities } = capEventSettingsStore;

@@ -7,7 +7,7 @@ const toast = { success: jest.fn(), error: jest.fn(), info: jest.fn(), warning: 
 jest.mock('@/providers/ToastProvider', () => ({ useToast: () => toast }));
 
 const processPayloadMock = jest.fn();
-jest.mock('@/stores/PreviewScreenStore', () => ({
+jest.mock('@/stores', () => ({
   previewScreenStore: {
     processPayload: (...args: unknown[]) => processPayloadMock(...args),
     fetchDoc: jest.fn(),
