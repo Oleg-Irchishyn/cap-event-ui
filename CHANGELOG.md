@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.64](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.63&targetVersion=GTv0.0.64) (2025-12-09)
+
+
+### Features
+
+* add back button ([b2bc0d7](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/b2bc0d759383c07f9cc22024bc76594a88735601)), closes [#8453](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8453)
+
 ### [0.0.63](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.62&targetVersion=GTv0.0.63) (2025-12-06)
 
 
