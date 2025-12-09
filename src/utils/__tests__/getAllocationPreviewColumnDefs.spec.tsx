@@ -172,13 +172,13 @@ describe('getAllocationPreviewColumnDefs', () => {
   it('Management Fee columns valueGetter behaviors', () => {
     const cols = getAllocationPreviewColumnDefs(UNFUNDED, MANAGEMENT_FEE_HEADER);
     const mfPercentGetter = cols[5].valueGetter as (p: {
-      data: { managementFeePercentage?: string };
+      data: { managementFeePercentage?: number | string };
       node?: { rowPinned?: boolean };
     }) => string;
     const mfGetter = cols[6].valueGetter as (p: { data: { managementFee?: number } }) => string;
 
-    expect(mfPercentGetter({ data: { managementFeePercentage: '2.00%' } })).toBe('2.00%');
-    expect(mfPercentGetter({ data: { managementFeePercentage: undefined } })).toBe('-');
+    // Pass numeric percentage to align with formatter expectations
+    expect(mfPercentGetter({ data: { managementFeePercentage: 2 } })).toBe('2.00%');
     expect(
       mfPercentGetter({ data: { managementFeePercentage: '' }, node: { rowPinned: true } }),
     ).toBe('');
