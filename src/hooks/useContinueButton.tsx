@@ -58,7 +58,10 @@ const useContinueButton = () => {
   );
 
   const isContinueDisabled =
-    isGeneralSettingsEmpty || hasAttachmentErrors || !allEntitiesFullyValid;
+    isGeneralSettingsEmpty ||
+    hasAttachmentErrors ||
+    !allEntitiesFullyValid ||
+    !capEventSettingsStore.isNoticeDateValid;
   const tooltipMessage = isContinueDisabled ? TOOLTIP_MESSAGE : '';
 
   return { isContinueDisabled, tooltipMessage };

@@ -10,8 +10,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import Tooltip from '@/app/components/Tooltip';
 
-const INVALID_DATE_ERROR = 'invalidDate';
-
 const defaultTheme = createTheme({
   typography: {
     fontFamily: `"IBM Plex Sans", "Arial" sans-serif`,
@@ -85,7 +83,7 @@ export const DatePicker: FC<DatePickerProps> = ({
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const onSetIsValidDate = (newError: DateValidationError) => {
-    if (newError === INVALID_DATE_ERROR) return;
+    // Treat any validation error, including 'invalidDate', as invalid input.
     setIsValidDate(!newError);
   };
 

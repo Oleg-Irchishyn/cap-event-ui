@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 
 import { CapEventPackageApi } from '@/api';
 import axios from 'axios';
@@ -416,24 +416,34 @@ class PreviewScreenStore {
         }
 
         const sessionId = getStoredSessionId() ?? '';
-        this.isLoading = true;
-        this.rows = [];
+        runInAction(() => {
+          this.isLoading = true;
+          this.rows = [];
+        });
         const response = await CapEventPackageApi.default.process(sessionId, requestPayload);
-        this.lastCapEvent = requestPayload;
-        this.lastProcessResponse = Array.isArray(response) ? response : [];
+        runInAction(() => {
+          this.lastCapEvent = requestPayload;
+          this.lastProcessResponse = Array.isArray(response) ? response : [];
+        });
 
         const parsed = parseToPreviewScreenRows(response);
-        this.rows = parsed;
+        runInAction(() => {
+          this.rows = parsed;
+        });
         return parsed;
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Processing failed. Please try again.';
         toast?.error?.(message);
-        this.rows = [];
-        this.lastCapEvent = null;
+        runInAction(() => {
+          this.rows = [];
+          this.lastCapEvent = null;
+        });
         return [];
       } finally {
-        this.isLoading = false;
-        this.inFlightProcess = null;
+        runInAction(() => {
+          this.isLoading = false;
+          this.inFlightProcess = null;
+        });
       }
     })();
     return this.inFlightProcess;
