@@ -375,8 +375,8 @@ class CapEventSettingsStore {
     return this.includeMFOption[entityId] ?? 'No';
   }
 
-  // Reset general selections with Entities and Fund Group CELIs when returning from preview page
-  resetAfterPreview() {
+  // Reset general selections with Entities and Fund Group CELIs
+  resetStore() {
     this.eventTypes = this.eventTypes.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
     this.sponsors = this.sponsors.map((e) => ({ ...e, state: ITEM_STATES.OPTIONAL }));
     this.fundGroups = this.fundGroups.map((fg) => ({ ...fg, state: ITEM_STATES.OPTIONAL }));

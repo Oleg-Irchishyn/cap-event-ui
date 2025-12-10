@@ -26,27 +26,23 @@ jest.mock('@/providers/ToastProvider', () => ({
   useToast: () => mockToast,
 }));
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}));
-
 jest.mock('@/utils/formatDate', () => ({
   formatDate: jest.fn((date: Date | null) => (date ? '2024-01-01' : '')),
 }));
 
-const mockCreate = jest.fn();
+const mockSubmit = jest.fn();
 
 jest.mock('@/api', () => ({
   CapEventPackageApi: {
     default: {
-      create: (...args: unknown[]) => mockCreate(...args),
+      submit: (...args: unknown[]) => mockSubmit(...args),
     },
   },
 }));
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
-    resetAfterPreview: jest.fn(),
+    resetStore: jest.fn(),
     investments: [{ id: 'inv1', name: 'Investment 1', title: 'Investment 1 Title', type: 'Type1' }],
     fundEntities: [
       { id: 'ent1', label: 'Entity 1', name: 'Entity 1', state: 'SELECTED' },
@@ -118,7 +114,7 @@ describe('SubmitButton', () => {
   });
 
   it('calls API and shows success toast when submission is successful', async () => {
-    mockCreate.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
+    mockSubmit.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
 
     renderWithTheme(<SubmitButton />);
 
@@ -126,11 +122,11 @@ describe('SubmitButton', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
       expect(mockToast.success).toHaveBeenCalledWith('Successfully Saved');
     });
 
-    const requestBody = mockCreate.mock.calls[0][1];
+    const requestBody = mockSubmit.mock.calls[0][1];
     expect(requestBody).toHaveProperty('capEventType');
     expect(requestBody).toHaveProperty('sponsor');
     expect(requestBody).toHaveProperty('fundGroup');
@@ -140,7 +136,7 @@ describe('SubmitButton', () => {
 
   it('handles API errors gracefully without crashing', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    mockCreate.mockRejectedValue(new Error('API Error'));
+    mockSubmit.mockRejectedValue(new Error('API Error'));
 
     renderWithTheme(<SubmitButton />);
 
@@ -148,7 +144,7 @@ describe('SubmitButton', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
       expect(mockToast.success).not.toHaveBeenCalled();
     });
 

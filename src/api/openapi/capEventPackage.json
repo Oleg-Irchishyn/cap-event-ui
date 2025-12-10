@@ -104,8 +104,8 @@
     },
     "/cap-events": {
       "post": {
-        "summary": "Stores capital event",
-        "operationId": "create",
+        "summary": "Submits capital event",
+        "operationId": "submit",
         "parameters": [
           {
             "name": "Session-Id",
@@ -408,6 +408,174 @@
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
                   "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/draft": {
+      "post": {
+        "summary": "Creates capital event as draft",
+        "operationId": "createDraft",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CapEventDraft"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "id": "657475ed-b745-41d3-a864-463847902229",
+                    "sponsorId": {
+                      "id": "SPONSOR123"
+                    },
+                    "capEventType": {
+                      "id": "657475ed-b745-41d3-a864-463847900129"
+                    },
+                    "noticeDate": "2024-12-15",
+                    "fundGroup":  {
+                      "id": "FG-0022"
+                    },
+                    "entities": [
+                      {
+                        "id":"ENTITY001"
+                      }
+                    ],
+                    "capEventFundGroupLineItems": [],
+                    "capEventEntityLineItems": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "sponsorId",
+                    "reason": "INVALID_VALUE",
+                    "message": "must not be null"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cap-events/{id}": {
+      "delete": {
+        "summary": "Delete capital event and related files by ID",
+        "operationId": "deleteCapEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Capital event ID to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Capital event successfully deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": {
+                    "field": "id",
+                    "reason": "INVALID_VALUE",
+                    "message": "Invalid ID format"
+                  },
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capital event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Capital event not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
                 }
               }
             }
@@ -1633,6 +1801,25 @@
             "format": "email"
           }
         }
+      },
+      "CapEventDraft" : {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CapEvent"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "capEventEntityLineItems": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CapEventEntityLineItem"
+                }
+              }
+            }
+          }
+        ]
       },
       "LineItemBase": {
         "type": "object",

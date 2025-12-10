@@ -3,7 +3,13 @@
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/const/routes';
-import { ButtonContainer, PageContainer } from '@/app/styles';
+import {
+  ButtonContainer,
+  Container,
+  PageContainer,
+  TitleContainer,
+  Title as PageTitle,
+} from '@/app/styles';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import { CapEventCollectionTable } from '@/app/components/CapEventCollectionTable/CapEventCollectionTable';
 import { useState, useEffect } from 'react';
@@ -49,18 +55,23 @@ export default function Page() {
 
   return (
     <PageContainer>
-      <ButtonContainer>
-        <Button
-          width="auto"
-          onClick={() => router.push(ROUTES.NEW_CAP_EVENT.path)}
-          buttonTheme={BUTTON_THEMES.primary}
-          testId="new-capital-event"
-        >
-          New Capital Event
-        </Button>
-      </ButtonContainer>
+      <Container>
+        <TitleContainer>
+          <PageTitle>Capital Event</PageTitle>
+        </TitleContainer>
+        <ButtonContainer>
+          <Button
+            width="auto"
+            onClick={() => router.push(ROUTES.NEW_CAP_EVENT.path)}
+            buttonTheme={BUTTON_THEMES.primary}
+            testId="new-capital-event"
+          >
+            New Capital Event
+          </Button>
+        </ButtonContainer>
+      </Container>
       <BackgroundContainer>
-        <Title>Capital Event List</Title>
+        <Title>Capital Events List</Title>
         <CapEventCollectionTable
           rows={events}
           isLoading={isListLoading}

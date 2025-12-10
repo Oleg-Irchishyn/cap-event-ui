@@ -331,7 +331,7 @@ class PreviewScreenStore {
       .reduce((sum, li) => sum + (li.amount ?? 0), 0);
   }
 
-  private buildPayload(): CapEvent | null {
+  buildPayload(isDraft?: boolean): CapEvent | null {
     // Selected general settings (using helpers)
     const selectedTypeItem = this.getSelectedSingle(this.root.capEventSettingsStore.eventTypes);
     const selectedSponsorItem = this.getSelectedSingle(this.root.capEventSettingsStore.sponsors);
@@ -346,14 +346,10 @@ class PreviewScreenStore {
       label?: string;
     }>;
 
-    if (
-      !selectedTypeItem ||
-      !selectedSponsorItem ||
-      !selectedFundGroupItem ||
-      selectedEntityItems.length === 0
-    ) {
+    if (!selectedTypeItem || !selectedSponsorItem || !selectedFundGroupItem) {
       return null;
     }
+    if (selectedEntityItems.length === 0 && !isDraft) return null;
 
     const entities = this.toApiEntities(selectedEntityItems);
     const noticeDateStr = this.getTopNoticeDateString(selectedEntityItems);
@@ -373,7 +369,7 @@ class PreviewScreenStore {
       fundGroupIdMap,
     );
 
-    if (capEventEntityLineItems.length === 0) {
+    if (capEventEntityLineItems.length === 0 && !isDraft) {
       return null;
     }
 

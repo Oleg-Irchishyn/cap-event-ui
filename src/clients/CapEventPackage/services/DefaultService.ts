@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AllocationInput } from '../models/AllocationInput';
 import type { CapEvent } from '../models/CapEvent';
+import type { CapEventDraft } from '../models/CapEventDraft';
 import type { CapEventLineItem } from '../models/CapEventLineItem';
 import type { CapEventLineItemResponse } from '../models/CapEventLineItemResponse';
 import type { CapEventStatus } from '../models/CapEventStatus';
@@ -33,13 +34,13 @@ export class DefaultService {
         });
     }
     /**
-     * Stores capital event
+     * Submits capital event
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
      * @returns CapEvent The CapEvent object stored in the system.
      * @throws ApiError
      */
-    public create(
+    public submit(
         sessionId: string,
         requestBody: CapEvent,
     ): CancelablePromise<CapEvent> {
@@ -83,6 +84,48 @@ export class DefaultService {
             },
             errors: {
                 401: `Intacct SessionId is not valid`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Creates capital event as draft
+     * @param requestBody
+     * @returns CapEvent The CapEvent object stored in the system.
+     * @throws ApiError
+     */
+    public createDraft(
+        requestBody: CapEventDraft,
+    ): CancelablePromise<CapEvent> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/cap-events/draft',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad request`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
+     * Delete capital event and related files by ID
+     * @param id Capital event ID to delete
+     * @returns void
+     * @throws ApiError
+     */
+    public deleteCapEvent(
+        id: string,
+    ): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'DELETE',
+            url: '/cap-events/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `Bad request`,
+                404: `Capital event not found`,
                 500: `Server error`,
             },
         });

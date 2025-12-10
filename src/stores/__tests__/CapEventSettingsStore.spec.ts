@@ -606,7 +606,7 @@ describe('CapEventSettingsStore', () => {
     });
   });
 
-  describe('resetAfterPreview', () => {
+  describe('resetStore', () => {
     it('should clear general selections, dates, attachments and reset FG CELIs', () => {
       const fgItems: DropdownItemType<FundGroup>[] = [
         {
@@ -649,7 +649,7 @@ describe('CapEventSettingsStore', () => {
       ]);
       store.setFundGroupsStateAfterApply();
 
-      store.resetAfterPreview();
+      store.resetStore();
 
       expect(store.fundGroups.every((fg) => fg.state === 'O')).toBe(true);
       expect(store.fundEntities.every((e) => e.state === 'O')).toBe(true);

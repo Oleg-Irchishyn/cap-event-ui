@@ -13,6 +13,7 @@ export const theme: DefaultTheme = {
     gray50: '#EAEAEA',
     gray100: '#F0F1F1',
     gray300: '#DFE1E1',
+    gray400: '#EFEFEF',
     gray500: '#C0C4C4',
     lightGray: '#F9F9F9',
     textDisabled: '#B7B7B8',

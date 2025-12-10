@@ -13,6 +13,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { Account } from './models/Account';
 export type { AllocationInput } from './models/AllocationInput';
 export type { CapEvent } from './models/CapEvent';
+export type { CapEventDraft } from './models/CapEventDraft';
 export type { CapEventEntityLineItem } from './models/CapEventEntityLineItem';
 export type { CapEventFundGroupLineItem } from './models/CapEventFundGroupLineItem';
 export type { CapEventLineItem } from './models/CapEventLineItem';
