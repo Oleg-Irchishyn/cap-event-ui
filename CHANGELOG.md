@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.65](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.64&targetVersion=GTv0.0.65) (2025-12-10)
+
+
+### Bug Fixes
+
+* [Issue-8620]: [FE] Continue button is enabled with invalid Notice Date ([fefbf24](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/fefbf240a408a4ad632da35ba45250675d55236e)), closes [#8620](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8620)
+* allocation basis payload format ([40a860a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/40a860a4665010e7d280e10165cb31253ceee10e)), closes [#8363](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8363)
+
 ### [0.0.64](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.63&targetVersion=GTv0.0.64) (2025-12-09)
 
 
