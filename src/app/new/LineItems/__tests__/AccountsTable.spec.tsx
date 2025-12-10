@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
@@ -26,6 +26,14 @@ jest.mock('@/stores', () => ({
   entityDatesStore: {
     getEntityDueDate: jest.fn(),
     isAllDueDatesFilled: jest.fn().mockReturnValue(true),
+  },
+}));
+
+jest.mock('@/api', () => ({
+  CapEventPackageApi: {
+    default: {
+      allocateEntities: jest.fn(),
+    },
   },
 }));
 
@@ -271,6 +279,52 @@ describe('AccountsTable', () => {
 
       const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
       expect(applyButton).toHaveAttribute('data-is-disabled', 'false');
+    });
+
+    it('disables immediately and prevents duplicate requests while applying', async () => {
+      const props = {
+        ...defaultProps,
+        level: 'group',
+      };
+
+      const { capEventSettingsStore: store, entityDatesStore } = jest.requireMock('@/stores');
+
+      store.fundGroupsLineItem = [{ id: 'fg-1', allocationBasis: COMMITMENT_OPTION, amount: 100 }];
+
+      store.fundEntities = [{ id: 'e-1', label: 'Entity 1', state: 'S' }];
+
+      entityDatesStore.getEntityDueDate.mockReturnValue(new Date('2024-01-01'));
+
+      const { CapEventPackageApi } = jest.requireMock('@/api');
+
+      let resolveAllocate!: (value?: unknown) => void;
+      const pending = new Promise((res) => {
+        resolveAllocate = res;
+      });
+
+      CapEventPackageApi.default.allocateEntities.mockReturnValue(pending);
+
+      renderWithTheme(<AccountsTable {...props} />);
+
+      const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
+      expect(applyButton).toHaveAttribute('data-is-disabled', 'false');
+
+      fireEvent.click(applyButton);
+      expect(applyButton).toHaveAttribute('data-is-disabled', 'true');
+
+      fireEvent.click(applyButton);
+
+      await waitFor(() =>
+        expect(CapEventPackageApi.default.allocateEntities).toHaveBeenCalledTimes(1),
+      );
+
+      resolveAllocate({});
+      await waitFor(() =>
+        expect(screen.getByTestId('apply-test-accounts-table-test-entity')).toHaveAttribute(
+          'data-is-disabled',
+          'false',
+        ),
+      );
     });
   });
 

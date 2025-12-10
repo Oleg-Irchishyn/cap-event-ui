@@ -110,6 +110,7 @@ const AccountsTable: FC<Props> = ({
   onDragStopped,
   onOtherDragStopped,
 }) => {
+  const [isAllocationApplying, setIsAllocationApplying] = useState(false);
   const toast = useToast();
   const accounts = capEventSettingsStore.accounts;
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
@@ -446,6 +447,8 @@ const AccountsTable: FC<Props> = ({
       isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])) ||
       capEventSettingsStore.isFundGroupLineItemsFilled);
 
+  const isApplyDisabled = !isApplyButtonEnabled || isAllocationApplying;
+
   const entitiesAllocatedAmount = async (selectedEntities: DropdownItemType<Entity>[]) => {
     const getAllocateEntitiesRequestBody = (
       selectedEntities: DropdownItemType<Entity>[],
@@ -484,60 +487,68 @@ const AccountsTable: FC<Props> = ({
   };
 
   const applyFundGroupChanges = async () => {
-    if (!isApplyButtonEnabled) return;
+    if (!isApplyButtonEnabled || isAllocationApplying) return;
 
-    const selectedEntities = capEventSettingsStore.fundEntities.filter(
-      (entity) => entity.state === ITEM_STATES.SELECTED,
-    );
+    setIsAllocationApplying(true);
 
-    const getRelatedRow = (label: string, inheritedFundGroupLineItemId: string) => {
-      return capEventSettingsStore.entitiesLineItem
-        .get(label)
-        ?.find((item) => item.inheritedFundGroupLineItemId === inheritedFundGroupLineItemId);
-    };
-
-    const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
-
-    selectedEntities.forEach((entity, index) => {
-      if (
-        capEventSettingsStore.fundGroupsLineItem.length === 1 &&
-        isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
-      ) {
-        // should not pass any value for case when no inherited line items applied
-        capEventSettingsStore.setEntitiesLineItem(entity.label, [], true);
-        return;
-      }
-
-      const entityLineItemsToApply = capEventSettingsStore.fundGroupsLineItem.map(
-        (fgLineItem, fgLineItemIndex) => {
-          const relatedRowAmount = getRelatedRow(entity.label, fgLineItem.id)?.amount || 0;
-
-          const allocatedAmount = allocatedEntitiesAmount?.[fgLineItemIndex]?.[entity.id ?? ''];
-
-          const getEntityAmount = () => {
-            if (fgLineItem.allocationBasis === USER_PROVIDED_OPTION) return relatedRowAmount;
-            if (fgLineItem.allocationBasis === COMMITMENT_OPTION)
-              return allocatedAmount ?? fgLineItem.amount;
-            return fgLineItem.amount;
-          };
-
-          return {
-            ...fgLineItem,
-            amount: getEntityAmount(),
-            allocationBasis:
-              fgLineItem.allocationBasis === USER_PROVIDED_OPTION ? '' : fgLineItem.allocationBasis,
-            inheritedFundGroupLineItemId: fgLineItem.id,
-            id: `${fgLineItem.id}-${index}`,
-            prFlag: YesNoOptions[0],
-            prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,
-          };
-        },
+    try {
+      const selectedEntities = capEventSettingsStore.fundEntities.filter(
+        (entity) => entity.state === ITEM_STATES.SELECTED,
       );
 
-      capEventSettingsStore.setEntitiesLineItem(entity.label, entityLineItemsToApply, true);
-    });
+      const getRelatedRow = (label: string, inheritedFundGroupLineItemId: string) => {
+        return capEventSettingsStore.entitiesLineItem
+          .get(label)
+          ?.find((item) => item.inheritedFundGroupLineItemId === inheritedFundGroupLineItemId);
+      };
 
-    capEventSettingsStore.setFundGroupsStateAfterApply();
+      const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
+
+      selectedEntities.forEach((entity, index) => {
+        if (
+          capEventSettingsStore.fundGroupsLineItem.length === 1 &&
+          isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
+        ) {
+          // should not pass any value for case when no inherited line items applied
+          capEventSettingsStore.setEntitiesLineItem(entity.label, [], true);
+          return;
+        }
+
+        const entityLineItemsToApply = capEventSettingsStore.fundGroupsLineItem.map(
+          (fgLineItem, fgLineItemIndex) => {
+            const relatedRowAmount = getRelatedRow(entity.label, fgLineItem.id)?.amount || 0;
+
+            const allocatedAmount = allocatedEntitiesAmount?.[fgLineItemIndex]?.[entity.id ?? ''];
+
+            const getEntityAmount = () => {
+              if (fgLineItem.allocationBasis === USER_PROVIDED_OPTION) return relatedRowAmount;
+              if (fgLineItem.allocationBasis === COMMITMENT_OPTION)
+                return allocatedAmount ?? fgLineItem.amount;
+              return fgLineItem.amount;
+            };
+
+            return {
+              ...fgLineItem,
+              amount: getEntityAmount(),
+              allocationBasis:
+                fgLineItem.allocationBasis === USER_PROVIDED_OPTION
+                  ? ''
+                  : fgLineItem.allocationBasis,
+              inheritedFundGroupLineItemId: fgLineItem.id,
+              id: `${fgLineItem.id}-${index}`,
+              prFlag: YesNoOptions[0],
+              prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,
+            };
+          },
+        );
+
+        capEventSettingsStore.setEntitiesLineItem(entity.label, entityLineItemsToApply, true);
+      });
+
+      capEventSettingsStore.setFundGroupsStateAfterApply();
+    } finally {
+      setIsAllocationApplying(false);
+    }
   };
 
   const [showOtherTable, setShowOtherTable] = useState(false);
@@ -582,12 +593,12 @@ const AccountsTable: FC<Props> = ({
       {level === LineItemTypes.group && (
         <ControlButton
           data-testid={prepareDataTestId('apply', testId, entityKey)}
-          data-is-disabled={!isApplyButtonEnabled}
+          data-is-disabled={isApplyDisabled}
           onClick={applyFundGroupChanges}
         >
           <Image
             src={
-              !isApplyButtonEnabled
+              isApplyDisabled
                 ? '/cap-event/icons/checkmark.svg'
                 : '/cap-event/icons/checkmark-green.svg'
             }
@@ -596,7 +607,7 @@ const AccountsTable: FC<Props> = ({
             height={13}
             priority={true}
           />
-          <ApplyText data-is-disabled={!isApplyButtonEnabled}>Apply</ApplyText>
+          <ApplyText data-is-disabled={isApplyDisabled}>Apply</ApplyText>
         </ControlButton>
       )}
     </TableControls>
