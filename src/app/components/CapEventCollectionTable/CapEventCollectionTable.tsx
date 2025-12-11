@@ -56,7 +56,11 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.sponsor?.name ?? '-';
+      return data.sponsor &&
+        String(data.sponsor.id ?? '').trim() &&
+        String(data.sponsor.name ?? '').trim()
+        ? `${data.sponsor.id} - ${data.sponsor.name}`
+        : '-';
     },
   },
   {
@@ -66,7 +70,11 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.fundGroup?.name ?? '-';
+      return data.fundGroup &&
+        String(data.fundGroup.id ?? '').trim() &&
+        String(data.fundGroup.name ?? '').trim()
+        ? `${data.fundGroup.id} - ${data.fundGroup.name}`
+        : '-';
     },
   },
   {
@@ -76,13 +84,21 @@ const capEventTableColumnDefs = (): ColDef[] => [
     sortable: false,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      if (!data.entities || !Array.isArray(data.entities)) {
-        return '-';
-      }
-      if (data.entities.length === 0) {
-        return '-';
-      }
-      return data.entities.map((entity) => entity.name ?? '-').join(', ') ?? '-';
+      const items =
+        (data.entities ?? [])
+          .sort((a, b) =>
+            String(a?.name ?? '')
+              .toLowerCase()
+              .localeCompare(String(b?.name ?? '').toLowerCase()),
+          )
+          .map((e) => {
+            const id = String(e?.id ?? '').trim();
+            const name = String(e?.name ?? '').trim();
+            return id && name ? `${id} - ${name}` : '';
+          })
+          .filter(Boolean) ?? [];
+
+      return items.length ? items.join(', ') : '-';
     },
   },
   {
