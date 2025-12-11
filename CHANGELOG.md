@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.66](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.65&targetVersion=GTv0.0.66) (2025-12-11)
+
+
+### Features
+
+* save draft ([baa9118](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/baa91183cf70d1885c4a5a613d8cc1cb94f42e5a)), closes [#8450](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8450)
+
+
+### Bug Fixes
+
+* [Issue-8635]: [FE] Apply button triggers multiple requests when clicked repeatedly ([dccd02c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/dccd02c457a47196e5ad8e6b9e232c34decb884d)), closes [#8635](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8635)
+
 ### [0.0.65](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.64&targetVersion=GTv0.0.65) (2025-12-10)
 
 
