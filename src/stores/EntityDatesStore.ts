@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { ITEM_STATES } from '@/const/common';
 import { DAY_TYPES, DISTRIBUTION_EVENT_TYPE_DAYS } from '@/const/dateTypes';
@@ -20,6 +20,8 @@ interface ExtendedDropdownItemType extends DropdownItemType {
 }
 
 class EntityDatesStore {
+  initialStateSnapshot: unknown = null;
+
   root: RootStore;
 
   noticeDate: Date | null = null;
@@ -33,7 +35,26 @@ class EntityDatesStore {
     makeAutoObservable(this);
   }
 
-  setNoticeDate(date: Date) {
+  collectFields() {
+    return {
+      noticeDate: this.noticeDate,
+      entityDates: this.entityDates,
+      hasDifferentDates: this.hasDifferentDates,
+      selectedEventType: this.selectedEventType,
+    };
+  }
+
+  setInitialStateSnapshot() {
+    this.initialStateSnapshot = toJS(this.collectFields());
+  }
+
+  cancelChanges() {
+    if (!this.initialStateSnapshot) return;
+
+    Object.assign(this, toJS(this.initialStateSnapshot));
+  }
+
+  setNoticeDate(date: Date | null) {
     this.noticeDate = date;
     this.resetDifferentDatesState();
   }

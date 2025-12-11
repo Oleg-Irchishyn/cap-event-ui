@@ -6,6 +6,7 @@ import { theme } from '@/ui/globalStyles';
 import { capEventSettingsStore } from '@/stores';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ROUTES } from '@/const/routes';
+import type CapEventSettingsStore from '@/stores/CapEventSettingsStore';
 
 const mockUsePathname = jest.fn();
 
@@ -143,6 +144,48 @@ describe('ButtonsGroup', () => {
 
       expect(screen.getByTestId('allocation-distribution')).toBeInTheDocument();
       expect(screen.queryByTestId('preview-screen')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('isCancelDisabled logic', () => {
+    it('enables Cancel on preview-screen route', () => {
+      mockUsePathname.mockReturnValue(ROUTES.PREVIEW_SCREEN.path);
+
+      renderWithTheme(<ButtonsGroup />);
+
+      expect(screen.getByTestId('cancel')).not.toBeDisabled();
+    });
+
+    it('disables Cancel when snapshot exists and no changes', () => {
+      mockUsePathname.mockReturnValue(ROUTES.NEW_CAP_EVENT.path);
+      const settingsStore = capEventSettingsStore as unknown as CapEventSettingsStore;
+      settingsStore.initialStateSnapshot = { foo: 'bar', nested: { a: 1 } };
+      const collectMock = jest
+        .fn<ReturnType<CapEventSettingsStore['collectFields']>, []>()
+        .mockReturnValue({ foo: 'bar', nested: { a: 1 } } as unknown as ReturnType<
+          CapEventSettingsStore['collectFields']
+        >);
+      settingsStore.collectFields = collectMock;
+
+      renderWithTheme(<ButtonsGroup />);
+
+      expect(screen.getByTestId('cancel')).toBeDisabled();
+    });
+
+    it('enables Cancel when snapshot exists and there are changes', () => {
+      mockUsePathname.mockReturnValue(ROUTES.NEW_CAP_EVENT.path);
+      const settingsStore = capEventSettingsStore as unknown as CapEventSettingsStore;
+      settingsStore.initialStateSnapshot = { foo: 'bar', nested: { a: 1 } };
+      const collectMock = jest
+        .fn<ReturnType<CapEventSettingsStore['collectFields']>, []>()
+        .mockReturnValue({ foo: 'baz', nested: { a: 2 } } as unknown as ReturnType<
+          CapEventSettingsStore['collectFields']
+        >);
+      settingsStore.collectFields = collectMock;
+
+      renderWithTheme(<ButtonsGroup />);
+
+      expect(screen.getByTestId('cancel')).not.toBeDisabled();
     });
   });
 });

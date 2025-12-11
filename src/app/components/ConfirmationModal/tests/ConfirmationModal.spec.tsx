@@ -20,6 +20,7 @@ describe('ConfirmationModal', () => {
   it('does not render when isOpen is false', () => {
     renderWithTheme(
       <ConfirmationModal
+        description="desc"
         title="Entity"
         isOpen={false}
         handleClose={() => {}}
@@ -32,7 +33,14 @@ describe('ConfirmationModal', () => {
 
   it('renders title and description when open', () => {
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={() => {}} handleProceed={() => {}} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="Changing the selected Entity will affect the calculation and overwrite the data without possibility of reverting."
+        secondaryDescription="To confirm the change, please click Proceed."
+        handleClose={() => {}}
+        handleProceed={() => {}}
+      />,
     );
 
     expect(screen.getByTestId('confirmation-modal-title')).toHaveTextContent('Entity Selection');
@@ -45,7 +53,14 @@ describe('ConfirmationModal', () => {
   it('calls handleClose when Cancel button is clicked', () => {
     const onClose = jest.fn();
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={onClose} handleProceed={() => {}} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="desc"
+        secondaryDescription="sub"
+        handleClose={onClose}
+        handleProceed={() => {}}
+      />,
     );
 
     fireEvent.click(screen.getByTestId('confirmation-modal-cancel'));
@@ -55,7 +70,14 @@ describe('ConfirmationModal', () => {
   it('calls handleProceed when Proceed button is clicked', () => {
     const onProceed = jest.fn();
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={() => {}} handleProceed={onProceed} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="desc"
+        secondaryDescription="sub"
+        handleClose={() => {}}
+        handleProceed={onProceed}
+      />,
     );
 
     fireEvent.click(screen.getByTestId('confirmation-modal-proceed'));
@@ -65,7 +87,14 @@ describe('ConfirmationModal', () => {
   it('calls handleClose when the close icon button is clicked', () => {
     const onClose = jest.fn();
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={onClose} handleProceed={() => {}} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="desc"
+        secondaryDescription="sub"
+        handleClose={onClose}
+        handleProceed={() => {}}
+      />,
     );
 
     const closeImg = screen.getByAltText('modal-close-icon');
@@ -78,7 +107,14 @@ describe('ConfirmationModal', () => {
   it('calls handleClose on outside click when open', () => {
     const onClose = jest.fn();
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={onClose} handleProceed={() => {}} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="desc"
+        secondaryDescription="sub"
+        handleClose={onClose}
+        handleProceed={() => {}}
+      />,
     );
 
     fireEvent.mouseDown(document);
@@ -88,7 +124,14 @@ describe('ConfirmationModal', () => {
   it('does not call handleClose when clicking inside modal content', () => {
     const onClose = jest.fn();
     renderWithTheme(
-      <ConfirmationModal title="Entity" isOpen handleClose={onClose} handleProceed={() => {}} />,
+      <ConfirmationModal
+        title="Entity"
+        isOpen
+        description="desc"
+        secondaryDescription="sub"
+        handleClose={onClose}
+        handleProceed={() => {}}
+      />,
     );
 
     fireEvent.mouseDown(screen.getByTestId('confirmation-modal-title'));

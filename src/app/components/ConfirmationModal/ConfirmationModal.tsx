@@ -24,6 +24,8 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
   isOpen = true,
   cancelText = 'Cancel',
   confirmText = 'Proceed',
+  secondaryDescription = '',
+  description,
   handleClose = () => {},
   handleProceed = () => {},
 }) => {
@@ -49,9 +51,9 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
         <ModalContent>
           <ModalDescription data-testid="confirmation-modal-description">
-            {`Changing the selected ${title} will affect the calculation and overwrite the data without possibility of reverting.`}
+            {description}
           </ModalDescription>
-          <ModalSubDescription>To confirm the change, please click Proceed.</ModalSubDescription>
+          <ModalSubDescription>{secondaryDescription}</ModalSubDescription>
         </ModalContent>
 
         <ModalButtonContainer>

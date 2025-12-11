@@ -117,4 +117,70 @@ describe('EntityDatesStore', () => {
     store.setEntityDueDateInputValidity(entity, true);
     expect(store.getEntityDueDateInputValidity(entity)).toBe(true);
   });
+
+  describe('state snapshot: collectFields, setInitialStateSnapshot, cancelChanges', () => {
+    it('collectFields should return current references for fields', () => {
+      // Arrange
+      const nd = new Date('2025-01-10');
+      store.setNoticeDate(nd);
+      store.setSelectedEventType('Call');
+      store.setEntityNoticeDate('E1', new Date('2025-02-01'));
+      store.setEntityDueDate('E1', new Date('2025-02-10'));
+      store.setDifferentDatesState();
+
+      // Act
+      const collected = store.collectFields();
+
+      // Assert
+      expect(collected.noticeDate).toBe(store.noticeDate);
+      expect(collected.entityDates).toBe(store.entityDates);
+      expect(collected.hasDifferentDates).toBe(store.hasDifferentDates);
+      expect(collected.selectedEventType).toBe(store.selectedEventType);
+    });
+
+    it('cancelChanges should do nothing when no snapshot set', () => {
+      store.setSelectedEventType('Distribution');
+      store.cancelChanges();
+      expect(store.selectedEventType).toBe('Distribution');
+    });
+
+    it('setInitialStateSnapshot + cancelChanges should restore state (scalars and object fields)', () => {
+      store.setNoticeDate(new Date('2025-03-03'));
+      store.setSelectedEventType('Call');
+      store.setDifferentDatesState();
+      store.setEntityNoticeDate('E1', new Date('2025-04-01'));
+      store.setEntityDueDate('E1', new Date('2025-04-05'));
+
+      store.setInitialStateSnapshot();
+
+      store.setNoticeDate(new Date('2030-01-01'));
+      store.setSelectedEventType('Distribution');
+      store.resetDifferentDatesState(); // false
+      store.setEntityNoticeDate('E1', new Date('2030-02-02'));
+      store.setEntityDueDate('E1', new Date('2030-02-10'));
+
+      store.cancelChanges();
+
+      expect(store.selectedEventType).toBe('Call');
+      expect(store.hasDifferentDates).toBe(true);
+      expect(store.noticeDate).toBeNull();
+
+      const e1 = store.entityDates['E1'];
+      expect(e1).toBeDefined();
+      expect(e1).toHaveProperty('noticeDate');
+      expect(e1).toHaveProperty('dueDate');
+    });
+  });
+
+  describe('setNoticeDate(date: Date | null)', () => {
+    it('sets null and resets different dates state to false', () => {
+      store.setDifferentDatesState();
+      expect(store.hasDifferentDates).toBe(true);
+      expect(store.noticeDate).toBeNull();
+
+      store.setNoticeDate(null);
+      expect(store.noticeDate).toBeNull();
+      expect(store.hasDifferentDates).toBe(false);
+    });
+  });
 });

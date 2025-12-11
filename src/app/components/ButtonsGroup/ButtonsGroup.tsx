@@ -12,13 +12,16 @@ import SubmitButton from '@/app/components/SubmitButton';
 import { usePathname, useRouter } from 'next/navigation';
 import { ButtonContainer, Container, TitleContainer, Title } from '@/app/styles';
 import { ROUTES } from '@/const/routes';
+import ConfirmationModal from '@/app/components/ConfirmationModal';
 import { CapEventPackageApi } from '@/api';
 import { showErrorToast } from '@/utils/showErrorToast';
 import { useToast } from '@/providers/ToastProvider';
 import useSaveDraftButton from '@/hooks/useSaveDraftButton';
+import { comparer } from 'mobx';
 
 const ButtonsGroup = () => {
   const [isFootnotesModalOpen, setFootnotesModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const path = usePathname();
   const toast = useToast();
@@ -38,6 +41,14 @@ const ButtonsGroup = () => {
     router.push(ROUTES.NEW_CAP_EVENT.path);
   };
 
+  const handleCancelChanges = () => {
+    capEventSettingsStore.cancelChanges();
+    entityDatesStore.cancelChanges();
+    entityDatesStore.clearGeneralNoticeDate();
+    setIsConfirmationModalOpen(false);
+    router.push(ROUTES.MAIN.path);
+  };
+
   const renderBackButton =
     path === ROUTES.PREVIEW_SCREEN.path ? (
       <Button
@@ -55,6 +66,7 @@ const ButtonsGroup = () => {
   )
     .flat()
     .some((item) => item.defaultDescription !== '');
+
   const isDescriptionPresentedInFundGroup = capEventSettingsStore.fundGroupsLineItem.some(
     (item) => item.defaultDescription !== '',
   );
@@ -82,6 +94,19 @@ const ButtonsGroup = () => {
     }
   };
 
+  let isCancelDisabled: boolean;
+
+  if (path === ROUTES.PREVIEW_SCREEN.path) {
+    isCancelDisabled = false;
+  } else if (capEventSettingsStore.initialStateSnapshot) {
+    isCancelDisabled = comparer.structural(
+      capEventSettingsStore.collectFields(),
+      capEventSettingsStore.initialStateSnapshot,
+    );
+  } else {
+    isCancelDisabled = true;
+  }
+
   return (
     <>
       <Container>
@@ -92,9 +117,9 @@ const ButtonsGroup = () => {
           {renderBackButton}
           <Button
             testId="cancel"
-            disabled
+            disabled={isCancelDisabled}
             width="auto"
-            onClick={() => {}}
+            onClick={() => setIsConfirmationModalOpen(true)}
             buttonTheme={BUTTON_THEMES.secondary}
           >
             Cancel
@@ -135,6 +160,14 @@ const ButtonsGroup = () => {
       <FootnotesModal
         isOpen={isFootnotesModalOpen}
         handleClose={() => setFootnotesModalOpen(false)}
+      />
+      <ConfirmationModal
+        title="Unsaved Changes"
+        isOpen={isConfirmationModalOpen}
+        confirmText="Discard Changes"
+        description="Unsaved Changes detected. Do you want to discard changes?"
+        handleClose={() => setIsConfirmationModalOpen(false)}
+        handleProceed={handleCancelChanges}
       />
     </>
   );

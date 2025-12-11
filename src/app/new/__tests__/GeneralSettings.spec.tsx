@@ -8,6 +8,15 @@ import GeneralSettings from '@/app/new/GeneralSettings';
 import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 
+const mockSearchParamsGet = jest.fn().mockReturnValue(null);
+
+jest.mock('next/navigation', () => ({
+  __esModule: true,
+  useSearchParams: () => ({
+    get: mockSearchParamsGet,
+  }),
+}));
+
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props: React.ComponentProps<'img'>) => React.createElement('img', { ...props }),
@@ -100,6 +109,7 @@ jest.mock('@/stores', () => {
     setEntitiesDropdownOpen: jest.fn(),
     fetchInvestments: jest.fn(),
     investments: [],
+    setInitialStateSnapshot: jest.fn(),
   };
   const entityDatesStore = {
     noticeDate: null as Date | null,
@@ -110,6 +120,7 @@ jest.mock('@/stores', () => {
     recalcEntityDueDatesForSelectedFunds: jest.fn(),
     updateEntityDatesFromGeneral: jest.fn(),
     resetAllDates: jest.fn(),
+    setInitialStateSnapshot: jest.fn(),
   };
   return { capEventSettingsStore, entityDatesStore };
 });

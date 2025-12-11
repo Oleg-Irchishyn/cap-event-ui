@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, toJS, flow } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
 import type { DragNDropError } from '@/app/new/attachments/types';
@@ -18,6 +18,8 @@ import RootStore from '@/stores/RootStore';
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
 class CapEventSettingsStore {
+  initialStateSnapshot: unknown = null;
+
   root: RootStore;
 
   // General settings
@@ -63,6 +65,50 @@ class CapEventSettingsStore {
     this.root = root;
 
     makeAutoObservable(this);
+  }
+
+  collectFields() {
+    return {
+      eventTypes: this.eventTypes,
+      sponsors: this.sponsors,
+      fundGroups: this.fundGroups,
+      fundEntities: this.fundEntities,
+      noticeDate: this.noticeDate,
+      isEntitiesDropdownOpen: this.isEntitiesDropdownOpen,
+      isNoticeDateValid: this.isNoticeDateValid,
+      entitiesSelectedCountSnapshot: this.entitiesSelectedCountSnapshot,
+      attachments: this.attachments,
+      fundGroupsLineItem: this.fundGroupsLineItem,
+      fundGroupsStateAfterApply: this.fundGroupsStateAfterApply,
+      entitiesLineItem: this.entitiesLineItem,
+      otherEntitiesLineItem: this.otherEntitiesLineItem,
+      accounts: this.accounts,
+      otherTableAccounts: this.otherTableAccounts,
+      investments: this.investments,
+      areInvestmentsLoading: this.areInvestmentsLoading,
+      userInputs: this.userInputs,
+      isAllocationPreviewModalLoading: this.isAllocationPreviewModalLoading,
+      isAllocationPreviewModalOpen: this.isAllocationPreviewModalOpen,
+      attachmentErrors: this.attachmentErrors,
+      allocationPreviewModalEntityId: this.allocationPreviewModalEntityId,
+      allocationPreviewModalData: this.allocationPreviewModalData,
+      allocationPreviewModalTitle: this.allocationPreviewModalTitle,
+      footnotes: this.footnotes,
+      comment: this.comment,
+      mgmtJournalEntries: this.mgmtJournalEntries,
+    };
+  }
+
+  setInitialStateSnapshot() {
+    const snap = toJS(this.collectFields());
+
+    this.initialStateSnapshot = snap;
+  }
+
+  cancelChanges() {
+    if (!this.initialStateSnapshot) return;
+
+    Object.assign(this, toJS(this.initialStateSnapshot));
   }
 
   *initAccountsSet(sponsorId: string) {
@@ -177,7 +223,7 @@ class CapEventSettingsStore {
     }
   }
 
-  *fetchInvestments() {
+  fetchInvestments = flow(function* (this: CapEventSettingsStore) {
     try {
       const sessionId = getStoredSessionId() ?? '';
       this.areInvestmentsLoading = true;
@@ -189,7 +235,7 @@ class CapEventSettingsStore {
     } finally {
       this.areInvestmentsLoading = false;
     }
-  }
+  });
 
   setEventTypes(types: DropdownItemType[]) {
     this.eventTypes = types;

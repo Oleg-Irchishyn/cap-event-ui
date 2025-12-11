@@ -137,9 +137,8 @@ const GeneralSettings = () => {
     }
   };
 
-  const initFetch = useCallback(() => {
-    getEventTypes();
-    getSponsors();
+  const initFetch = useCallback(async () => {
+    await Promise.all([getEventTypes(), getSponsors()]);
   }, []);
 
   const updateFundEntities = async (id: string) => {
@@ -174,10 +173,18 @@ const GeneralSettings = () => {
   };
 
   useEffect(() => {
-    initFetch();
-    if (!capEventSettingsStore.investments.length) {
-      capEventSettingsStore.fetchInvestments();
-    }
+    const load = async () => {
+      await initFetch();
+
+      if (!capEventSettingsStore.investments.length) {
+        await capEventSettingsStore.fetchInvestments();
+      }
+
+      capEventSettingsStore.setInitialStateSnapshot();
+      entityDatesStore.setInitialStateSnapshot();
+    };
+
+    load();
   }, [initFetch]);
 
   const { eventTypes, sponsors, fundGroups, fundEntities } = capEventSettingsStore;
@@ -199,7 +206,17 @@ const GeneralSettings = () => {
     capEventSettingsStore.setIsNoticeDateValid(isValid);
   };
 
+  // Keep input value in sync with store changes (e.g., Cancel button clearing date)
+  useEffect(() => {
+    if (entityDatesStore.hasDifferentDates) {
+      setNoticeInputValue(null);
+    } else {
+      setNoticeInputValue(entityDatesStore.noticeDate ? dayjs(entityDatesStore.noticeDate) : null);
+    }
+  }, [entityDatesStore.noticeDate, entityDatesStore.hasDifferentDates]);
+
   const handleNoticeDate = async (item: PickerValue) => {
+    // Immediately reflect user typing (including partial input) in the field
     setNoticeInputValue(item);
     const parsed = parseValidDate(item);
     if (item === null) {
@@ -207,10 +224,11 @@ const GeneralSettings = () => {
         entityDatesStore.clearGeneralNoticeDate();
         return;
       }
-      const prevValue = entityDatesStore.noticeDate ? dayjs(entityDatesStore.noticeDate) : null;
+      const prevValue = entityDatesStore.noticeDate ? entityDatesStore.noticeDate : null;
       const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
       if (!isFieldChanged) {
-        setNoticeInputValue(prevValue);
+        // Revert UI to previous value
+        setNoticeInputValue(prevValue ? dayjs(prevValue) : null);
         return;
       }
       entityDatesStore.clearGeneralNoticeDate();
@@ -229,10 +247,11 @@ const GeneralSettings = () => {
       return;
     }
 
-    const prevValue = entityDatesStore.noticeDate ? dayjs(entityDatesStore.noticeDate) : null;
+    const prevValue = entityDatesStore.noticeDate ? entityDatesStore.noticeDate : null;
     const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.NOTICE_DATE);
     if (!isFieldChanged) {
-      setNoticeInputValue(prevValue);
+      // Revert UI to previous value
+      setNoticeInputValue(prevValue ? dayjs(prevValue) : null);
       return;
     }
 
@@ -464,6 +483,8 @@ const GeneralSettings = () => {
         isOpen={modal.isOpen}
         handleClose={modal.handleClose}
         handleProceed={modal.handleProceed}
+        secondaryDescription="To confirm the change, please click Proceed."
+        description={`Changing the selected ${modal.title} will affect the calculation and overwrite the data without possibility of reverting.`}
       />
     </BackgroundContainer>
   );

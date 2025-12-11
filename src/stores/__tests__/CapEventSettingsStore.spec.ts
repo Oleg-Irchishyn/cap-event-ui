@@ -671,4 +671,111 @@ describe('CapEventSettingsStore', () => {
       );
     });
   });
+
+  describe('state snapshot: collectFields, setInitialStateSnapshot, cancelChanges', () => {
+    it('collectFields should return current references for fields', () => {
+      // Arrange
+      const mockEventTypes = [{ label: 'ET', state: 'S' } as unknown as DropdownItemType];
+      const mockSponsors = [{ label: 'SP', state: 'S' } as unknown as DropdownItemType];
+      store.setEventTypes(mockEventTypes);
+      store.setSponsors(mockSponsors);
+      store.setNoticeDate(new Date('2025-01-01'));
+      store.setEntitiesDropdownOpen(true);
+
+      // Act
+      const collected = store.collectFields();
+
+      // Assert (same references since collectFields returns raw fields)
+      expect(collected.eventTypes).toBe(store.eventTypes);
+      expect(collected.sponsors).toBe(store.sponsors);
+      expect(collected.noticeDate).toBe(store.noticeDate);
+      expect(collected.isEntitiesDropdownOpen).toBe(true);
+      // sanity: a few other keys exist
+      expect(collected).toHaveProperty('attachments');
+      expect(collected).toHaveProperty('entitiesLineItem');
+      expect(collected).toHaveProperty('userInputs');
+    });
+
+    it('cancelChanges should do nothing when no snapshot set', () => {
+      // Arrange
+      store.setComment('before');
+      // Act
+      store.cancelChanges();
+      // Assert
+      expect(store.comment).toBe('before');
+    });
+
+    it('setInitialStateSnapshot + cancelChanges should restore full state (arrays, maps, scalars)', () => {
+      store.setEventTypes([{ label: 'ET-1', state: 'S' } as unknown as DropdownItemType]);
+      store.setFundGroupsLineItem([
+        {
+          id: 'fg-1',
+          amount: 123,
+          investment: { id: 'inv-1', name: 'INV' },
+          allocationBasis: 'Commitment',
+        } as unknown as LineItemRow,
+      ]);
+      store.setEntitiesLineItem('E-1', [
+        {
+          id: 'en-1',
+          amount: 1,
+          investment: { id: 'i1', name: 'I1' },
+          allocationBasis: 'Commitment',
+        } as unknown as LineItemRow,
+      ]);
+      store.addUserInput('row-col', 'value-1');
+      store.setComment('snapshot-comment');
+      store.setNoticeDate(new Date('2025-02-02'));
+      store.setIsNoticeDateValid(false);
+
+      store.setInitialStateSnapshot();
+
+      store.setEventTypes([{ label: 'ET-2', state: 'O' } as unknown as DropdownItemType]);
+      store.setFundGroupsLineItem([
+        {
+          id: 'fg-2',
+          amount: 999,
+          investment: { id: 'inv-2', name: 'INV2' },
+          allocationBasis: USER_PROVIDED_OPTION,
+        } as unknown as LineItemRow,
+      ]);
+      store.setEntitiesLineItem('E-1', [
+        {
+          id: 'en-2',
+          amount: 2,
+          investment: { id: 'i2', name: 'I2' },
+          allocationBasis: 'Other',
+        } as unknown as LineItemRow,
+      ]);
+      store.clearUserInputs('row-col');
+      store.setComment('changed');
+      store.setNoticeDate(new Date('2030-01-01'));
+      store.setIsNoticeDateValid(true);
+
+      store.cancelChanges();
+
+      expect(store.comment).toBe('snapshot-comment');
+      expect(store.isNoticeDateValid).toBe(false);
+      expect(store.noticeDate?.toISOString()).toBe(new Date('2025-02-02').toISOString());
+
+      expect(store.eventTypes).toHaveLength(1);
+      expect(store.eventTypes[0]).toEqual(expect.objectContaining({ label: 'ET-1' }));
+
+      expect(store.fundGroupsLineItem).toHaveLength(1);
+      expect(store.fundGroupsLineItem[0]).toEqual(
+        expect.objectContaining({
+          id: 'fg-1',
+          amount: 123,
+          allocationBasis: 'Commitment',
+        }),
+      );
+
+      const restoredEntityItems = store.entitiesLineItem.get('E-1');
+      expect(Array.isArray(restoredEntityItems)).toBe(true);
+      expect(restoredEntityItems).toHaveLength(1);
+
+      const restoredInputs = store.getUserInputs('row-col');
+      expect(Array.isArray(restoredInputs)).toBe(true);
+    });
+  });
 });
