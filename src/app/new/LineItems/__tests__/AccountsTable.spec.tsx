@@ -345,6 +345,60 @@ describe('AccountsTable', () => {
     });
   });
 
+  describe('Commitment allocation mapping', () => {
+    it('maps allocated amounts to correct fund group rows by id', async () => {
+      const props = {
+        ...defaultProps,
+        level: 'group',
+      };
+
+      const { capEventSettingsStore: store, entityDatesStore } = jest.requireMock('@/stores');
+      const { CapEventPackageApi } = jest.requireMock('@/api');
+
+      store.fundGroupsLineItem = [
+        { id: 'fg-1', allocationBasis: COMMITMENT_OPTION, amount: 9000 },
+        { id: 'fg-2', allocationBasis: COMMITMENT_OPTION, amount: 4000 },
+      ];
+
+      store.fundEntities = [
+        { id: '73301-02', label: '73301-02 - Entity 2', state: 'S' },
+        { id: '73301-01', label: '73301-01 - Entity 1', state: 'S' },
+      ];
+
+      entityDatesStore.getEntityDueDate.mockReturnValue(new Date('2024-01-01'));
+
+      CapEventPackageApi.default.allocateEntities
+        .mockResolvedValueOnce({ '73301-01': 6000, '73301-02': 3000 })
+        .mockResolvedValueOnce({ '73301-01': 1000, '73301-02': 3000 });
+
+      renderWithTheme(<AccountsTable {...props} />);
+
+      const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
+      fireEvent.click(applyButton);
+
+      await waitFor(() =>
+        expect(CapEventPackageApi.default.allocateEntities).toHaveBeenCalledTimes(2),
+      );
+      await waitFor(() => expect(store.setEntitiesLineItem).toHaveBeenCalledTimes(2));
+
+      const firstCall = (store.setEntitiesLineItem as jest.Mock).mock.calls[0];
+      expect(firstCall[0]).toContain('73301-02');
+      const firstEntityRows = firstCall[1] as Array<Record<string, unknown>>;
+      const rowFg1Entity2 = firstEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-1');
+      const rowFg2Entity2 = firstEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-2');
+      expect(rowFg1Entity2?.amount).toBe(3000);
+      expect(rowFg2Entity2?.amount).toBe(3000);
+
+      const secondCall = (store.setEntitiesLineItem as jest.Mock).mock.calls[1];
+      expect(secondCall[0]).toContain('73301-01');
+      const secondEntityRows = secondCall[1] as Array<Record<string, unknown>>;
+      const rowFg1Entity1 = secondEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-1');
+      const rowFg2Entity1 = secondEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-2');
+      expect(rowFg1Entity1?.amount).toBe(6000);
+      expect(rowFg2Entity1?.amount).toBe(1000);
+    });
+  });
+
   describe('ActionsCell params for DuplicateRowCell', () => {
     it('passes correct params at group level', () => {
       const props = {

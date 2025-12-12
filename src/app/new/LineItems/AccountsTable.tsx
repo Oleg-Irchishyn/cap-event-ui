@@ -503,6 +503,14 @@ const AccountsTable: FC<Props> = ({
       };
 
       const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
+      const commitmentFundGroups = capEventSettingsStore.fundGroupsLineItem.filter(
+        (item) => item.allocationBasis === COMMITMENT_OPTION,
+      );
+      const commitmentAllocations =
+        commitmentFundGroups.map((fgItem, idx) => ({
+          id: fgItem.id,
+          allocations: allocatedEntitiesAmount?.[idx] ?? {},
+        })) ?? [];
 
       selectedEntities.forEach((entity, index) => {
         if (
@@ -515,10 +523,11 @@ const AccountsTable: FC<Props> = ({
         }
 
         const entityLineItemsToApply = capEventSettingsStore.fundGroupsLineItem.map(
-          (fgLineItem, fgLineItemIndex) => {
+          (fgLineItem) => {
             const relatedRowAmount = getRelatedRow(entity.label, fgLineItem.id)?.amount || 0;
 
-            const allocatedAmount = allocatedEntitiesAmount?.[fgLineItemIndex]?.[entity.id ?? ''];
+            const allocatedAmount = commitmentAllocations.find((i) => i.id === fgLineItem.id)
+              ?.allocations?.[entity.id ?? ''];
 
             const getEntityAmount = () => {
               if (fgLineItem.allocationBasis === USER_PROVIDED_OPTION) return relatedRowAmount;
