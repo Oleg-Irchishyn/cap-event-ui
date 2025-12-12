@@ -384,16 +384,17 @@ describe('AccountsTable', () => {
       const firstCall = (store.setEntitiesLineItem as jest.Mock).mock.calls[0];
       expect(firstCall[0]).toContain('73301-02');
       const firstEntityRows = firstCall[1] as Array<Record<string, unknown>>;
-      const rowFg1Entity2 = firstEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-1');
-      const rowFg2Entity2 = firstEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-2');
+      // Rows are created in the same order as capEventSettingsStore.fundGroupsLineItem
+      const rowFg1Entity2 = firstEntityRows[0];
+      const rowFg2Entity2 = firstEntityRows[1];
       expect(rowFg1Entity2?.amount).toBe(3000);
       expect(rowFg2Entity2?.amount).toBe(3000);
 
       const secondCall = (store.setEntitiesLineItem as jest.Mock).mock.calls[1];
       expect(secondCall[0]).toContain('73301-01');
       const secondEntityRows = secondCall[1] as Array<Record<string, unknown>>;
-      const rowFg1Entity1 = secondEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-1');
-      const rowFg2Entity1 = secondEntityRows.find((r) => r.inheritedFundGroupLineItemId === 'fg-2');
+      const rowFg1Entity1 = secondEntityRows[0];
+      const rowFg2Entity1 = secondEntityRows[1];
       expect(rowFg1Entity1?.amount).toBe(6000);
       expect(rowFg2Entity1?.amount).toBe(1000);
     });
