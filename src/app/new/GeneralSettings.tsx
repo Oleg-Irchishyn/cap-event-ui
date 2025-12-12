@@ -282,10 +282,16 @@ const GeneralSettings = () => {
     }
   };
 
-  const selectSponsorHandler = (item: DropdownItemType) => {
+  const selectSponsorHandler = async (item: DropdownItemType) => {
     const isSameItem =
       item.label === sponsors.find((item) => item.state === ITEM_STATES.SELECTED)?.label;
     if (isSameItem) return;
+
+    if (isConfirmationModalEnabled) {
+      const isFieldChanged = await confirmFieldChange(GENERAL_SETTINGS_FIELDS.SPONSOR);
+      if (!isFieldChanged) return;
+    }
+
     capEventSettingsStore.setFundGroups([]);
     capEventSettingsStore.setFundEntities([]);
     const updatedValues = sponsors.map((sponsor) =>

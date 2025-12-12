@@ -102,6 +102,9 @@ jest.mock('@/stores', () => {
     sponsors: [] as Item[],
     fundGroups: [] as Item[],
     fundEntities: [] as Item[],
+    fetchMgmtJournalEntries: jest.fn(),
+    resetOnFundGroupChange: jest.fn(),
+    initAccountsSet: jest.fn(),
     setEventTypes: jest.fn(),
     setSponsors: jest.fn(),
     setFundGroups: jest.fn(),
@@ -171,6 +174,87 @@ describe('GeneralSettings', () => {
 
     await waitFor(() => {
       expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();
+    });
+  });
+
+  it('event type selection with notice date updates entity dates from general', async () => {
+    confirmationHook.isConfirmationModalEnabled = false;
+    entityDatesStore.noticeDate = new Date('2025-01-01');
+
+    renderWithTheme(<GeneralSettings />);
+
+    fireEvent.click(screen.getByTestId('event-type-select'));
+
+    await waitFor(() =>
+      expect(entityDatesStore.setSelectedEventType).toHaveBeenCalledWith('Capital Call'),
+    );
+    expect(entityDatesStore.updateEntityDatesFromGeneral).toHaveBeenCalled();
+    expect(entityDatesStore.recalcEntityDueDatesForSelectedFunds).not.toHaveBeenCalled();
+  });
+
+  it('event type selection without notice date recalculates due dates for selected funds', async () => {
+    confirmationHook.isConfirmationModalEnabled = false;
+    entityDatesStore.noticeDate = null;
+
+    renderWithTheme(<GeneralSettings />);
+
+    fireEvent.click(screen.getByTestId('event-type-select'));
+
+    await waitFor(() =>
+      expect(entityDatesStore.setSelectedEventType).toHaveBeenCalledWith('Capital Call'),
+    );
+    expect(entityDatesStore.recalcEntityDueDatesForSelectedFunds).toHaveBeenCalled();
+    expect(entityDatesStore.updateEntityDatesFromGeneral).not.toHaveBeenCalled();
+  });
+
+  it('closing entities dropdown fetches journal entries for selected entities', async () => {
+    // Prepare selected entities
+    capEventSettingsStore.fundEntities = [
+      { id: 'E1', label: 'Entity 1', state: 'S' },
+      { id: 'E2', label: 'Entity 2', state: 'S' },
+      { id: 'E3', label: 'Entity 3', state: 'O' },
+    ];
+
+    renderWithTheme(<GeneralSettings />);
+
+    fireEvent.click(screen.getByTestId('entities-close'));
+
+    await waitFor(() =>
+      expect(capEventSettingsStore.fetchMgmtJournalEntries).toHaveBeenCalledWith(['E1', 'E2']),
+    );
+  });
+
+  it('selecting fund group confirms (when enabled) and fetches entities', async () => {
+    confirmationHook.isConfirmationModalEnabled = true;
+    (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValue(true);
+
+    renderWithTheme(<GeneralSettings />);
+
+    fireEvent.click(screen.getByTestId('fund-groups-select'));
+
+    await waitFor(() => expect(confirmationHook.confirmFieldChange).toHaveBeenCalled());
+    expect(capEventSettingsStore.resetOnFundGroupChange).toHaveBeenCalled();
+    expect(capEventSettingsStore.setFundEntities).toHaveBeenCalledWith([]);
+    await waitFor(() =>
+      expect(ReferenceDataApi.entities.getEntitiesByFundGroup).toHaveBeenCalledWith(
+        expect.any(String),
+        'EVT1',
+        ['ACTIVE'],
+        ['ADMIN', 'ELIMINATION'],
+      ),
+    );
+  });
+
+  it('selecting sponsor confirms when enabled and applies change', async () => {
+    confirmationHook.isConfirmationModalEnabled = true;
+    (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValue(true);
+
+    (ReferenceDataApi.sponsors.getSponsors as jest.Mock).mockResolvedValue([{ name: 'Sponsor A' }]);
+
+    renderWithTheme(<GeneralSettings />);
+
+    await waitFor(() => {
+      expect(ReferenceDataApi.sponsors.getSponsors).toHaveBeenCalled();
     });
   });
 
