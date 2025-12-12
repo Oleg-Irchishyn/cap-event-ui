@@ -19,8 +19,8 @@ parameters:
     displayName: Build Image
     type: boolean
     default: true
-  - name: deployUAT
-    displayName: "[UAT] Deploy to UAT?"
+  - name: deployUATCAP
+    displayName: "[UAT] Deploy to UAT - CAP?"
     type: boolean
     default: false
   - name: deployProd
@@ -101,7 +101,7 @@ stages:
       tag2Deploy: ${{ parameters.tag2Deploy }}
   - template: stages/deploy_prod.yml@templates
     parameters:
-      deployUAT: ${{ parameters.deployUAT }}
+      deployUAT: ${{ parameters.deployUATCAP }}
       deployProd: ${{ parameters.deployProd }}
       isPreviewProd: ${{ parameters.isPreviewProd }}
       tag2Deploy: ${{ parameters.tag2Deploy }}
