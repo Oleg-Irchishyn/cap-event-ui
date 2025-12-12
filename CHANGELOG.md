@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.67](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.66&targetVersion=GTv0.0.67) (2025-12-12)
+
+
+### Features
+
+* added cancel button ([abdc118](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/abdc118486e94b81e7d6228db5fea9f8c32992c8)), closes [#8452](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8452)
+
+
+### Bug Fixes
+
+* [Issue-8696]: [FE] Incorrect values in Capital Event Collection table ([d2b272d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/d2b272d0a9d4758c555f250ccf8c123ef433c7e9)), closes [#8696](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8696)
+
 ### [0.0.66](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.65&targetVersion=GTv0.0.66) (2025-12-11)
 
 
