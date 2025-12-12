@@ -247,9 +247,13 @@ class PreviewScreenStore {
       const allowed = this.isEntityRowValid(row) || hasAtLeastOneValid;
       if (!allowed) continue;
       const uuid = this.ensureUuid(row.id);
-      idMap.set(row.id, uuid);
+      const inheritanceKey = (row as { inheritanceId?: string }).inheritanceId || row.id;
+      idMap.set(inheritanceKey, uuid);
       items.push({
         id: uuid,
+        ...((row as { inheritanceId?: string }).inheritanceId
+          ? { inheritanceId: (row as { inheritanceId?: string }).inheritanceId }
+          : {}),
         account: base.account,
         investment: base.investment ?? ('' as unknown as ApiInvestment),
         allocationBasis: base.allocationBasis,
@@ -288,9 +292,9 @@ class PreviewScreenStore {
         const prDate = this.formatDate(getValidDate((r.prDate as Date) ?? validDue));
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
-        const inheritedFundGroupLineItemId =
-          r.inheritedFundGroupLineItemId && fundGroupIdMap.has(r.inheritedFundGroupLineItemId)
-            ? fundGroupIdMap.get(r.inheritedFundGroupLineItemId)
+        const fundGroupLineItemInheritanceId =
+          r.fundGroupLineItemInheritanceId && fundGroupIdMap.has(r.fundGroupLineItemInheritanceId)
+            ? fundGroupIdMap.get(r.fundGroupLineItemInheritanceId)
             : undefined;
         const capEventLineItemId = this.ensureUuid((r as { id?: string }).id);
         capEventLineItems.push({
@@ -299,7 +303,7 @@ class PreviewScreenStore {
           investment: base.investment ?? ('' as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
           amount: base.amount,
-          ...(inheritedFundGroupLineItemId ? { inheritedFundGroupLineItemId } : {}),
+          ...(fundGroupLineItemInheritanceId ? { fundGroupLineItemInheritanceId } : {}),
           prDate: prDate as string,
           prFlag,
           isMfLineItem: r.isMfLineItem,

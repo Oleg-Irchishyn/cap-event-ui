@@ -3,8 +3,9 @@ import { Account } from '@/clients/ReferenceData';
 
 export type LineItemRow = {
   id: string;
+  inheritanceId?: string;
   amount: number;
-  inheritedFundGroupLineItemId?: string;
+  fundGroupLineItemInheritanceId?: string;
   investment: Investment;
   allocationBasis: string;
   prDate?: Date;

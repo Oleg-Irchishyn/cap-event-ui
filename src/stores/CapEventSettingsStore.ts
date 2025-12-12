@@ -301,7 +301,7 @@ class CapEventSettingsStore {
       // Remove inherited rows for each entity; keep only manual rows (no inheritedFundGroupLineItemId).
       // If an entity has no manual rows, preserve a single fresh row for UX consistency.
       for (const [entityLabel, rows] of this.entitiesLineItem.entries()) {
-        const manualRows = (rows ?? []).filter((item) => !item.inheritedFundGroupLineItemId);
+        const manualRows = (rows ?? []).filter((item) => !item.fundGroupLineItemInheritanceId);
         if (manualRows.length > 0) {
           this.entitiesLineItem.set(entityLabel, manualRows);
         } else {
@@ -325,7 +325,7 @@ class CapEventSettingsStore {
 
     if (entitiesLineItems) {
       for (let i = 0; i < entitiesLineItems?.length; i++) {
-        if (!entitiesLineItems[i].inheritedFundGroupLineItemId) {
+        if (!entitiesLineItems[i].fundGroupLineItemInheritanceId) {
           entityManualItems.push(entitiesLineItems[i]);
         }
       }

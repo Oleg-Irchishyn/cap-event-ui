@@ -58,7 +58,7 @@ const SubmitButton = () => {
             : capEventSettingsStore.fundGroupsStateAfterApply.map((fundGroupLineItem) => {
                 const investment = fundGroupLineItem.investment;
                 return {
-                  id: fundGroupLineItem.id,
+                  inheritanceId: fundGroupLineItem.inheritanceId,
                   investment: {
                     id: investment?.id ?? '',
                     name: investment?.name,
@@ -91,7 +91,7 @@ const SubmitButton = () => {
                 return {
                   allocationBasis: entityLineItem.allocationBasis,
                   amount: entityLineItem.amount,
-                  inheritedFundGroupLineItemId: entityLineItem.inheritedFundGroupLineItemId,
+                  fundGroupLineItemInheritanceId: entityLineItem.fundGroupLineItemInheritanceId,
                   prDate: formatDate(entityLineItem.prDate),
                   prFlag: entityLineItem.prFlag === 'Yes',
                   isMfLineItem: entityLineItem.isMfLineItem ?? false,

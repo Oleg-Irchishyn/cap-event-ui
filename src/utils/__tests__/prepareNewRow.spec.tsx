@@ -14,13 +14,13 @@ describe('prepareNewRow', () => {
 
     expect(result).toEqual({
       id: expect.stringMatching(UUID_V4_REGEX),
+      inheritanceId: expect.stringMatching(UUID_V4_REGEX),
       capitalCategory: '',
       callDistributionReason: '',
       defaultDescription: '',
       insideCommitment: '',
       investment: { id: '', name: '' },
       amount: 0,
-      accountNo: '',
       allocationBasis: '',
       accountNo: '',
     });
@@ -47,7 +47,7 @@ describe('prepareNewRow', () => {
     expect(typeof result.investment).toBe('object');
     expect(typeof result.amount).toBe('number');
     expect(typeof result.allocationBasis).toBe('string');
-    expect(result.inheritedFundGroupLineItemId).toBeUndefined();
+    expect(result).not.toHaveProperty('inheritedFundGroupLineItemId');
   });
 
   it('should include prFlag when level is entity', () => {

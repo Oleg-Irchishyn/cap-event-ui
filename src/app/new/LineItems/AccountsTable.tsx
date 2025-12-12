@@ -389,7 +389,7 @@ const AccountsTable: FC<Props> = ({
             capEventSettingsStore.entitiesLineItem.values(),
           )
             .flatMap((item) => item)
-            .filter((values) => values.inheritedFundGroupLineItemId === fundGroupRelatedItem?.id);
+            .filter((values) => values.fundGroupLineItemInheritanceId === fundGroupRelatedItem?.id);
           const newFundGroupAmount = relatedInheritedEntities.reduce(
             (acc, item) => acc + item.amount,
             0,
@@ -499,7 +499,7 @@ const AccountsTable: FC<Props> = ({
       const getRelatedRow = (label: string, inheritedFundGroupLineItemId: string) => {
         return capEventSettingsStore.entitiesLineItem
           .get(label)
-          ?.find((item) => item.inheritedFundGroupLineItemId === inheritedFundGroupLineItemId);
+          ?.find((item) => item.fundGroupLineItemInheritanceId === inheritedFundGroupLineItemId);
       };
 
       const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
@@ -543,7 +543,7 @@ const AccountsTable: FC<Props> = ({
                 fgLineItem.allocationBasis === USER_PROVIDED_OPTION
                   ? ''
                   : fgLineItem.allocationBasis,
-              inheritedFundGroupLineItemId: fgLineItem.id,
+              fundGroupLineItemInheritanceId: fgLineItem.inheritanceId,
               id: `${fgLineItem.id}-${index}`,
               prFlag: YesNoOptions[0],
               prDate: entityDatesStore.getEntityDueDate(entity.label) ?? undefined,

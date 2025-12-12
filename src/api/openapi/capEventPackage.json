@@ -1850,7 +1850,12 @@
         "allOf": [
           {
             "type": "object",
-            "required": ["id"]
+             "properties": {
+              "inheritanceId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
           },
           {
             "$ref": "#/components/schemas/LineItemBase"
@@ -1902,7 +1907,7 @@
               "originAccountKey":  {
                 "type": "string"
               },
-              "inheritedFundGroupLineItemId": {
+              "fundGroupLineItemInheritanceId": {
                 "type": "string",
                 "format": "uuid"
               },

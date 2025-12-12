@@ -191,7 +191,7 @@ describe('CapEventSettingsStore', () => {
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',
       callDistributionReason: 'Reason A',
-      inheritedFundGroupLineItemId: 'inherited-1',
+      fundGroupLineItemInheritanceId: 'inherited-1',
       ...overrides,
     });
 
@@ -324,7 +324,7 @@ describe('CapEventSettingsStore', () => {
       capitalCategory: 'Category A',
       defaultDescription: 'Description A',
       callDistributionReason: 'Reason A',
-      inheritedFundGroupLineItemId: 'inherited-1',
+      fundGroupLineItemInheritanceId: 'inherited-1',
       ...overrides,
     });
 

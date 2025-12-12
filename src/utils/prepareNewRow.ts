@@ -4,7 +4,9 @@ import { uuidv4 } from '@/utils/uuid';
 
 export const prepareNewRow = (level?: string): LineItemRow => {
   const levelSpecificColumns =
-    level === LineItemTypes.entity ? { prDate: undefined, prFlag: '', accountName: '' } : {};
+    level === LineItemTypes.entity
+      ? { prDate: undefined, prFlag: '', accountName: '' }
+      : { inheritanceId: uuidv4() };
 
   return {
     id: uuidv4(),

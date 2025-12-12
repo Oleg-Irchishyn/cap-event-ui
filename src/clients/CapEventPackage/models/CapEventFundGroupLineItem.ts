@@ -3,5 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { LineItemBase } from './LineItemBase';
-export type CapEventFundGroupLineItem = (Record<string, any> & LineItemBase);
+export type CapEventFundGroupLineItem = ({
+    inheritanceId?: string;
+} & LineItemBase);
 

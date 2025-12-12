@@ -80,7 +80,7 @@ const mockCapEventSettingsStore = {
           investment: '', // optional
           allocationBasis: 'commitment',
           amount: 100000,
-          inheritedFundGroupLineItemId: 'row-temp-1',
+          fundGroupLineItemInheritanceId: 'row-temp-1',
           prFlag: 'Yes',
           // prDate omitted -> will be taken from due date
         },
@@ -203,7 +203,7 @@ describe('PreviewScreenStore', () => {
         amount: 100000,
         prFlag: true,
         prDate: '2025-11-24',
-        inheritedFundGroupLineItemId: fg.id,
+        fundGroupLineItemInheritanceId: fg.id,
       }),
     );
 

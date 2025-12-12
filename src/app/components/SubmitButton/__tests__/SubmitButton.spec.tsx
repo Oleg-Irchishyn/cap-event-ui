@@ -53,7 +53,7 @@ jest.mock('@/stores', () => ({
     fundGroups: [{ id: 'group1', state: 'SELECTED' }],
     fundGroupsLineItem: [
       {
-        id: 'fgli1',
+        inheritanceId: 'fgli1',
         investment: 'Investment 1',
         allocationBasis: 'Basis1',
         amount: 1000,
@@ -72,7 +72,7 @@ jest.mock('@/stores', () => ({
             investment: 'Investment 1',
             allocationBasis: 'Basis1',
             amount: 500,
-            inheritedFundGroupLineItemId: 'fgli1',
+            fundGroupLineItemInheritanceId: 'fgli1',
             prDate: new Date('2024-01-01'),
             prFlag: 'Yes',
             accountNo: 'ACC002',
