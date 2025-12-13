@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.68](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.67&targetVersion=GTv0.0.68) (2025-12-13)
+
+
+### Bug Fixes
+
+* [Issue-8565]: [FE] Commitment rule does not work on Fund  Group Level if there are another allocation basis for Entity ([8d65ff6](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/8d65ff6024ca2d4c512312ee7a01d2b6bed31030)), closes [#8565](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8565)
+* [Issue-8917]: [FE] Confirmation modal doesn't appear if Sponsor is changed ([451e6ed](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/451e6ed6f604b7d4e4ff2b1a1a3f4f2f0be6b857)), closes [#7637](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7637) [#8917](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8917)
+* [NO-TASK]: [FE] failing test case for AccountsTable ([ef8ad70](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ef8ad70fbf23c363f2fcc079472a3207e4d695fc)), closes [#8565](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8565)
+* updated save capevent contract ([5a9264d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5a9264db1410252ccf492ed6788ad753969903bb)), closes [#8914](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8914)
+
 ### [0.0.67](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.66&targetVersion=GTv0.0.67) (2025-12-12)
 
 
