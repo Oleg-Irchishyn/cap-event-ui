@@ -25,7 +25,7 @@ export const TitleContainer = styled.div(({ theme }) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   backgroundColor: theme.colors.gray400,
-  padding: '19px 32px',
+  padding: '12px 32px',
   color: theme.colors.primary,
 }));
 
