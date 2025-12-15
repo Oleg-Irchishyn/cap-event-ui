@@ -177,11 +177,7 @@ describe('PreviewScreenStore', () => {
       }),
     );
 
-    // fund group line item id must be uuid v4 (not our "row-temp-1")
     const fg = (sentPayload.capEventFundGroupLineItems || [])[0];
-    expect(fg.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-    );
     expect(fg.account).toEqual(
       expect.objectContaining({
         accountNo: '0721',
@@ -203,7 +199,10 @@ describe('PreviewScreenStore', () => {
         amount: 100000,
         prFlag: true,
         prDate: '2025-11-24',
-        fundGroupLineItemInheritanceId: fg.id,
+        // should be a generated uuid reference (not relying on FG item id property)
+        fundGroupLineItemInheritanceId: expect.stringMatching(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+        ),
       }),
     );
 

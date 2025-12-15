@@ -250,7 +250,6 @@ class PreviewScreenStore {
       const inheritanceKey = (row as { inheritanceId?: string }).inheritanceId || row.id;
       idMap.set(inheritanceKey, uuid);
       items.push({
-        id: uuid,
         ...((row as { inheritanceId?: string }).inheritanceId
           ? { inheritanceId: (row as { inheritanceId?: string }).inheritanceId }
           : {}),
@@ -296,9 +295,7 @@ class PreviewScreenStore {
           r.fundGroupLineItemInheritanceId && fundGroupIdMap.has(r.fundGroupLineItemInheritanceId)
             ? fundGroupIdMap.get(r.fundGroupLineItemInheritanceId)
             : undefined;
-        const capEventLineItemId = this.ensureUuid((r as { id?: string }).id);
         capEventLineItems.push({
-          id: capEventLineItemId,
           account: base.account,
           investment: base.investment ?? ('' as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
@@ -313,9 +310,7 @@ class PreviewScreenStore {
       }
 
       if (capEventLineItems.length === 0) continue;
-      const entityItemId = this.ensureUuid(undefined);
       result.push({
-        id: entityItemId,
         entity: this.pickNonEmpty<ApiEntity>({
           id: String(ent.id ?? ''),
           name: ent.name,
