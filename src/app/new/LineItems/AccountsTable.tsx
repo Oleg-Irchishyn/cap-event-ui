@@ -286,11 +286,12 @@ const AccountsTable: FC<Props> = ({
                 accounts,
               );
 
+              cellKeysToUnBlock.push(
+                getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
+              );
+
               if (commitments.length === 1 && commitments[0]) {
                 updatedRow.insideCommitment = commitments[0];
-                cellKeysToUnBlock.push(
-                  getCellKey(data.id, AccountFieldIds[AccountFields.insideCommitment]),
-                );
               }
             } else {
               updatedRow.callDistributionReason = '';

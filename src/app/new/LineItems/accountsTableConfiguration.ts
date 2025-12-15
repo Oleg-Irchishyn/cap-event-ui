@@ -97,7 +97,9 @@ export const cellEditorsParamsCallback = (
         AccountFields.insideCommitment,
         accounts,
       );
-      return { options: possibleValues };
+      const options = possibleValues.length ? possibleValues : YesNoOptions;
+
+      return { options };
     }
 
     case AccountFields.prFlag: {
