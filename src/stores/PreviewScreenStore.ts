@@ -246,12 +246,14 @@ class PreviewScreenStore {
       if (!base) continue;
       const allowed = this.isEntityRowValid(row) || hasAtLeastOneValid;
       if (!allowed) continue;
-      const uuid = this.ensureUuid(row.id);
-      const inheritanceKey = (row as { inheritanceId?: string }).inheritanceId || row.id;
-      idMap.set(inheritanceKey, uuid);
+      const explicitInheritanceId = (row as { inheritanceId?: string }).inheritanceId;
+      // Only map/link when an explicit inheritance id is provided.
+      if (explicitInheritanceId && explicitInheritanceId.toString().trim() !== '') {
+        idMap.set(explicitInheritanceId, explicitInheritanceId);
+      }
       items.push({
-        ...((row as { inheritanceId?: string }).inheritanceId
-          ? { inheritanceId: (row as { inheritanceId?: string }).inheritanceId }
+        ...(explicitInheritanceId && explicitInheritanceId.toString().trim() !== ''
+          ? { inheritanceId: explicitInheritanceId }
           : {}),
         account: base.account,
         investment: base.investment ?? ('' as unknown as ApiInvestment),
@@ -291,10 +293,10 @@ class PreviewScreenStore {
         const prDate = this.formatDate(getValidDate((r.prDate as Date) ?? validDue));
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
-        const fundGroupLineItemInheritanceId =
-          r.fundGroupLineItemInheritanceId && fundGroupIdMap.has(r.fundGroupLineItemInheritanceId)
-            ? fundGroupIdMap.get(r.fundGroupLineItemInheritanceId)
-            : undefined;
+        const originalInheritanceRef = r.fundGroupLineItemInheritanceId as string | undefined;
+        const fundGroupLineItemInheritanceId = originalInheritanceRef
+          ? (fundGroupIdMap.get(originalInheritanceRef) ?? originalInheritanceRef)
+          : undefined;
         capEventLineItems.push({
           account: base.account,
           investment: base.investment ?? ('' as unknown as ApiInvestment),

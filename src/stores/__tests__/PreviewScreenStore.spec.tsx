@@ -187,6 +187,8 @@ describe('PreviewScreenStore', () => {
         insideCmnt: true,
       }),
     );
+    // No explicit inheritance id provided in mock FG row -> FG should not set inheritanceId
+    expect(fg.inheritanceId).toBeUndefined();
 
     // entity line item should link to fund group via inheritedFundGroupLineItemId and set pr fields
     const entityItem = sentPayload.capEventEntityLineItems[0];
@@ -199,10 +201,7 @@ describe('PreviewScreenStore', () => {
         amount: 100000,
         prFlag: true,
         prDate: '2025-11-24',
-        // should be a generated uuid reference (not relying on FG item id property)
-        fundGroupLineItemInheritanceId: expect.stringMatching(
-          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-        ),
+        fundGroupLineItemInheritanceId: 'row-temp-1',
       }),
     );
 
