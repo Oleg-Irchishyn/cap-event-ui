@@ -1,5 +1,5 @@
 import { EditableCallbackParams, ICellRendererParams } from 'ag-grid-community';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useExternalElementClick } from '@/hooks/useExternalElementClick';
 import {
   AltView,
@@ -47,14 +47,23 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
   const withSearch = options.length > 3;
   const placeholder = `Select ${props.colDef?.headerName}`;
 
-  const filteredOptions =
-    options?.filter(
-      (option) =>
-        option.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        option.type?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        option.id?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        option.name?.toLowerCase().includes(searchValue.toLowerCase()),
-    ) ?? [];
+  const filteredOptions = useMemo(() => {
+    const lowerSearch = searchValue.toLowerCase();
+    const result =
+      options?.filter(
+        (option) =>
+          option.title?.toLowerCase().includes(lowerSearch) ||
+          option.type?.toLowerCase().includes(lowerSearch) ||
+          option.id?.toLowerCase().includes(lowerSearch) ||
+          option.name?.toLowerCase().includes(lowerSearch),
+      ) ?? [];
+
+    return result.sort((a, b) => {
+      const aLabel = (a.title || a.name || '').toString();
+      const bLabel = (b.title || b.name || '').toString();
+      return aLabel.localeCompare(bLabel, undefined, { sensitivity: 'base' });
+    });
+  }, [options, searchValue]);
 
   const isCellEditable =
     typeof props.colDef?.editable === 'function'

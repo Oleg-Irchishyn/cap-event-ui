@@ -45,9 +45,12 @@ export const DropdownSearchCell = observer((props: ICellRendererParams) => {
   const placeholder = `Select ${headerName}`;
   const searchPlaceholder = params.searchPlaceholder;
 
-  const filteredOptions = [...options, ...userInputs].filter((option) =>
-    option?.toLowerCase().includes(searchValue.toLowerCase()),
-  );
+  const filteredOptions = useMemo(() => {
+    const lowerSearch = searchValue.toLowerCase();
+    return [...options, ...userInputs]
+      .filter((option) => option?.toLowerCase().includes(lowerSearch))
+      .sort((a, b) => (a || '').localeCompare(b || '', undefined, { sensitivity: 'base' }));
+  }, [options, userInputs, searchValue]);
 
   const isCellEditable = useMemo(
     () =>

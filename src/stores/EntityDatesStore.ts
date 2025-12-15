@@ -270,7 +270,17 @@ class EntityDatesStore {
   }
 
   get isAllDueDatesFilled() {
-    return !Object.values(this.entityDates).some((item) => !item.dueDate);
+    const selectedEntities =
+      this.root.capEventSettingsStore.fundEntities?.filter(
+        (e) => e && e.state === ITEM_STATES.SELECTED,
+      ) ?? [];
+
+    if (selectedEntities.length === 0) return false;
+
+    return selectedEntities.every((e) => {
+      const label = e.label ?? '';
+      return !!this.getEntityDueDate(label);
+    });
   }
 }
 

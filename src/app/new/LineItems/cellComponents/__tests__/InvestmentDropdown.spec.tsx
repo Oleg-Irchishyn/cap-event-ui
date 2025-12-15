@@ -266,6 +266,30 @@ describe('InvestmentDropdown', () => {
     });
   });
 
+  describe('Sorting', () => {
+    it('should display investments sorted A–Z by title/name (case and accent insensitive)', () => {
+      capEventSettingsStore.investments = [
+        { id: '1', title: 'zeta', type: 't1' },
+        { id: '2', name: 'Beta', type: 't2' },
+        { id: '3', title: 'Álvaro', type: 't3' },
+        { id: '4', name: 'alpha', type: 't4' },
+      ];
+
+      const { container } = renderWithTheme(<InvestmentDropdown {...defaultProps} />);
+
+      const trigger = screen.getByText('Select Investment');
+      fireEvent.click(trigger);
+
+      const optionNodes = container.querySelectorAll('[data-is-selected]');
+      const labels = Array.from(optionNodes).map((node) => {
+        const text = node.textContent || '';
+        const match = text.match(/^(.+?)Id:/);
+        return (match ? match[1] : text).trim();
+      });
+
+      expect(labels).toEqual(['alpha', 'Álvaro', 'Beta', 'zeta']);
+    });
+  });
   describe('Edge cases', () => {
     it('should handle empty investments array', () => {
       capEventSettingsStore.investments = [];

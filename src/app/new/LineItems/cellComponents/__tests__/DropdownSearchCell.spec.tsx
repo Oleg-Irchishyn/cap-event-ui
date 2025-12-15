@@ -6,6 +6,11 @@ import { theme } from '@/ui/globalStyles';
 import { DropdownSearchCell } from '../DropdownSearchCell';
 import { ICellRendererParams } from 'ag-grid-community';
 
+jest.mock('react-dom', () => ({
+  ...jest.requireActual('react-dom'),
+  createPortal: (children: React.ReactNode) => children,
+}));
+
 jest.mock('@/hooks/useExternalElementClick', () => ({
   useExternalElementClick: jest.fn(),
 }));
@@ -139,6 +144,29 @@ describe('DropdownSearchCell', () => {
     });
   });
 
+  describe('Sorting', () => {
+    it('should display options sorted A–Z (case and accent insensitive)', () => {
+      const props = {
+        ...defaultProps,
+        colDef: {
+          ...defaultProps.colDef,
+          cellEditorParams: {
+            options: ['zeta', 'Beta', 'Álvaro', 'alpha'],
+          },
+        },
+      };
+
+      const { container } = renderWithTheme(<DropdownSearchCell {...props} />);
+
+      const trigger = screen.getByText('Select Test Field');
+      fireEvent.click(trigger);
+
+      const optionNodes = container.querySelectorAll('[data-is-selected]');
+      const labels = Array.from(optionNodes).map((node) => (node.textContent || '').trim());
+
+      expect(labels).toEqual(['alpha', 'Álvaro', 'Beta', 'zeta']);
+    });
+  });
   describe('Search functionality', () => {
     it('should not show search box when there are 3 or fewer options', () => {
       const props = {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import DropdownMenu from './DropdownMenu';
 import ListItem from './ListItem';
@@ -61,6 +61,14 @@ const ListView = <T,>({
 }: ListViewProps<T>) => {
   useEffect(() => () => onSearchChangeHandler(''), [onSearchChangeHandler]);
 
+  const sortedItems = useMemo(
+    () =>
+      [...items].sort((a, b) =>
+        (a.label || '').localeCompare(b.label || '', undefined, { sensitivity: 'base' }),
+      ),
+    [items],
+  );
+
   const displayDropdownContent = () => {
     if (isLoadingItems)
       return (
@@ -69,13 +77,13 @@ const ListView = <T,>({
         </LoaderWrapper>
       );
 
-    if (items.length === 0 && noDataText) {
+    if (sortedItems.length === 0 && noDataText) {
       return <NoData>{noDataText}</NoData>;
     }
 
     return (
       <>
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <ListItem
             key={item.label}
             item={item}

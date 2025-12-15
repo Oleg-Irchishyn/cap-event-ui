@@ -120,7 +120,6 @@ describe('EntityDatesStore', () => {
 
   describe('state snapshot: collectFields, setInitialStateSnapshot, cancelChanges', () => {
     it('collectFields should return current references for fields', () => {
-      // Arrange
       const nd = new Date('2025-01-10');
       store.setNoticeDate(nd);
       store.setSelectedEventType('Call');
@@ -128,10 +127,8 @@ describe('EntityDatesStore', () => {
       store.setEntityDueDate('E1', new Date('2025-02-10'));
       store.setDifferentDatesState();
 
-      // Act
       const collected = store.collectFields();
 
-      // Assert
       expect(collected.noticeDate).toBe(store.noticeDate);
       expect(collected.entityDates).toBe(store.entityDates);
       expect(collected.hasDifferentDates).toBe(store.hasDifferentDates);
@@ -155,7 +152,7 @@ describe('EntityDatesStore', () => {
 
       store.setNoticeDate(new Date('2030-01-01'));
       store.setSelectedEventType('Distribution');
-      store.resetDifferentDatesState(); // false
+      store.resetDifferentDatesState();
       store.setEntityNoticeDate('E1', new Date('2030-02-02'));
       store.setEntityDueDate('E1', new Date('2030-02-10'));
 
@@ -181,6 +178,57 @@ describe('EntityDatesStore', () => {
       store.setNoticeDate(null);
       expect(store.noticeDate).toBeNull();
       expect(store.hasDifferentDates).toBe(false);
+    });
+  });
+
+  describe('isAllDueDatesFilled (selected entities only)', () => {
+    it('returns false when there are no selected entities', () => {
+      expect(store.isAllDueDatesFilled).toBe(false);
+    });
+
+    it('returns false when any selected entity is missing a due date', () => {
+      const root = new RootStore();
+      const s = root.entityDatesStore;
+
+      root.capEventSettingsStore.setFundEntities([
+        { label: 'A', state: ITEM_STATES.SELECTED },
+        { label: 'B', state: ITEM_STATES.SELECTED },
+      ]);
+
+      s.setEntityDueDate('A', new Date('2025-01-10'));
+
+      expect(s.isAllDueDatesFilled).toBe(false);
+    });
+
+    it('returns true when all selected entities have due dates (ignores unselected)', () => {
+      const root = new RootStore();
+      const s = root.entityDatesStore;
+
+      root.capEventSettingsStore.setFundEntities([
+        { label: 'A', state: ITEM_STATES.SELECTED },
+        { label: 'B', state: ITEM_STATES.SELECTED },
+        { label: 'C', state: ITEM_STATES.OPTIONAL },
+      ]);
+
+      s.setEntityDueDate('A', new Date('2025-01-10'));
+      s.setEntityDueDate('B', new Date('2025-01-11'));
+
+      expect(s.isAllDueDatesFilled).toBe(true);
+    });
+
+    it('ignores entities existing in entityDates but not currently selected', () => {
+      const root = new RootStore();
+      const s = root.entityDatesStore;
+
+      root.capEventSettingsStore.setFundEntities([
+        { label: 'OnlySelected', state: ITEM_STATES.SELECTED },
+      ]);
+
+      s.setEntityDueDate('OnlySelected', new Date('2025-02-01'));
+
+      s.setEntityNoticeDate('NotSelected', new Date('2025-01-01'));
+
+      expect(s.isAllDueDatesFilled).toBe(true);
     });
   });
 });

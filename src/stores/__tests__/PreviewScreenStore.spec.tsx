@@ -157,7 +157,7 @@ describe('PreviewScreenStore', () => {
 
   it('processPayload success: builds payload from stores, calls API once, updates rows', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
-    const apiResponse = [{ any: 'response' }];
+    const apiResponse = [{ data: 'response' }];
     processMock.mockResolvedValueOnce(apiResponse);
     parseMock.mockReturnValueOnce([{ id: 'r1' }, { id: 'r2' }]);
 
@@ -210,6 +210,73 @@ describe('PreviewScreenStore', () => {
     expect(result).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.rows).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.isLoading).toBe(false);
+  });
+
+  it('buildFundGroupLineItems: sets inheritanceId only when explicit value exists', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+
+    // Add explicit inheritanceId to the single FG row
+    (mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0] = {
+      ...(mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0],
+      inheritanceId: 'FG-EXPLICIT-1',
+    };
+
+    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    parseMock.mockReturnValueOnce([]);
+
+    await store.processPayload(toast);
+
+    const sentPayload = processMock.mock.calls[0][1];
+    const fg = (sentPayload.capEventFundGroupLineItems || [])[0];
+    expect(fg.inheritanceId).toBe('FG-EXPLICIT-1');
+  });
+
+  it('buildEntityLineItems: maps entity inheritance id via idMap when available (identity mapping)', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+
+    (mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0] = {
+      ...(mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0],
+      inheritanceId: 'FG-EXPLICIT-2',
+    };
+
+    const entityRows = mockCapEventSettingsStore.entitiesLineItem.get(
+      'E1 - Gen 2 Demo Buyout Fund I, L.P.',
+    ) as Array<Record<string, unknown>>;
+    entityRows[0] = {
+      ...entityRows[0],
+      fundGroupLineItemInheritanceId: 'FG-EXPLICIT-2',
+    };
+
+    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    parseMock.mockReturnValueOnce([]);
+
+    await store.processPayload(toast);
+
+    const sentPayload = processMock.mock.calls[0][1];
+    const entityItem = sentPayload.capEventEntityLineItems[0];
+    expect(entityItem.capEventLineItems[0]).toEqual(
+      expect.objectContaining({
+        fundGroupLineItemInheritanceId: 'FG-EXPLICIT-2',
+      }),
+    );
+  });
+
+  it('buildEntityLineItems: omits fundGroupLineItemInheritanceId when source is missing', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+
+    const entityRows = mockCapEventSettingsStore.entitiesLineItem.get(
+      'E1 - Gen 2 Demo Buyout Fund I, L.P.',
+    ) as Array<Record<string, unknown>>;
+    delete entityRows[0].fundGroupLineItemInheritanceId;
+
+    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    parseMock.mockReturnValueOnce([]);
+
+    await store.processPayload(toast);
+
+    const sentPayload = processMock.mock.calls[0][1];
+    const entityItem = sentPayload.capEventEntityLineItems[0];
+    expect(entityItem.capEventLineItems[0].fundGroupLineItemInheritanceId).toBeUndefined();
   });
 
   it('processPayload concurrent calls use in-flight guard and call API only once', async () => {

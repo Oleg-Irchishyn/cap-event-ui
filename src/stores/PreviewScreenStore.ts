@@ -247,7 +247,6 @@ class PreviewScreenStore {
       const allowed = this.isEntityRowValid(row) || hasAtLeastOneValid;
       if (!allowed) continue;
       const explicitInheritanceId = (row as { inheritanceId?: string }).inheritanceId;
-      // Only map/link when an explicit inheritance id is provided.
       if (explicitInheritanceId && explicitInheritanceId.toString().trim() !== '') {
         idMap.set(explicitInheritanceId, explicitInheritanceId);
       }
@@ -293,7 +292,7 @@ class PreviewScreenStore {
         const prDate = this.formatDate(getValidDate((r.prDate as Date) ?? validDue));
         const prFlag =
           (r.prFlag ?? '').toString().toLowerCase() === (YesNoOptions[0] || '').toLowerCase();
-        const originalInheritanceRef = r.fundGroupLineItemInheritanceId as string | undefined;
+        const originalInheritanceRef = r.fundGroupLineItemInheritanceId;
         const fundGroupLineItemInheritanceId = originalInheritanceRef
           ? (fundGroupIdMap.get(originalInheritanceRef) ?? originalInheritanceRef)
           : undefined;
