@@ -2,6 +2,7 @@
 
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
+import styled from 'styled-components';
 
 import { capEventSettingsStore, entityDatesStore, previewScreenStore } from '@/stores';
 
@@ -18,6 +19,15 @@ import { showErrorToast } from '@/utils/showErrorToast';
 import { useToast } from '@/providers/ToastProvider';
 import useSaveDraftButton from '@/hooks/useSaveDraftButton';
 import { comparer } from 'mobx';
+
+const BackIcon = styled.img.attrs({
+  src: '/cap-event/icons/back.svg',
+})({
+  width: '18px',
+  height: '16px',
+  padding: '4px 3px',
+  marginLeft: '10px',
+});
 
 const ButtonsGroup = () => {
   const [isFootnotesModalOpen, setFootnotesModalOpen] = useState(false);
@@ -94,30 +104,48 @@ const ButtonsGroup = () => {
     }
   };
 
-  let isCancelDisabled: boolean;
+  let isFormClean: boolean;
 
   if (path === ROUTES.PREVIEW_SCREEN.path) {
-    isCancelDisabled = false;
+    isFormClean = false;
   } else if (capEventSettingsStore.initialStateSnapshot) {
-    isCancelDisabled = comparer.structural(
+    isFormClean = comparer.structural(
       capEventSettingsStore.collectFields(),
       capEventSettingsStore.initialStateSnapshot,
     );
   } else {
-    isCancelDisabled = true;
+    isFormClean = true;
   }
+
+  const handleBackClick = () => {
+    if (isFormClean) {
+      router.push(ROUTES.MAIN.path);
+    } else {
+      setIsConfirmationModalOpen(true);
+    }
+  };
 
   return (
     <>
       <Container>
         <TitleContainer>
           <Title>Capital Event - New</Title>
+          <Button
+            testId="back"
+            width="auto"
+            onClick={handleBackClick}
+            buttonTheme={BUTTON_THEMES.text}
+            textStyle={{ alignItems: 'center' }}
+          >
+            Back to Capital Event List
+            <BackIcon />
+          </Button>
         </TitleContainer>
         <ButtonContainer>
           {renderBackButton}
           <Button
             testId="cancel"
-            disabled={isCancelDisabled}
+            disabled={isFormClean}
             width="auto"
             onClick={() => setIsConfirmationModalOpen(true)}
             buttonTheme={BUTTON_THEMES.secondary}

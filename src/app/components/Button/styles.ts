@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const BUTTON_THEMES = {
   secondary: 'secondary',
   primary: 'primary',
+  text: 'text',
 };
 
 export const ButtonWrapper = styled.button<{ width: string }>(
@@ -78,6 +79,22 @@ export const ButtonWrapper = styled.button<{ width: string }>(
       background-color: #FFFFFF;
       color: #666769;
       border: 2px solid #004E7A;
+    }
+  }
+
+  &[data-theme="${BUTTON_THEMES.text}"] {
+    background: none;
+    border: none;
+    color: ${theme.colors.primary};
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px;
+
+    &:hover {
+      background: none;
+      border: none;
+      color: ${theme.colors.primary};
     }
   }
   

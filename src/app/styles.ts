@@ -22,6 +22,7 @@ export const ButtonContainer = styled.div(({ theme }) => ({
 
 export const TitleContainer = styled.div(({ theme }) => ({
   display: 'flex',
+  justifyContent: 'space-between',
   backgroundColor: theme.colors.gray400,
   padding: '19px 32px',
   color: theme.colors.primary,
