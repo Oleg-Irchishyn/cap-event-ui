@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.69](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.68&targetVersion=GTv0.0.69) (2025-12-16)
+
+
+### Features
+
+* [TASK-6815]: [FE] Apply A-Z sorting to all Pick Lists (Dropdowns) ([8981884](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/8981884d96b6d1eebda97a3864a9259aaba93bd2)), closes [#6815](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6815)
+* [TASK-8926]: [FE] Update payloads to remove generation of id for Objects ([7967769](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/79677699f71f6edc34c2c7122b86cbf182573d0a)), closes [#8926](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8926)
+* add default option for inside cmnt ([0c2cf39](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0c2cf39abb008d6555e084ea278a4def51575b93)), closes [#6816](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6816)
+* added back btn in Header ([79df922](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/79df9223ee518587fa0cc69fd38a3a4fbd4bfbaf)), closes [#8455](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8455)
+
+
+### Bug Fixes
+
+* [NO-TASK]: [FE] align inheritanceId with fundGroupLineItemInheritanceId ([704bb47](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/704bb47cc595197ab32312283e7a287d601ffe40)), closes [#8926](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8926)
+* header spacing ([b25033f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/b25033fbd5e1067d83abc57ac0d705509549e241)), closes [#6816](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6816)
+
 ### [0.0.68](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.67&targetVersion=GTv0.0.68) (2025-12-13)
 
 
