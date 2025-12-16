@@ -97,9 +97,10 @@ const mockEntityDatesStore: {
   getEntityDueDateInputValidity: jest.Mock;
   getEntityNoticeDateInputValidity: jest.Mock;
 } = {
-  noticeDate: new Date('2025-11-17'),
-  getEntityNoticeDate: jest.fn(() => new Date('2025-11-17')),
-  getEntityDueDate: jest.fn(() => new Date('2025-11-24')),
+  // Create dates in local timezone to avoid timezone issues (month is 0-indexed: 10 = November)
+  noticeDate: new Date(2025, 10, 17),
+  getEntityNoticeDate: jest.fn(() => new Date(2025, 10, 17)),
+  getEntityDueDate: jest.fn(() => new Date(2025, 10, 24)),
   getEntityDueDateInputValidity: jest.fn(() => true),
   getEntityNoticeDateInputValidity: jest.fn(() => true),
 };
@@ -118,9 +119,9 @@ describe('PreviewScreenStore', () => {
     axiosPostMock.mockReset();
     (axios as unknown as { post: jest.Mock }).post = axiosPostMock as unknown as jest.Mock;
 
-    // Reset mock functions
-    mockEntityDatesStore.getEntityNoticeDate.mockReturnValue(new Date('2025-11-17'));
-    mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date('2025-11-24'));
+    // Reset mock functions (month is 0-indexed: 10 = November)
+    mockEntityDatesStore.getEntityNoticeDate.mockReturnValue(new Date(2025, 10, 17));
+    mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
     mockEntityDatesStore.getEntityDueDateInputValidity.mockReturnValue(true);
     mockEntityDatesStore.getEntityNoticeDateInputValidity.mockReturnValue(true);
 
@@ -166,16 +167,13 @@ describe('PreviewScreenStore', () => {
     // Assert API called with expected shape
     expect(processMock).toHaveBeenCalledTimes(1);
     const sentPayload = processMock.mock.calls[0][1];
-    expect(sentPayload).toEqual(
-      expect.objectContaining({
-        sponsor: expect.objectContaining({ id: 'SP1' }),
-        capEventType: expect.objectContaining({ id: 'TYPE1' }),
-        fundGroup: expect.objectContaining({ id: 'FG1' }),
-        entities: [expect.objectContaining({ id: 'E1' })],
-        noticeDate: '2025-11-17',
-        totalAmount: 100000,
-      }),
-    );
+    expect(sentPayload.sponsor.id).toBe('SP1');
+    expect(sentPayload.capEventType.id).toBe('TYPE1');
+    expect(sentPayload.fundGroup.id).toBe('FG1');
+    expect(sentPayload.entities).toHaveLength(1);
+    expect(sentPayload.entities[0].id).toBe('E1');
+    expect(sentPayload.noticeDate).toBe('2025-11-17');
+    expect(sentPayload.totalAmount).toBe(100000);
 
     const fg = (sentPayload.capEventFundGroupLineItems || [])[0];
     expect(fg.account).toEqual(

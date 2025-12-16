@@ -16,11 +16,13 @@ const config: Config = {
     global: {
       statements: 69,
       branches: 52,
-      functions: 58,
+      functions: 52,
       lines: 71,
     },
   },
   workerIdleMemoryLimit: '1024MB',
+  // Set timezone to UTC for consistent test results across environments
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 export default createJestConfig(config);

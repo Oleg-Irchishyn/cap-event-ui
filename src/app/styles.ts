@@ -12,13 +12,13 @@ export const Container = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.white,
 }));
 
-export const ButtonContainer = styled.div(({ theme }) => ({
+export const ButtonContainer = styled.div({
   display: 'flex',
   gap: '8px',
   alignSelf: 'flex-end',
   marginRight: '24px',
   marginBottom: '24px',
-}));
+});
 
 export const TitleContainer = styled.div(({ theme }) => ({
   display: 'flex',

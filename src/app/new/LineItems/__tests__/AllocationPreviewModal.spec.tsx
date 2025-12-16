@@ -141,7 +141,8 @@ describe('AllocationPreviewModal', () => {
       ],
     ]);
 
-    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date('2025-02-03'));
+    // Create date in local timezone to avoid timezone issues (month is 0-indexed: 1 = February)
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date(2025, 1, 3));
     (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
     renderWithTheme(<AllocationPreviewModal />);
