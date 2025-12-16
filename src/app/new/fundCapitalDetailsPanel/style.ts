@@ -5,30 +5,28 @@ export const PanelContainer = styled.div({
   display: 'flex',
   gap: '24px',
   justifyContent: 'flex-start',
+  flexWrap: 'wrap',
   alignItems: 'baseline',
   margin: '24px 0 0 0',
 });
 
 export const PanelItem = styled.div({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   justifyContent: 'flex-start',
-  alignItems: 'flex-start',
+  alignItems: 'baseline',
+  width: '100%',
 });
 
 export const PanelItemTitle = styled.div(({ theme }) => ({
-  fontSize: '14px',
-  fontWeight: 400,
-  margin: '0 0 8px 0',
-  color: theme.colors.accentBlue,
-  display: 'flex',
-  alignItems: 'baseline',
-}));
-
-export const PanelItemDescription = styled.span(({ theme }) => ({
-  fontSize: '14px',
+  fontSize: '16px',
   fontWeight: 500,
+  margin: '0',
   color: theme.colors.textPrimary,
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: '8px',
 }));
 
 export const datePickerStyles = {
@@ -45,7 +43,5 @@ export const datePickerStyles = {
 };
 
 export const PressableWrapper = styled.div({
-  display: 'flex',
-  marginLeft: '7px',
   cursor: 'pointer',
 });

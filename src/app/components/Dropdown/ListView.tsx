@@ -61,11 +61,38 @@ const ListView = <T,>({
 }: ListViewProps<T>) => {
   useEffect(() => () => onSearchChangeHandler(''), [onSearchChangeHandler]);
 
+  // Attempts to parse a numeric value from a label that may contain
+  // thousand separators and optional parentheses for negatives.
+  const parseNumericLabel = (label?: string): number | null => {
+    if (!label) return null;
+    const trimmed = label.trim();
+    // Accept formats like "5,000", "100,000.50", "(1,234)", "-1,234.56"
+    const numericLikeRegex = /^\(?-?[\d,]+(\.\d+)?\)?$/;
+    if (!numericLikeRegex.test(trimmed)) return null;
+    const isNegative = /^\(.*\)$/.test(trimmed);
+    const normalized = trimmed.replace(/[(),]/g, '');
+    const parsed = Number(normalized);
+    if (Number.isNaN(parsed)) return null;
+    return isNegative ? -parsed : parsed;
+  };
+
   const sortedItems = useMemo(
     () =>
-      [...items].sort((a, b) =>
-        (a.label || '').localeCompare(b.label || '', undefined, { sensitivity: 'base' }),
-      ),
+      [...items].sort((a, b) => {
+        const aNum = parseNumericLabel(a.label);
+        const bNum = parseNumericLabel(b.label);
+
+        // If both labels are numeric-like, sort numerically (ascending)
+        if (aNum !== null && bNum !== null) {
+          return aNum - bNum;
+        }
+
+        // Fallback to localeCompare for non-numeric labels
+        return (a.label || '').localeCompare(b.label || '', undefined, {
+          sensitivity: 'base',
+          numeric: true,
+        });
+      }),
     [items],
   );
 

@@ -5,20 +5,17 @@ import { ThemeProvider } from 'styled-components';
 import EntityCapitalDetailsPanel from '../EntityCapitalDetailsPanel';
 import { theme } from '@/ui/globalStyles';
 
-jest.mock('../DetailsReadOnlyInfo', () => {
-  return function MockDetailsReadOnlyInfo({
+jest.mock('../DetailsEntityName', () => {
+  return function MockDetailsEntityName({
     title,
-    description,
-    testId = 'details-read-only-info',
+    testId = 'entity-name',
   }: {
     title: string;
-    description: string;
     testId?: string;
   }) {
     return (
       <div data-testid={testId}>
         <div data-testid="mock-title">{title}</div>
-        <div data-testid="mock-description">{description}</div>
       </div>
     );
   };
@@ -41,9 +38,8 @@ describe('EntityCapitalDetailsPanel', () => {
     renderWithTheme(<EntityCapitalDetailsPanel {...defaultProps} />);
 
     expect(screen.getByTestId('panel-container')).toBeInTheDocument();
-    expect(screen.getByTestId('details-read-only-info')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-title')).toHaveTextContent('Entity');
-    expect(screen.getByTestId('mock-description')).toHaveTextContent('Test Entity Label');
+    expect(screen.getByTestId('entity-name')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-title')).toHaveTextContent('Test Entity Label');
   });
 
   it('should render with custom testId when provided', () => {
@@ -56,7 +52,7 @@ describe('EntityCapitalDetailsPanel', () => {
   it('should not fallback for empty string (uses nullish coalescing)', () => {
     const entityName = 'Fallback Entity Name';
     renderWithTheme(<EntityCapitalDetailsPanel entityLabel="" entityName={entityName} />);
-    expect(screen.getByTestId('mock-description')).toHaveTextContent('');
+    expect(screen.getByTestId('entity-name')).toHaveTextContent('');
   });
 
   it('should fallback to entityName when entityLabel is null or undefined', () => {
@@ -65,24 +61,24 @@ describe('EntityCapitalDetailsPanel', () => {
     renderWithTheme(
       <EntityCapitalDetailsPanel entityLabel={null as unknown as string} entityName={entityName} />,
     );
-    expect(screen.getByTestId('mock-description')).toHaveTextContent(entityName);
+    expect(screen.getByTestId('entity-name')).toHaveTextContent(entityName);
   });
 
-  it('should pass correct props to DetailsReadOnlyInfo component', () => {
+  it('should pass correct props to DetailsEntityName component', () => {
     const entityLabel = 'Integration Test Entity';
     renderWithTheme(
       <EntityCapitalDetailsPanel entityLabel={entityLabel} entityName="Alternative Name" />,
     );
 
-    expect(screen.getByTestId('mock-title')).toHaveTextContent('Entity');
-    expect(screen.getByTestId('mock-description')).toHaveTextContent(entityLabel);
+    expect(screen.getByTestId('entity-name')).toHaveTextContent(entityLabel);
+    expect(screen.getByTestId('entity-name')).toHaveTextContent(entityLabel);
   });
 
   it('should handle special characters and long text', () => {
     const specialCharEntity = 'Entity with $pecial Ch@racters & Symbols! 🚀';
     renderWithTheme(<EntityCapitalDetailsPanel entityLabel={specialCharEntity} />);
 
-    expect(screen.getByTestId('mock-description')).toHaveTextContent(specialCharEntity);
+    expect(screen.getByTestId('entity-name')).toHaveTextContent(specialCharEntity);
     expect(screen.getByTestId('panel-container')).toBeInTheDocument();
   });
 });

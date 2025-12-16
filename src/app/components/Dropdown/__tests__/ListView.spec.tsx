@@ -102,6 +102,73 @@ describe('ListView - Sorting', () => {
     expect(container).toHaveTextContent('No Data Available');
   });
 
+  it('should sort numeric-looking labels by numeric value (ascending)', () => {
+    const items = [
+      { label: '320,900', state: ITEM_STATES.OPTIONAL },
+      { label: '5,000', state: ITEM_STATES.OPTIONAL },
+      { label: '100,000', state: ITEM_STATES.OPTIONAL },
+      { label: '79,500', state: ITEM_STATES.OPTIONAL },
+    ];
+
+    const { container } = renderWithTheme(
+      <ListView
+        testId="list-view"
+        items={items}
+        itemClickHandler={() => () => {}}
+        isLoadingItems={false}
+        checkbox={false}
+        withSearch={false}
+        onSearchChangeHandler={() => {}}
+        searchText=""
+        withControls={false}
+        withDescription={false}
+        isSelectAllAvailable={false}
+        isDeselectAllAvailable={false}
+        isHideAlternativeButton
+        noDataText=""
+      />,
+    );
+
+    const nodes = container.querySelectorAll('[data-is-withbackground]');
+    const labels = Array.from(nodes).map((node) => (node.textContent || '').trim());
+
+    expect(labels).toEqual(['5,000', '79,500', '100,000', '320,900']);
+  });
+
+  it('should treat parentheses as negatives when sorting numeric-looking labels', () => {
+    const items = [
+      { label: '(1,200)', state: ITEM_STATES.OPTIONAL },
+      { label: '5,000', state: ITEM_STATES.OPTIONAL },
+      { label: '-50', state: ITEM_STATES.OPTIONAL },
+      { label: '100', state: ITEM_STATES.OPTIONAL },
+    ];
+
+    const { container } = renderWithTheme(
+      <ListView
+        testId="list-view"
+        items={items}
+        itemClickHandler={() => () => {}}
+        isLoadingItems={false}
+        checkbox={false}
+        withSearch={false}
+        onSearchChangeHandler={() => {}}
+        searchText=""
+        withControls={false}
+        withDescription={false}
+        isSelectAllAvailable={false}
+        isDeselectAllAvailable={false}
+        isHideAlternativeButton
+        noDataText=""
+      />,
+    );
+
+    const nodes = container.querySelectorAll('[data-is-withbackground]');
+    const labels = Array.from(nodes).map((node) => (node.textContent || '').trim());
+
+    // Ascending order: -1200, -50, 100, 5000
+    expect(labels).toEqual(['(1,200)', '-50', '100', '5,000']);
+  });
+
   it('should render checkbox and descriptions when flags are enabled', () => {
     renderWithTheme(
       <ListView

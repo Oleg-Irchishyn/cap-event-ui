@@ -5,9 +5,8 @@ export interface EntityCapitalDetailsPanelProps {
   entityId?: string;
 }
 
-export interface DetailsReadOnlyInfoProps {
+export interface DetailsEntityNameProps {
   title: string;
-  description: string;
   testId?: string;
   entityId?: string;
 }
