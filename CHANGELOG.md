@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.70](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.69&targetVersion=GTv0.0.70) (2025-12-17)
+
+
+### Features
+
+* [TASK-6817]: [FE] Display Entity Name at Entity-Level Section ([9783516](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/978351656c2ce29d4938ed7078939d746476efa5)), closes [#6817](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6817)
+
+
+### Bug Fixes
+
+* add jest setup ([f9b1cd8](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f9b1cd852faf48e8a4f00d35054caefa64d9f2a6)), closes [#8986](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8986)
+
 ### [0.0.69](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.68&targetVersion=GTv0.0.69) (2025-12-16)
 
 
