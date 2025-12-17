@@ -1,0 +1,12 @@
+# Use this file to provide UAT-CAP-specific parameters
+ingress:
+  hostname: uat-cap.gen2fund.com
+
+envVars:
+  # enable actuator logging
+  # LOGGING_FILE_NAME: /app/app.log
+  # LOGGING_LEVEL_COM_GEN2FUND_OUTPUTGENERATOR: DEBUG
+  # MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+  NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://uat-cap.gen2fund.com/cap-event-package
+  NEXT_PUBLIC_BACKEND_API: https://uat-cap.gen2fund.com/api/cap-event
+  BACKEND_HOST: https://uat-cap.gen2fund.com
