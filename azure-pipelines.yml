@@ -101,7 +101,7 @@ stages:
       tag2Deploy: ${{ parameters.tag2Deploy }}
   - template: stages/deploy_prod.yml@templates
     parameters:
-      deployUAT: ${{ parameters.deployUATCAP }}
+      deployUATCAP: ${{ parameters.deployUATCAP }}
       deployProd: ${{ parameters.deployProd }}
       isPreviewProd: ${{ parameters.isPreviewProd }}
       tag2Deploy: ${{ parameters.tag2Deploy }}
