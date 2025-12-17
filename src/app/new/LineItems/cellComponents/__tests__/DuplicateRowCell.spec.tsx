@@ -180,7 +180,7 @@ describe('DuplicateRowCell', () => {
     expect(updatedArg).toHaveLength(3);
     const inserted = updatedArg[1];
     expect(inserted.id).toBe('new-id');
-    expect(inserted.inheritedFundGroupLineItemId).toBeUndefined();
+    expect(inserted.fundGroupLineItemInheritanceId).toBeUndefined();
     expect(inserted.capitalCategory).toBe(row1.capitalCategory);
     expect(inserted.callDistributionReason).toBe(row1.callDistributionReason);
     expect(inserted.defaultDescription).toBe(row1.defaultDescription);

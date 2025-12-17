@@ -47,7 +47,7 @@ describe('prepareNewRow', () => {
     expect(typeof result.investment).toBe('object');
     expect(typeof result.amount).toBe('number');
     expect(typeof result.allocationBasis).toBe('string');
-    expect(result).not.toHaveProperty('inheritedFundGroupLineItemId');
+    expect(result).not.toHaveProperty('fundGroupLineItemInheritanceId');
   });
 
   it('should include prFlag when level is entity', () => {

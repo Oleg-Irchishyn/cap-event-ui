@@ -43,7 +43,7 @@ describe('ActionsCell', () => {
       insideCommitment: 'Yes',
       investment: 'Test Investment',
       allocationBasis: 'Test Basis',
-      inheritedFundGroupLineItemId: undefined,
+      fundGroupLineItemInheritanceId: undefined,
     },
     colDef: {
       cellEditorParams: {
@@ -70,17 +70,17 @@ describe('ActionsCell', () => {
     it('should render delete button for non-inherited rows', () => {
       render(<ActionsCell {...mockProps} />);
       const buttons = screen.getAllByRole('button');
-      expect(buttons).toHaveLength(3); // Preview + Duplicate + Delete buttons
+      expect(buttons).toHaveLength(3);
     });
 
     it('should not render delete button for inherited rows', () => {
       const propsWithInherited = {
         ...mockProps,
-        data: { ...mockProps.data, inheritedFundGroupLineItemId: 'inherited-123' },
+        data: { ...mockProps.data, fundGroupLineItemInheritanceId: 'inherited-123' },
       };
       render(<ActionsCell {...propsWithInherited} />);
       const buttons = screen.getAllByRole('button');
-      expect(buttons).toHaveLength(2); // Preview + Duplicate buttons
+      expect(buttons).toHaveLength(2);
       expect(screen.queryByTestId('delete-icon')).not.toBeInTheDocument();
     });
 

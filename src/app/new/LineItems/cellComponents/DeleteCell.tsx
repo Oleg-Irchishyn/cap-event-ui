@@ -75,7 +75,7 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
     }
   };
 
-  const shouldRender = !props.data.inheritedFundGroupLineItemId && !props.data.isMfLineItem;
+  const shouldRender = !props.data.fundGroupLineItemInheritanceId && !props.data.isMfLineItem;
 
   return (
     <>

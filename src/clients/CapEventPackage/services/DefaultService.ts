@@ -131,6 +131,32 @@ export class DefaultService {
         });
     }
     /**
+     * Update capital event in status draft
+     * @param id Capital event ID to update
+     * @param requestBody
+     * @returns CapEvent The CapEvent object stored in the system.
+     * @throws ApiError
+     */
+    public update(
+        id: string,
+        requestBody: CapEventDraft,
+    ): CancelablePromise<CapEvent> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/cap-events/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad request`,
+                404: `Capital event not found`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
      * Process capital event
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody

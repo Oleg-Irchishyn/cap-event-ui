@@ -176,7 +176,7 @@ export const InvestmentDropdown = observer((props: ICellRendererParams) => {
       >
         <Label
           data-is-placeholder={!(selectedValue.title || selectedValue.name)}
-          data-is-inherited={!!props.data?.inheritedFundGroupLineItemId}
+          data-is-inherited={!!props.data?.fundGroupLineItemInheritanceId}
         >
           {selectedValue.title || selectedValue.name || placeholder}
         </Label>

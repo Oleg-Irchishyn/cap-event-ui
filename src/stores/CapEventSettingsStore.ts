@@ -298,7 +298,7 @@ class CapEventSettingsStore {
     if (selectedCount <= 1) {
       this.fundGroupsLineItem = [prepareNewRow(LineItemTypes.group)];
       this.fundGroupsStateAfterApply = [prepareNewRow(LineItemTypes.group)];
-      // Remove inherited rows for each entity; keep only manual rows (no inheritedFundGroupLineItemId).
+      // Remove inherited rows for each entity; keep only manual rows (no fundGroupLineItemInheritanceId).
       // If an entity has no manual rows, preserve a single fresh row for UX consistency.
       for (const [entityLabel, rows] of this.entitiesLineItem.entries()) {
         const manualRows = (rows ?? []).filter((item) => !item.fundGroupLineItemInheritanceId);

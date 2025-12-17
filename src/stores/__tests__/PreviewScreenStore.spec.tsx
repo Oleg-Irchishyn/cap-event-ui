@@ -188,7 +188,7 @@ describe('PreviewScreenStore', () => {
     // No explicit inheritance id provided in mock FG row -> FG should not set inheritanceId
     expect(fg.inheritanceId).toBeUndefined();
 
-    // entity line item should link to fund group via inheritedFundGroupLineItemId and set pr fields
+    // entity line item should link to fund group via fundGroupLineItemInheritanceId and set pr fields
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.entity).toEqual(expect.objectContaining({ id: 'E1' }));
     expect(entityItem.noticeDate).toBe('2025-11-17');
