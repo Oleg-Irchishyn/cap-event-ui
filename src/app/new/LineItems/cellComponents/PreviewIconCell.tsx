@@ -8,7 +8,7 @@ import Tooltip from '@/app/components/Tooltip';
 import { hasRequiredFieldsForPreview } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
-import { PreviewButton, PreviewWrapper } from '../styles';
+import { CellWrapper, PreviewButton } from '../styles';
 import { getValidDate } from '@/utils/getValidDate';
 
 const PreviewIconCell: FC<ICellRendererParams> = (props) => {
@@ -32,9 +32,7 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   };
 
   const onShowTooltip = () => {
-    if (isPreviewDisabled) {
-      setPreviewTooltip(true);
-    }
+    setPreviewTooltip(true);
   };
 
   const onHideTooltip = () => {
@@ -44,7 +42,7 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
   return (
     <>
       {level === LineItemTypes.entity && (
-        <PreviewWrapper
+        <CellWrapper
           ref={previewTooltipRef}
           onMouseEnter={onShowTooltip}
           onMouseLeave={onHideTooltip}
@@ -55,12 +53,14 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
             onClick={handlePreviewClick}
           />
           <Tooltip
-            tooltipMessage="Not all required fields are populated"
+            tooltipMessage={
+              isPreviewDisabled ? 'Not all required fields are populated' : 'Allocation Preview'
+            }
             showTooltip={showPreviewTooltip}
             targetRef={previewTooltipRef}
             testId="preview-icon-tooltip"
           />
-        </PreviewWrapper>
+        </CellWrapper>
       )}
     </>
   );

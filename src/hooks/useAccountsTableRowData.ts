@@ -4,7 +4,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 
 const NET_CONTRIBUTIONS_LABEL = 'Net Contributions';
 const NET_DISTRIBUTIONS_LABEL = 'Net Distributions';
-const NET_ZERO_LABEL = 'Net Zero';
+const NET_ZERO_LABEL = 'Total';
 const TOTAL_ROW_ID = 'total-row';
 
 const getTotalLabel = (total: number) => {
@@ -27,7 +27,7 @@ export const useAccountsTableRowData = (
     const totalRow = {
       id: TOTAL_ROW_ID,
       [AccountFields.capitalCategory]: totalLabel,
-      [AccountFields.amount]: totalAmount,
+      [AccountFields.amount]: totalAmount || '',
       isTotalRow: true,
     } as const;
 

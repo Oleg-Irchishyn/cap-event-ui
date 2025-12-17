@@ -427,7 +427,7 @@ export const DuplicateRowButton = styled.button({
   },
 });
 
-export const DuplicateRowWrapper = styled.div({
+export const CellWrapper = styled.div({
   display: 'flex',
 });
 
@@ -445,10 +445,6 @@ export const PreviewButton = styled.button({
     backgroundSize: 'contain',
     cursor: 'default',
   },
-});
-
-export const PreviewWrapper = styled.div({
-  display: 'flex',
 });
 
 export const ModalWrapper = styled.div(({ theme }) => ({

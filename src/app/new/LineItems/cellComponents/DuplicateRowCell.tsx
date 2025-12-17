@@ -10,7 +10,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 
 import { LineItemTypes } from '../const';
-import { DuplicateRowButton, DuplicateRowWrapper } from '../styles';
+import { CellWrapper, DuplicateRowButton } from '../styles';
 
 const EXCLUDED_KEYS = ['id', 'fundGroupLineItemInheritanceId', 'isTotalRow'];
 
@@ -77,7 +77,7 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
   return (
     <>
       {shouldRender && (
-        <DuplicateRowWrapper
+        <CellWrapper
           ref={duplicateRowTooltipRef}
           onMouseEnter={onShowTooltip}
           onMouseLeave={onHideTooltip}
@@ -93,7 +93,7 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
             targetRef={duplicateRowTooltipRef}
             testId="duplicate-row-icon-tooltip"
           />
-        </DuplicateRowWrapper>
+        </CellWrapper>
       )}
     </>
   );

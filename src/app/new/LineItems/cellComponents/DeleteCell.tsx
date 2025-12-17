@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
 
 import { capEventSettingsStore } from '@/stores';
@@ -8,10 +8,15 @@ import { isRowEmpty } from '@/utils/isRowEmpty';
 import { isOtherRowEmpty } from '@/app/new/LineItems/utils';
 
 import { LineItemTypes } from '../const';
-import { DeleteButton } from '../styles';
+import { CellWrapper, DeleteButton } from '../styles';
 import { observer } from 'mobx-react-lite';
 
+import Tooltip from '@/app/components/Tooltip';
+
 const DeleteCell: FC<ICellRendererParams> = (props) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
   const { level, entityKey, isOtherTable } = props.colDef?.cellEditorParams ?? {};
 
   const isCurrentRowEmpty = isRowEmpty(props.data);
@@ -77,14 +82,34 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
 
   const shouldRender = !props.data.fundGroupLineItemInheritanceId && !props.data.isMfLineItem;
 
+  const isDisabled = isOtherTable ? isOtherDeleteDisabled : isDeleteDisabled();
+
+  const onShowTooltip = () => {
+    if (!isDisabled) {
+      setShowTooltip(true);
+    }
+  };
+
+  const onHideTooltip = () => {
+    setShowTooltip(false);
+  };
+
   return (
     <>
       {shouldRender && (
-        <DeleteButton
-          data-testid={prepareDataTestId('', 'delete-icon')}
-          data-is-disabled={isOtherTable ? isOtherDeleteDisabled : isDeleteDisabled()}
-          onClick={isOtherTable ? handleOtherCELIDelete : handleDeleteCELI}
-        />
+        <CellWrapper ref={tooltipRef} onMouseEnter={onShowTooltip} onMouseLeave={onHideTooltip}>
+          <DeleteButton
+            data-testid={prepareDataTestId('', 'delete-icon')}
+            data-is-disabled={isDisabled}
+            onClick={isOtherTable ? handleOtherCELIDelete : handleDeleteCELI}
+          />
+          <Tooltip
+            tooltipMessage={'Delete Row'}
+            showTooltip={showTooltip}
+            targetRef={tooltipRef}
+            testId={prepareDataTestId('delete-row-tooltip')}
+          />
+        </CellWrapper>
       )}
     </>
   );
