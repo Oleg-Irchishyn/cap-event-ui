@@ -34,7 +34,7 @@ describe('ConfirmationModal', () => {
   it('renders title and description when open', () => {
     renderWithTheme(
       <ConfirmationModal
-        title="Entity"
+        title="Entity Selection"
         isOpen
         description="Changing the selected Entity will affect the calculation and overwrite the data without possibility of reverting."
         secondaryDescription="To confirm the change, please click Proceed."

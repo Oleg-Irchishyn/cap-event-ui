@@ -43,7 +43,7 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
     <ModalWrapper>
       <ModalContainer ref={modalRef}>
         <ModalHeader>
-          <ModalTitle data-testid="confirmation-modal-title">{`${title} Selection`}</ModalTitle>
+          <ModalTitle data-testid="confirmation-modal-title">{title}</ModalTitle>
           <ModalCloseButton onClick={handleClose}>
             <CloseIcon />
           </ModalCloseButton>

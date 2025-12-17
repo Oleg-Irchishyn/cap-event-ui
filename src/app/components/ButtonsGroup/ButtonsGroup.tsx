@@ -193,7 +193,7 @@ const ButtonsGroup = () => {
         title="Unsaved Changes"
         isOpen={isConfirmationModalOpen}
         confirmText="Discard Changes"
-        description="Unsaved Changes detected. Do you want to discard changes?"
+        description="Unsaved changes detected. Do you want to discard changes?"
         handleClose={() => setIsConfirmationModalOpen(false)}
         handleProceed={handleCancelChanges}
       />

@@ -485,7 +485,7 @@ const GeneralSettings = () => {
         />
       </DropdownWrapper>
       <ConfirmationModal
-        title={modal.title}
+        title={`${modal.title} Selection`}
         isOpen={modal.isOpen}
         handleClose={modal.handleClose}
         handleProceed={modal.handleProceed}
