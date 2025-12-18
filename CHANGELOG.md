@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.71](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.70&targetVersion=GTv0.0.71) (2025-12-18)
+
+
+### Bug Fixes
+
+* [Issue-8943]: [FE] It's possible to delete inherited CELI on Entity level ([e62ddc9](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e62ddc9e8ed2f4b23847c5f2f779f5f94cbc0249)), closes [#8943](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8943)
+* Confirmation modal on Cancel ([4024f3e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4024f3e08e24aae4ae015f666d7b80bf6a0369f9)), closes [#8982](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8982)
+* ui fixes ([a338a8a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a338a8a0f79cfb10ab540dec3c3778fb28a3f3cd)), closes [#9023](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9023)
+
 ### [0.0.70](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.69&targetVersion=GTv0.0.70) (2025-12-17)
 
 
