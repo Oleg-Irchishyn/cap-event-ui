@@ -10,5 +10,6 @@ export type Account = {
     callDistributionReason?: string;
     defaultDescription?: string;
     insideCommitment?: string;
+    fsLineItem?: string;
 };
 

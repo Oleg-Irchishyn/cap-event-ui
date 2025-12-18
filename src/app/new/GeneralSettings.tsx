@@ -137,10 +137,6 @@ const GeneralSettings = () => {
     }
   };
 
-  const initFetch = useCallback(async () => {
-    await Promise.all([getEventTypes(), getSponsors()]);
-  }, []);
-
   const updateFundEntities = async (id: string) => {
     try {
       setIsLoadingFundEntities(true);
@@ -172,12 +168,20 @@ const GeneralSettings = () => {
     }
   };
 
+  const initFetch = useCallback(async () => {
+    await Promise.all([getEventTypes(), getSponsors()]);
+  }, []);
+
   useEffect(() => {
     const load = async () => {
       await initFetch();
 
       if (!capEventSettingsStore.investments.length) {
-        await capEventSettingsStore.fetchInvestments();
+        capEventSettingsStore.fetchInvestments();
+      }
+
+      if (!capEventSettingsStore.allocationBasis.length) {
+        capEventSettingsStore.fetchAllocationBasis();
       }
 
       capEventSettingsStore.setInitialStateSnapshot();

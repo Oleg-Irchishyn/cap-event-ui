@@ -41,7 +41,7 @@ import { CapEventPackageApi } from '@/api';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Entity } from '@/clients/ReferenceData';
 import { formatDate } from '@/utils/formatDate';
-import { COMMITMENT_OPTION } from '@/const/allocationBasisOptions';
+import { ALLOCATION_BASIS_IDS } from '@/const/allocationBasisOptions';
 import { useToast } from '@/providers/ToastProvider';
 import { ApiError } from '@/clients/CapEventPackage';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
@@ -117,6 +117,10 @@ const AccountsTable: FC<Props> = ({
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const sessionId = getStoredSessionId() ?? '';
 
+  const commitmentName = capEventSettingsStore.allocationBasis.find(
+    (item) => item.allocationId === ALLOCATION_BASIS_IDS.COMMITMENT,
+  )?.allocationName;
+
   const editableCallback = useCallback(
     (params: EditableCallbackParams, requireEdit?: boolean) => {
       if (params.data?.isTotalRow) return false;
@@ -151,7 +155,7 @@ const AccountsTable: FC<Props> = ({
           params.colDef.field === AccountFields.insideCommitment ||
           params.colDef.field === AccountFields.investment ||
           (params.colDef.field === AccountFields.amount &&
-            params.data.allocationBasis === COMMITMENT_OPTION)
+            params.data.allocationBasis === commitmentName)
         ) {
           return false;
         }
@@ -465,7 +469,7 @@ const AccountsTable: FC<Props> = ({
     });
 
     const commitmentFundGroups = capEventSettingsStore.fundGroupsLineItem.filter(
-      (item) => item.allocationBasis === COMMITMENT_OPTION,
+      (item) => item.allocationBasis === commitmentName,
     );
 
     try {
@@ -505,7 +509,7 @@ const AccountsTable: FC<Props> = ({
 
       const allocatedEntitiesAmount = await entitiesAllocatedAmount(selectedEntities);
       const commitmentFundGroups = capEventSettingsStore.fundGroupsLineItem.filter(
-        (item) => item.allocationBasis === COMMITMENT_OPTION,
+        (item) => item.allocationBasis === commitmentName,
       );
       const commitmentAllocations =
         commitmentFundGroups.map((fgItem, idx) => ({
@@ -532,7 +536,7 @@ const AccountsTable: FC<Props> = ({
 
             const getEntityAmount = () => {
               if (fgLineItem.allocationBasis === USER_PROVIDED_OPTION) return relatedRowAmount;
-              if (fgLineItem.allocationBasis === COMMITMENT_OPTION)
+              if (fgLineItem.allocationBasis === commitmentName)
                 return allocatedAmount ?? fgLineItem.amount;
               return fgLineItem.amount;
             };

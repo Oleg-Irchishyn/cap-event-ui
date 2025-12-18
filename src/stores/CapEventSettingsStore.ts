@@ -1,10 +1,10 @@
-import { makeAutoObservable, toJS, flow } from 'mobx';
+import { makeAutoObservable, toJS } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
 import type { DragNDropError } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
-import { Account, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
+import { Account, AllocationBasis, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
@@ -41,6 +41,7 @@ class CapEventSettingsStore {
   otherEntitiesLineItem = new Map<string, LineItemRow[]>();
   accounts: Account[] = [];
   otherTableAccounts: Account[] = [];
+  allocationBasis: AllocationBasis[] = [];
   investments: Investment[] = [];
   areInvestmentsLoading: boolean = false;
   // user inputs in line item table dropdown
@@ -117,6 +118,17 @@ class CapEventSettingsStore {
 
   setOtherTableAccounts(accounts: Account[]) {
     this.otherTableAccounts = accounts;
+  }
+
+  *fetchAllocationBasis() {
+    try {
+      const sessionId = getStoredSessionId() ?? '';
+      this.allocationBasis = yield ReferenceDataApi.allocationBases.getAllocationBases(sessionId);
+    } catch (error) {
+      showErrorToast(error);
+      console.error(error);
+      this.allocationBasis = [];
+    }
   }
 
   *fetchMgmtJournalEntries(entityIds: string[]) {
@@ -223,7 +235,7 @@ class CapEventSettingsStore {
     }
   }
 
-  fetchInvestments = flow(function* (this: CapEventSettingsStore) {
+  *fetchInvestments() {
     try {
       const sessionId = getStoredSessionId() ?? '';
       this.areInvestmentsLoading = true;
@@ -235,7 +247,7 @@ class CapEventSettingsStore {
     } finally {
       this.areInvestmentsLoading = false;
     }
-  });
+  }
 
   setEventTypes(types: DropdownItemType[]) {
     this.eventTypes = types;

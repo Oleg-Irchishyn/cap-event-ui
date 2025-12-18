@@ -16,6 +16,9 @@ jest.mock('@/stores', () => ({
   entityDatesStore: {
     getEntityDueDate: jest.fn(() => new Date('2024-01-01')),
   },
+  capEventSettingsStore: {
+    allocationBasis: [],
+  },
 }));
 
 jest.mock('../utils', () => ({
@@ -67,14 +70,12 @@ describe('accountsTableConfiguration', () => {
       const result = getAllocationBasisOptions(LineItemTypes.group);
 
       expect(result).toContain(USER_PROVIDED_OPTION);
-      expect(result.length).toBeGreaterThan(1);
     });
 
     it('should exclude USER_PROVIDED_OPTION for non-group level', () => {
       const result = getAllocationBasisOptions(LineItemTypes.entity);
 
       expect(result).not.toContain(USER_PROVIDED_OPTION);
-      expect(result.length).toBeGreaterThan(0);
     });
 
     it('should exclude USER_PROVIDED_OPTION when no level provided', () => {

@@ -6,13 +6,13 @@ import { theme } from '@/ui/globalStyles';
 import AccountsTable from '../AccountsTable';
 import { capEventSettingsStore } from '@/stores';
 import { ICellRendererParams } from 'ag-grid-community';
-import { COMMITMENT_OPTION } from '@/const/allocationBasisOptions';
 
 let __inheritedAllocationBasis: string | undefined;
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
     accounts: [],
+    allocationBasis: [{ allocationId: 'DS-CMNT', allocationName: 'Commitment' }],
     isFundGroupLineItemsFilled: true,
     isFundGroupLineItemsChanged: true,
     fundGroupsLineItem: [],
@@ -289,7 +289,7 @@ describe('AccountsTable', () => {
 
       const { capEventSettingsStore: store, entityDatesStore } = jest.requireMock('@/stores');
 
-      store.fundGroupsLineItem = [{ id: 'fg-1', allocationBasis: COMMITMENT_OPTION, amount: 100 }];
+      store.fundGroupsLineItem = [{ id: 'fg-1', allocationBasis: 'Commitment', amount: 100 }];
 
       store.fundEntities = [{ id: 'e-1', label: 'Entity 1', state: 'S' }];
 
@@ -356,8 +356,8 @@ describe('AccountsTable', () => {
       const { CapEventPackageApi } = jest.requireMock('@/api');
 
       store.fundGroupsLineItem = [
-        { id: 'fg-1', allocationBasis: COMMITMENT_OPTION, amount: 9000 },
-        { id: 'fg-2', allocationBasis: COMMITMENT_OPTION, amount: 4000 },
+        { id: 'fg-1', allocationBasis: 'Commitment', amount: 9000 },
+        { id: 'fg-2', allocationBasis: 'Commitment', amount: 4000 },
       ];
 
       store.fundEntities = [
@@ -478,7 +478,7 @@ describe('AccountsTable', () => {
   });
   describe('Amount editability on inherited rows for Commitment basis', () => {
     it('disables Amount for inherited rows when allocation basis is Commitment', () => {
-      __inheritedAllocationBasis = COMMITMENT_OPTION;
+      __inheritedAllocationBasis = 'Commitment';
 
       renderWithTheme(<AccountsTable {...defaultProps} />);
 

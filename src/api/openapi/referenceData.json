@@ -239,7 +239,13 @@
                         "dueDateType": "Business Days",
                         "mfBasisDateDefault": "Beginning of Period",
                         "mfBasis": "10123",
-                        "mfPercent": "0.02"
+                        "mfPercent": "0.02",
+                        "allocationBasis": {
+                          "allocationId": "DS-CMNT",
+                          "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        }
                       },
                       {
                         "id": "F002",
@@ -249,7 +255,13 @@
                         "mfBasisDateDefault": "Beginning of Period",
                         "mfBasis": "1234",
                         "mfPercent": "0.01",
-                        "yearFractionApproach": "90/360"
+                        "yearFractionApproach": "90/360",
+                        "allocationBasis": {
+                          "allocationId": "DS-CMNT",
+                          "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        }
                       }
                     ]
                   }
@@ -1064,6 +1076,15 @@
             "description": "Batch number to filter journal entry line items"
           },
           {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry line items"
+          },
+          {
             "name": "state",
             "in": "query",
             "required": true,
@@ -1450,6 +1471,15 @@
             "description": "Account key to filter journal entry"
           },
           {
+            "name": "allocationBasis",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis to filter journal entry"
+          },
+          {
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
@@ -1574,6 +1604,87 @@
                   "details": "null",
                   "timestamp": "2025-08-20T11:13:13.012739700Z",
                   "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/allocation-bases": {
+      "get": {
+        "summary": "Retrieve list of AllocationBasis",
+        "operationId": "getAllocationBases",
+        "tags": [
+          "AllocationBases"
+        ],
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of AllocationBasis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllocationBasis"
+                  }
+                },
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "allocationId": "DS-CMNT",
+                        "allocationName": "Commitment",
+                        "type": "dynamic",
+                        "allocationBasisStatus": "Active"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -1748,6 +1859,9 @@
           },
           "insideCommitment": {
             "type": "string"
+          },
+          "fsLineItem": {
+            "type": "string"
           }
         }
       },
@@ -1838,23 +1952,34 @@
           }
         }
       },
+      "AllocationBasisStatus": {
+        "type": "string",
+        "enum": [
+          "Active",
+          "Inactive"
+        ]
+      },
       "AllocationBasis": {
         "type": "object",
         "properties": {
-          "id": {
+          "allocationId": {
             "type": "string"
           },
-          "name": {
+          "allocationName": {
             "type": "string"
           },
           "type": {
             "type": "string"
+          },
+          "allocationBasisStatus": {
+            "$ref": "#/components/schemas/AllocationBasisStatus"
           }
         },
         "example": {
-          "id": "DS-CMNT",
-          "name": "Commitment",
-          "type": "dynamic"
+          "allocationId": "DS-CMNT",
+          "allocationName": "Commitment",
+          "type": "dynamic",
+          "allocationBasisStatus": "Active"
         }
       },
       "ErrorResponse": {

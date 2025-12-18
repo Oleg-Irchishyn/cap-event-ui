@@ -112,6 +112,8 @@ jest.mock('@/stores', () => {
     setEntitiesDropdownOpen: jest.fn(),
     fetchInvestments: jest.fn(),
     investments: [],
+    allocationBasis: [],
+    fetchAllocationBasis: jest.fn(),
     setInitialStateSnapshot: jest.fn(),
   };
   const entityDatesStore = {

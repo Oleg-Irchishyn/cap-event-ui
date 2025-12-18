@@ -30,11 +30,11 @@ import {
   getKeyValuesByAccountName,
   getReasons,
 } from '@/app/new/LineItems/utils';
-import { entityDatesStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { TableHeaderWithTooltip } from '@/app/components/TableHeaderWithTooltip/TableHeaderWithTooltip';
 import { TextInputCell } from '@/app/new/LineItems/cellComponents/TextInputCell';
 import DeleteCell from '@/app/new/LineItems/cellComponents/DeleteCell';
-import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
+import { ALLOCATION_BASIS_IDS } from '@/const/allocationBasisOptions';
 
 type ColumnDefProp = {
   accounts: Account[];
@@ -49,7 +49,11 @@ export const getCategories = (accounts: Account[]) => {
 };
 
 export const getAllocationBasisOptions = (level?: string) => {
-  return [USER_PROVIDED_OPTION, ...Object.keys(ALLOCATION_BASIS_DEFAULT_OPTIONS)].filter((item) => {
+  const allocationBasisToShow = capEventSettingsStore.allocationBasis
+    .filter((item) => item.allocationId !== ALLOCATION_BASIS_IDS.NON_DOMINANT)
+    .map((item) => item.allocationName);
+
+  return [USER_PROVIDED_OPTION, ...allocationBasisToShow].filter((item) => {
     if (level === LineItemTypes.group) {
       return true;
     }

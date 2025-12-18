@@ -14,7 +14,6 @@ import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { observer } from 'mobx-react-lite';
 import { CapEventPackageApi } from '@/api';
 import { getValidDate } from '@/utils/getValidDate';
-import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 import { AllocationInput } from '@/clients/CapEventPackage';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
@@ -70,7 +69,7 @@ const AllocationPreviewModal: FC = () => {
             const requestBody: AllocationInput = {
               entityId: entityKey.split(' - ')[0],
               dueDate: dueDate || '',
-              allocationBasis: ALLOCATION_BASIS_DEFAULT_OPTIONS[previewEntityData.allocationBasis],
+              allocationBasis: previewEntityData.allocationBasis,
               accountNo:
                 previewEntityData.accountNo ??
                 capEventSettingsStore.accounts.find(

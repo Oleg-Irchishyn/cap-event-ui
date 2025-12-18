@@ -30,7 +30,6 @@ import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import RootStore from '@/stores/RootStore';
-import { ALLOCATION_BASIS_DEFAULT_OPTIONS } from '@/const/allocationBasisOptions';
 
 class PreviewScreenStore {
   root: RootStore;
@@ -182,19 +181,6 @@ class PreviewScreenStore {
     });
   }
 
-  private mapAllocationBasisToProcessPayload(value: string | undefined): string {
-    const inputValue = (value ?? '').toString().trim();
-    if (!inputValue) return '';
-    const allocationBasisLabel = ALLOCATION_BASIS_DEFAULT_OPTIONS[inputValue];
-    if (allocationBasisLabel) return allocationBasisLabel;
-    const allocationBasisValues = Object.values(ALLOCATION_BASIS_DEFAULT_OPTIONS).map((c) =>
-      String(c).toLowerCase(),
-    );
-    const inputValueLowerCase = inputValue.toLowerCase();
-    if (allocationBasisValues.includes(inputValueLowerCase)) return inputValueLowerCase;
-    return inputValue;
-  }
-
   private mapLineItemBase(
     row: LineItemRow,
     accounts: RefAccount[],
@@ -224,9 +210,7 @@ class PreviewScreenStore {
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;
     const investment = this.findInvestment(row, investments) as ApiInvestment | undefined;
-    const allocationBasis = row.isMfLineItem
-      ? row.allocationBasis
-      : this.mapAllocationBasisToProcessPayload(row.allocationBasis);
+    const allocationBasis = row.allocationBasis;
     const amount = row.amount;
     return { account, investment, allocationBasis, amount };
   }

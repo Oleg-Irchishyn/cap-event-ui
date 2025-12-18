@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AllocationBasisStatus } from './AllocationBasisStatus';
 export type AllocationBasis = {
-    id?: string;
-    name?: string;
+    allocationId?: string;
+    allocationName?: string;
     type?: string;
+    allocationBasisStatus?: AllocationBasisStatus;
 };
 

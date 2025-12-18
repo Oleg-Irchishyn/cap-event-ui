@@ -42,13 +42,6 @@ jest.mock('@/app/new/LineItems/AllocationPreviewTable', () => {
   };
 });
 
-jest.mock('@/const/allocationBasisOptions', () => ({
-  ALLOCATION_BASIS_DEFAULT_OPTIONS: {
-    commitment: 'Commitment',
-    nav: 'NAV',
-  },
-}));
-
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 };
@@ -132,7 +125,7 @@ describe('AllocationPreviewModal', () => {
           {
             id: 'E1',
             isMfLineItem: false,
-            allocationBasis: 'commitment',
+            allocationBasis: 'Commitment',
             accountNo: 'ACCT-9',
             amount: 5000,
             investment: { id: 'INV1' },

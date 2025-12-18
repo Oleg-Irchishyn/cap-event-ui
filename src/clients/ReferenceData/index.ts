@@ -12,6 +12,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Account } from './models/Account';
 export type { AllocationBasis } from './models/AllocationBasis';
+export { AllocationBasisStatus } from './models/AllocationBasisStatus';
 export type { Entity } from './models/Entity';
 export { ErrorResponse } from './models/ErrorResponse';
 export type { FundGroup } from './models/FundGroup';
@@ -22,6 +23,7 @@ export type { QueryResults } from './models/QueryResults';
 export { Sponsor } from './models/Sponsor';
 
 export { AccountsService } from './services/AccountsService';
+export { AllocationBasesService } from './services/AllocationBasesService';
 export { EntitiesService } from './services/EntitiesService';
 export { FundGroupsService } from './services/FundGroupsService';
 export { InvestmentsService } from './services/InvestmentsService';

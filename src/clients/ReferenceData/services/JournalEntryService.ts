@@ -43,6 +43,7 @@ export class JournalEntryService {
     /**
      * Get management fee journal entry line items
      * @param batchNo Batch number to filter journal entry line items
+     * @param entityId Entity ID to filter journal entry line items
      * @param state State to filter journal entry line items
      * @param calledFlag Called flag to filter journal entry line items
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
@@ -52,6 +53,7 @@ export class JournalEntryService {
      */
     public getMgmtFeeGlLineItems(
         batchNo: number,
+        entityId: string,
         state: string,
         calledFlag: string,
         sessionId: string,
@@ -65,6 +67,7 @@ export class JournalEntryService {
             },
             query: {
                 'batchNo': batchNo,
+                'entityId': entityId,
                 'state': state,
                 'calledFlag': calledFlag,
                 'fsLineItems': fsLineItems,
@@ -113,6 +116,7 @@ export class JournalEntryService {
      * Get journal entries by parameters
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
+     * @param allocationBasis Allocation basis to filter journal entry
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns JournalEntry List of journal entries
      * @throws ApiError
@@ -120,6 +124,7 @@ export class JournalEntryService {
     public getJournalEntries(
         batchNo: number,
         accountKey: string,
+        allocationBasis: string,
         sessionId: string,
     ): CancelablePromise<Array<JournalEntry>> {
         return this.httpRequest.request({
@@ -131,6 +136,7 @@ export class JournalEntryService {
             query: {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
+                'allocationBasis': allocationBasis,
             },
             errors: {
                 400: `Bad request`,

@@ -13,6 +13,7 @@ jest.mock('@/stores', () => ({
     eventTypes: [],
     templates: [],
     fundGroups: [],
+    allocationBasis: [],
     isEntitiesDropdownOpen: false,
     isNoticeDateValid: true,
     setEntitiesLineItem: jest.fn(),

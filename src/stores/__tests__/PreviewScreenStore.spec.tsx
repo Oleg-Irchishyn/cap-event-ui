@@ -407,18 +407,4 @@ describe('PreviewScreenStore', () => {
     expect(toast.error).toHaveBeenCalledWith('Bad request');
     expect(result).toBeUndefined();
   });
-
-  it('mapAllocationBasisToProcessPayload maps labels and codes correctly', async () => {
-    const map = (store as unknown as { mapAllocationBasisToProcessPayload: (v?: string) => string })
-      .mapAllocationBasisToProcessPayload as (v?: string) => string;
-    expect(map('Commitment')).toBe('commitment');
-    expect(map('Contribution Deal')).toBe('contribution');
-    expect(map('Contribution All')).toBe('contributionall');
-    expect(map('Unfunded')).toBe('unfunded');
-    expect(map('COMMITMENT')).toBe('commitment');
-    expect(map('ConTrIbUtIoN')).toBe('contribution');
-    expect(map('')).toBe('');
-    expect(map(undefined)).toBe('');
-    expect(map('Some Custom Basis')).toBe('Some Custom Basis');
-  });
 });
