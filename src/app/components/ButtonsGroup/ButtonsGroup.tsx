@@ -55,6 +55,7 @@ const ButtonsGroup = () => {
     capEventSettingsStore.cancelChanges();
     entityDatesStore.cancelChanges();
     entityDatesStore.clearGeneralNoticeDate();
+    capEventSettingsStore.resetMfState();
     setIsConfirmationModalOpen(false);
     router.push(ROUTES.MAIN.path);
   };

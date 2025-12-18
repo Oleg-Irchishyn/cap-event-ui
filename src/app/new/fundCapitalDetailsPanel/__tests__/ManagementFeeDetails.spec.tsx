@@ -84,7 +84,6 @@ jest.mock('@/stores', () => {
       getIncludeMFOption: jest.fn(getIncludeMFOption),
       setSelectedMFItemBatchNo: jest.fn(setSelectedMFItemBatchNo),
       setIncludeMFOption: jest.fn(setIncludeMFOption),
-      // Expose state for test access
       _testState: state,
     },
     entityDatesStore: {
@@ -117,7 +116,6 @@ describe('ManagementFeeDetails', () => {
     mockStore.selectedMFItemBatchNo = {};
     mockStore.includeMFOption = {};
 
-    // Ensure mocks always read from current state
     (mockStore.getSelectedMFItemBatchNo as jest.Mock).mockImplementation(
       (entityId: string) => mockStore.selectedMFItemBatchNo[entityId] ?? null,
     );
@@ -147,7 +145,6 @@ describe('ManagementFeeDetails', () => {
   });
 
   it('clears MF selection and removes MF line items when changed from "Yes" to "No"', async () => {
-    // Setup: Start with "Yes" selected and an MF item selected
     mockStore.includeMFOption['entity-1'] = 'Yes';
     mockStore.selectedMFItemBatchNo['entity-1'] = 123;
     mockStore.entitiesLineItem.set('entity-1', [
@@ -157,7 +154,6 @@ describe('ManagementFeeDetails', () => {
 
     renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
 
-    // Change to "No"
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[0]);
     const noOption = await waitFor(() => screen.getByText('No'));
@@ -165,12 +161,10 @@ describe('ManagementFeeDetails', () => {
       fireEvent.click(noOption);
     });
 
-    // Verify MF selection was cleared
     await waitFor(() => {
       expect(mockStore.setSelectedMFItemBatchNo).toHaveBeenCalledWith('entity-1', null);
     });
 
-    // Verify MF line items were removed
     await waitFor(() => {
       expect(mockStore.setEntitiesLineItem).toHaveBeenCalledWith(
         'entity-1',
@@ -181,5 +175,91 @@ describe('ManagementFeeDetails', () => {
     const callArgs = (mockStore.setEntitiesLineItem as jest.Mock).mock.calls[0];
     const filteredItems = callArgs[1];
     expect(filteredItems.find((item: LineItemRow) => item?.isMfLineItem)).toBeUndefined();
+  });
+
+  it('fetches and appends prepared MF rows on selecting an MF batch', async () => {
+    mockStore.includeMFOption['entity-1'] = 'Yes';
+    mockStore.entitiesLineItem.set('entity-1', []);
+
+    mockApi.mockResolvedValueOnce([
+      {
+        id: 'mf-1',
+        prDate: '2025-01-15',
+        prFlag: true,
+        account: {
+          accountNo: '6000',
+          category: 'Mgmt Fee',
+          reason: 'Management Fee',
+          description: 'Mgmt Fee Accrual',
+          insideCmnt: true,
+        },
+        investment: { id: 'inv-1', name: 'INV 1' },
+        originAccountKey: 'key-1',
+      },
+      {
+        id: 'mf-2',
+        prDate: '2025-02-15',
+        prFlag: false,
+        account: {
+          accountNo: '6001',
+          category: 'Mgmt Fee',
+          reason: 'Management Fee',
+          description: 'Mgmt Fee Accrual 2',
+          insideCmnt: false,
+        },
+        investment: { id: 'inv-2', name: 'INV 2' },
+        originAccountKey: 'key-2',
+      },
+    ]);
+
+    renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
+
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.click(buttons[1]);
+
+    const firstEntry = await waitFor(() => screen.getByText('Description: Q1 Management Fee'));
+    await act(async () => {
+      fireEvent.click(firstEntry);
+    });
+
+    await waitFor(() => {
+      expect(mockStore.setSelectedMFItemBatchNo).toHaveBeenCalledWith('entity-1', 123);
+    });
+
+    await waitFor(() => {
+      expect(mockStore.setEntitiesLineItem).toHaveBeenCalledWith(
+        'entity-1',
+        expect.arrayContaining([expect.objectContaining({ isMfLineItem: true })]),
+      );
+    });
+
+    const [, setItemsArg] = (mockStore.setEntitiesLineItem as jest.Mock).mock.calls.pop();
+    expect(setItemsArg.every((r: LineItemRow) => r.isMfLineItem === true)).toBe(true);
+    expect(setItemsArg.length).toBe(2);
+  });
+
+  it('creates a new empty row when clearing MF selection and no non-MF rows remain', async () => {
+    mockStore.includeMFOption['entity-1'] = 'Yes';
+    mockStore.selectedMFItemBatchNo['entity-1'] = 456;
+    mockStore.entitiesLineItem.set('entity-1', [
+      { id: 'mf-x', isMfLineItem: true },
+    ] as LineItemRow[]);
+
+    renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
+
+    const buttons = screen.getAllByRole('button');
+    fireEvent.click(buttons[0]);
+    const noOption = await waitFor(() => screen.getByText('No'));
+    await act(async () => {
+      fireEvent.click(noOption);
+    });
+
+    await waitFor(() => {
+      expect(mockStore.setEntitiesLineItem).toHaveBeenCalledWith(
+        'entity-1',
+        expect.arrayContaining([expect.objectContaining({ id: 'new-row-id' })]),
+      );
+    });
   });
 });

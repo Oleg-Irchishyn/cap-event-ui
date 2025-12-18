@@ -14,6 +14,7 @@ import { isFundGroupRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { showErrorToast } from '@/utils/showErrorToast';
 import RootStore from '@/stores/RootStore';
+import { isRowEmpty } from '@/utils/isRowEmpty';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -97,6 +98,8 @@ class CapEventSettingsStore {
       footnotes: this.footnotes,
       comment: this.comment,
       mgmtJournalEntries: this.mgmtJournalEntries,
+      selectedMFItemBatchNo: this.selectedMFItemBatchNo,
+      includeMFOption: this.includeMFOption,
     };
   }
 
@@ -104,6 +107,11 @@ class CapEventSettingsStore {
     const snap = toJS(this.collectFields());
 
     this.initialStateSnapshot = snap;
+  }
+
+  resetMfState() {
+    this.selectedMFItemBatchNo = {};
+    this.includeMFOption = {};
   }
 
   cancelChanges() {
@@ -337,13 +345,13 @@ class CapEventSettingsStore {
 
     if (entitiesLineItems) {
       for (let i = 0; i < entitiesLineItems?.length; i++) {
-        if (!entitiesLineItems[i].fundGroupLineItemInheritanceId) {
+        if (
+          !entitiesLineItems[i].fundGroupLineItemInheritanceId &&
+          !isRowEmpty(entitiesLineItems[i])
+        ) {
           entityManualItems.push(entitiesLineItems[i]);
         }
       }
-    } else {
-      // push empty row if entities line items not exist
-      entityManualItems.push(prepareNewRow(LineItemTypes.entity));
     }
 
     this.entitiesLineItem.set(key, [...data, ...entityManualItems]);

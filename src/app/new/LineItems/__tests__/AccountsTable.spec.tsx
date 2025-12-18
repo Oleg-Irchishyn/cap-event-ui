@@ -326,6 +326,28 @@ describe('AccountsTable', () => {
         ),
       );
     });
+
+    it('ensures a single empty row is set when no inherited line items exist', async () => {
+      const props = {
+        ...defaultProps,
+        level: 'group',
+      };
+
+      const { capEventSettingsStore: store } = jest.requireMock('@/stores');
+      store.fundGroupsLineItem = [{} as unknown as Record<string, unknown>];
+      store.fundEntities = [{ id: 'e-1', label: 'Entity A', state: 'S' }];
+
+      renderWithTheme(<AccountsTable {...props} />);
+
+      const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
+      fireEvent.click(applyButton);
+
+      await waitFor(() => expect(store.setEntitiesLineItem).toHaveBeenCalledTimes(1));
+      const call = (store.setEntitiesLineItem as jest.Mock).mock.calls[0];
+      expect(call[0]).toBe('Entity A');
+      expect(Array.isArray(call[1])).toBe(true);
+      expect(call[1]).toHaveLength(1);
+    });
   });
 
   describe('Cell value changes', () => {

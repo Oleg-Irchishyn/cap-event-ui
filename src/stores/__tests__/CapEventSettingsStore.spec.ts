@@ -778,4 +778,82 @@ describe('CapEventSettingsStore', () => {
       expect(Array.isArray(restoredInputs)).toBe(true);
     });
   });
+
+  describe('MF state helpers', () => {
+    it('resetMfState should clear selectedMFItemBatchNo and includeMFOption', () => {
+      store.selectedMFItemBatchNo = { 'E-1': 123, 'E-2': 456 };
+      store.includeMFOption = { 'E-1': 'Yes', 'E-2': 'No' } as Record<string, 'Yes' | 'No'>;
+
+      store.resetMfState();
+
+      expect(store.selectedMFItemBatchNo).toEqual({});
+      expect(store.includeMFOption).toEqual({});
+    });
+
+    it('collectFields should include selectedMFItemBatchNo and includeMFOption references', () => {
+      store.selectedMFItemBatchNo = { 'E-1': 789 };
+      store.includeMFOption = { 'E-1': 'Yes' } as Record<string, 'Yes' | 'No'>;
+
+      const collected = store.collectFields();
+
+      expect(collected).toHaveProperty('selectedMFItemBatchNo');
+      expect(collected).toHaveProperty('includeMFOption');
+      expect(collected.selectedMFItemBatchNo).toBe(store.selectedMFItemBatchNo);
+      expect(collected.includeMFOption).toBe(store.includeMFOption);
+      expect(collected.selectedMFItemBatchNo['E-1']).toBe(789);
+      expect(collected.includeMFOption['E-1']).toBe('Yes');
+    });
+  });
+
+  describe('setEntitiesLineItem with apply flag', () => {
+    it('appends only non-empty manual rows (excludes inherited and empty rows)', () => {
+      const key = 'Entity A';
+
+      const existing: LineItemRow[] = [
+        {
+          id: 'manual-non-empty',
+          amount: 100,
+          capitalCategory: 'Cont - Other',
+          callDistributionReason: 'Other',
+          defaultDescription: 'Desc',
+          insideCommitment: 'Yes',
+          investment: { id: 'INV1', name: 'INV 1' } as unknown as string,
+          allocationBasis: 'Commitment',
+        } as unknown as LineItemRow,
+        {
+          id: 'manual-empty',
+          amount: 0,
+          capitalCategory: '',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+          investment: { id: '' } as unknown as string,
+          allocationBasis: '',
+        } as unknown as LineItemRow,
+        {
+          id: 'inherited-row',
+          amount: 50,
+          capitalCategory: 'Cont - Other',
+          callDistributionReason: 'Other',
+          defaultDescription: 'Inherited',
+          insideCommitment: 'Yes',
+          investment: { id: 'INV2', name: 'INV 2' } as unknown as string,
+          allocationBasis: 'Commitment',
+          fundGroupLineItemInheritanceId: 'fg-1',
+        } as unknown as LineItemRow,
+      ];
+
+      store.entitiesLineItem.set(key, existing);
+
+      const applied: LineItemRow[] = [
+        { id: 'applied-1', amount: 10 } as unknown as LineItemRow,
+        { id: 'applied-2', amount: 20 } as unknown as LineItemRow,
+      ];
+
+      store.setEntitiesLineItem(key, applied, true);
+
+      const result = store.entitiesLineItem.get(key) as LineItemRow[];
+      expect(result.map((r) => r.id)).toEqual(['applied-1', 'applied-2', 'manual-non-empty']);
+    });
+  });
 });

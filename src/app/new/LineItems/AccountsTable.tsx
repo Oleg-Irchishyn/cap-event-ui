@@ -522,8 +522,10 @@ const AccountsTable: FC<Props> = ({
           capEventSettingsStore.fundGroupsLineItem.length === 1 &&
           isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
         ) {
-          // should not pass any value for case when no inherited line items applied
-          capEventSettingsStore.setEntitiesLineItem(entity.label, [], true);
+          // No inherited line items to apply -> ensure a single empty row is present
+          capEventSettingsStore.setEntitiesLineItem(entity.label, [
+            prepareNewRow(LineItemTypes.entity),
+          ]);
           return;
         }
 

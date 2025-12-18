@@ -13,6 +13,7 @@ import { CapEventPackageApi } from '@/api';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { LineItemTypes } from '@/app/new/LineItems/const';
+import { isRowEmpty } from '@/utils/isRowEmpty';
 
 const prepareMgmtEntryOptions = (
   mgmtOptions?: MgmtFeeJournalEntry[],
@@ -118,14 +119,10 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       const entityLineItemsWithoutMgmtFee =
         capEventSettingsStore.entitiesLineItem
           .get(entityLabel)
-          ?.filter((item) => !item.isMfLineItem) ?? [];
-
-      const entityToUse = entityLineItemsWithoutMgmtFee.length
-        ? entityLineItemsWithoutMgmtFee
-        : [prepareNewRow(LineItemTypes.entity)];
+          ?.filter((item) => !item.isMfLineItem && !isRowEmpty(item)) ?? [];
 
       capEventSettingsStore.setEntitiesLineItem(entityLabel, [
-        ...entityToUse,
+        ...entityLineItemsWithoutMgmtFee,
         ...prepareMgmtFeeLineItems(mgmtFeeLineItems, entityLabel),
       ]);
     } else {
@@ -134,7 +131,10 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
         capEventSettingsStore.entitiesLineItem.get(entityLabel) || []
       )?.filter((item) => !item.isMfLineItem);
 
-      capEventSettingsStore.setEntitiesLineItem(entityLabel, filteredLineItems);
+      const nextItems =
+        filteredLineItems.length > 0 ? filteredLineItems : [prepareNewRow(LineItemTypes.entity)];
+
+      capEventSettingsStore.setEntitiesLineItem(entityLabel, nextItems);
     }
   };
 

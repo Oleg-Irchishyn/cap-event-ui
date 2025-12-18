@@ -115,6 +115,7 @@ jest.mock('@/stores', () => {
     allocationBasis: [],
     fetchAllocationBasis: jest.fn(),
     setInitialStateSnapshot: jest.fn(),
+    resetMfState: jest.fn(),
   };
   const entityDatesStore = {
     noticeDate: null as Date | null,
@@ -126,6 +127,7 @@ jest.mock('@/stores', () => {
     updateEntityDatesFromGeneral: jest.fn(),
     resetAllDates: jest.fn(),
     setInitialStateSnapshot: jest.fn(),
+    resetMfState: jest.fn(),
   };
   return { capEventSettingsStore, entityDatesStore };
 });
