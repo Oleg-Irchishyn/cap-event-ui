@@ -156,6 +156,7 @@ const Tooltip: FC<TooltipProps> = ({
             color: 'black',
             fontSize: '14px',
             zIndex: 99999,
+            pointerEvents: 'none',
           }}
         >
           {tooltipMessage}

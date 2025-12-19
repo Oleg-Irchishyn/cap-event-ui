@@ -186,4 +186,33 @@ describe('DuplicateRowCell', () => {
     expect(inserted.defaultDescription).toBe(row1.defaultDescription);
     expect(inserted.insideCommitment).toBe(row1.insideCommitment);
   });
+
+  it('handles hover and click via wrapper to duplicate', () => {
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => true,
+    });
+
+    const row1 = { ...nonEmptyRow, id: 'row-1' };
+    const row2 = { ...nonEmptyRow, id: 'row-2' };
+    capEventSettingsStore.fundGroupsLineItem = [row1, row2] as unknown as LineItemRow[];
+
+    const props = {
+      data: row1,
+      colDef: { cellEditorParams: { level: LineItemTypes.group } },
+    } as unknown as ICellRendererParams;
+
+    render(<DuplicateRowCell {...props} />);
+
+    const tooltip = screen.getByTestId('duplicate-row-icon-tooltip');
+    const wrapper = screen.getByTestId('duplicate-row-icon-wrapper');
+
+    fireEvent.mouseEnter(wrapper);
+    expect(tooltip).toHaveAttribute('data-show-tooltip', 'true');
+
+    fireEvent.mouseLeave(wrapper);
+    expect(tooltip).toHaveAttribute('data-show-tooltip', 'false');
+
+    fireEvent.click(wrapper);
+    expect(capEventSettingsStore.setFundGroupsLineItem).toHaveBeenCalled();
+  });
 });

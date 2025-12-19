@@ -429,6 +429,9 @@ export const DuplicateRowButton = styled.button({
 
 export const CellWrapper = styled.div({
   display: 'flex',
+  padding: '10px 2px',
+  boxSizing: 'border-box',
+  cursor: 'pointer',
 });
 
 export const PreviewButton = styled.button({

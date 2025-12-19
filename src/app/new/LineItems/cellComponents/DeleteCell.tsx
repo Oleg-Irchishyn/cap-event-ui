@@ -97,11 +97,16 @@ const DeleteCell: FC<ICellRendererParams> = (props) => {
   return (
     <>
       {shouldRender && (
-        <CellWrapper ref={tooltipRef} onMouseEnter={onShowTooltip} onMouseLeave={onHideTooltip}>
+        <CellWrapper
+          ref={tooltipRef}
+          onClick={isOtherTable ? handleOtherCELIDelete : handleDeleteCELI}
+          onMouseEnter={onShowTooltip}
+          onMouseLeave={onHideTooltip}
+          data-testid={prepareDataTestId('', 'delete-icon-wrapper')}
+        >
           <DeleteButton
-            data-testid={prepareDataTestId('', 'delete-icon')}
             data-is-disabled={isDisabled}
-            onClick={isOtherTable ? handleOtherCELIDelete : handleDeleteCELI}
+            data-testid={prepareDataTestId('', 'delete-icon')}
           />
           <Tooltip
             tooltipMessage={'Delete Row'}

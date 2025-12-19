@@ -81,11 +81,12 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
           ref={duplicateRowTooltipRef}
           onMouseEnter={onShowTooltip}
           onMouseLeave={onHideTooltip}
+          onClick={handleDuplicateRowClick}
+          data-testid={prepareDataTestId('', 'duplicate-row-icon-wrapper')}
         >
           <DuplicateRowButton
-            data-testid={prepareDataTestId('', 'duplicate-row-icon')}
             data-is-disabled={isDuplicateRowDisabled}
-            onClick={handleDuplicateRowClick}
+            data-testid={prepareDataTestId('', 'duplicate-row-icon')}
           />
           <Tooltip
             tooltipMessage="Duplicate Row"

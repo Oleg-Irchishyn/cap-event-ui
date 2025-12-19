@@ -5,6 +5,12 @@ import DeleteCell from '../DeleteCell';
 import { ICellRendererParams } from 'ag-grid-community';
 import { LineItemTypes } from '@/app/new/LineItems/const';
 
+jest.mock('@/app/components/Tooltip', () => {
+  return function MockTooltip({ showTooltip, testId }: { showTooltip: boolean; testId: string }) {
+    return <div data-testid={testId} data-show-tooltip={showTooltip} />;
+  };
+});
+
 type Row = {
   id: string;
   amount: number;
@@ -98,6 +104,33 @@ describe('DeleteCell', () => {
 
     fireEvent.click(btn);
 
+    expect(capEventSettingsStore.setEntitiesLineItem).toHaveBeenCalledWith(entityKey, [row2]);
+  });
+
+  it('shows tooltip on hover and deletes on wrapper click when enabled', () => {
+    const row1 = { ...baseRow, id: 'r1' };
+    const row2 = { ...baseRow, id: 'r2' };
+    const entityKey = 'e1';
+
+    capEventSettingsStore.entitiesLineItem.set(entityKey, [row1, row2]);
+
+    const props = {
+      data: row1,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey } },
+    } as unknown as ICellRendererParams;
+
+    render(<DeleteCell {...props} />);
+
+    const tooltip = screen.getByTestId('delete-row-tooltip');
+    const wrapper = screen.getByTestId('delete-icon-wrapper');
+
+    fireEvent.mouseEnter(wrapper);
+    expect(tooltip).toHaveAttribute('data-show-tooltip', 'true');
+
+    fireEvent.mouseLeave(wrapper);
+    expect(tooltip).toHaveAttribute('data-show-tooltip', 'false');
+
+    fireEvent.click(wrapper);
     expect(capEventSettingsStore.setEntitiesLineItem).toHaveBeenCalledWith(entityKey, [row2]);
   });
 });

@@ -16,9 +16,14 @@ jest.mock('@/stores', () => ({
     getEntityDueDate: jest.fn(),
     getEntityDueDateInputValidity: jest.fn(),
   },
+  capEventSettingsStore: {
+    setAllocationPreviewModalEntityId: jest.fn(),
+    setAllocationPreviewModalTitle: jest.fn(),
+    setAllocationPreviewOpen: jest.fn(),
+  },
 }));
 
-import { entityDatesStore } from '@/stores';
+import { entityDatesStore, capEventSettingsStore } from '@/stores';
 
 const baseRow = {
   id: 'row-1',
@@ -120,5 +125,27 @@ describe('PreviewIconCell', () => {
     render(<PreviewIconCell {...props} />);
     const btn = screen.getByTestId('preview-icon');
     expect(btn).toHaveAttribute('data-is-disabled', 'true');
+  });
+
+  it('clicking wrapper opens Allocation Preview when enabled', () => {
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date());
+    (entityDatesStore.getEntityDueDateInputValidity as jest.Mock).mockReturnValue(true);
+    const entityKey = 'e1';
+
+    const props = {
+      data: baseRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity, entityKey } },
+    } as unknown as ICellRendererParams;
+
+    render(<PreviewIconCell {...props} />);
+
+    const wrapper = screen.getByTestId('preview-icon-wrapper');
+    fireEvent.click(wrapper);
+
+    expect(capEventSettingsStore.setAllocationPreviewModalEntityId).toHaveBeenCalledWith(
+      baseRow.id,
+    );
+    expect(capEventSettingsStore.setAllocationPreviewModalTitle).toHaveBeenCalledWith(entityKey);
+    expect(capEventSettingsStore.setAllocationPreviewOpen).toHaveBeenCalledWith(true);
   });
 });

@@ -46,11 +46,12 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
           ref={previewTooltipRef}
           onMouseEnter={onShowTooltip}
           onMouseLeave={onHideTooltip}
+          onClick={handlePreviewClick}
+          data-testid={prepareDataTestId('', 'preview-icon-wrapper')}
         >
           <PreviewButton
-            data-testid={prepareDataTestId('', 'preview-icon')}
             data-is-disabled={isPreviewDisabled}
-            onClick={handlePreviewClick}
+            data-testid={prepareDataTestId('', 'preview-icon')}
           />
           <Tooltip
             tooltipMessage={
