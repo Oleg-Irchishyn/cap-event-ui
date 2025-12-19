@@ -51,7 +51,7 @@ const Button: FC<ButtonProps> = (props) => {
       style={{
         position: 'relative',
         width,
-        display: 'inline-block',
+        display: `${style.display ?? 'inline-block'}`,
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

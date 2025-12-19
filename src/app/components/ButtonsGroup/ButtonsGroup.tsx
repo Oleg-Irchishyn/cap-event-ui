@@ -143,7 +143,6 @@ const ButtonsGroup = () => {
           </Button>
         </TitleContainer>
         <ButtonContainer>
-          {renderBackButton}
           <Button
             testId="cancel"
             disabled={isFormClean}
@@ -153,6 +152,7 @@ const ButtonsGroup = () => {
           >
             Cancel
           </Button>
+          {renderBackButton}
           <Button
             testId="footnotes"
             // temporary hide the footnotes button by adding style={{ display: 'none' }}
@@ -176,6 +176,7 @@ const ButtonsGroup = () => {
           </Button>
           <Button
             testId="save-draft"
+            style={{ display: 'none' }}
             disabled={isSaveDraftDisabled}
             width="auto"
             onClick={handleSaveDraft}
