@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.72](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.71&targetVersion=GTv0.0.72) (2025-12-19)
+
+
+### Features
+
+* add allocation-basis endpoint ([0d21e0a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0d21e0ad2a370e6505d0286a35d18e1485d81e3e)), closes [#8768](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8768)
+
+
+### Bug Fixes
+
+* [Issue-8947]: [FE] Wrong logic for empty CELI row on Entity level ([aef289e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/aef289ee4d3f9113e0bd3a9adec6396b9a6ebcdb)), closes [#8947](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8947)
+
 ### [0.0.71](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.70&targetVersion=GTv0.0.71) (2025-12-18)
 
 
