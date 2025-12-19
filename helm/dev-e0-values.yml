@@ -10,3 +10,4 @@ envVars:
   NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://dev-e0.gen2fund.com/cap-event-package
   NEXT_PUBLIC_BACKEND_API: https://dev-e0.gen2fund.com/api/cap-event
   BACKEND_HOST: https://dev-e0.gen2fund.com
+  NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: https://dev-e0.gen2fund.com/cap-event/auth/callback

@@ -31,9 +31,11 @@ container:
 envVars:
   SERVER_PORT: 3000
   NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://dev.gen2fund.com/cap-event-package
-  # TODO: update code to support this
   NEXT_PUBLIC_BACKEND_API: https://dev.gen2fund.com/api/cap-event
   BACKEND_HOST: https://dev.gen2fund.com
+  NEXT_PUBLIC_ONELOGIN_CLIENT_ID: f26ed950-bcc1-013e-a074-19254478a6a5234580
+  NEXT_PUBLIC_ONELOGIN_SUBDOMAIN: sandbox-gen2fund
+  NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: https://dev.gen2fund.com/cap-event/auth/callback
 
 # Use this to configure hostname for Ingress
 ingress:
