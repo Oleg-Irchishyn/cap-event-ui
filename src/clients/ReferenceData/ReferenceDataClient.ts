@@ -10,6 +10,7 @@ import { AllocationBasesService } from './services/AllocationBasesService';
 import { EntitiesService } from './services/EntitiesService';
 import { FundGroupsService } from './services/FundGroupsService';
 import { InvestmentsService } from './services/InvestmentsService';
+import { InvestorAttributesService } from './services/InvestorAttributesService';
 import { JournalEntryService } from './services/JournalEntryService';
 import { QueriesService } from './services/QueriesService';
 import { SponsorsService } from './services/SponsorsService';
@@ -20,6 +21,7 @@ export class ReferenceDataClient {
     public readonly entities: EntitiesService;
     public readonly fundGroups: FundGroupsService;
     public readonly investments: InvestmentsService;
+    public readonly investorAttributes: InvestorAttributesService;
     public readonly journalEntry: JournalEntryService;
     public readonly queries: QueriesService;
     public readonly sponsors: SponsorsService;
@@ -41,6 +43,7 @@ export class ReferenceDataClient {
         this.entities = new EntitiesService(this.request);
         this.fundGroups = new FundGroupsService(this.request);
         this.investments = new InvestmentsService(this.request);
+        this.investorAttributes = new InvestorAttributesService(this.request);
         this.journalEntry = new JournalEntryService(this.request);
         this.queries = new QueriesService(this.request);
         this.sponsors = new SponsorsService(this.request);

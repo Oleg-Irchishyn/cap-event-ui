@@ -4,6 +4,6 @@
 /* eslint-disable */
 import type { CeBoxItem } from './CeBoxItem';
 export type CeBoxFile = (CeBoxItem & {
-    content?: Blob;
+    content?: string;
 });
 

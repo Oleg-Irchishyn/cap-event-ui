@@ -14,7 +14,7 @@ export class InvestmentsService {
      * @throws ApiError
      */
     public getInvestments(
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<Investment>> {
         return this.httpRequest.request({
             method: 'GET',

@@ -400,7 +400,7 @@ class PreviewScreenStore {
           this.isLoading = true;
           this.rows = [];
         });
-        const response = await CapEventPackageApi.default.process(sessionId, requestPayload);
+        const response = await CapEventPackageApi.default.process(requestPayload, sessionId);
         runInAction(() => {
           this.lastCapEvent = requestPayload;
           this.lastProcessResponse = Array.isArray(response) ? response : [];

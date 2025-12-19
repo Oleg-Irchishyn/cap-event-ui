@@ -241,8 +241,8 @@ describe('GeneralSettings', () => {
     expect(capEventSettingsStore.setFundEntities).toHaveBeenCalledWith([]);
     await waitFor(() =>
       expect(ReferenceDataApi.entities.getEntitiesByFundGroup).toHaveBeenCalledWith(
-        expect.any(String),
         'EVT1',
+        expect.any(String),
         ['ACTIVE'],
         ['ADMIN', 'ELIMINATION'],
       ),

@@ -166,7 +166,7 @@ describe('PreviewScreenStore', () => {
 
     // Assert API called with expected shape
     expect(processMock).toHaveBeenCalledTimes(1);
-    const sentPayload = processMock.mock.calls[0][1];
+    const sentPayload = processMock.mock.calls[0][0];
     expect(sentPayload.sponsor.id).toBe('SP1');
     expect(sentPayload.capEventType.id).toBe('TYPE1');
     expect(sentPayload.fundGroup.id).toBe('FG1');
@@ -224,7 +224,7 @@ describe('PreviewScreenStore', () => {
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][1];
+    const sentPayload = processMock.mock.calls[0][0];
     const fg = (sentPayload.capEventFundGroupLineItems || [])[0];
     expect(fg.inheritanceId).toBe('FG-EXPLICIT-1');
   });
@@ -250,7 +250,7 @@ describe('PreviewScreenStore', () => {
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][1];
+    const sentPayload = processMock.mock.calls[0][0];
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.capEventLineItems[0]).toEqual(
       expect.objectContaining({
@@ -272,7 +272,7 @@ describe('PreviewScreenStore', () => {
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][1];
+    const sentPayload = processMock.mock.calls[0][0];
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.capEventLineItems[0].fundGroupLineItemInheritanceId).toBeUndefined();
   });

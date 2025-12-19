@@ -20,6 +20,7 @@ import { ApiError, CapEvent } from '@/clients/CapEventPackage';
 import { useToast } from '@/providers/ToastProvider';
 import { CapEventPackageApi } from '@/api';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { logout } from '@/utils/logout';
 
 export default function Page() {
   const router = useRouter();
@@ -36,11 +37,12 @@ export default function Page() {
         const selectedSponsorId = capEventSettingsStore.sponsors.find(
           (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
         )?.id;
-        const sessionId = getStoredSessionId() ?? '';
+        const sessionId = getStoredSessionId();
 
         const capEvents = await CapEventPackageApi.default.getCapEventList(
-          sessionId,
           selectedSponsorId,
+          undefined,
+          sessionId,
         );
         setEvents(capEvents);
       } catch (error) {
@@ -58,6 +60,9 @@ export default function Page() {
       <Container>
         <TitleContainer>
           <PageTitle>Capital Event</PageTitle>
+          <Button width="auto" onClick={logout} buttonTheme={BUTTON_THEMES.text} testId="logout">
+            Logout
+          </Button>
         </TitleContainer>
         <ButtonContainer>
           <Button

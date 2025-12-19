@@ -112,8 +112,8 @@ const GeneralSettings = () => {
     try {
       setIsLoadingFundGroups(true);
       const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(
-        sessionId,
         sponsorId,
+        sessionId,
       );
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
@@ -141,8 +141,8 @@ const GeneralSettings = () => {
     try {
       setIsLoadingFundEntities(true);
       const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
-        sessionId,
         id,
+        sessionId,
         ['ACTIVE'],
         ['ADMIN', 'ELIMINATION'],
       );

@@ -111,7 +111,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -303,7 +303,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -727,7 +727,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -973,7 +973,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1177,7 +1177,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1302,7 +1302,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1442,10 +1442,19 @@
             "description": "Allocation basis to filter journal entry"
           },
           {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry"
+          },
+          {
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1565,7 +1574,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1689,7 +1698,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }

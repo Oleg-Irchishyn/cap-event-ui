@@ -16,7 +16,7 @@ export class TemplateService {
      * @throws ApiError
      */
     public getTemplates(
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<Template>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -105,6 +105,31 @@ export class TemplateService {
         });
     }
     /**
+     * Get template by id
+     * This endpoint retrieves a template by template ID.
+     * @param templateId ID of the template
+     * @returns Template Successfully retrieved template
+     * @throws ApiError
+     */
+    public getTemplateById(
+        templateId: string,
+    ): CancelablePromise<Template> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/templates/{templateId}',
+            path: {
+                'templateId': templateId,
+            },
+            errors: {
+                400: `Bad request - invalid or missing parameters`,
+                401: `Unauthorized - authentication required`,
+                403: `Forbidden - insufficient permissions`,
+                404: `No templates found for the specified criteria`,
+                500: `Internal server error`,
+            },
+        });
+    }
+    /**
      * Returns template by sponsor, group, and entity IDs.
      * Returns ZIP archive with the template and the CSV file with available datapoints. Searches for a template matching the provided IDs, or falls back to a default template if not found.
      * @param sponsorId ID of the sponsor.
@@ -163,6 +188,7 @@ export class TemplateService {
      * @param sponsorId ID of the sponsor
      * @param fundGroupId ID of the fund group id
      * @param entityId ID of the entity
+     * @param depth Specifies the depth of nested objects to include in the response. 0 - returns only the library-stored data; 1 - additionally includes Box file information.
      * @returns TemplateMetadata Successfully retrieved template metadata
      * @throws ApiError
      */
@@ -170,6 +196,7 @@ export class TemplateService {
         sponsorId: string,
         fundGroupId?: string,
         entityId?: string,
+        depth: number = 1,
     ): CancelablePromise<TemplateMetadata> {
         return this.httpRequest.request({
             method: 'GET',
@@ -178,6 +205,7 @@ export class TemplateService {
                 'sponsorId': sponsorId,
                 'fundGroupId': fundGroupId,
                 'entityId': entityId,
+                'depth': depth,
             },
             errors: {
                 400: `Bad request - invalid or missing parameters`,

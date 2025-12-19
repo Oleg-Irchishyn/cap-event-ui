@@ -33,6 +33,7 @@ const AllocationPreviewModal: FC = () => {
     if (!isModalOpen) return;
 
     const entityKey = capEventSettingsStore.allocationPreviewModalTitle;
+    const entityId = capEventSettingsStore.allocationPreviewModalEntityId;
 
     const previewEntityData = capEventSettingsStore.entitiesLineItem
       .get(entityKey)
@@ -52,6 +53,7 @@ const AllocationPreviewModal: FC = () => {
                 batchNo,
                 originAccountKey,
                 previewEntityData.allocationBasis,
+                entityId,
                 sessionId,
               );
               capEventSettingsStore.setAllocationPreviewModalData(data);
@@ -83,7 +85,7 @@ const AllocationPreviewModal: FC = () => {
               amount: previewEntityData.amount,
             };
 
-            const data = await CapEventPackageApi.default.allocateLineItem(sessionId, requestBody);
+            const data = await CapEventPackageApi.default.allocateLineItem(requestBody, sessionId);
             capEventSettingsStore.setAllocationPreviewModalData(data);
           }
         }

@@ -10,17 +10,17 @@ export class AccountsService {
     /**
      * Retrieve list of accounts
      * @param sponsorId Sponsor ID which accounts to retrieve
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param fsGroupings Financial Groupings to include
      * @param capitalCategories Capital Categories to exclude
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns Account List of accounts
      * @throws ApiError
      */
     public getAccounts(
         sponsorId: string,
-        sessionId: string,
         fsGroupings?: Array<string>,
         capitalCategories?: Array<string>,
+        sessionId?: string,
     ): CancelablePromise<Array<Account>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -49,7 +49,7 @@ export class AccountsService {
      */
     public getMappedAccount(
         id: string,
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Account> {
         return this.httpRequest.request({
             method: 'GET',

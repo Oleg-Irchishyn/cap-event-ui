@@ -41,6 +41,9 @@ export type JournalEntry = {
     customerId?: string;
     isRounded?: boolean;
     optOutInvestors?: string;
+    /**
+     * Allocation Basis date
+     */
     allocationBasisDate?: string;
 };
 

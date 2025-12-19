@@ -29,6 +29,10 @@
     {
       "name": "JournalEntry",
       "description": "Operations related to journal entries"
+    },
+    {
+      "name": "InvestorAttributes",
+      "description": "Operations related to investor attributes"
     }
   ],
   "servers": [
@@ -59,7 +63,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -176,7 +180,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -240,6 +244,7 @@
                         "mfBasisDateDefault": "Beginning of Period",
                         "mfBasis": "10123",
                         "mfPercent": "0.02",
+                        "mfStartDate": "12/17/2025",
                         "allocationBasis": {
                           "allocationId": "DS-CMNT",
                           "allocationName": "Commitment",
@@ -255,6 +260,7 @@
                         "mfBasisDateDefault": "Beginning of Period",
                         "mfBasis": "1234",
                         "mfPercent": "0.01",
+                        "mfStartDate": "12/17/2025",
                         "yearFractionApproach": "90/360",
                         "allocationBasis": {
                           "allocationId": "DS-CMNT",
@@ -389,7 +395,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -506,7 +512,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -623,7 +629,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -718,7 +724,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -918,7 +924,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -957,7 +963,8 @@
                             "mfBasis": null,
                             "mfBasisDateDefault": null,
                             "yearFractionApproach": null,
-                            "mfPercent": null
+                            "mfPercent": null,
+                            "mfStartDate": null
                           },
                           "exchangeRate": null,
                           "classId": null,
@@ -987,7 +994,8 @@
                             "mfBasis": null,
                             "mfBasisDateDefault": null,
                             "yearFractionApproach": null,
-                            "mfPercent": null
+                            "mfPercent": null,
+                            "mfStartDate": null
                           },
                           "exchangeRate": null,
                           "classId": null,
@@ -1120,7 +1128,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1303,7 +1311,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1480,10 +1488,19 @@
             "description": "Allocation basis to filter journal entry"
           },
           {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID to filter journal entry"
+          },
+          {
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1534,7 +1551,8 @@
                           "mfBasis": null,
                           "mfBasisDateDefault": null,
                           "yearFractionApproach": null,
-                          "mfPercent": null
+                          "mfPercent": null,
+                          "mfStartDate": null
                         },
                         "exchangeRate": 1,
                         "classId": "",
@@ -1576,7 +1594,8 @@
                           "mfBasis": null,
                           "mfBasisDateDefault": null,
                           "yearFractionApproach": null,
-                          "mfPercent": null
+                          "mfPercent": null,
+                          "mfStartDate": null
                         },
                         "exchangeRate": 1,
                         "classId": "",
@@ -1657,7 +1676,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -1685,6 +1704,108 @@
                       }
                     ]
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Intacct SessionId is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication failed",
+                  "details": null,
+                  "timestamp": "2025-11-27T09:35:50.834945200Z",
+                  "requestId": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investor-attributes": {
+      "get": {
+        "tags": [
+          "InvestorAttributes"
+        ],
+        "summary": "Get investor attributes",
+        "description": "Returns investor attributes for provided investorId and entityId",
+        "operationId": "getInvestorAttributes",
+        "parameters": [
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "investorId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Investor ID"
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Entity ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Investor attributes found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvestorAttribute"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "VALIDATION_ERROR",
+                  "message": "Validation failed for argument",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
                 }
               }
             }
@@ -1833,6 +1954,10 @@
           "mfPercent": {
             "type": "string",
             "example": "0.02"
+          },
+          "mfStartDate": {
+            "type": "string",
+            "example": "12/17/2025"
           }
         }
       },
@@ -1948,7 +2073,9 @@
             "type": "string"
           },
           "allocationBasisDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date",
+            "description": "Allocation Basis date"
           }
         }
       },
@@ -1980,6 +2107,14 @@
           "allocationName": "Commitment",
           "type": "dynamic",
           "allocationBasisStatus": "Active"
+        }
+      },
+      "InvestorAttribute": {
+        "type": "object",
+        "properties": {
+          "secondaryInvestorId": {
+            "type": "string"
+          }
         }
       },
       "ErrorResponse": {

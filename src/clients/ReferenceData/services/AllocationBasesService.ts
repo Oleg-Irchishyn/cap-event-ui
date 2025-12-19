@@ -14,7 +14,7 @@ export class AllocationBasesService {
      * @throws ApiError
      */
     public getAllocationBases(
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<AllocationBasis>> {
         return this.httpRequest.request({
             method: 'GET',

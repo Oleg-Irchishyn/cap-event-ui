@@ -101,6 +101,7 @@ describe('AllocationPreviewModal', () => {
         7,
         101,
         'commitment',
+        'E1',
         'SID',
       ),
     );
@@ -141,14 +142,17 @@ describe('AllocationPreviewModal', () => {
     renderWithTheme(<AllocationPreviewModal />);
 
     await waitFor(() =>
-      expect(CapEventPackageApi.default.allocateLineItem).toHaveBeenCalledWith('SID', {
-        entityId: '123',
-        dueDate: '2025-02-03',
-        allocationBasis: 'Commitment',
-        accountNo: 'ACCT-9',
-        investmentId: 'INV1',
-        amount: 5000,
-      }),
+      expect(CapEventPackageApi.default.allocateLineItem).toHaveBeenCalledWith(
+        {
+          entityId: '123',
+          dueDate: '2025-02-03',
+          allocationBasis: 'Commitment',
+          accountNo: 'ACCT-9',
+          investmentId: 'INV1',
+          amount: 5000,
+        },
+        'SID',
+      ),
     );
 
     await waitFor(() =>

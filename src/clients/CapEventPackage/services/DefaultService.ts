@@ -35,14 +35,14 @@ export class DefaultService {
     }
     /**
      * Submits capital event
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns CapEvent The CapEvent object stored in the system.
      * @throws ApiError
      */
     public submit(
-        sessionId: string,
         requestBody: CapEvent,
+        sessionId?: string,
     ): CancelablePromise<CapEvent> {
         return this.httpRequest.request({
             method: 'POST',
@@ -61,16 +61,16 @@ export class DefaultService {
     }
     /**
      * Retrieve Capital event list with optional filters: Sponsor ID and Status list
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param sponsorId Optional Sponsor ID filter to search for matching entries
      * @param statuses Optional Status List filter to search for matching entries
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns CapEvent List of capital events
      * @throws ApiError
      */
     public getCapEventList(
-        sessionId: string,
         sponsorId?: string,
         statuses?: Array<CapEventStatus>,
+        sessionId?: string,
     ): CancelablePromise<Array<CapEvent>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -158,14 +158,14 @@ export class DefaultService {
     }
     /**
      * Process capital event
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns CapEventLineItemResponse List of capital event line items with investor entries
      * @throws ApiError
      */
     public process(
-        sessionId: string,
         requestBody: CapEvent,
+        sessionId?: string,
     ): CancelablePromise<Array<CapEventLineItemResponse>> {
         return this.httpRequest.request({
             method: 'POST',
@@ -185,14 +185,14 @@ export class DefaultService {
     }
     /**
      * Allocate investors for cap event line item
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns InvestorEntry List of allocated investor entries
      * @throws ApiError
      */
     public allocateLineItem(
-        sessionId: string,
         requestBody: AllocationInput,
+        sessionId?: string,
     ): CancelablePromise<Array<InvestorEntry>> {
         return this.httpRequest.request({
             method: 'POST',
@@ -221,7 +221,7 @@ export class DefaultService {
     public getMgmtFeeLineItems(
         batchNo: number,
         entityId: string,
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<CapEventLineItem>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -248,7 +248,7 @@ export class DefaultService {
      */
     public getMgmtFeeJournalEntries(
         entityIds: Array<string>,
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Record<string, Array<MgmtFeeJournalEntry>>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -271,6 +271,7 @@ export class DefaultService {
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
      * @param allocationBasis Allocation basis to filter journal entry
+     * @param entityId Entity ID to filter journal entry
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns InvestorEntry List of management fee journal entries grouped by entity ID
      * @throws ApiError
@@ -279,7 +280,8 @@ export class DefaultService {
         batchNo: number,
         accountKey: string,
         allocationBasis: string,
-        sessionId: string,
+        entityId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<InvestorEntry>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -291,6 +293,7 @@ export class DefaultService {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
                 'allocationBasis': allocationBasis,
+                'entityId': entityId,
             },
             errors: {
                 400: `Bad request`,
@@ -301,14 +304,14 @@ export class DefaultService {
     }
     /**
      * Allocate entities for fund group data
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns number Map of entity IDs to allocated amounts
      * @throws ApiError
      */
     public allocateEntities(
-        sessionId: string,
         requestBody: FundGroupAllocationInput,
+        sessionId?: string,
     ): CancelablePromise<Record<string, number>> {
         return this.httpRequest.request({
             method: 'POST',
@@ -327,14 +330,14 @@ export class DefaultService {
     }
     /**
      * Generate document content for Investor. Request line item should contain plInvestorEntries related to only one Investor
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param requestBody
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns binary Binary data of generated investor document
      * @throws ApiError
      */
     public investorDocumentContent(
-        sessionId: string,
         requestBody: InvestorDocumentInput,
+        sessionId?: string,
     ): CancelablePromise<Blob> {
         return this.httpRequest.request({
             method: 'POST',

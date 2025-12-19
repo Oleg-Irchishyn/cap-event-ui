@@ -19,6 +19,7 @@ import { showErrorToast } from '@/utils/showErrorToast';
 import { useToast } from '@/providers/ToastProvider';
 import useSaveDraftButton from '@/hooks/useSaveDraftButton';
 import { comparer } from 'mobx';
+import { logout } from '@/utils/logout';
 
 const BackIcon = styled.img.attrs({
   src: '/cap-event/icons/back.svg',
@@ -27,6 +28,12 @@ const BackIcon = styled.img.attrs({
   height: '16px',
   padding: '4px 3px',
   marginLeft: '10px',
+});
+
+const RightButtonsContainer = styled.div({
+  display: 'flex',
+  gap: '8px',
+  alignItems: 'center',
 });
 
 const ButtonsGroup = () => {
@@ -131,16 +138,21 @@ const ButtonsGroup = () => {
       <Container>
         <TitleContainer>
           <Title>Capital Event - New</Title>
-          <Button
-            testId="back"
-            width="auto"
-            onClick={handleBackClick}
-            buttonTheme={BUTTON_THEMES.text}
-            textStyle={{ alignItems: 'center' }}
-          >
-            Back to Capital Event List
-            <BackIcon />
-          </Button>
+          <RightButtonsContainer>
+            <Button
+              testId="back"
+              width="auto"
+              onClick={handleBackClick}
+              buttonTheme={BUTTON_THEMES.text}
+              textStyle={{ alignItems: 'center' }}
+            >
+              Back to Capital Event List
+              <BackIcon />
+            </Button>
+            <Button width="auto" onClick={logout} buttonTheme={BUTTON_THEMES.text} testId="logout">
+              Logout
+            </Button>
+          </RightButtonsContainer>
         </TitleContainer>
         <ButtonContainer>
           <Button

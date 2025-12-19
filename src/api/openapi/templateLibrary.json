@@ -29,7 +29,7 @@
             "name": "Session-Id",
             "in": "header",
             "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -347,6 +347,143 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": ["Template"],
+        "summary": "Get template by id",
+        "description": "This endpoint retrieves a template by template ID.",
+        "operationId": "getTemplateById",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the template"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template"
+                },
+                "example": {
+                  "id": "f88c4123-7fc3-4b7a-83bd-4689a52724c5",
+                  "boxFile": {
+                    "id": "123",
+                    "info": {
+                      "name": "Standard Template",
+                      "parentFolderId": null,
+                      "modifiedAt": "2025-11-08T06:30:20.01Z",
+                      "createdAt": "2025-11-08T06:30:20.01Z",
+                      "size": null
+                    },
+                    "content": null
+                  },
+                  "description": null,
+                  "sourceTemplate": null,
+                  "sponsor": null,
+                  "fundGroup": null,
+                  "entity": null,
+                  "createdBy": "username@gen2fund.com",
+                  "modifiedBy": "username@gen2fund.com",
+                  "status": "Active"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "BAD_REQUEST",
+                  "message": "Missing required parameter: sponsorId or eventTypeId",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-12345-abc"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "UNAUTHORIZED",
+                  "message": "Authentication credentials were not provided or are invalid",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-001"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "FORBIDDEN",
+                  "message": "User does not have permission to access templates for this sponsor",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-auth-002"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No templates found for the specified criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "NOT_FOUND",
+                  "message": "No templates found for the given sponsorId and eventTypeId",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-67890-def"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Error retrieving template metadata from database",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-54321-ghi"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/templates/content": {
@@ -583,6 +720,16 @@
               "type": "string"
             },
             "description": "ID of the entity"
+          },
+          {
+            "name": "depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Specifies the depth of nested objects to include in the response. 0 - returns only the library-stored data; 1 - additionally includes Box file information."
           }
         ],
         "responses": {
@@ -594,9 +741,17 @@
                   "$ref": "#/components/schemas/TemplateMetadata"
                 },
                 "example": {
-                  "id": 101,
-                  "box_id": "template-box-001",
-                  "name": "Standard Distribution Template"
+                  "id": "f93c2a53-6ff3-4fd3-adaf-7f2abfef06b1",
+                  "ceBoxItem": {
+                    "id": "123",
+                    "info": {
+                      "name": "Standard Distribution Template",
+                      "parentFolderId": "123",
+                      "modifiedAt": "12/4/25, 9:29 AM",
+                      "createdBy": null,
+                      "size": "1"
+                    }
+                  }
                 }
               }
             }
@@ -722,20 +877,10 @@
             "type": "string",
             "description": "Unique id for the template in UUID format"
           },
-          "box_id": {
-            "type": "string",
-            "description": "Internal Box id of template in UUID format"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the template"
+          "ceBoxItem": {
+            "$ref": "#/components/schemas/CeBoxItem"
           }
-        },
-        "required": [
-          "id",
-          "box_id",
-          "name"
-        ]
+        }
       },
       "CeBoxItemInfo": {
         "type":"object",
@@ -789,8 +934,8 @@
             "description": "The content of the file int the box.",
             "properties": {
               "content": {
-                "type" : "string",
-                "format": "binary"
+                "type": "string",
+                "format": "byte"
               }
             }
           }

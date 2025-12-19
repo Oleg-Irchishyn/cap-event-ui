@@ -4,18 +4,19 @@ import { CapEventPackageClient } from '@/clients/CapEventPackage';
 import { TemplateLibraryClient } from '@/clients/TemplateLibrary';
 import { BoxConnectorClient } from '@/clients/BoxConnector';
 import { getSessionIdFromUrl } from '@/utils/getSessionIdFromUrl';
+import { getValidToken } from '@/utils/tokenStorage';
 
-/**
- * Creates headers with Session-Id
- * Uses stored sessionId (from sessionStorage) which persists across navigation,
- * or falls back to URL query parameters for initial load
- */
 const createHeadersWithSessionId = async (): Promise<Record<string, string>> => {
   const sessionId = getSessionIdFromUrl();
+  const bearerToken = getValidToken();
   const headers: Record<string, string> = {};
 
   if (sessionId) {
     headers['Session-Id'] = sessionId;
+  }
+
+  if (bearerToken) {
+    headers['Authorization'] = `Bearer ${bearerToken}`;
   }
 
   return headers;
@@ -46,12 +47,20 @@ export const _ReferenceDataServer = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_HOSTNAME}${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_REFERENCE_DATA_API}`,
 });
 
-// Add interceptor to include Session-Id header for axios instance
+// Add interceptor to include Session-Id and Bearer token headers for axios instance
 _ReferenceDataServer.interceptors.request.use((config) => {
   const sessionId = getSessionIdFromUrl();
+  const bearerToken = getValidToken();
+
   if (sessionId) {
     config.headers = config.headers || {};
     config.headers['Session-Id'] = sessionId;
   }
+
+  if (bearerToken) {
+    config.headers = config.headers || {};
+    config.headers['Authorization'] = `Bearer ${bearerToken}`;
+  }
+
   return config;
 });

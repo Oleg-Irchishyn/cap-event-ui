@@ -16,5 +16,6 @@ export type Entity = {
     mfBasisDateDefault?: string;
     yearFractionApproach?: string;
     mfPercent?: string;
+    mfStartDate?: string;
 };
 

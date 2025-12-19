@@ -9,16 +9,16 @@ export class EntitiesService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Get entities by fund group ID
-     * @param sessionId Session identifier
      * @param fundGroupId
+     * @param sessionId Session identifier
      * @param statuses Filter by entity statuses
      * @param typesToExclude Exclude specific entity types
      * @returns Entity List of entities found
      * @throws ApiError
      */
     public getEntitiesByFundGroup(
-        sessionId: string,
         fundGroupId: string,
+        sessionId?: string,
         statuses?: Array<string>,
         typesToExclude?: Array<string>,
     ): CancelablePromise<Array<Entity>> {

@@ -116,7 +116,7 @@ const SubmitButton = () => {
           },
         ),
       };
-      const response = await CapEventPackageApi.default.submit(sessionId, requestBody);
+      const response = await CapEventPackageApi.default.submit(requestBody, sessionId);
       if (response.status === CapEventStatus.SUBMITTED) {
         // Reset selections and dates when leaving the preview screen, till we don't have local data base
         capEventSettingsStore.resetStore();

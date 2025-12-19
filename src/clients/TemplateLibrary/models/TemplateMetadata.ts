@@ -2,18 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CeBoxItem } from './CeBoxItem';
 export type TemplateMetadata = {
     /**
      * Unique id for the template in UUID format
      */
-    id: string;
-    /**
-     * Internal Box id of template in UUID format
-     */
-    box_id: string;
-    /**
-     * Name of the template
-     */
-    name: string;
+    id?: string;
+    ceBoxItem?: CeBoxItem;
 };
 

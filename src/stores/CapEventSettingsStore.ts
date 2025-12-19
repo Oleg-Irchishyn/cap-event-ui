@@ -228,12 +228,12 @@ class CapEventSettingsStore {
     capitalCategories: string[] = [],
   ) {
     try {
-      const sessionId = getStoredSessionId() ?? '';
+      const sessionId = getStoredSessionId();
       const accounts: Account[] = await ReferenceDataApi.accounts.getAccounts(
         sponsorId,
-        sessionId,
         fsGroupings,
         capitalCategories,
+        sessionId,
       );
       return accounts;
     } catch (error) {

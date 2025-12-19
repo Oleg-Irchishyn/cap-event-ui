@@ -9,18 +9,18 @@ export class JournalEntryService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Get management fee journal entries
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param entityIds List of entity IDs to filter journal entries
      * @param fsLineItems List of financial statement line items to filter
      * @param calledFlag Called flag to filter journal entries
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns JournalEntry List of management fee journal entries
      * @throws ApiError
      */
     public getMgmtFeeJournalEntries(
-        sessionId: string,
         entityIds?: Array<string>,
         fsLineItems?: Array<string>,
         calledFlag?: string,
+        sessionId?: string,
     ): CancelablePromise<Array<JournalEntry>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -46,8 +46,8 @@ export class JournalEntryService {
      * @param entityId Entity ID to filter journal entry line items
      * @param state State to filter journal entry line items
      * @param calledFlag Called flag to filter journal entry line items
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param fsLineItems List of financial statement line items to filter
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns JournalEntry List of management fee journal entry line items
      * @throws ApiError
      */
@@ -56,8 +56,8 @@ export class JournalEntryService {
         entityId: string,
         state: string,
         calledFlag: string,
-        sessionId: string,
         fsLineItems?: Array<string>,
+        sessionId?: string,
     ): CancelablePromise<Array<JournalEntry>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -92,7 +92,7 @@ export class JournalEntryService {
         entityIds: Array<string>,
         allocationBasis: string,
         toDate: string,
-        sessionId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<JournalEntry>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -117,6 +117,7 @@ export class JournalEntryService {
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
      * @param allocationBasis Allocation basis to filter journal entry
+     * @param entityId Entity ID to filter journal entry
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns JournalEntry List of journal entries
      * @throws ApiError
@@ -125,7 +126,8 @@ export class JournalEntryService {
         batchNo: number,
         accountKey: string,
         allocationBasis: string,
-        sessionId: string,
+        entityId: string,
+        sessionId?: string,
     ): CancelablePromise<Array<JournalEntry>> {
         return this.httpRequest.request({
             method: 'GET',
@@ -137,6 +139,7 @@ export class JournalEntryService {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
                 'allocationBasis': allocationBasis,
+                'entityId': entityId,
             },
             errors: {
                 400: `Bad request`,

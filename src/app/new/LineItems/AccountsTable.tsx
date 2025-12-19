@@ -476,12 +476,12 @@ const AccountsTable: FC<Props> = ({
       return await Promise.all(
         commitmentFundGroups.map((fundGroupItem) => {
           return CapEventPackageApi.default.allocateEntities(
-            sessionId,
             getAllocateEntitiesRequestBody(
               selectedEntities,
               fundGroupItem.allocationBasis,
               fundGroupItem.amount,
             ),
+            sessionId,
           );
         }),
       );

@@ -9,14 +9,14 @@ export class FundGroupsService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Search fund groups by sponsor ID
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param sponsorId Sponsor ID used to filter fund groups
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns FundGroup List of fund groups found
      * @throws ApiError
      */
     public searchFundGroupsBySponsor(
-        sessionId: string,
         sponsorId?: string,
+        sessionId?: string,
     ): CancelablePromise<Array<FundGroup>> {
         return this.httpRequest.request({
             method: 'GET',

@@ -94,6 +94,7 @@ export const ButtonWrapper = styled.button<{ width: string }>(
     &:hover {
       background: none;
       border: none;
+      text-decoration: underline;
       color: ${theme.colors.primary};
     }
   }

@@ -11,15 +11,15 @@ export class QueriesService {
     /**
      * Execute query with id and arguments from request and obtain results
      * @param queryId Query identifier
-     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @param _arguments Arguments for query execution
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns QueryResults Query executed
      * @throws ApiError
      */
     public executeQuery(
         queryId: string,
-        sessionId: string,
         _arguments?: Record<string, string>,
+        sessionId?: string,
     ): CancelablePromise<QueryResults> {
         return this.httpRequest.request({
             method: 'GET',
