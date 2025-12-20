@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.73](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.72&targetVersion=GTv0.0.73) (2025-12-20)
+
+
+### Features
+
+* add onelogin auth ([41dd40a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/41dd40a9d9f9b43bcb5379abdd72318dde82ce73)), closes [#8757](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8757)
+
+
+### Bug Fixes
+
+* [Issue-6883]: [FE] Incorrect buttons order and spacing on Preview Screen ([3217ea8](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/3217ea84bb1709bcc5afbc5ddf041ffec5a7038a)), closes [#6883](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6883) [#8918](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8918)
+* [Issue-9085]: [FE] Duplicate and Delete icons are overlapped with tooltip ([0c74cab](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0c74cab1b3d580d8c15d93a92d5b4fdf03ebb4a4)), closes [#9085](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9085)
+
 ### [0.0.72](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.71&targetVersion=GTv0.0.72) (2025-12-19)
 
 
