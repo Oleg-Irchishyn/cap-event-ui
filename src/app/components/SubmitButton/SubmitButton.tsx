@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
@@ -26,12 +26,15 @@ import { showErrorToast } from '@/utils/showErrorToast';
 
 const SubmitButton = () => {
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toast = useToast();
 
   const router = useRouter();
 
   const handleSaveCapEvent = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const sessionId = getStoredSessionId() ?? '';
 
@@ -127,15 +130,18 @@ const SubmitButton = () => {
     } catch (error) {
       showErrorToast(error);
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <SubmitButtonWrapper ref={submitTooltipRef}>
       <Button
-        testId="allocation-distribution"
+        testId="cap-event-submit"
         width="auto"
         onClick={handleSaveCapEvent}
+        disabled={isSubmitting}
         buttonTheme={BUTTON_THEMES.primary}
       >
         Submit

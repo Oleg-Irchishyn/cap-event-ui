@@ -37,7 +37,7 @@ jest.mock('@/app/components/ContinueButton', () => ({
 
 jest.mock('@/app/components/SubmitButton', () => ({
   __esModule: true,
-  default: () => <button data-testid="allocation-distribution">Submit</button>,
+  default: () => <button data-testid="cap-event-submit">Submit</button>,
 }));
 
 jest.mock('@/stores', () => {
@@ -134,7 +134,7 @@ describe('ButtonsGroup', () => {
       renderWithTheme(<ButtonsGroup />);
 
       expect(screen.getByTestId('preview-screen')).toBeInTheDocument();
-      expect(screen.queryByTestId('allocation-distribution')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('cap-event-submit')).not.toBeInTheDocument();
     });
 
     it('renders SubmitButton when path is /preview-screen', () => {
@@ -142,7 +142,7 @@ describe('ButtonsGroup', () => {
 
       renderWithTheme(<ButtonsGroup />);
 
-      expect(screen.getByTestId('allocation-distribution')).toBeInTheDocument();
+      expect(screen.getByTestId('cap-event-submit')).toBeInTheDocument();
       expect(screen.queryByTestId('preview-screen')).not.toBeInTheDocument();
     });
   });

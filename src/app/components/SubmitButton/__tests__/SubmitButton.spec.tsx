@@ -108,7 +108,7 @@ describe('SubmitButton', () => {
   it('renders submit button correctly', () => {
     renderWithTheme(<SubmitButton />);
 
-    const button = screen.getByTestId('allocation-distribution');
+    const button = screen.getByTestId('cap-event-submit');
     expect(button).toBeInTheDocument();
     expect(screen.getByText('Submit')).toBeInTheDocument();
   });
@@ -118,7 +118,7 @@ describe('SubmitButton', () => {
 
     renderWithTheme(<SubmitButton />);
 
-    const button = screen.getByTestId('allocation-distribution');
+    const button = screen.getByTestId('cap-event-submit');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -140,7 +140,7 @@ describe('SubmitButton', () => {
 
     renderWithTheme(<SubmitButton />);
 
-    const button = screen.getByTestId('allocation-distribution');
+    const button = screen.getByTestId('cap-event-submit');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -150,5 +150,34 @@ describe('SubmitButton', () => {
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
+  });
+
+  it('disables button and prevents duplicate submissions while request is in flight', async () => {
+    let resolvePromise: (value?: unknown) => void = () => {};
+
+    const pending = new Promise((res) => {
+      resolvePromise = res;
+    });
+
+    mockSubmit.mockReturnValue(pending);
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('cap-event-submit');
+
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+    });
+
+    fireEvent.click(button);
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+
+    resolvePromise({ status: CapEventStatus.SUBMITTED });
+
+    await waitFor(() => {
+      expect(button).not.toBeDisabled();
+    });
   });
 });
