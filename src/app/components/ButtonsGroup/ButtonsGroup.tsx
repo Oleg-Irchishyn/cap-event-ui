@@ -178,6 +178,7 @@ const ButtonsGroup = () => {
             Footnotes
           </Button>
           <Button
+            style={{ display: 'none' }}
             testId="delete"
             disabled
             width="auto"

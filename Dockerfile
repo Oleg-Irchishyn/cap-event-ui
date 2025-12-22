@@ -21,18 +21,18 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-COPY --from=builder /app/public ./public
+RUN addgroup -g 1001 -S nodejs \
+ && adduser -S nextjs -u 1001 -G nodejs
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-COPY /docker/docker-entrypoint.d/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
+COPY --chown=nextjs:nodejs /docker/docker-entrypoint.d/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
+RUN chown -R nextjs:nodejs /app && chmod -R g+rwX /app
 
 USER nextjs
 

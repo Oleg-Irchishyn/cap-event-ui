@@ -47,8 +47,13 @@ export const generatePKCE = async (): Promise<{ codeVerifier: string; codeChalle
 
 /**
  * Gets the OneLogin authorization URL
+ * @param config - OneLogin configuration
+ * @param promptLogin - If true, adds prompt=login to force authentication even with active session
  */
-export const getOneLoginAuthUrl = async (config: OneLoginConfig): Promise<string> => {
+export const getOneLoginAuthUrl = async (
+  config: OneLoginConfig,
+  promptLogin: boolean = false,
+): Promise<string> => {
   const state = generateState();
   const { codeVerifier, codeChallenge } = await generatePKCE();
 
@@ -73,6 +78,12 @@ export const getOneLoginAuthUrl = async (config: OneLoginConfig): Promise<string
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
   });
+
+  // Add prompt=login to force authentication screen even if user has active session
+  // This is important after logout when "remember my login" was checked
+  if (promptLogin) {
+    params.set('prompt', 'login');
+  }
 
   return `${baseUrl}/oidc/2/auth?${params.toString()}`;
 };

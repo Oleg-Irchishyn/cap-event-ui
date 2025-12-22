@@ -27,8 +27,8 @@ export const logout = async (): Promise<void> => {
       logoutUrl.searchParams.set('id_token_hint', idToken);
       const redirectUri =
         typeof window !== 'undefined'
-          ? `${window.location.origin}/cap-event${ROUTES.LOGIN.path}`
-          : ROUTES.LOGIN.path;
+          ? `${window.location.origin}/cap-event${ROUTES.LOGIN.path}?prompt_login=true`
+          : `${ROUTES.LOGIN.path}?prompt_login=true`;
       logoutUrl.searchParams.set('post_logout_redirect_uri', redirectUri);
     }
 
@@ -36,7 +36,7 @@ export const logout = async (): Promise<void> => {
   } catch (error) {
     console.error('Failed to call OneLogin logout endpoint:', error);
     if (typeof window !== 'undefined') {
-      window.location.href = ROUTES.LOGIN.path;
+      window.location.href = `${ROUTES.LOGIN.path}?prompt_login=true`;
     }
   }
 };
