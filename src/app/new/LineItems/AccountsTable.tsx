@@ -522,10 +522,18 @@ const AccountsTable: FC<Props> = ({
           capEventSettingsStore.fundGroupsLineItem.length === 1 &&
           isRowEmpty(capEventSettingsStore.fundGroupsLineItem[0])
         ) {
-          // No inherited line items to apply -> ensure a single empty row is present
-          capEventSettingsStore.setEntitiesLineItem(entity.label, [
-            prepareNewRow(LineItemTypes.entity),
-          ]);
+          const existingRows = capEventSettingsStore.entitiesLineItem.get(entity.label) ?? [];
+          const manualNonEmptyRows = existingRows.filter(
+            (item) => !item.fundGroupLineItemInheritanceId && !isRowEmpty(item),
+          );
+
+          if (manualNonEmptyRows.length > 0) {
+            capEventSettingsStore.setEntitiesLineItem(entity.label, [], true);
+          } else {
+            capEventSettingsStore.setEntitiesLineItem(entity.label, [
+              prepareNewRow(LineItemTypes.entity),
+            ]);
+          }
           return;
         }
 

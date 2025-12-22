@@ -348,6 +348,83 @@ describe('AccountsTable', () => {
       expect(Array.isArray(call[1])).toBe(true);
       expect(call[1]).toHaveLength(1);
     });
+
+    it('removes only inherited rows and preserves manual/MF rows when FG is empty', async () => {
+      const props = {
+        ...defaultProps,
+        level: 'group',
+      };
+
+      const { capEventSettingsStore: store, entityDatesStore } = jest.requireMock('@/stores');
+
+      store.fundGroupsLineItem = [
+        {
+          id: 'fg-empty',
+          capitalCategory: '',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+          investment: { id: '' },
+          allocationBasis: '',
+          amount: 0,
+        },
+      ];
+
+      store.fundEntities = [{ id: 'e-1', label: 'Entity A', state: 'S' }];
+
+      store.entitiesLineItem = new Map([
+        [
+          'Entity A',
+          [
+            {
+              id: 'i-1',
+              fundGroupLineItemInheritanceId: 'fg-1',
+              capitalCategory: 'Cont - Other',
+              callDistributionReason: 'Other',
+              defaultDescription: 'Inherited',
+              insideCommitment: 'YES',
+              investment: { id: 'inv-1' },
+              allocationBasis: '',
+              amount: 0,
+            },
+            {
+              id: 'm-1',
+              // manual (no inheritance id)
+              capitalCategory: 'Cont - Other',
+              callDistributionReason: 'Other',
+              defaultDescription: 'Manual',
+              insideCommitment: 'YES',
+              isMfLineItem: true,
+              investment: { id: 'inv-2' },
+              allocationBasis: '',
+              amount: 100,
+            },
+          ],
+        ],
+      ]);
+
+      entityDatesStore.getEntityDueDate.mockReturnValue(new Date('2024-01-01'));
+
+      const { CapEventPackageApi } = jest.requireMock('@/api');
+
+      renderWithTheme(<AccountsTable {...props} />);
+
+      const applyButton = screen.getByTestId('apply-test-accounts-table-test-entity');
+      fireEvent.click(applyButton);
+
+      // No allocation should happen in empty FG case
+      await waitFor(() =>
+        expect(CapEventPackageApi.default.allocateEntities).not.toHaveBeenCalled(),
+      );
+
+      // setEntitiesLineItem called with apply=true and empty array to preserve existing manual rows
+      await waitFor(() => expect(store.setEntitiesLineItem).toHaveBeenCalledTimes(1));
+      const call = (store.setEntitiesLineItem as jest.Mock).mock.calls[0];
+      expect(call[0]).toBe('Entity A');
+      expect(Array.isArray(call[1])).toBe(true);
+      expect(call[1]).toHaveLength(0);
+      expect(call[2]).toBe(true);
+    });
   });
 
   describe('Cell value changes', () => {
