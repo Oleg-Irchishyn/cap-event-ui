@@ -1,16 +1,23 @@
 #!/bin/sh
-
 set -e
-
-ME=$(basename $0)
-
 cd /app
 
-echo 3>/dev/null "$ME: info: Applying variables"
-find . -name \*.js -exec sed -i  "s|{BACKEND_HOST}|${BACKEND_HOST}|g" {} \;
-find . -name \*.html -exec sed -i  "s|{BACKEND_HOST}|${BACKEND_HOST}|g" {} \;
-find . -name .env -exec sed -i  "s|{BACKEND_HOST}|${BACKEND_HOST}|g" {} \;
+: "${BACKEND_HOST:?}"
+: "${NEXT_PUBLIC_ONELOGIN_CLIENT_ID:?}"
+: "${NEXT_PUBLIC_ONELOGIN_SUBDOMAIN:?}"
 
-node server.js
+esc() { printf '%s' "$1" | sed 's/[&]/\\&/g'; }
 
+BH="$(esc "$BACKEND_HOST")"
+CID="$(esc "$NEXT_PUBLIC_ONELOGIN_CLIENT_ID")"
+SUB="$(esc "$NEXT_PUBLIC_ONELOGIN_SUBDOMAIN")"
 
+# replace in Next artifacts
+find /app -type f \( -name '*.js' -o -name '*.html' \) \
+  -exec sed -i \
+    -e "s|__BACKEND_HOST__|$BH|g" \
+    -e "s|__NEXT_PUBLIC_ONELOGIN_CLIENT_ID__|$CID|g" \
+    -e "s|__NEXT_PUBLIC_ONELOGIN_SUBDOMAIN__|$SUB|g" \
+  {} \;
+
+exec node server.js
