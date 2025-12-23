@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.74](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.73&targetVersion=GTv0.0.74) (2025-12-23)
+
+
+### Bug Fixes
+
+* [Issue-9092]: [FE] Multiple Notices are created by quickly clicking Submit button ([5208d92](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5208d92d03a1b4e6e98c9ee5c4cd139cd23d0988)), closes [#9092](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9092)
+* [Issue-9120]: [FE] Applying empty row on Fund Group level is removing all CELIs on Entity level( incl. MF and manual added) ([770e342](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/770e342c869b8f6b9c285d43cc1b31c964cb813e)), closes [#9120](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9120)
+* force to login after logout ([9edce37](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9edce3718d2b18527ca1b27c5a658ffc90b7b4b2)), closes [#8757](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8757)
+
 ### [0.0.73](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.72&targetVersion=GTv0.0.73) (2025-12-20)
 
 
