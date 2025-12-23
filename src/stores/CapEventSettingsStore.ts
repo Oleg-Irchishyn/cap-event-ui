@@ -307,7 +307,19 @@ class CapEventSettingsStore {
   applyEntitiesSelectionConfirmed() {
     const selectedEntities = this.fundEntities.filter(selectedFilterCallback);
     const selectedCount = selectedEntities.length;
+    const selectedIds = new Set<string>(selectedEntities.map((e) => e.id ?? ''));
     const selectedLabels = new Set<string>(selectedEntities.map((e) => e.label ?? ''));
+
+    const mfKeys = new Set([
+      ...Object.keys(this.selectedMFItemBatchNo),
+      ...Object.keys(this.includeMFOption),
+    ]);
+    for (const entityId of mfKeys) {
+      if (!selectedIds.has(entityId)) {
+        delete this.selectedMFItemBatchNo[entityId];
+        delete this.includeMFOption[entityId];
+      }
+    }
 
     for (const key of Array.from(this.entitiesLineItem.keys())) {
       if (!selectedLabels.has(key)) {

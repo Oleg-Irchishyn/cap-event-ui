@@ -132,6 +132,39 @@ describe('DuplicateRowCell', () => {
     expect(screen.queryByTestId('duplicate-row-icon')).not.toBeInTheDocument();
   });
 
+  it('does not render duplicate icon for entity-level MF rows', () => {
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => false,
+    });
+    capEventSettingsStore.entitiesSelectedCountSnapshot = 1;
+
+    const mfEntityRow = { ...nonEmptyRow, isMfLineItem: true } as unknown as LineItemRow;
+    const entityProps = {
+      data: mfEntityRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.entity } },
+    } as unknown as ICellRendererParams;
+
+    render(<DuplicateRowCell {...entityProps} />);
+    expect(screen.queryByTestId('duplicate-row-icon')).not.toBeInTheDocument();
+  });
+
+  it('renders duplicate icon for group-level MF rows (entity-only restriction)', () => {
+    Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
+      get: () => true,
+    });
+
+    const mfGroupRow = { ...nonEmptyRow, isMfLineItem: true } as unknown as LineItemRow;
+    const groupProps = {
+      data: mfGroupRow,
+      colDef: { cellEditorParams: { level: LineItemTypes.group } },
+    } as unknown as ICellRendererParams;
+
+    render(<DuplicateRowCell {...groupProps} />);
+    const btn = screen.getByTestId('duplicate-row-icon');
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveAttribute('data-is-disabled', 'false');
+  });
+
   it('shows tooltip on hover only when enabled', () => {
     Object.defineProperty(capEventSettingsStore, 'hasMultipleEntitiesChosen', {
       get: () => false,

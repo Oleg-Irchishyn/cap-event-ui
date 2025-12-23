@@ -21,6 +21,7 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
   const { level, entityKey } = props.colDef?.cellEditorParams ?? {};
 
   const entityLevel = level === LineItemTypes.entity;
+  const isEntityMfRow = entityLevel && Boolean(props.data?.isMfLineItem);
   const hasMultipleEntities = capEventSettingsStore.hasMultipleEntitiesChosen;
   const isCurrentRowEmpty = isRowEmpty(props.data);
 
@@ -29,10 +30,10 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
     capEventSettingsStore.fundEntities.filter((e) => e.state === ITEM_STATES.SELECTED).length;
 
   const shouldRender = entityLevel
-    ? !hasMultipleEntities && (selectedEntitiesCount === 1 || !isCurrentRowEmpty)
+    ? !isEntityMfRow && !hasMultipleEntities && (selectedEntitiesCount === 1 || !isCurrentRowEmpty)
     : true;
   const isSectionDisabled = !entityLevel && !hasMultipleEntities;
-  const isDuplicateRowDisabled = isCurrentRowEmpty || isSectionDisabled;
+  const isDuplicateRowDisabled = isCurrentRowEmpty || isSectionDisabled || isEntityMfRow;
 
   const onShowTooltip = () => {
     if (!isDuplicateRowDisabled) {

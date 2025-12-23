@@ -805,6 +805,30 @@ describe('CapEventSettingsStore', () => {
     });
   });
 
+  describe('applyEntitiesSelectionConfirmed - MF cleanup', () => {
+    it('removes stale MF selections for entities that are no longer selected', () => {
+      // Prepare selected entities: E-1 and E-2 initially selected
+      store.setFundEntities([
+        { label: 'Entity 1', id: 'E-1', state: 'S' } as unknown as DropdownItemType,
+        { label: 'Entity 2', id: 'E-2', state: 'S' } as unknown as DropdownItemType,
+      ]);
+
+      store.selectedMFItemBatchNo = { 'E-1': 111, 'E-2': 222 };
+      store.includeMFOption = { 'E-1': 'Yes', 'E-2': 'No' } as Record<string, 'Yes' | 'No'>;
+
+      store.setFundEntities([
+        { label: 'Entity 1', id: 'E-1', state: 'S' } as unknown as DropdownItemType,
+      ]);
+
+      store.applyEntitiesSelectionConfirmed();
+
+      expect(store.selectedMFItemBatchNo).toEqual({ 'E-1': 111 });
+      expect(store.includeMFOption).toEqual({ 'E-1': 'Yes' });
+      expect(store.selectedMFItemBatchNo['E-2']).toBeUndefined();
+      expect(store.includeMFOption['E-2']).toBeUndefined();
+    });
+  });
+
   describe('setEntitiesLineItem with apply flag', () => {
     it('appends only non-empty manual rows (excludes inherited and empty rows)', () => {
       const key = 'Entity A';
