@@ -52,7 +52,7 @@ class CapEventSettingsStore {
   isAllocationPreviewModalLoading: boolean = false;
   isAllocationPreviewModalOpen: boolean = false;
   attachmentErrors: DragNDropError[] = [];
-  allocationPreviewModalEntityId: string = '';
+  allocationPreviewModaLineItemId: string = '';
   allocationPreviewModalData: InvestorEntry[] = [];
   allocationPreviewModalTitle: string = '';
 
@@ -92,7 +92,7 @@ class CapEventSettingsStore {
       isAllocationPreviewModalLoading: this.isAllocationPreviewModalLoading,
       isAllocationPreviewModalOpen: this.isAllocationPreviewModalOpen,
       attachmentErrors: this.attachmentErrors,
-      allocationPreviewModalEntityId: this.allocationPreviewModalEntityId,
+      allocationPreviewModalEntityId: this.allocationPreviewModaLineItemId,
       allocationPreviewModalData: this.allocationPreviewModalData,
       allocationPreviewModalTitle: this.allocationPreviewModalTitle,
       footnotes: this.footnotes,
@@ -413,8 +413,8 @@ class CapEventSettingsStore {
     this.isAllocationPreviewModalOpen = isOpen;
   }
 
-  setAllocationPreviewModalEntityId(id: string) {
-    this.allocationPreviewModalEntityId = id;
+  setAllocationPreviewModalLineItemId(id: string) {
+    this.allocationPreviewModaLineItemId = id;
   }
 
   setAllocationPreviewModalTitle(title: string) {

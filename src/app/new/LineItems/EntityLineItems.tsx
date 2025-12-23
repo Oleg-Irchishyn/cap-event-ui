@@ -84,6 +84,7 @@ const EntityLineItems = () => {
             ]
           }
         />
+        <AllocationPreviewModal entityId={fund.id ?? ''} />
       </Fragment>
     ));
   };
@@ -109,7 +110,6 @@ const EntityLineItems = () => {
           />
         )}
       </BackgroundContainer>
-      <AllocationPreviewModal />
     </>
   );
 };

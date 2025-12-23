@@ -17,7 +17,11 @@ import { getValidDate } from '@/utils/getValidDate';
 import { AllocationInput } from '@/clients/CapEventPackage';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 
-const AllocationPreviewModal: FC = () => {
+interface AllocationPreviewModalProps {
+  entityId: string;
+}
+
+const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) => {
   const [allocationBasis, setAllocationBasis] = useState<string>('');
   const [isDataLoading, setIsDataLoading] = useState(false);
   const sessionId = getStoredSessionId() ?? '';
@@ -33,11 +37,10 @@ const AllocationPreviewModal: FC = () => {
     if (!isModalOpen) return;
 
     const entityKey = capEventSettingsStore.allocationPreviewModalTitle;
-    const entityId = capEventSettingsStore.allocationPreviewModalEntityId;
 
     const previewEntityData = capEventSettingsStore.entitiesLineItem
       .get(entityKey)
-      ?.find((entity) => entity.id === capEventSettingsStore.allocationPreviewModalEntityId);
+      ?.find((lineItem) => lineItem.id === capEventSettingsStore.allocationPreviewModaLineItemId);
 
     const fetchTableData = async () => {
       try {
@@ -97,7 +100,7 @@ const AllocationPreviewModal: FC = () => {
     };
 
     fetchTableData();
-  }, [isModalOpen, sessionId]);
+  }, [isModalOpen, sessionId, entityId]);
 
   if (!isModalOpen) return null;
 

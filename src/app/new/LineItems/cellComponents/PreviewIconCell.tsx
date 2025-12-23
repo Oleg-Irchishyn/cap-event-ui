@@ -26,7 +26,7 @@ const PreviewIconCell: FC<ICellRendererParams> = (props) => {
 
   const handlePreviewClick = () => {
     if (isPreviewDisabled) return;
-    capEventSettingsStore.setAllocationPreviewModalEntityId(props.data.id);
+    capEventSettingsStore.setAllocationPreviewModalLineItemId(props.data.id);
     capEventSettingsStore.setAllocationPreviewModalTitle(entityKey);
     capEventSettingsStore.setAllocationPreviewOpen(true);
   };
