@@ -72,7 +72,7 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
               String(date.getDate()).padStart(2, '0');
 
             const requestBody: AllocationInput = {
-              entityId: entityKey.split(' - ')[0],
+              entityId: entityId,
               dueDate: dueDate || '',
               allocationBasis: previewEntityData.allocationBasis,
               accountNo:

@@ -12,7 +12,7 @@ jest.mock('@/stores', () => ({
     setAllocationPreviewModalAllocationBasis: jest.fn(),
     allocationPreviewModalTitle: 'Test Allocation Preview',
     allocationPreviewModalAllocationBasis: 'commitment',
-    allocationPreviewModalEntityId: 'E1',
+    allocationPreviewModaLineItemId: 'E1',
     allocationPreviewModalData: [],
     accounts: [],
     isAllocationPreviewModalOpen: true,
@@ -48,14 +48,14 @@ const renderWithTheme = (component: React.ReactElement) => {
 
 describe('AllocationPreviewModal', () => {
   it('renders modal when isOpen is true', () => {
-    renderWithTheme(<AllocationPreviewModal />);
+    renderWithTheme(<AllocationPreviewModal entityId="test-id" />);
 
     screen.debug();
     expect(screen.getByText('Preview - Test Allocation Preview')).toBeInTheDocument();
   });
 
   it('calls the handleCancel function when cancel button is clicked', async () => {
-    renderWithTheme(<AllocationPreviewModal />);
+    renderWithTheme(<AllocationPreviewModal entityId="test-id" />);
 
     const cancelButton = screen.getByText('Cancel');
     fireEvent.click(cancelButton);
@@ -73,7 +73,7 @@ describe('AllocationPreviewModal', () => {
     // Arrange store for MF scenario
     capEventSettingsStore.isAllocationPreviewModalOpen = true;
     capEventSettingsStore.allocationPreviewModalTitle = 'Entity 1';
-    capEventSettingsStore.allocationPreviewModalEntityId = 'E1';
+    capEventSettingsStore.allocationPreviewModaLineItemId = 'E1';
     capEventSettingsStore.entitiesLineItem = new Map([
       [
         'Entity 1',
@@ -94,7 +94,7 @@ describe('AllocationPreviewModal', () => {
       { id: 2 },
     ]);
 
-    renderWithTheme(<AllocationPreviewModal />);
+    renderWithTheme(<AllocationPreviewModal entityId="E1" />);
 
     await waitFor(() =>
       expect(CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries).toHaveBeenCalledWith(
@@ -118,7 +118,7 @@ describe('AllocationPreviewModal', () => {
     // Arrange store for non-MF scenario
     capEventSettingsStore.isAllocationPreviewModalOpen = true;
     capEventSettingsStore.allocationPreviewModalTitle = '123 - Fund ABC';
-    capEventSettingsStore.allocationPreviewModalEntityId = 'E1';
+    capEventSettingsStore.allocationPreviewModaLineItemId = 'E1';
     capEventSettingsStore.entitiesLineItem = new Map([
       [
         '123 - Fund ABC',
@@ -139,7 +139,7 @@ describe('AllocationPreviewModal', () => {
     (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date(2025, 1, 3));
     (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue([{ id: 1 }]);
 
-    renderWithTheme(<AllocationPreviewModal />);
+    renderWithTheme(<AllocationPreviewModal entityId="123" />);
 
     await waitFor(() =>
       expect(CapEventPackageApi.default.allocateLineItem).toHaveBeenCalledWith(

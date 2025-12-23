@@ -17,7 +17,7 @@ jest.mock('@/stores', () => ({
     getEntityDueDateInputValidity: jest.fn(),
   },
   capEventSettingsStore: {
-    setAllocationPreviewModalEntityId: jest.fn(),
+    setAllocationPreviewModalLineItemId: jest.fn(),
     setAllocationPreviewModalTitle: jest.fn(),
     setAllocationPreviewOpen: jest.fn(),
   },
@@ -142,7 +142,7 @@ describe('PreviewIconCell', () => {
     const wrapper = screen.getByTestId('preview-icon-wrapper');
     fireEvent.click(wrapper);
 
-    expect(capEventSettingsStore.setAllocationPreviewModalEntityId).toHaveBeenCalledWith(
+    expect(capEventSettingsStore.setAllocationPreviewModalLineItemId).toHaveBeenCalledWith(
       baseRow.id,
     );
     expect(capEventSettingsStore.setAllocationPreviewModalTitle).toHaveBeenCalledWith(entityKey);
