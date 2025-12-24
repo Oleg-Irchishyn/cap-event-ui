@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.75](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.74&targetVersion=GTv0.0.75) (2025-12-24)
+
+
+### Bug Fixes
+
+* [TASK-9158]: [FE] MF Line Items can be duplicated ([808e94c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/808e94c77c4f528691fdca7453e5549d11b77ab1)), closes [#9158](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9158)
+* fixed incorrect entity id ([46cd8d2](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/46cd8d2d5f4a3534a6883ce9d3e00569b3dc7f69)), closes [#8271](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/8271)
+* tests ([8eef38e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/8eef38e7f3dea005a7141707323039d46baeb7b1))
+
 ### [0.0.74](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.73&targetVersion=GTv0.0.74) (2025-12-23)
 
 
