@@ -22,6 +22,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.name ?? '-';
@@ -32,28 +34,32 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.STATUS.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    maxWidth: 102,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.status ? data.status[0].toUpperCase() + data.status.slice(1).toLowerCase() : '-';
     },
-    maxWidth: 102,
   },
   {
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    maxWidth: 120,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.capEventType?.abbreviation ?? '-';
     },
-    maxWidth: 120,
   },
   {
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.SPONSOR.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.SPONSOR.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.sponsor &&
@@ -68,6 +74,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.FUND_GROUP.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.fundGroup &&
@@ -82,6 +90,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.ENTITIES.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       const items =
@@ -106,6 +116,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-';
@@ -117,6 +129,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_BY.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.createdBy ?? '-';
@@ -127,6 +141,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.TOTAL_AMOUNT.key,
     flex: 1,
     sortable: false,
+    resizable: true,
+    pinned: 'right',
     valueGetter: (params) => {
       const data = params.data as CapEvent;
       return data.totalAmount != null ? formatAmount(data.totalAmount) : '-';
@@ -184,6 +200,7 @@ export const CapEventCollectionTable: FC<Props> = ({ rows, testId = '', isLoadin
       columnDefs={columnDefs}
       rowData={displayRows}
       isLoading={isLoading}
+      height={'calc(100vh - 280px)'}
       noRowsText="No data available"
     />
   );
