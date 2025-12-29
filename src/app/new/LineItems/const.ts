@@ -97,3 +97,11 @@ export const NOTICE_LINE_DESCRIPTION_INPUT_PROPS = {
   name: 'notice-line-description-cell',
   maxLength: TEXT_INPUT_MAX_LENGTH,
 };
+
+export const ALLOCATION_PREVIEW_META_DATA_KEYS = {
+  callDistributionReason: 'Call/Distribution Reason',
+  txnCurrency: 'Txn Currency',
+  investment: 'Investment',
+  amount: 'Amount',
+  allocationBasis: 'Allocation Basis',
+};

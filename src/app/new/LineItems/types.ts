@@ -22,6 +22,18 @@ export type AllocationPreviewTableProps = {
   allocationBasis: string;
 };
 
+export type AllocationPreviewMetaDataType = {
+  callDistributionReason: string;
+  txnCurrency: string;
+  investment: string;
+  amount: string;
+  allocationBasis: string;
+};
+
+export interface AllocationPreviewMetaDataProps {
+  allocationPreviewMetaData: AllocationPreviewMetaDataType | null;
+}
+
 export type AllocationPreviewTableData = {
   optOut?: boolean;
   readOnly: boolean;

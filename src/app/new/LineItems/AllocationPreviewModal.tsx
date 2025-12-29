@@ -1,5 +1,14 @@
 import { FC, useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+
+import { capEventSettingsStore, entityDatesStore } from '@/stores';
+import { CapEventPackageApi } from '@/api';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
+import { getValidDate } from '@/utils/getValidDate';
+import { AllocationInput } from '@/clients/CapEventPackage';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { formatAmount } from '@/utils/formatAmount';
+
 import {
   ModalButtonContainer,
   ModalContainer,
@@ -8,14 +17,10 @@ import {
   ModalWrapper,
   TotalItemsRow,
 } from './styles';
-import { Title } from '../styles';
 import AllocationPreviewTable from './AllocationPreviewTable';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
-import { observer } from 'mobx-react-lite';
-import { CapEventPackageApi } from '@/api';
-import { getValidDate } from '@/utils/getValidDate';
-import { AllocationInput } from '@/clients/CapEventPackage';
-import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { AllocationPreviewMetaDataType } from './types';
+import AllocationPreviewMetaData from './AllocationPreviewMetaData';
+import { Title } from '../styles';
 
 interface AllocationPreviewModalProps {
   entityId: string;
@@ -24,13 +29,16 @@ interface AllocationPreviewModalProps {
 const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) => {
   const [allocationBasis, setAllocationBasis] = useState<string>('');
   const [isDataLoading, setIsDataLoading] = useState(false);
-  const sessionId = getStoredSessionId() ?? '';
+  const [allocationPreviewMetaData, setAllocationPreviewMetaData] =
+    useState<AllocationPreviewMetaDataType | null>(null);
 
+  const sessionId = getStoredSessionId() ?? '';
   const isModalOpen = capEventSettingsStore.isAllocationPreviewModalOpen;
 
   const handleCancel = () => {
     capEventSettingsStore.setAllocationPreviewOpen(false);
     capEventSettingsStore.setAllocationPreviewModalData([]);
+    setAllocationPreviewMetaData(null);
   };
 
   useEffect(() => {
@@ -47,6 +55,17 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
         setIsDataLoading(true);
         if (previewEntityData) {
           setAllocationBasis(previewEntityData.allocationBasis);
+
+          const investmentLabel =
+            (previewEntityData.investment?.title || previewEntityData.investment?.name) ?? '-';
+          const amountLabel = formatAmount(previewEntityData.amount ?? 0);
+          setAllocationPreviewMetaData({
+            callDistributionReason: previewEntityData.callDistributionReason ?? '-',
+            investment: investmentLabel,
+            txnCurrency: 'USD',
+            amount: amountLabel,
+            allocationBasis: previewEntityData.allocationBasis ?? '-',
+          });
 
           if (previewEntityData.isMfLineItem) {
             const { batchNo, originAccountKey } = previewEntityData;
@@ -123,6 +142,7 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
           </ModalButtonContainer>
         </ModalHeader>
         <ModalContent>
+          <AllocationPreviewMetaData allocationPreviewMetaData={allocationPreviewMetaData} />
           <AllocationPreviewTable
             isLoading={isDataLoading}
             allocationBasis={allocationBasis}

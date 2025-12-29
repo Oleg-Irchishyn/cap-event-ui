@@ -513,3 +513,40 @@ export const TotalItemsRow = styled.div({
   fontSize: '14px',
   fontWeight: '400',
 });
+
+export const AllocationPreviewMetaDataWrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: '24px',
+  marginBottom: '32px',
+});
+
+export const AllocationPreviewMetaDataItem = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  maxWidth: '259px',
+  textAlign: 'left',
+});
+
+export const AllocationPreviewMetaDataItemLabel = styled.div({
+  fontSize: '14px',
+  fontWeight: '400',
+  color: theme.colors.accentBlue,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: '100%',
+});
+
+export const AllocationPreviewMetaDataItemValue = styled.div({
+  fontSize: '14px',
+  fontWeight: '500',
+  color: theme.colors.textPrimary,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: '100%',
+});

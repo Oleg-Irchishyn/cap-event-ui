@@ -159,4 +159,47 @@ describe('AllocationPreviewModal', () => {
       expect(capEventSettingsStore.setAllocationPreviewModalData).toHaveBeenCalled(),
     );
   });
+
+  it('displays AllocationPreviewMetaData values from selected line item', async () => {
+    const { capEventSettingsStore, entityDatesStore } = jest.requireMock('@/stores');
+    const { CapEventPackageApi } = jest.requireMock('@/api');
+
+    capEventSettingsStore.isAllocationPreviewModalOpen = true;
+    capEventSettingsStore.allocationPreviewModalTitle = 'Entity X';
+    capEventSettingsStore.allocationPreviewModaLineItemId = 'ROW1';
+    capEventSettingsStore.entitiesLineItem = new Map([
+      [
+        'Entity X',
+        [
+          {
+            id: 'ROW1',
+            isMfLineItem: false,
+            allocationBasis: 'Commitment',
+            amount: -500000,
+            investment: { title: 'Fund I' },
+            callDistributionReason: 'Some reason',
+          },
+        ],
+      ],
+    ]);
+
+    (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date(2025, 0, 1));
+    (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue([]);
+
+    renderWithTheme(<AllocationPreviewModal entityId="ENT1" />);
+
+    expect(screen.getByText('Call/Distribution Reason')).toBeInTheDocument();
+    expect(screen.getByText('Txn Currency')).toBeInTheDocument();
+    expect(screen.getByText('Investment')).toBeInTheDocument();
+    expect(screen.getByText('Amount')).toBeInTheDocument();
+    expect(screen.getByText('Allocation Basis')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Some reason')).toBeInTheDocument();
+      expect(screen.getByText('USD')).toBeInTheDocument();
+      expect(screen.getByText('Fund I')).toBeInTheDocument();
+      expect(screen.getByText('(500,000.00)')).toBeInTheDocument();
+      expect(screen.getByText('Commitment')).toBeInTheDocument();
+    });
+  });
 });
