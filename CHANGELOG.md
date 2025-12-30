@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.76](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.75&targetVersion=GTv0.0.76) (2025-12-30)
+
+
+### Features
+
+* [TASK-9201]: [FE] Display Allocation Preview Header Details ([a9f4316](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a9f4316016992d3fc6043d1eead0ce88b14ef617)), closes [#9201](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9201)
+* resizable collection table ([f6b866a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f6b866a657311ebc1f822ffc70052f2817ec26a0)), closes [#9193](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9193)
+
 ### [0.0.75](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.74&targetVersion=GTv0.0.75) (2025-12-24)
 
 
