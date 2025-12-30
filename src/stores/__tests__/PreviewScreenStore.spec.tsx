@@ -407,4 +407,103 @@ describe('PreviewScreenStore', () => {
     expect(toast.error).toHaveBeenCalledWith('Bad request');
     expect(result).toBeUndefined();
   });
+
+  describe('aggregated line items helpers', () => {
+    it('getAggregatedLineItems filters only isAggregated entries and preserves entity/dueDate', () => {
+      const response = [
+        {
+          id: 'li-1',
+          entity: { id: 'E1', name: 'Entity 1' },
+          dueDate: '2025-11-24',
+          plInvestorEntries: [
+            { customerId: 'INV1', isAggregated: true, any: 1 },
+            { customerId: 'INV2', isAggregated: false, any: 2 },
+          ],
+        },
+        {
+          id: 'li-2',
+          entity: { id: 'E2', name: 'Entity 2' },
+          dueDate: '2025-11-25',
+          plInvestorEntries: [
+            { customerId: 'INV3', isAggregated: true },
+            { customerId: 'INV4', isAggregated: true },
+          ],
+        },
+      ];
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = response;
+
+      const aggregated = store.getAggregatedLineItems();
+      expect(aggregated).toHaveLength(2);
+      expect(aggregated[0]).toEqual(
+        expect.objectContaining({
+          id: 'li-1',
+          entity: expect.objectContaining({ id: 'E1' }),
+          dueDate: '2025-11-24',
+          plInvestorEntries: [expect.objectContaining({ customerId: 'INV1', isAggregated: true })],
+        }),
+      );
+      // first item should not include INV2 (isAggregated: false)
+      expect(aggregated[0].plInvestorEntries).toHaveLength(1);
+
+      expect(aggregated[1]).toEqual(
+        expect.objectContaining({
+          id: 'li-2',
+          entity: expect.objectContaining({ id: 'E2' }),
+          dueDate: '2025-11-25',
+        }),
+      );
+      expect(aggregated[1].plInvestorEntries).toHaveLength(2);
+    });
+
+    it('withAggregatedLineItems merges aggregated items into payload only when present', () => {
+      // with aggregated present
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+        {
+          id: 'x',
+          entity: { id: 'E1' },
+          dueDate: '2025-11-24',
+          plInvestorEntries: [{ isAggregated: true, customerId: 'INV1' }],
+        },
+      ];
+      const basePayload = { id: 'payload-1' } as unknown as Parameters<
+        PreviewScreenStore['withAggregatedLineItems']
+      >[0];
+
+      const merged = store.withAggregatedLineItems(basePayload) as unknown as Record<
+        string,
+        unknown
+      >;
+      expect(merged).toEqual(
+        expect.objectContaining({
+          id: 'payload-1',
+          capEventAggregatedLineItems: expect.any(Array),
+        }),
+      );
+      expect((merged.capEventAggregatedLineItems as unknown[]).length).toBe(1);
+
+      // when aggregated are empty -> returns original payload
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [];
+      const unchanged = store.withAggregatedLineItems(basePayload) as unknown as Record<
+        string,
+        unknown
+      >;
+      expect(unchanged).toEqual(basePayload as unknown as Record<string, unknown>);
+    });
+
+    it('hasAggregatedLineItems reflects presence of aggregated items', () => {
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [];
+      expect(store.hasAggregatedLineItems()).toBe(false);
+
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+        { plInvestorEntries: [{ isAggregated: false }] },
+      ];
+      // filtered -> no aggregated
+      expect(store.hasAggregatedLineItems()).toBe(false);
+
+      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+        { plInvestorEntries: [{ isAggregated: true }] },
+      ];
+      expect(store.hasAggregatedLineItems()).toBe(true);
+    });
+  });
 });

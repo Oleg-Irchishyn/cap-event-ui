@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 
 import { SubmitButtonWrapper } from './styles';
-import { capEventSettingsStore, entityDatesStore } from '@/stores';
+import { capEventSettingsStore, entityDatesStore, previewScreenStore } from '@/stores';
 import {
   CapEvent,
   CapEventStatus,
@@ -119,7 +119,15 @@ const SubmitButton = () => {
           },
         ),
       };
-      const response = await CapEventPackageApi.default.submit(requestBody, sessionId);
+
+      const requestWithAggregatedLineItems =
+        previewScreenStore.withAggregatedLineItems(requestBody);
+
+      const response = await CapEventPackageApi.default.submit(
+        requestWithAggregatedLineItems,
+        sessionId,
+      );
+
       if (response.status === CapEventStatus.SUBMITTED) {
         // Reset selections and dates when leaving the preview screen, till we don't have local data base
         capEventSettingsStore.resetStore();
@@ -141,10 +149,10 @@ const SubmitButton = () => {
         testId="cap-event-submit"
         width="auto"
         onClick={handleSaveCapEvent}
-        disabled={isSubmitting}
+        disabled={isSubmitting || !previewScreenStore.hasAggregatedLineItems()}
         buttonTheme={BUTTON_THEMES.primary}
       >
-        Submit
+        Save
       </Button>
     </SubmitButtonWrapper>
   );

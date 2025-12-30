@@ -1,8 +1,8 @@
 import { PreviewScreenRow } from '@/app/preview-screen/types';
-import { CapEventLineItemResponse, InvestorEntry } from '@/clients/CapEventPackage';
+import { CapEventAggregatedLineItem, InvestorEntry } from '@/clients/CapEventPackage';
 
 export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => {
-  const array = (Array.isArray(items) ? items : []) as CapEventLineItemResponse[];
+  const array = (Array.isArray(items) ? items : []) as CapEventAggregatedLineItem[];
   return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';
     const entityName = item?.entity?.name ?? '';

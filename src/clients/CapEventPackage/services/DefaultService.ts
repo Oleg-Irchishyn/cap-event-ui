@@ -4,9 +4,9 @@
 /* eslint-disable */
 import type { AllocationInput } from '../models/AllocationInput';
 import type { CapEvent } from '../models/CapEvent';
+import type { CapEventAggregatedLineItem } from '../models/CapEventAggregatedLineItem';
 import type { CapEventDraft } from '../models/CapEventDraft';
 import type { CapEventLineItem } from '../models/CapEventLineItem';
-import type { CapEventLineItemResponse } from '../models/CapEventLineItemResponse';
 import type { CapEventStatus } from '../models/CapEventStatus';
 import type { CapEventType } from '../models/CapEventType';
 import type { FundGroupAllocationInput } from '../models/FundGroupAllocationInput';
@@ -160,13 +160,13 @@ export class DefaultService {
      * Process capital event
      * @param requestBody
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
-     * @returns CapEventLineItemResponse List of capital event line items with investor entries
+     * @returns CapEventAggregatedLineItem List of capital event line items with investor entries
      * @throws ApiError
      */
     public process(
         requestBody: CapEvent,
         sessionId?: string,
-    ): CancelablePromise<Array<CapEventLineItemResponse>> {
+    ): CancelablePromise<Array<CapEventAggregatedLineItem>> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/cap-events/process',

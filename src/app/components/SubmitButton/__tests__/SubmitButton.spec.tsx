@@ -95,6 +95,10 @@ jest.mock('@/stores', () => ({
       },
     },
   },
+  previewScreenStore: {
+    hasAggregatedLineItems: jest.fn(() => true),
+    withAggregatedLineItems: jest.fn((payload: unknown) => payload),
+  },
 }));
 
 const renderWithTheme = (ui: React.ReactElement) =>
@@ -110,7 +114,8 @@ describe('SubmitButton', () => {
 
     const button = screen.getByTestId('cap-event-submit');
     expect(button).toBeInTheDocument();
-    expect(screen.getByText('Submit')).toBeInTheDocument();
+    expect(screen.getByText('Save')).toBeInTheDocument();
+    expect(button).not.toBeDisabled();
   });
 
   it('calls API and shows success toast when submission is successful', async () => {
@@ -179,5 +184,17 @@ describe('SubmitButton', () => {
     await waitFor(() => {
       expect(button).not.toBeDisabled();
     });
+  });
+
+  it('disables submit when aggregated line items are not ready', () => {
+    const stores = require('@/stores');
+    stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(false);
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('cap-event-submit');
+    expect(button).toBeDisabled();
+
+    stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(true);
   });
 });

@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CapEvent } from './CapEvent';
-import type { CapEventLineItemResponse } from './CapEventLineItemResponse';
+import type { CapEventAggregatedLineItem } from './CapEventAggregatedLineItem';
 export type InvestorDocumentInput = {
     capEvent: CapEvent;
-    lineItem: CapEventLineItemResponse;
+    lineItem: CapEventAggregatedLineItem;
 };
 

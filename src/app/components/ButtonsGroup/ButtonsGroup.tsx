@@ -96,7 +96,11 @@ const ButtonsGroup = () => {
     try {
       const payload = previewScreenStore.buildPayload(true);
       if (payload) {
-        const response = await CapEventPackageApi.default.createDraft(payload);
+        const requestWithAggregatedLineItems = previewScreenStore.withAggregatedLineItems(payload);
+
+        const response = await CapEventPackageApi.default.createDraft(
+          requestWithAggregatedLineItems,
+        );
         if (response) {
           toast.success('Successfully Saved');
           router.push(ROUTES.MAIN.path);
@@ -188,8 +192,8 @@ const ButtonsGroup = () => {
             Delete Capital Event
           </Button>
           <Button
-            testId="save-draft"
             style={{ display: 'none' }}
+            testId="save-draft"
             disabled={isSaveDraftDisabled}
             width="auto"
             onClick={handleSaveDraft}

@@ -13,7 +13,7 @@ import {
   Sponsor as ApiSponsor,
   FundGroup as ApiFundGroup,
   CapEventType as ApiCapEventType,
-  CapEventLineItemResponse,
+  CapEventAggregatedLineItem,
   InvestorDocumentInput,
 } from '@/clients/CapEventPackage';
 import { Account as RefAccount, Investment as RefInvestment } from '@/clients/ReferenceData';
@@ -37,7 +37,7 @@ class PreviewScreenStore {
   rows: PreviewScreenRow[] = [];
   isLoading = false;
   private inFlightProcess: Promise<PreviewScreenRow[]> | null = null;
-  private lastProcessResponse: CapEventLineItemResponse[] = [];
+  private lastProcessResponse: CapEventAggregatedLineItem[] = [];
   private lastCapEvent: CapEvent | null = null;
 
   constructor(root: RootStore) {
@@ -316,7 +316,6 @@ class PreviewScreenStore {
   }
 
   buildPayload(isDraft?: boolean): CapEvent | null {
-    // Selected general settings (using helpers)
     const selectedTypeItem = this.getSelectedSingle(this.root.capEventSettingsStore.eventTypes);
     const selectedSponsorItem = this.getSelectedSingle(this.root.capEventSettingsStore.sponsors);
     const selectedFundGroupItem = this.getSelectedSingle(
@@ -429,6 +428,31 @@ class PreviewScreenStore {
     return this.inFlightProcess;
   }
 
+  public getAggregatedLineItems(): Array<CapEventAggregatedLineItem> {
+    const source = Array.isArray(this.lastProcessResponse) ? this.lastProcessResponse : [];
+    return source.map((item) => ({
+      id: item?.id,
+      entity: item?.entity,
+      dueDate: item?.dueDate,
+      plInvestorEntries: (Array.isArray(item?.plInvestorEntries)
+        ? item.plInvestorEntries
+        : []
+      ).filter((e) => !!e && e.isAggregated),
+    }));
+  }
+
+  public withAggregatedLineItems(payload: CapEvent) {
+    const aggregated = this.getAggregatedLineItems();
+    if (!aggregated || aggregated.length === 0) return payload;
+    return { ...payload, capEventAggregatedLineItems: aggregated };
+  }
+
+  public hasAggregatedLineItems(): boolean {
+    return this.getAggregatedLineItems().some(
+      (item) => Array.isArray(item.plInvestorEntries) && item.plInvestorEntries.length > 0,
+    );
+  }
+
   async fetchDoc(
     selectedRow: PreviewScreenRow | null | undefined,
     toast?: ToastApi,
@@ -465,7 +489,7 @@ class PreviewScreenStore {
         return;
       }
 
-      const lineItem: CapEventLineItemResponse = {
+      const lineItem: CapEventAggregatedLineItem = {
         ...entityLineItem,
         plInvestorEntries: filteredEntries,
       };

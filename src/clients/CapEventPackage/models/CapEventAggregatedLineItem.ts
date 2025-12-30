@@ -4,7 +4,8 @@
 /* eslint-disable */
 import type { Entity } from './Entity';
 import type { InvestorEntry } from './InvestorEntry';
-export type CapEventLineItemResponse = {
+export type CapEventAggregatedLineItem = {
+    id?: string;
     entity?: Entity;
     dueDate?: string;
     plInvestorEntries?: Array<InvestorEntry>;

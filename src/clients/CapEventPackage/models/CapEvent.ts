@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CapEventAggregatedLineItem } from './CapEventAggregatedLineItem';
 import type { CapEventEntityLineItem } from './CapEventEntityLineItem';
 import type { CapEventFundGroupLineItem } from './CapEventFundGroupLineItem';
 import type { CapEventStatus } from './CapEventStatus';
@@ -25,6 +26,7 @@ export type CapEvent = {
     footnotes?: Record<string, string>;
     capEventFundGroupLineItems?: Array<CapEventFundGroupLineItem>;
     capEventEntityLineItems?: Array<CapEventEntityLineItem>;
+    capEventAggregatedLineItems?: Array<CapEventAggregatedLineItem>;
     totalAmount?: number;
     createdAt?: string;
     createdBy?: string;

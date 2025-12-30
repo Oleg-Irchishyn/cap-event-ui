@@ -5,6 +5,7 @@
 import type { Account } from './Account';
 import type { Investment } from './Investment';
 export type InvestorEntry = {
+    id?: string;
     account?: Account;
     investment?: Investment;
     optOut?: boolean;
@@ -33,5 +34,6 @@ export type InvestorEntry = {
     dataPoints?: string;
     isAggregated?: boolean;
     lineItemAmount?: number;
+    fileId?: string;
 };
 
