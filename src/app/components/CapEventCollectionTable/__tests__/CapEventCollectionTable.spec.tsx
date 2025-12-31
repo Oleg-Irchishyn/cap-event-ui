@@ -5,6 +5,8 @@ import { CapEventCollectionTable } from '../CapEventCollectionTable';
 import { CapEvent, CapEventStatus } from '@/clients/CapEventPackage';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 
+let lastColumnDefs: ColDef[] | null = null;
+
 // Mock ConfigurationTable
 jest.mock('@/app/components/ConfigurationTable', () => {
   return function MockConfigurationTable({
@@ -20,6 +22,7 @@ jest.mock('@/app/components/ConfigurationTable', () => {
     testId?: string;
     noRowsText?: string;
   }) {
+    lastColumnDefs = columnDefs;
     if (isLoading) {
       return <div data-testid={testId}>Loading...</div>;
     }
@@ -137,7 +140,41 @@ describe('CapEventCollectionTable', () => {
       expect(screen.getByTestId('table-test-table')).toBeInTheDocument();
     });
 
-    // Should show "No data available" message
     expect(screen.getByText('No data available')).toBeInTheDocument();
+  });
+
+  it('configures Total Amount column for numeric sorting', async () => {
+    const mockEvents: CapEvent[] = [
+      createMockCapEvent({ id: '1', totalAmount: 100 }),
+      createMockCapEvent({ id: '2', totalAmount: 2 }),
+    ];
+
+    render(<CapEventCollectionTable rows={mockEvents} testId="test-table" />);
+
+    await waitFor(() => {
+      expect(lastColumnDefs).not.toBeNull();
+    });
+
+    const totalAmountCol = lastColumnDefs!.find((c) => c.field === 'totalAmount');
+    expect(totalAmountCol).toBeTruthy();
+    expect(totalAmountCol!.sortable).toBe(true);
+    expect(typeof totalAmountCol!.valueGetter).toBe('function');
+    expect(typeof totalAmountCol!.valueFormatter).toBe('function');
+
+    const v1 = (totalAmountCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { totalAmount: 100 },
+    } as unknown as ValueGetterParams);
+    const v2 = (totalAmountCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { totalAmount: 2 },
+    } as unknown as ValueGetterParams);
+
+    expect(typeof v1).toBe('number');
+    expect(typeof v2).toBe('number');
+    expect(v1 as number).toBeGreaterThan(v2 as number);
+
+    const f1 = (totalAmountCol!.valueFormatter as (p: { value: unknown }) => unknown)({
+      value: v1 as unknown,
+    });
+    expect(typeof f1).toBe('string');
   });
 });

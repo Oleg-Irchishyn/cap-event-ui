@@ -8,11 +8,11 @@ export const TableHeaderWithTooltip = (props: IHeaderParams) => {
   const [showTooltip, setTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const { displayName, column } = props;
+  const { displayName, column, innerHeaderComponentParams } = props;
 
-  const headerComponentParams = column?.getColDef().headerComponentParams;
-  const tooltipMessage = headerComponentParams?.tooltipMessage ?? '';
-  const headerAlignment = headerComponentParams?.headerAlignment;
+  const params = innerHeaderComponentParams ?? column?.getColDef().headerComponentParams;
+  const tooltipMessage = params?.tooltipMessage ?? '';
+  const headerAlignment = params?.headerAlignment;
 
   return (
     <HeaderWrapper $headerAlignment={headerAlignment}>

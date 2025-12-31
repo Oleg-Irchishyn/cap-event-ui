@@ -30,7 +30,7 @@ export const TruncatedTextCell: FC<TruncatedTextCellParams> = (params) => {
   const textRef = useRef<HTMLSpanElement>(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
-  const displayValue = params.value ?? '-';
+  const displayValue = params.valueFormatted ?? params.value ?? '-';
   const valueString = String(displayValue);
   const textAlign = params.textAlign ?? 'start';
 

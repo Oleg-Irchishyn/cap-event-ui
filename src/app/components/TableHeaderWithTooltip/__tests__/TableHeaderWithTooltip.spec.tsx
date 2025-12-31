@@ -43,4 +43,20 @@ describe('TableHeaderWithTooltip', () => {
     fireEvent.mouseLeave(icon);
     expect(screen.queryByTestId('tooltip')).not.toBeInTheDocument();
   });
+
+  it('prefers innerHeaderComponentParams over headerComponentParams', () => {
+    const innerProps: Partial<IHeaderParams> = {
+      displayName: 'Amount',
+      innerHeaderComponentParams: { tooltipMessage: 'inner tooltip' },
+      column: {
+        getColDef: () => ({ headerComponentParams: { tooltipMessage: 'outer tooltip' } }),
+      } as Column,
+    };
+
+    renderWithTheme(<TableHeaderWithTooltip {...(innerProps as IHeaderParams)} />);
+    const icon = screen.getByTestId('help-icon');
+
+    fireEvent.mouseEnter(icon);
+    expect(screen.getByTestId('tooltip')).toHaveTextContent('inner tooltip');
+  });
 });

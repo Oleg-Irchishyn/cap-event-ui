@@ -21,8 +21,10 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CAPITAL_EVENT.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
+    sort: 'asc',
+    sortIndex: 0,
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
@@ -33,7 +35,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.STATUS.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.STATUS.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     maxWidth: 102,
     valueGetter: (params) => {
@@ -45,7 +47,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.EVENT_TYPE.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     maxWidth: 120,
     valueGetter: (params) => {
@@ -57,7 +59,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.SPONSOR.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.SPONSOR.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
@@ -73,7 +75,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.FUND_GROUP.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.FUND_GROUP.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
@@ -89,7 +91,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.ENTITIES.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.ENTITIES.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
@@ -115,7 +117,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
@@ -128,7 +130,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_BY.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_BY.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
@@ -140,16 +142,19 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.TOTAL_AMOUNT.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.TOTAL_AMOUNT.key,
     flex: 1,
-    sortable: false,
+    sortable: true,
     resizable: true,
     pinned: 'right',
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.totalAmount != null ? formatAmount(data.totalAmount) : '-';
+      return data.totalAmount ?? null;
     },
-    headerComponent: TableHeaderWithTooltip,
+    valueFormatter: (params) => (params.value != null ? formatAmount(params.value as number) : '-'),
     headerComponentParams: {
-      headerAlignment: 'flex-end',
+      innerHeaderComponent: TableHeaderWithTooltip,
+      innerHeaderComponentParams: {
+        headerAlignment: 'flex-end',
+      },
     },
     cellRendererParams: {
       textAlign: 'end',

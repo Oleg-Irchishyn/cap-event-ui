@@ -84,7 +84,6 @@ const EntityLineItems = () => {
             ]
           }
         />
-        <AllocationPreviewModal entityId={fund.id ?? ''} />
       </Fragment>
     ));
   };
@@ -95,6 +94,11 @@ const EntityLineItems = () => {
       entityDatesStore.hasDifferentDates,
       entitiesToUse,
     ) || !capEventSettingsStore.isNoticeDateValid;
+
+  const previewEntityId =
+    capEventSettingsStore.fundEntities.find(
+      (e) => e.label === capEventSettingsStore.allocationPreviewModalTitle,
+    )?.id ?? '';
 
   return (
     <>
@@ -110,6 +114,7 @@ const EntityLineItems = () => {
           />
         )}
       </BackgroundContainer>
+      <AllocationPreviewModal entityId={previewEntityId} />
     </>
   );
 };
