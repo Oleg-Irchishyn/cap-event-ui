@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.77](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.76&targetVersion=GTv0.0.77) (2025-12-31)
+
+
+### Features
+
+* [TASK-9322]: [FE] update payload for Save Cap Event endpoint ([138474a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/138474a2491c5d8064ee5e6cdadd4133fb0bb8b3)), closes [#9322](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9322)
+
 ### [0.0.76](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.75&targetVersion=GTv0.0.76) (2025-12-30)
 
 
