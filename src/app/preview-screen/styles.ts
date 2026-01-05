@@ -61,40 +61,15 @@ const ModalContent = styled.div({
   minHeight: 0, // Allow flex item to shrink below content size
 });
 
-const ModalButtonContainer = styled.div({
-  display: 'flex',
-  gap: '8px',
-  justifyContent: 'flex-end',
-});
-
-const DocxContainer = styled.div(({ theme }) => ({
+const PreviewContainer = styled.div({
   position: 'relative',
-  flex: 1,
-  overflow: 'auto',
+  overflow: 'hidden',
   margin: '16px 0',
-
-  '&::-webkit-scrollbar': {
-    width: '7px',
-    height: '7px',
-    backgroundColor: 'transparent',
-  },
-
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: `${theme.colors.gray300}`,
-    borderRadius: '10px',
-  },
-
-  '& .docx-preview-wrapper': {
-    background: `${theme.colors.white100}`,
-    padding: 0,
-    marginBottom: 0,
-  },
-
-  '& .docx-preview-wrapper>section.docx-preview': {
-    boxShadow: 'none',
-    borderRadius: '4px',
-  },
-}));
+  minHeight: 0,
+  height: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+});
 
 const LoaderWrapper = styled.div({
   display: 'flex',
@@ -124,8 +99,7 @@ const PreviewLoader = styled.span`
 `;
 
 export {
-  DocxContainer,
-  ModalButtonContainer,
+  PreviewContainer,
   ModalCloseButton,
   ModalContainer,
   ModalContent,

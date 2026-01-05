@@ -20,6 +20,7 @@ const PreviewScreenDetails = () => {
   const [rows, setRows] = useState<PreviewScreenRow[]>([]);
   const [selectedRow, setSelectedRow] = useState<PreviewScreenRow | null>(null);
   const [noticePreviewDoc, setNoticePreviewDoc] = useState<Blob | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [subTotalRows, setSubTotalRows] = useState<SubTotalTableRow[]>([]);
 
   useEffect(() => {
@@ -51,12 +52,14 @@ const PreviewScreenDetails = () => {
   const onRowClicked = async (e: RowClickedEvent) => {
     if (e.data?.isAggregated) {
       setSelectedRow(e.data);
+      setIsLoadingPreview(true);
       const blob = await previewScreenStore.fetchDoc(e.data, toast);
       if (blob) {
         setNoticePreviewDoc(blob);
       } else {
         closeModal();
       }
+      setIsLoadingPreview(false);
     }
   };
 
@@ -89,6 +92,7 @@ const PreviewScreenDetails = () => {
           noticePreviewDoc={noticePreviewDoc}
           closeModal={closeModal}
           selectedRow={selectedRow}
+          isLoading={isLoadingPreview}
         />
       )}
     </>

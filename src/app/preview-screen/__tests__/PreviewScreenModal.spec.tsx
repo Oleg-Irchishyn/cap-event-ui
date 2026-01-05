@@ -1,17 +1,21 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';
 import { PreviewScreenRow } from '@/app/preview-screen/types';
 
-jest.mock('docx-preview', () => ({
-  renderAsync: jest.fn().mockResolvedValue(undefined),
-}));
-
-const { renderAsync } = jest.requireMock('docx-preview');
-
 const mockCloseModal = jest.fn();
+
+const mockCreateObjectURL = jest.fn();
+const mockRevokeObjectURL = jest.fn();
+
+global.URL.createObjectURL = mockCreateObjectURL;
+global.URL.revokeObjectURL = mockRevokeObjectURL;
+
+const createTestBlob = (data: BlobPart, type: string) => {
+  return new Blob([data], { type: type });
+};
 
 const mockSelectedRow: PreviewScreenRow = {
   id: 'test-id',
@@ -27,6 +31,7 @@ const renderWithTheme = (
   selectedRow: PreviewScreenRow | null = mockSelectedRow,
   closeModal = mockCloseModal,
   noticePreviewDoc: Blob | null = null,
+  isLoading: boolean = false,
 ) =>
   render(
     <ThemeProvider theme={theme}>
@@ -34,6 +39,7 @@ const renderWithTheme = (
         selectedRow={selectedRow}
         closeModal={closeModal}
         noticePreviewDoc={noticePreviewDoc}
+        isLoading={isLoading}
       />
     </ThemeProvider>,
   );
@@ -41,6 +47,7 @@ const renderWithTheme = (
 describe('PreviewScreenModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCreateObjectURL.mockReturnValue('blob:mock-url');
   });
 
   it('renders modal with correct title', () => {
@@ -73,39 +80,17 @@ describe('PreviewScreenModal', () => {
   });
 
   it('shows loader when noticePreviewDoc is null', async () => {
-    renderWithTheme(mockSelectedRow, mockCloseModal, null);
+    renderWithTheme(mockSelectedRow, mockCloseModal, null, true);
 
     expect(await screen.findByTestId('loader-preview-screen-modal')).toBeInTheDocument();
   });
 
-  it('renders docx content container', () => {
-    renderWithTheme();
+  it('renders pdf content container', async () => {
+    const blob = createTestBlob('test-blob', 'application/pdf');
+    renderWithTheme(mockSelectedRow, mockCloseModal, blob, false);
 
-    expect(screen.getByTestId('docx-preview-screen-modal')).toBeInTheDocument();
-  });
-
-  it('calls docx renderer and hides loader after render resolves', async () => {
-    const doc = new Blob(['test'], {
-      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    });
-
-    renderWithTheme(mockSelectedRow, mockCloseModal, doc);
-
-    // Loader appears while rendering
-    expect(await screen.findByTestId('loader-preview-screen-modal')).toBeInTheDocument();
-
-    // Renderer is called with provided doc
-    expect(renderAsync).toHaveBeenCalledTimes(1);
-    expect(renderAsync).toHaveBeenCalledWith(
-      doc,
-      expect.any(HTMLElement),
-      undefined,
-      expect.objectContaining({ className: 'docx-preview' }),
-    );
-
-    // After render resolves, loader disappears
-    await waitFor(() => {
-      expect(screen.queryByTestId('loader-preview-screen-modal')).not.toBeInTheDocument();
-    });
+    expect(mockCreateObjectURL).toHaveBeenCalled();
+    const iframe = screen.getByTestId('pdf-preview-screen-modal');
+    expect(iframe).toBeInTheDocument();
   });
 });
