@@ -1,4 +1,6 @@
-export const allowedFormats = new Set([
+export const baseFormats = new Set(['docx', 'pdf']);
+
+export const extendedFormats = new Set([
   // Document formats
   'doc',
   'docx',

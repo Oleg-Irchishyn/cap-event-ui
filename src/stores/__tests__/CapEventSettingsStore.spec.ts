@@ -45,6 +45,7 @@ import { ReferenceDataApi } from '@/api';
 import type { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import type { Attachment, DragNDropError } from '@/app/new/attachments/types';
 import RootStore from '@/stores/RootStore';
+import { COVER_PAGES_ATTACHMENT_TYPE } from '@/const/attachments';
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -630,7 +631,9 @@ describe('CapEventSettingsStore', () => {
       store.setNoticeDate(new Date());
       store.setIsNoticeDateValid(false);
 
-      store.setAttachments([{ file: { name: 'a.pdf' }, checked: true } as unknown as Attachment]);
+      store.setAttachments(COVER_PAGES_ATTACHMENT_TYPE, [
+        { file: { name: 'a.pdf' } } as unknown as Attachment,
+      ]);
       store.setAttachmentErrors([{ message: 'test' } as unknown as DragNDropError]);
 
       store.setFundGroupsLineItem([
@@ -658,7 +661,11 @@ describe('CapEventSettingsStore', () => {
       expect(store.noticeDate).toBeNull();
       expect(store.isNoticeDateValid).toBe(true);
 
-      expect(store.attachments).toEqual([]);
+      expect(Array.from(store.attachments)).toEqual([
+        ['coverPages', []],
+        ['addendums', []],
+        ['additionalSupportiveFiles', []],
+      ]);
       expect(store.attachmentErrors).toEqual([]);
 
       expect(store.fundGroupsLineItem).toHaveLength(1);

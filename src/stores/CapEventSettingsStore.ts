@@ -1,7 +1,7 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Attachment } from '@/app/new/attachments/types';
-import type { DragNDropError } from '@/app/new/attachments/types';
+import type { AttachmentType, DragNDropError } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
 import { Account, AllocationBasis, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
@@ -15,6 +15,11 @@ import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { showErrorToast } from '@/utils/showErrorToast';
 import RootStore from '@/stores/RootStore';
 import { isRowEmpty } from '@/utils/isRowEmpty';
+import {
+  ADDENDUMS_ATTACHMENT_TYPE,
+  ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  COVER_PAGES_ATTACHMENT_TYPE,
+} from '@/const/attachments';
 
 const selectedFilterCallback = (item: DropdownItemType) => item.state === ITEM_STATES.SELECTED;
 
@@ -33,7 +38,11 @@ class CapEventSettingsStore {
   isNoticeDateValid: boolean = true;
   entitiesSelectedCountSnapshot: number | null = null;
 
-  attachments: Attachment[] = [];
+  attachments = new Map<AttachmentType, Attachment[]>([
+    [COVER_PAGES_ATTACHMENT_TYPE, [] as Attachment[]],
+    [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+    [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+  ]);
 
   // Line Items
   fundGroupsLineItem: LineItemRow[] = [prepareNewRow(LineItemTypes.group)];
@@ -285,15 +294,8 @@ class CapEventSettingsStore {
     this.isNoticeDateValid = value;
   }
 
-  setAttachments(attachments: Attachment[]) {
-    this.attachments = attachments;
-  }
-
-  toggleAttachmentCheckbox(id: string) {
-    const item = this.attachments.find((att) => att.file.name === id);
-    if (item) {
-      item.checked = !item.checked;
-    }
+  setAttachments(areaId: AttachmentType, attachments: Attachment[]) {
+    this.attachments.set(areaId, attachments);
   }
 
   setEntitiesDropdownOpen(isOpen: boolean) {
@@ -462,7 +464,11 @@ class CapEventSettingsStore {
     this.entitiesSelectedCountSnapshot = null;
     this.noticeDate = null;
     this.isNoticeDateValid = true;
-    this.attachments = [];
+    this.attachments = new Map([
+      [COVER_PAGES_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
     this.attachmentErrors = [];
     this.comment = '';
     this.entitiesLineItem = new Map();

@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+export const Container = styled.div({
+  minWidth: 0,
+  display: 'flex',
+  flexDirection: 'column',
+});
+
 export const AttachmentsHeader = styled.div({
   display: 'flex',
   justifyContent: 'space-between',
@@ -9,6 +15,8 @@ export const AttachmentsHeader = styled.div({
 export const AttachmentsHeaderGroup = styled.div({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '24px',
 });
 
 export const AttachmentsHint = styled.div(({ theme }) => ({
@@ -58,6 +66,12 @@ export const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
+export const DropAreaTitle = styled.div({
+  display: 'flex',
+  fontSize: '16px',
+  fontWeight: 500,
+});
+
 export const EmptyFileAreaContainer = styled('div')({
   display: 'flex',
   alignItems: 'center',
@@ -87,19 +101,36 @@ export const BrowseLabel = styled.label(({ theme }) => ({
 }));
 
 export const DropAreaContainer = styled.div(({ theme }) => ({
+  position: 'relative',
   padding: '24px',
   border: `1px dashed ${theme.colors.gray500}`,
   borderRadius: '8px',
   textAlign: 'center',
-  marginTop: '24px',
+  marginTop: '16px',
+  minHeight: '54px',
+  flex: '1 1 auto',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
   '&[data-is-drag-over="true"]': {
     backgroundColor: theme.colors.skyBlue,
     border: `1px dashed ${theme.colors.accentBlue}`,
     opacity: 1,
   },
-  '&[data-file-count="true"]': {
-    textAlign: 'left',
+  '&[data-files-count="true"]': {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
+}));
+
+export const DropAreaCover = styled.div(({ theme }) => ({
+  position: 'absolute',
+  opacity: 0.5,
+  background: theme.colors.gray100,
+  top: 0,
+  bottom: 0,
+  right: 0,
+  left: 0,
 }));
 
 export const FileListStyled = styled.div({
@@ -195,7 +226,45 @@ export const ItemCheckbox = styled.input.attrs({ type: 'checkbox' })({
   },
 });
 
+export const DropAreaWrapper = styled.div({
+  display: 'grid',
+  gridTemplateColumns: '1fr 48px 1fr',
+  gap: '16px',
+  alignItems: 'stretch',
+  marginBottom: '24px',
+});
+
+export const DropAreaDividerBoxContainer = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+});
+
+export const DropAreaDividerBox = styled.div(({ theme }) => ({
+  padding: '20px 12px',
+  border: `1px dashed ${theme.colors.gray500}`,
+  borderRadius: '8px',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '104px',
+  boxSizing: 'border-box',
+  marginTop: '45px',
+}));
+
 // Icons
+
+export const PDFIcon = styled.img.attrs({
+  src: '/cap-event/icons/pdf-icon.svg',
+})({
+  width: '21px',
+  height: '28px',
+  marginBottom: '8px',
+});
+export const DOCXIcon = styled.img.attrs({
+  src: '/cap-event/icons/docx-icon.svg',
+})({
+  width: '21px',
+  height: '28px',
+});
 
 export const DownloadArrowIcon = styled.img.attrs({
   src: '/cap-event/icons/download-arrow.svg',
@@ -221,4 +290,16 @@ export const DragIcon = styled.img.attrs({
   '&[data-hovered="true"]': {
     opacity: 1,
   },
+});
+
+export const IconWrapper = styled.span({
+  display: 'flex',
+  marginLeft: '5px',
+});
+
+export const HelpIcon = styled.img.attrs({
+  src: 'icons/help-icon.svg',
+})({
+  width: '15px',
+  height: '15px',
 });

@@ -4,11 +4,16 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 import AddFilesButton from '@/app/new/attachments/AddFilesButton';
 import { capEventSettingsStore } from '@/stores';
-import type { Attachment } from '@/app/new/attachments/types';
+import type { Attachment, AttachmentType } from '@/app/new/attachments/types';
+import {
+  ADDENDUMS_ATTACHMENT_TYPE,
+  ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  COVER_PAGES_ATTACHMENT_TYPE,
+} from '@/const/attachments';
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
-    attachments: [],
+    attachments: new Map(),
   },
 }));
 
@@ -17,11 +22,16 @@ const renderWithTheme = (ui: React.ReactElement) =>
 
 describe('AddFilesButton', () => {
   beforeEach(() => {
-    (capEventSettingsStore as { attachments: Attachment[] }).attachments = [];
+    (capEventSettingsStore as { attachments: Map<AttachmentType, Attachment[]> }).attachments =
+      new Map([
+        [COVER_PAGES_ATTACHMENT_TYPE, [] as unknown as Attachment[]],
+        [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+        [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+      ]);
   });
 
   it('renders Browse with correct accept formats', () => {
-    renderWithTheme(<AddFilesButton updatedFileList={jest.fn()} />);
+    renderWithTheme(<AddFilesButton areaId="addendums" updatedFileList={jest.fn()} />);
 
     const fileInput = screen.getByLabelText(/Browse/i) as HTMLInputElement;
 
@@ -33,11 +43,21 @@ describe('AddFilesButton', () => {
 
   it('calls updatedFileList with existing and newly selected files', () => {
     const updatedFileList = jest.fn();
-    (capEventSettingsStore as { attachments: Attachment[] }).attachments = [
-      { file: new File(['a'], 'existing.pdf', { type: 'application/pdf' }), checked: false },
-    ];
+    (capEventSettingsStore as { attachments: Map<AttachmentType, Attachment[]> }).attachments =
+      new Map([
+        [
+          COVER_PAGES_ATTACHMENT_TYPE,
+          [
+            { file: new File(['a'], 'existing.pdf', { type: 'application/pdf' }) },
+          ] as unknown as Attachment[],
+        ],
+        [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+        [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+      ]);
 
-    renderWithTheme(<AddFilesButton updatedFileList={updatedFileList} />);
+    renderWithTheme(
+      <AddFilesButton areaId={COVER_PAGES_ATTACHMENT_TYPE} updatedFileList={updatedFileList} />,
+    );
 
     const input = screen.getByLabelText(/Browse/i) as HTMLInputElement;
     const file1 = new File(['x'], 'new1.pdf', { type: 'application/pdf' });
@@ -62,7 +82,9 @@ describe('AddFilesButton', () => {
   });
 
   it('renders Browse label and helper text', () => {
-    renderWithTheme(<AddFilesButton updatedFileList={jest.fn()} />);
+    renderWithTheme(
+      <AddFilesButton areaId={COVER_PAGES_ATTACHMENT_TYPE} updatedFileList={jest.fn()} />,
+    );
 
     expect(screen.getByText(/Browse/i)).toBeInTheDocument();
     expect(screen.getByText(/Drop file\(s\) here or/i)).toBeInTheDocument();

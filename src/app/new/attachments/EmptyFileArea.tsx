@@ -1,18 +1,23 @@
 import AddFilesButton from './AddFilesButton';
 import { DownloadArrowIcon, DropdownHint, EmptyFileAreaContainer } from './styles';
-import { Attachment } from './types';
+import { Attachment, AttachmentType } from './types';
 
 interface EmptyFileAreaProps {
+  areaId: AttachmentType;
   updatedFileList: (fileList: Attachment[]) => void;
 }
 
-const EmptyFileArea: React.FC<EmptyFileAreaProps> = ({ updatedFileList }) => (
+const EmptyFileArea: React.FC<EmptyFileAreaProps> = ({ areaId, updatedFileList }) => (
   <div>
     <EmptyFileAreaContainer>
-      <DownloadArrowIcon />
-      <AddFilesButton updatedFileList={updatedFileList} />
+      <DownloadArrowIcon alt="download-icon" />
+      <AddFilesButton areaId={areaId} updatedFileList={updatedFileList} />
     </EmptyFileAreaContainer>
-    <DropdownHint>Max 20 files; Up to 5MB per file</DropdownHint>
+    <DropdownHint>
+      {areaId === 'additionalSupportiveFiles'
+        ? ''
+        : 'Select file(s) that have to be added to the Notices (only .DOCX and .PDF formats)'}
+    </DropdownHint>
   </div>
 );
 

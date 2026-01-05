@@ -6,15 +6,12 @@ import {
   FileNameWrapper,
   FileNumber,
   IconButton,
-  ItemCheckbox,
   TrashIcon,
 } from './styles';
-import { capEventSettingsStore } from '@/stores';
 import Tooltip from '@/app/components/Tooltip';
 
 export type ItemProps = HTMLAttributes<HTMLDivElement> & {
   id: string;
-  checked: boolean;
   fileNumber: number;
   withOpacity?: boolean;
   isDragging?: boolean;
@@ -25,7 +22,6 @@ export type ItemProps = HTMLAttributes<HTMLDivElement> & {
 
 const Item = ({
   id,
-  checked,
   withOpacity,
   isDragging,
   style,
@@ -40,13 +36,8 @@ const Item = ({
 
   const spanRef = useRef(null);
 
-  const filesWithCheckbox = ['pdf', 'docx'];
   const fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
   const fileExtension = fileName.split('.').at(-1);
-
-  const handleCheckboxClick = () => {
-    capEventSettingsStore.toggleAttachmentCheckbox(id);
-  };
 
   return (
     <FileListItem
@@ -59,17 +50,6 @@ const Item = ({
       onMouseLeave={() => setHovered(false)}
     >
       <DragIcon draggable={false} data-hovered={hovered} {...props} />
-      {fileExtension && filesWithCheckbox.includes(fileExtension) && (
-        <ItemCheckbox
-          style={{
-            width: '16px',
-            height: '16px',
-          }}
-          checked={checked}
-          onChange={handleCheckboxClick}
-          title={checked ? 'Uncheck for deleting from Notices' : 'Check for adding to Notices'}
-        />
-      )}
       <FileNumber>{fileNumber}</FileNumber>
       <FileNameWrapper>
         <FileName

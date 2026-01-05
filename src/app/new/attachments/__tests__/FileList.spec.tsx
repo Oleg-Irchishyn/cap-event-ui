@@ -4,10 +4,18 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 import FileList from '@/app/new/attachments/FileList';
 import { capEventSettingsStore } from '@/stores';
+import { Attachment, AttachmentType } from '../types';
+import {
+  ADDENDUMS_ATTACHMENT_TYPE,
+  ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  COVER_PAGES_ATTACHMENT_TYPE,
+} from '@/const/attachments';
+
 jest.mock('@/app/new/attachments/SortableItem', () => {
   const Component = ({ id }: { id: string }) => <div data-testid="sortable-item">{id}</div>;
   return { __esModule: true, default: Component };
 });
+
 jest.mock('@/app/new/attachments/AddFilesButton', () => ({
   __esModule: true,
   default: () => <button data-testid="add-files-button" />,
@@ -15,7 +23,7 @@ jest.mock('@/app/new/attachments/AddFilesButton', () => ({
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
-    attachments: [],
+    attachments: new Map(),
   },
 }));
 
@@ -24,20 +32,28 @@ const renderWithTheme = (ui: React.ReactElement) =>
 
 describe('FileList', () => {
   beforeEach(() => {
-    type MockStore = { attachments: Array<{ file: { name: string }; checked: boolean }> };
-    (capEventSettingsStore as unknown as MockStore).attachments = [];
+    type MockStore = { attachments: Map<AttachmentType, Attachment[]> };
+    (capEventSettingsStore as unknown as MockStore).attachments = new Map([
+      [COVER_PAGES_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
   });
 
   it('renders SortableItem for each attachment', () => {
-    type MockStore = { attachments: Array<{ file: { name: string }; checked: boolean }> };
-    (capEventSettingsStore as unknown as MockStore).attachments = [
-      { file: { name: 'a.pdf' }, checked: true },
-      { file: { name: 'b.pdf' }, checked: false },
-    ];
+    type MockStore = { attachments: Map<AttachmentType, Attachment[]> };
+    (capEventSettingsStore as unknown as MockStore).attachments = new Map([
+      [
+        COVER_PAGES_ATTACHMENT_TYPE,
+        [{ file: { name: 'a.pdf' } }, { file: { name: 'b.pdf' } }] as unknown as Attachment[],
+      ],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
 
     renderWithTheme(
       <FileList
-        checkedFilesNumber={1}
+        areaId={COVER_PAGES_ATTACHMENT_TYPE}
         handleDragEnd={jest.fn()}
         handleRemoveFile={jest.fn()}
         updatedFileList={jest.fn()}
@@ -51,14 +67,19 @@ describe('FileList', () => {
   });
 
   it('shows AddFilesButton when attachments less than 20', () => {
-    type MockStore = { attachments: Array<{ file: { name: string }; checked: boolean }> };
-    (capEventSettingsStore as unknown as MockStore).attachments = new Array(5)
-      .fill(null)
-      .map((_, i) => ({ file: { name: `f${i}.pdf` }, checked: false }));
+    type MockStore = { attachments: Map<AttachmentType, Attachment[]> };
+    (capEventSettingsStore as unknown as MockStore).attachments = new Map([
+      [
+        COVER_PAGES_ATTACHMENT_TYPE,
+        [{ name: 'a.pdf' }, { name: 'b.pdf' }] as unknown as Attachment[],
+      ],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
 
     renderWithTheme(
       <FileList
-        checkedFilesNumber={0}
+        areaId={ADDENDUMS_ATTACHMENT_TYPE}
         handleDragEnd={jest.fn()}
         handleRemoveFile={jest.fn()}
         updatedFileList={jest.fn()}
@@ -69,14 +90,19 @@ describe('FileList', () => {
   });
 
   it('hides AddFilesButton when attachments reach 20', () => {
-    type MockStore = { attachments: Array<{ file: { name: string }; checked: boolean }> };
-    (capEventSettingsStore as unknown as MockStore).attachments = new Array(20)
+    const list = new Array(20)
       .fill(null)
       .map((_, i) => ({ file: { name: `f${i}.pdf` }, checked: false }));
+    type MockStore = { attachments: Map<AttachmentType, Attachment[]> };
+    (capEventSettingsStore as unknown as MockStore).attachments = new Map([
+      [COVER_PAGES_ATTACHMENT_TYPE, list as unknown as Attachment[]],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
 
     renderWithTheme(
       <FileList
-        checkedFilesNumber={0}
+        areaId={ADDENDUMS_ATTACHMENT_TYPE}
         handleDragEnd={jest.fn()}
         handleRemoveFile={jest.fn()}
         updatedFileList={jest.fn()}

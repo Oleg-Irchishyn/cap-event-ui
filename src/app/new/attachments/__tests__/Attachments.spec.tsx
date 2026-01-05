@@ -4,6 +4,12 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 import Attachments from '@/app/new/attachments/Attachments';
 import { capEventSettingsStore } from '@/stores';
+import { Attachment, AttachmentType } from '../types';
+import {
+  ADDENDUMS_ATTACHMENT_TYPE,
+  ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  COVER_PAGES_ATTACHMENT_TYPE,
+} from '@/const/attachments';
 
 jest.mock('@/app/components/AlertPopup/AlertPopup', () => ({
   __esModule: true,
@@ -13,7 +19,7 @@ jest.mock('@/app/components/AlertPopup/AlertPopup', () => ({
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
-    attachments: [],
+    attachments: new Map(),
     setAttachments: jest.fn(),
     attachmentErrors: [],
     setAttachmentErrors: jest.fn(),
@@ -26,32 +32,41 @@ const renderWithTheme = (ui: React.ReactElement) =>
 describe('Attachments', () => {
   beforeEach(() => {
     type MockStore = {
-      attachments: Array<{ file: { name: string }; checked: boolean }>;
+      attachments: Map<AttachmentType, Attachment[]>;
       attachmentErrors: Array<{ message: string }>;
     };
     const store = capEventSettingsStore as unknown as MockStore;
-    store.attachments = [];
+    store.attachments = new Map([
+      [COVER_PAGES_ATTACHMENT_TYPE, [] as unknown as Attachment[]],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
     store.attachmentErrors = [];
   });
 
-  it('renders EmptyFileArea when no attachments', () => {
+  it('renders 3 areas', () => {
     renderWithTheme(<Attachments />);
-    expect(screen.getByText(/Max 20 files; Up to 5MB per file/i)).toBeInTheDocument();
+
+    expect(screen.getByText('Cover Page(s)')).toBeInTheDocument();
+    expect(screen.getByText('Addendum(s)')).toBeInTheDocument();
+    expect(screen.getByText('Additional Supportive Doc(s)')).toBeInTheDocument();
   });
 
   it('renders FileList header and counter when attachments exist', () => {
-    type MockStore = { attachments: Array<{ file: { name: string }; checked: boolean }> };
-    (capEventSettingsStore as unknown as MockStore).attachments = [
-      { file: { name: 'a.pdf' }, checked: true },
-      { file: { name: 'b.pdf' }, checked: false },
-    ];
+    type MockStore = { attachments: Map<AttachmentType, Attachment[]> };
+    (capEventSettingsStore as unknown as MockStore).attachments = new Map([
+      [
+        COVER_PAGES_ATTACHMENT_TYPE,
+        [{ file: { name: 'a.pdf' } }, { file: { name: 'b.pdf' } }] as unknown as Attachment[],
+      ],
+      [ADDENDUMS_ATTACHMENT_TYPE, [] as Attachment[]],
+      [ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE, [] as Attachment[]],
+    ]);
 
     renderWithTheme(<Attachments />);
 
-    expect(
-      screen.getByText(/Select file\(s\) that have to be added to the Notices/i),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/Used 2 of 20 attachments, 1 added to Notices/i)).toBeInTheDocument();
+    expect(screen.getByText('Cover Page(s)')).toBeInTheDocument();
+    expect(screen.getByText(/Used 2 of 20 attachments/i)).toBeInTheDocument();
   });
 
   it('shows alert when there are attachment errors', () => {

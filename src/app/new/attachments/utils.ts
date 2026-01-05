@@ -1,16 +1,18 @@
 import { Dispatch, SetStateAction } from 'react';
-import { allowedFormats } from '@/const/allowedFileFormats';
+import { baseFormats, extendedFormats } from '@/const/allowedFileFormats';
 import { Attachment, DragNDropError } from './types';
+import { MAX_ATTACHMENTS_NUMBER } from '@/const/attachments';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const validateFiles = (
   initFileList: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
+  isAdditionalDocs: boolean,
 ) => {
   setErrors([]);
   const filteredBySize = checkFileSizes(initFileList, setErrors);
-  const filteredByFormat = checkFileFormats(filteredBySize, setErrors);
+  const filteredByFormat = checkFileFormats(filteredBySize, setErrors, isAdditionalDocs);
   const filteredByUniqueName = checkDuplications(filteredByFormat, setErrors);
   const filteredByNumber = checkFilesNumber(filteredByUniqueName, setErrors);
 
@@ -51,11 +53,14 @@ const checkFileSizes = (
 const checkFileFormats = (
   attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
+  isAdditionalDocs: boolean,
 ): Attachment[] => {
   const disallowedFiles: File[] = [];
   const allowedFiles: Attachment[] = [];
   for (const attachment of attachments) {
     const ext = attachment.file.name.split('.').pop()?.toLowerCase();
+    const allowedFormats = isAdditionalDocs ? extendedFormats : baseFormats;
+
     if (ext && !allowedFormats.has(ext)) {
       disallowedFiles.push(attachment.file);
       continue;
@@ -80,18 +85,18 @@ const checkFilesNumber = (
   attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
 ): Attachment[] => {
-  if (attachments.length > 20) {
+  if (attachments.length > MAX_ATTACHMENTS_NUMBER) {
     setErrors((prev) => [
       ...prev,
       {
-        message: 'Maximum upload limit: 20 files.',
+        message: `Maximum upload limit: ${MAX_ATTACHMENTS_NUMBER} files.`,
         details: 'The following files were not uploaded: ',
-        files: attachments.slice(20).map((attachment) => ({
+        files: attachments.slice(MAX_ATTACHMENTS_NUMBER).map((attachment) => ({
           fileName: attachment.file.name,
         })),
       },
     ]);
-    return attachments.slice(0, 20);
+    return attachments.slice(0, MAX_ATTACHMENTS_NUMBER);
   }
   return attachments;
 };

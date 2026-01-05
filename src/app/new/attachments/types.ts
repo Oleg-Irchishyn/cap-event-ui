@@ -9,5 +9,6 @@ export interface DragNDropError {
 
 export interface Attachment {
   file: File;
-  checked: boolean;
 }
+
+export type AttachmentType = 'coverPages' | 'addendums' | 'additionalSupportiveFiles';
