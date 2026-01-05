@@ -298,7 +298,7 @@ export const IconWrapper = styled.span({
 });
 
 export const HelpIcon = styled.img.attrs({
-  src: 'icons/help-icon.svg',
+  src: '/cap-event/icons/help-icon.svg',
 })({
   width: '15px',
   height: '15px',

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { ReferenceDataClient } from '@/clients/ReferenceData';
 import { CapEventPackageClient } from '@/clients/CapEventPackage';
 import { TemplateLibraryClient } from '@/clients/TemplateLibrary';
@@ -40,27 +39,4 @@ export const TemplateLibraryApi = new TemplateLibraryClient({
 export const BoxConnectorApi = new BoxConnectorClient({
   BASE: `${process.env.NEXT_PUBLIC_HOSTNAME}${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_BOX_CONNECTOR_API}`,
   HEADERS: createHeadersWithSessionId,
-});
-
-// temporary solution to retrieve sessionId as it's no longer exist in reference data openapi
-export const _ReferenceDataServer = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_HOSTNAME}${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_REFERENCE_DATA_API}`,
-});
-
-// Add interceptor to include Session-Id and Bearer token headers for axios instance
-_ReferenceDataServer.interceptors.request.use((config) => {
-  const sessionId = getSessionIdFromUrl();
-  const bearerToken = getValidToken();
-
-  if (sessionId) {
-    config.headers = config.headers || {};
-    config.headers['Session-Id'] = sessionId;
-  }
-
-  if (bearerToken) {
-    config.headers = config.headers || {};
-    config.headers['Authorization'] = `Bearer ${bearerToken}`;
-  }
-
-  return config;
 });

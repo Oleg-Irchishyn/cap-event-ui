@@ -196,7 +196,7 @@ const AccountsTable: FC<Props> = ({
 
       return editableCellRef.current[key];
     },
-    [isDisabled, level],
+    [commitmentName, isDisabled, level],
   );
 
   const otherEditableCallback = useCallback((params: EditableCallbackParams) => {
