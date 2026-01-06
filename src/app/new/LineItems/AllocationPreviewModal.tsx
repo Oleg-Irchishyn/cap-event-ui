@@ -56,6 +56,9 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
         if (previewEntityData) {
           setAllocationBasis(previewEntityData.allocationBasis);
 
+          const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
+            previewEntityData.allocationBasis,
+          );
           const investmentLabel =
             (previewEntityData.investment?.title || previewEntityData.investment?.name) ?? '-';
           const amountLabel = formatAmount(previewEntityData.amount ?? 0);
@@ -75,6 +78,7 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
                 batchNo,
                 originAccountKey,
                 previewEntityData.allocationBasis,
+                allocationBasisId,
                 entityId,
                 sessionId,
               );
@@ -93,7 +97,7 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
             const requestBody: AllocationInput = {
               entityId: entityId,
               dueDate: dueDate || '',
-              allocationBasis: previewEntityData.allocationBasis,
+              allocationBasisId,
               accountNo:
                 previewEntityData.accountNo ??
                 capEventSettingsStore.accounts.find(

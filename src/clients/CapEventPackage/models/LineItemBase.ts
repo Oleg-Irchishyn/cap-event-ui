@@ -9,6 +9,7 @@ export type LineItemBase = {
     account: Account;
     investment: Investment;
     allocationBasis: string;
+    allocationBasisId: string;
     amount: number;
     isMfLineItem?: boolean;
 };

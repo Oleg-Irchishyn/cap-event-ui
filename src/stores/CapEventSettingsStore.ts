@@ -1,10 +1,17 @@
 import { makeAutoObservable, toJS } from 'mobx';
 import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import { Attachment } from '@/app/new/attachments/types';
 import type { AttachmentType, DragNDropError } from '@/app/new/attachments/types';
+import { Attachment } from '@/app/new/attachments/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { ITEM_STATES } from '@/const/common';
-import { Account, AllocationBasis, Entity, FundGroup, Investment } from '@/clients/ReferenceData';
+import {
+  Account,
+  AllocationBasis,
+  AllocationBasisStatus,
+  Entity,
+  FundGroup,
+  Investment,
+} from '@/clients/ReferenceData';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
@@ -140,12 +147,23 @@ class CapEventSettingsStore {
   *fetchAllocationBasis() {
     try {
       const sessionId = getStoredSessionId() ?? '';
-      this.allocationBasis = yield ReferenceDataApi.allocationBases.getAllocationBases(sessionId);
+      const allocationBases: AllocationBasis[] =
+        yield ReferenceDataApi.allocationBases.getAllocationBases(sessionId);
+      this.allocationBasis = allocationBases.filter(
+        (item) => item.allocationBasisStatus === AllocationBasisStatus.ACTIVE,
+      );
     } catch (error) {
       showErrorToast(error);
       console.error(error);
       this.allocationBasis = [];
     }
+  }
+
+  getAllocationBasisId(allocationBasisName: string) {
+    return (
+      this.allocationBasis.find((item) => item.allocationName === allocationBasisName)
+        ?.allocationId ?? ''
+    );
   }
 
   *fetchMgmtJournalEntries(entityIds: string[]) {

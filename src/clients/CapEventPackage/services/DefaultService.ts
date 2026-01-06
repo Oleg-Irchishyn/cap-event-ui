@@ -109,6 +109,32 @@ export class DefaultService {
         });
     }
     /**
+     * Get capital event by ID
+     * @param id Capital event ID
+     * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
+     * @returns CapEvent The CapEvent object stored in the system.
+     * @throws ApiError
+     */
+    public getCapEventById(
+        id: string,
+        sessionId?: string,
+    ): CancelablePromise<CapEvent> {
+        return this.httpRequest.request({
+            method: 'GET',
+            url: '/cap-events/{id}',
+            path: {
+                'id': id,
+            },
+            headers: {
+                'Session-Id': sessionId,
+            },
+            errors: {
+                404: `Capital event not found`,
+                500: `Server error`,
+            },
+        });
+    }
+    /**
      * Delete capital event and related files by ID
      * @param id Capital event ID to delete
      * @returns void
@@ -271,6 +297,7 @@ export class DefaultService {
      * @param batchNo Batch number to filter journal entry
      * @param accountKey Account key to filter journal entry
      * @param allocationBasis Allocation basis to filter journal entry
+     * @param allocationBasisId Allocation basis id to allocate journal entries
      * @param entityId Entity ID to filter journal entry
      * @param sessionId Session identifier used to resolve Sponsor ID in case of it's absence
      * @returns InvestorEntry List of management fee journal entries grouped by entity ID
@@ -280,6 +307,7 @@ export class DefaultService {
         batchNo: number,
         accountKey: string,
         allocationBasis: string,
+        allocationBasisId: string,
         entityId: string,
         sessionId?: string,
     ): CancelablePromise<Array<InvestorEntry>> {
@@ -293,6 +321,7 @@ export class DefaultService {
                 'batchNo': batchNo,
                 'accountKey': accountKey,
                 'allocationBasis': allocationBasis,
+                'allocationBasisId': allocationBasisId,
                 'entityId': entityId,
             },
             errors: {

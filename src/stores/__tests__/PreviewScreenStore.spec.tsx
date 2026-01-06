@@ -33,6 +33,7 @@ jest.mock('@/utils/sessionIdStorage', () => ({
 
 // Mock stores used by PreviewScreenStore
 const mockCapEventSettingsStore = {
+  getAllocationBasisId: jest.fn(),
   eventTypes: [
     { id: 'TYPE1', name: 'Distribution', abbreviation: 'Distr', state: ITEM_STATES.SELECTED },
   ],
@@ -275,6 +276,26 @@ describe('PreviewScreenStore', () => {
     const sentPayload = processMock.mock.calls[0][0];
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.capEventLineItems[0].fundGroupLineItemInheritanceId).toBeUndefined();
+  });
+
+  it('calls getAllocationBasisId for fund group and entity line items', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('DS-CMNT');
+    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    parseMock.mockReturnValueOnce([]);
+
+    await store.processPayload(toast);
+
+    expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('commitment');
+    const sentPayload = processMock.mock.calls[0][0];
+    expect(sentPayload.capEventFundGroupLineItems[0]).toHaveProperty(
+      'allocationBasisId',
+      'DS-CMNT',
+    );
+    expect(sentPayload.capEventEntityLineItems[0].capEventLineItems[0]).toHaveProperty(
+      'allocationBasisId',
+      'DS-CMNT',
+    );
   });
 
   it('processPayload concurrent calls use in-flight guard and call API only once', async () => {

@@ -7,11 +7,12 @@ import '@testing-library/jest-dom';
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
+    getAllocationBasisId: jest.fn(() => 'DS-CMNT'),
     setAllocationPreviewOpen: jest.fn(),
     setAllocationPreviewModalData: jest.fn(),
     setAllocationPreviewModalAllocationBasis: jest.fn(),
     allocationPreviewModalTitle: 'Test Allocation Preview',
-    allocationPreviewModalAllocationBasis: 'commitment',
+    allocationPreviewModalAllocationBasis: 'Commitment',
     allocationPreviewModaLineItemId: 'E1',
     allocationPreviewModalData: [],
     accounts: [],
@@ -81,7 +82,7 @@ describe('AllocationPreviewModal', () => {
           {
             id: 'E1',
             isMfLineItem: true,
-            allocationBasis: 'commitment',
+            allocationBasis: 'Commitment',
             batchNo: 7,
             originAccountKey: 101,
           },
@@ -100,7 +101,8 @@ describe('AllocationPreviewModal', () => {
       expect(CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries).toHaveBeenCalledWith(
         7,
         101,
-        'commitment',
+        'Commitment',
+        'DS-CMNT',
         'E1',
         'SID',
       ),
@@ -146,7 +148,7 @@ describe('AllocationPreviewModal', () => {
         {
           entityId: '123',
           dueDate: '2025-02-03',
-          allocationBasis: 'Commitment',
+          allocationBasisId: 'DS-CMNT',
           accountNo: 'ACCT-9',
           investmentId: 'INV1',
           amount: 5000,

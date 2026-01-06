@@ -60,6 +60,9 @@ const SubmitButton = () => {
             ? []
             : capEventSettingsStore.fundGroupsStateAfterApply.map((fundGroupLineItem) => {
                 const investment = fundGroupLineItem.investment;
+                const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
+                  fundGroupLineItem.allocationBasis,
+                );
                 return {
                   inheritanceId: fundGroupLineItem.inheritanceId,
                   investment: {
@@ -68,6 +71,7 @@ const SubmitButton = () => {
                     title: investment?.title,
                     type: investment?.type,
                   },
+                  allocationBasisId,
                   allocationBasis: fundGroupLineItem.allocationBasis,
                   amount: fundGroupLineItem.amount,
                   account: {
@@ -91,7 +95,11 @@ const SubmitButton = () => {
               dueDate: formatDate(entityDatesStore.entityDates[key].dueDate),
               capEventLineItems: validLineItems.map((entityLineItem) => {
                 const investment = entityLineItem.investment;
+                const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
+                  entityLineItem.allocationBasis,
+                );
                 return {
+                  allocationBasisId,
                   allocationBasis: entityLineItem.allocationBasis,
                   amount: entityLineItem.amount,
                   fundGroupLineItemInheritanceId: entityLineItem.fundGroupLineItemInheritanceId,

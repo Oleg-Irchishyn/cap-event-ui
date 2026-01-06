@@ -234,6 +234,9 @@ class PreviewScreenStore {
       if (explicitInheritanceId && explicitInheritanceId.toString().trim() !== '') {
         idMap.set(explicitInheritanceId, explicitInheritanceId);
       }
+      const allocationBasisId = this.root.capEventSettingsStore.getAllocationBasisId(
+        base.allocationBasis,
+      );
       items.push({
         ...(explicitInheritanceId && explicitInheritanceId.toString().trim() !== ''
           ? { inheritanceId: explicitInheritanceId }
@@ -241,6 +244,7 @@ class PreviewScreenStore {
         account: base.account,
         investment: base.investment ?? ('' as unknown as ApiInvestment),
         allocationBasis: base.allocationBasis,
+        allocationBasisId,
         amount: base.amount,
       } as unknown as CapEventFundGroupLineItem);
     }
@@ -280,10 +284,14 @@ class PreviewScreenStore {
         const fundGroupLineItemInheritanceId = originalInheritanceRef
           ? (fundGroupIdMap.get(originalInheritanceRef) ?? originalInheritanceRef)
           : undefined;
+        const allocationBasisId = this.root.capEventSettingsStore.getAllocationBasisId(
+          base.allocationBasis,
+        );
         capEventLineItems.push({
           account: base.account,
           investment: base.investment ?? ('' as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
+          allocationBasisId,
           amount: base.amount,
           ...(fundGroupLineItemInheritanceId ? { fundGroupLineItemInheritanceId } : {}),
           prDate: prDate as string,

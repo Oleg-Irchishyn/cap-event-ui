@@ -5,7 +5,7 @@
 export type AllocationInput = {
     entityId: string;
     dueDate: string;
-    allocationBasis: string;
+    allocationBasisId: string;
     accountNo: string;
     investmentId: string;
     amount: number;

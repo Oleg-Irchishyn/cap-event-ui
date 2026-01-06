@@ -1,5 +1,13 @@
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
+// Import after mocking
+import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
+import { Account, AllocationBasisStatus, FundGroup } from '@/clients/ReferenceData';
+import { ReferenceDataApi } from '@/api';
+import type { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
+import type { Attachment, DragNDropError } from '@/app/new/attachments/types';
+import RootStore from '@/stores/RootStore';
+import { COVER_PAGES_ATTACHMENT_TYPE } from '@/const/attachments';
 
 // Mock the dependencies to avoid circular imports
 jest.mock('@/api', () => ({
@@ -9,6 +17,9 @@ jest.mock('@/api', () => ({
     },
     investments: {
       getInvestments: jest.fn(),
+    },
+    allocationBases: {
+      getAllocationBases: jest.fn(),
     },
     session: {
       getSessionId: jest.fn(),
@@ -38,14 +49,13 @@ jest.mock('@/stores', () => ({
   },
 }));
 
-// Import after mocking
-import CapEventSettingsStore from '@/stores/CapEventSettingsStore';
-import { Account, FundGroup } from '@/clients/ReferenceData';
-import { ReferenceDataApi } from '@/api';
-import type { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
-import type { Attachment, DragNDropError } from '@/app/new/attachments/types';
-import RootStore from '@/stores/RootStore';
-import { COVER_PAGES_ATTACHMENT_TYPE } from '@/const/attachments';
+jest.mock('@/utils/sessionIdStorage', () => ({
+  getStoredSessionId: jest.fn().mockReturnValue('test-session-id'),
+}));
+
+jest.mock('@/utils/showErrorToast', () => ({
+  showErrorToast: jest.fn(),
+}));
 
 describe('CapEventSettingsStore', () => {
   let store: CapEventSettingsStore;
@@ -885,6 +895,70 @@ describe('CapEventSettingsStore', () => {
 
       const result = store.entitiesLineItem.get(key) as LineItemRow[];
       expect(result.map((r) => r.id)).toEqual(['applied-1', 'applied-2', 'manual-non-empty']);
+    });
+  });
+
+  describe('fetchAllocationBasis', () => {
+    it('should filter allocation bases by ACTIVE status', async () => {
+      const mockAllocationBases = [
+        {
+          allocationId: 'ID1',
+          allocationName: 'Active Basis 1',
+          type: 'Type1',
+          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+        },
+        {
+          allocationId: 'ID2',
+          allocationName: 'Inactive Basis',
+          type: 'Type2',
+          allocationBasisStatus: AllocationBasisStatus.INACTIVE,
+        },
+        {
+          allocationId: 'ID3',
+          allocationName: 'Active Basis 2',
+          type: 'Type3',
+          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+        },
+      ];
+
+      ReferenceDataApi.allocationBases.getAllocationBases = jest
+        .fn()
+        .mockResolvedValue(mockAllocationBases);
+
+      await store.fetchAllocationBasis();
+
+      expect(store.allocationBasis).toHaveLength(2);
+      expect(store.allocationBasis[0].allocationId).toBe('ID1');
+      expect(store.allocationBasis[1].allocationId).toBe('ID3');
+      expect(
+        store.allocationBasis.every(
+          (ab) => ab.allocationBasisStatus === AllocationBasisStatus.ACTIVE,
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('getAllocationBasisId', () => {
+    it('should return allocation basis id by its name', () => {
+      const allocationBasisName = 'test-name';
+      const mockedAllocationBasisId = 'test-id';
+      store.allocationBasis = [
+        {
+          allocationId: mockedAllocationBasisId,
+          allocationName: allocationBasisName,
+          type: 'Custom',
+          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+        },
+      ];
+      const allocationBasisId = store.getAllocationBasisId(allocationBasisName);
+
+      expect(allocationBasisId).toBe(mockedAllocationBasisId);
+    });
+
+    it('should return empty string if no allocation basis found', () => {
+      const allocationBasisId = store.getAllocationBasisId('mocked-name');
+
+      expect(allocationBasisId).toBe('');
     });
   });
 });

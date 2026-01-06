@@ -160,6 +160,7 @@
                           "type": "Private Equity"
                         },
                         "allocationBasis": "commitment",
+                        "allocationBasisId": "DS-CMNT",
                         "amount": 1000000.00,
                         "isMfLineItem": false
                       }
@@ -201,6 +202,7 @@
                               "type": "Private Equity"
                             },
                             "allocationBasis": "commitment",
+                            "allocationBasisId": "DS-CMNT",
                             "amount": 1000000.00,
                             "isMfLineItem": false
                           }
@@ -611,6 +613,77 @@
       }
     },
     "/cap-events/{id}": {
+      "get": {
+        "summary": "Get capital event by ID",
+        "operationId": "getCapEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Capital event ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The CapEvent object stored in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapEvent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Capital event not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "RESOURCE_NOT_FOUND",
+                  "message": "Capital event not found",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "INTERNAL_SERVER_ERROR",
+                  "message": "Internal Server Error",
+                  "details": "null",
+                  "timestamp": "2025-08-20T11:13:13.012739700Z",
+                  "requestId": "9b173b09-785n-6458-k127-7e8a9j5644a"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete capital event and related files by ID",
         "operationId": "deleteCapEvent",
@@ -1079,7 +1152,8 @@
                   "value": {
                     "entityId": "ENTITY001",
                     "dueDate": "2024-12-15",
-                    "allocationBasis": "commitment",
+                    "allocationBasis": "Commitment",
+                    "allocationBasisId": "DS-CMNT",
                     "accountNo": "ACC123456",
                     "investmentId": "INV001",
                     "amount": 1000000.00
@@ -1294,6 +1368,7 @@
                         },
                         "investment": null,
                         "allocationBasis": "Management Fee",
+                        "allocationBasisId": "DS-MGTF",
                         "amount": -250000,
                         "batchNo": 6985,
                         "originAccountKey": "107",
@@ -1318,6 +1393,7 @@
                           "type": "QA Type"
                         },
                         "allocationBasis": "Commitment",
+                        "allocationBasisId": "DS-CMNT",
                         "amount": 50000,
                         "batchNo": 6985,
                         "originAccountKey": "227",
@@ -1530,6 +1606,15 @@
             "description": "Allocation basis to filter journal entry"
           },
           {
+            "name": "allocationBasisId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Allocation basis id to allocate journal entries"
+          },
+          {
             "name": "entityId",
             "in": "query",
             "required": true,
@@ -1588,6 +1673,7 @@
                       "dataPoints": null,
                       "isAggregated": null,
                       "allocationBasis": "Management Fee",
+                      "allocationBasisId": "DS-MGTF",
                       "lineItemAmount": null
                     }
                   }
@@ -1689,6 +1775,7 @@
                       }
                     ],
                     "allocationBasis": "commitment",
+                    "allocationBasisId": "DS-CMNT",
                     "amount": 1000000.00
                   }
                 }
@@ -2042,7 +2129,7 @@
       },
       "LineItemBase": {
         "type": "object",
-        "required": ["entities","account", "investment", "allocationBasis", "amount"],
+        "required": ["entities","account", "investment", "allocationBasis","allocationBasisId", "amount"],
         "properties": {
           "id": {
             "type": "string",
@@ -2055,6 +2142,9 @@
             "$ref": "#/components/schemas/Investment"
           },
           "allocationBasis": {
+            "type": "string"
+          },
+          "allocationBasisId": {
             "type": "string"
           },
           "amount": {
@@ -2342,7 +2432,7 @@
       },
       "AllocationInput": {
         "type": "object",
-        "required": ["entityId", "dueDate", "allocationBasis", "accountNo", "investmentId", "amount"],
+        "required": ["entityId", "dueDate", "allocationBasisId", "accountNo", "investmentId", "amount"],
         "properties": {
           "entityId": {
             "type": "string"
@@ -2351,7 +2441,7 @@
             "type": "string",
             "format": "date"
           },
-          "allocationBasis": {
+          "allocationBasisId": {
             "type": "string"
           },
           "accountNo": {

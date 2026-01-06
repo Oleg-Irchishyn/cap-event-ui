@@ -42,6 +42,7 @@ jest.mock('@/api', () => ({
 
 jest.mock('@/stores', () => ({
   capEventSettingsStore: {
+    getAllocationBasisId: jest.fn(),
     resetStore: jest.fn(),
     investments: [{ id: 'inv1', name: 'Investment 1', title: 'Investment 1 Title', type: 'Type1' }],
     fundEntities: [
@@ -196,5 +197,47 @@ describe('SubmitButton', () => {
     expect(button).toBeDisabled();
 
     stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(true);
+  });
+
+  it('calls getAllocationBasisId for entity line items', async () => {
+    const stores = require('@/stores');
+    stores.capEventSettingsStore.getAllocationBasisId.mockReturnValue('DS-CMNT');
+    stores.capEventSettingsStore.entitiesLineItem = new Map([
+      [
+        'Entity 1',
+        [
+          {
+            investment: { id: 'inv1', name: 'Investment 1' },
+            allocationBasis: 'Basis1',
+            amount: 500,
+            fundGroupLineItemInheritanceId: 'fgli1',
+            prDate: new Date('2024-01-01'),
+            prFlag: 'Yes',
+            accountNo: 'ACC002',
+            capitalCategory: 'Category2',
+            callDistributionReason: 'Reason2',
+            defaultDescription: 'Description2',
+            insideCommitment: 'No',
+          },
+        ],
+      ],
+    ]);
+    mockSubmit.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('cap-event-submit');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    expect(stores.capEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('Basis1');
+    const requestBody = mockSubmit.mock.calls[0][0];
+    expect(requestBody.capEventEntityLineItems[0].capEventLineItems[0]).toHaveProperty(
+      'allocationBasisId',
+      'DS-CMNT',
+    );
   });
 });
