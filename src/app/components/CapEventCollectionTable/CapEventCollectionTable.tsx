@@ -23,8 +23,6 @@ const capEventTableColumnDefs = (): ColDef[] => [
     flex: 1,
     sortable: true,
     resizable: true,
-    sort: 'asc',
-    sortIndex: 0,
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
@@ -117,12 +115,18 @@ const capEventTableColumnDefs = (): ColDef[] => [
     headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.title,
     field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.key,
     flex: 1,
+    sort: 'desc',
+    sortIndex: 0,
     sortable: true,
     resizable: true,
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-';
+      return data?.createdAt ? new Date(data.createdAt).getTime() : null;
+    },
+    valueFormatter: (params) => {
+      const data = params.data as CapEvent;
+      return data?.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-';
     },
     maxWidth: 120,
   },

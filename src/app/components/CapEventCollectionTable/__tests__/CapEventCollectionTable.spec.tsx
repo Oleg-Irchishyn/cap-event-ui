@@ -177,4 +177,50 @@ describe('CapEventCollectionTable', () => {
     });
     expect(typeof f1).toBe('string');
   });
+
+  it('configures Created At column with numeric valueGetter and display formatter', async () => {
+    const mockEvents: CapEvent[] = [
+      createMockCapEvent({ id: '1', createdAt: '2024-01-01T00:00:00Z' }),
+      createMockCapEvent({ id: '2', createdAt: '2023-01-01T00:00:00Z' }),
+      createMockCapEvent({ id: '3', createdAt: undefined }),
+    ];
+
+    render(<CapEventCollectionTable rows={mockEvents} testId="test-table" />);
+
+    await waitFor(() => {
+      expect(lastColumnDefs).not.toBeNull();
+    });
+
+    const createdAtCol = lastColumnDefs!.find((c) => c.field === 'createdAt');
+    expect(createdAtCol).toBeTruthy();
+    expect(createdAtCol!.sortable).toBe(true);
+    expect(typeof createdAtCol!.valueGetter).toBe('function');
+    expect(typeof createdAtCol!.valueFormatter).toBe('function');
+
+    const vNewer = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { createdAt: '2024-01-01T00:00:00Z' },
+    } as unknown as ValueGetterParams);
+    const vOlder = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { createdAt: '2023-01-01T00:00:00Z' },
+    } as unknown as ValueGetterParams);
+    const vMissing = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { createdAt: undefined },
+    } as unknown as ValueGetterParams);
+
+    expect(typeof vNewer).toBe('number');
+    expect(typeof vOlder).toBe('number');
+    expect(vNewer as number).toBeGreaterThan(vOlder as number);
+    expect(vMissing).toBeNull();
+
+    const formatWithDate = (createdAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
+      data: { createdAt: '2024-01-01T00:00:00Z' } as unknown as CapEvent,
+    });
+    expect(typeof formatWithDate).toBe('string');
+    expect(formatWithDate).not.toBe('-');
+
+    const formatMissing = (createdAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
+      data: { createdAt: undefined } as unknown as CapEvent,
+    });
+    expect(formatMissing).toBe('-');
+  });
 });
