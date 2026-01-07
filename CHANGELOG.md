@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.80](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.79&targetVersion=GTv0.0.80) (2026-01-07)
+
+
+### Bug Fixes
+
+* [Issue-9521]: [FE] Default sorting in Capital Event Collection table does not work ([c61f73f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/c61f73f0e6b38db2052562072e34bc821e6d6685)), closes [#9521](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9521)
+
 ### [0.0.79](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.78&targetVersion=GTv0.0.79) (2026-01-06)
 
 
