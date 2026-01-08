@@ -75,8 +75,7 @@ describe('AddFilesButton', () => {
 
     expect(updatedFileList).toHaveBeenCalledTimes(1);
     const arg = updatedFileList.mock.calls[0][0] as Attachment[];
-    expect(arg.length).toBe(3);
-    expect(arg.some((a) => a.file.name === 'existing.pdf')).toBe(true);
+    expect(arg.length).toBe(2);
     expect(arg.some((a) => a.file.name === 'new1.pdf')).toBe(true);
     expect(arg.some((a) => a.file.name === 'new2.docx')).toBe(true);
   });

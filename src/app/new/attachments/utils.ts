@@ -1,20 +1,30 @@
 import { Dispatch, SetStateAction } from 'react';
 import { baseFormats, extendedFormats } from '@/const/allowedFileFormats';
-import { Attachment, DragNDropError } from './types';
-import { MAX_ATTACHMENTS_NUMBER } from '@/const/attachments';
+import { Attachment, AttachmentType, DragNDropError } from './types';
+import {
+  ADDENDUMS_ATTACHMENT_TYPE,
+  ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  COVER_PAGES_ATTACHMENT_TYPE,
+  MAX_ATTACHMENTS_NUMBER,
+} from '@/const/attachments';
+import { capEventSettingsStore } from '@/stores';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const validateFiles = (
   initFileList: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
-  isAdditionalDocs: boolean,
+  areaId: AttachmentType,
 ) => {
   setErrors([]);
   const filteredBySize = checkFileSizes(initFileList, setErrors);
-  const filteredByFormat = checkFileFormats(filteredBySize, setErrors, isAdditionalDocs);
-  const filteredByUniqueName = checkDuplications(filteredByFormat, setErrors);
-  const filteredByNumber = checkFilesNumber(filteredByUniqueName, setErrors);
+  const filteredByFormat = checkFileFormats(
+    filteredBySize,
+    setErrors,
+    areaId === ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE,
+  );
+  const filteredByUniqueName = checkDuplications(filteredByFormat, setErrors, areaId);
+  const filteredByNumber = checkFilesNumber(filteredByUniqueName, setErrors, areaId);
 
   return filteredByNumber;
 };
@@ -84,36 +94,70 @@ const checkFileFormats = (
 const checkFilesNumber = (
   attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
+  areaId: AttachmentType,
 ): Attachment[] => {
-  if (attachments.length > MAX_ATTACHMENTS_NUMBER) {
+  const currentNumberOfAttachments = Array.from(capEventSettingsStore.attachments.values()).reduce(
+    (sum, arr) => sum + arr.length,
+    0,
+  );
+
+  if (currentNumberOfAttachments + attachments.length > MAX_ATTACHMENTS_NUMBER) {
+    const extraFilesNumber =
+      currentNumberOfAttachments + attachments.length - MAX_ATTACHMENTS_NUMBER;
     setErrors((prev) => [
       ...prev,
       {
         message: `Maximum upload limit: ${MAX_ATTACHMENTS_NUMBER} files.`,
         details: 'The following files were not uploaded: ',
-        files: attachments.slice(MAX_ATTACHMENTS_NUMBER).map((attachment) => ({
+        files: attachments.slice(attachments.length - extraFilesNumber).map((attachment) => ({
           fileName: attachment.file.name,
         })),
       },
     ]);
-    return attachments.slice(0, MAX_ATTACHMENTS_NUMBER);
+
+    return [
+      ...(capEventSettingsStore.attachments.get(areaId) as Attachment[]),
+      ...attachments.slice(0, attachments.length - extraFilesNumber),
+    ];
   }
-  return attachments;
+  return [...(capEventSettingsStore.attachments.get(areaId) as Attachment[]), ...attachments];
 };
 
 const checkDuplications = (
   attachments: Attachment[],
   setErrors: Dispatch<SetStateAction<DragNDropError[]>>,
+  areaId: AttachmentType,
 ): Attachment[] => {
-  const seenFiles = new Set<string>();
   const duplications = new Set<string>();
   const uniqueFiles: Attachment[] = [];
 
+  const coverPagesAttachments = new Set(
+    capEventSettingsStore.attachments
+      .get(COVER_PAGES_ATTACHMENT_TYPE)
+      ?.map((attachment) => attachment.file.name),
+  );
+  const addendumsAttachments = new Set(
+    capEventSettingsStore.attachments
+      .get(ADDENDUMS_ATTACHMENT_TYPE)
+      ?.map((attachment) => attachment.file.name),
+  );
+  const additionalFilesAttachments = new Set(
+    capEventSettingsStore.attachments
+      .get(ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE)
+      ?.map((attachment) => attachment.file.name),
+  );
+
+  const existingFilesToCheck =
+    areaId === ADDITIONAL_SUPPORTIVE_FILES_ATTACHMENT_TYPE
+      ? additionalFilesAttachments
+      : new Set([...coverPagesAttachments, ...addendumsAttachments]);
+
   for (const attachment of attachments) {
-    if (seenFiles.has(attachment.file.name)) {
-      duplications.add(attachment.file.name);
+    const fileName = attachment.file.name;
+
+    if (existingFilesToCheck.has(fileName)) {
+      duplications.add(fileName);
     } else {
-      seenFiles.add(attachment.file.name);
       uniqueFiles.push(attachment);
     }
   }

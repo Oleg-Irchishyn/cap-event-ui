@@ -75,12 +75,8 @@ const Attachments: React.FC = () => {
     }));
   };
 
-  const updatedFileList = (fileList: Attachment[], areaId: AttachmentType) => {
-    const validatedFileList = validateFiles(
-      fileList,
-      setErrors,
-      areaId === 'additionalSupportiveFiles',
-    );
+  const updatedFileList = (newFiles: Attachment[], areaId: AttachmentType) => {
+    const validatedFileList = validateFiles(newFiles, setErrors, areaId);
     capEventSettingsStore.setAttachments(areaId, validatedFileList);
   };
 
@@ -91,12 +87,9 @@ const Attachments: React.FC = () => {
       [areaId]: false,
     }));
     const files = e.dataTransfer.files;
-    const newFileList = [
-      ...(capEventSettingsStore.attachments.get(areaId) as Attachment[]),
-      ...Array.from(files).map((file) => ({ file: file, checked: false })),
-    ];
+    const newFiles = [...Array.from(files).map((file) => ({ file }))];
 
-    updatedFileList(newFileList, areaId);
+    updatedFileList(newFiles, areaId);
   };
 
   const handleRemoveFile = (name: string, areaId: AttachmentType) => {

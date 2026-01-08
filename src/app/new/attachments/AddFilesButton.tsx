@@ -1,25 +1,24 @@
 import { FC, ChangeEvent } from 'react';
 import { AddFilesButtonText, BrowseLabel, VisuallyHiddenInput } from './styles';
 import { baseFormats, extendedFormats } from '@/const/allowedFileFormats';
-import { capEventSettingsStore } from '@/stores';
 import { Attachment, AttachmentType } from './types';
 
 interface AddFilesButtonProps {
   areaId: AttachmentType;
-  updatedFileList: (fileList: Attachment[]) => void;
+  updatedFileList: (newFiles: Attachment[]) => void;
 }
 
 const AddFilesButton: FC<AddFilesButtonProps> = ({ areaId, updatedFileList }) => {
   const allowedFormats = areaId === 'additionalSupportiveFiles' ? extendedFormats : baseFormats;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newFileList = [
-      ...(capEventSettingsStore.attachments.get(areaId) as Attachment[]),
+    const newFiles = [
       ...Array.from(event.target.files as FileList).map((file) => ({
-        file: file,
+        file,
       })),
     ];
-    updatedFileList(newFileList);
+
+    updatedFileList(newFiles);
   };
 
   return (

@@ -54,18 +54,14 @@ const DropArea: React.FC<DropAreaProps> = ({
   };
 
   const renderCover = () => {
-    if (
-      areaId === COVER_PAGES_ATTACHMENT_TYPE &&
-      capEventSettingsStore.attachments.get(ADDENDUMS_ATTACHMENT_TYPE)?.length ===
-        MAX_ATTACHMENTS_NUMBER
-    ) {
-      return <DropAreaCover />;
-    }
+    const totalAmountOfFiles = [...capEventSettingsStore.attachments.values()].reduce(
+      (sum, arr) => sum + arr.length,
+      0,
+    );
 
     if (
-      areaId === ADDENDUMS_ATTACHMENT_TYPE &&
-      capEventSettingsStore.attachments.get(COVER_PAGES_ATTACHMENT_TYPE)?.length ===
-        MAX_ATTACHMENTS_NUMBER
+      totalAmountOfFiles === MAX_ATTACHMENTS_NUMBER &&
+      !capEventSettingsStore.attachments.get(areaId)?.length
     ) {
       return <DropAreaCover />;
     }
