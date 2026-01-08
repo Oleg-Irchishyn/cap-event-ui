@@ -12,16 +12,14 @@ import { ContinueButtonWrapper } from './styles';
 
 const ContinueButton = () => {
   const router = useRouter();
-
-  const [showContinueTooltip, setShowContinueTooltip] = useState(false);
-  const continueTooltipRef = useRef<HTMLDivElement | null>(null);
-
   const { isContinueDisabled, tooltipMessage } = useContinueButton();
 
+  const continueTooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const [showContinueTooltip, setShowContinueTooltip] = useState(false);
+
   const onShowTooltip = () => {
-    if (isContinueDisabled) {
-      setShowContinueTooltip(true);
-    }
+    setShowContinueTooltip(true);
   };
 
   const onHideTooltip = () => {

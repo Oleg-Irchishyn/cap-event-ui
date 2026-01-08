@@ -59,7 +59,7 @@ describe('ContinueButton', () => {
     expect(pushMock).toHaveBeenCalledWith('/preview-screen');
   });
 
-  it('does not show tooltip when enabled, even on hover', () => {
+  it('shows tooltip when disabled, even on hover', () => {
     (useContinueButton as jest.Mock).mockReturnValue({
       isContinueDisabled: false,
       tooltipMessage: 'Ignored',
@@ -71,6 +71,6 @@ describe('ContinueButton', () => {
     const wrapper = btn.parentElement as HTMLElement;
     fireEvent.mouseEnter(wrapper);
 
-    expect(screen.queryByTestId('tooltip-continue-button-tooltip')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('tooltip-continue-button-tooltip')).toBeInTheDocument();
   });
 });

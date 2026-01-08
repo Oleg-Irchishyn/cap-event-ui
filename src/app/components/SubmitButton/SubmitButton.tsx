@@ -2,8 +2,8 @@ import { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
+import Tooltip from '@/app/components/Tooltip';
 
-import { SubmitButtonWrapper } from './styles';
 import { capEventSettingsStore, entityDatesStore, previewScreenStore } from '@/stores';
 import {
   CapEvent,
@@ -24,13 +24,28 @@ import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { isLineItemRowValid } from '@/utils/investment';
 import { showErrorToast } from '@/utils/showErrorToast';
 
+import { SubmitButtonWrapper } from './styles';
+
 const SubmitButton = () => {
+  const toast = useToast();
+  const router = useRouter();
+
   const submitTooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const [showSubmitTooltip, setShowSubmitTooltip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const toast = useToast();
+  const isSubmitDisabled = isSubmitting || !previewScreenStore.hasAggregatedLineItems();
 
-  const router = useRouter();
+  const onShowTooltip = () => {
+    if (!isSubmitDisabled) {
+      setShowSubmitTooltip(true);
+    }
+  };
+
+  const onHideTooltip = () => {
+    setShowSubmitTooltip(false);
+  };
 
   const handleSaveCapEvent = async () => {
     if (isSubmitting) return;
@@ -152,16 +167,26 @@ const SubmitButton = () => {
   };
 
   return (
-    <SubmitButtonWrapper ref={submitTooltipRef}>
+    <SubmitButtonWrapper
+      ref={submitTooltipRef}
+      onMouseEnter={onShowTooltip}
+      onMouseLeave={onHideTooltip}
+    >
       <Button
         testId="cap-event-submit"
         width="auto"
         onClick={handleSaveCapEvent}
-        disabled={isSubmitting || !previewScreenStore.hasAggregatedLineItems()}
+        disabled={isSubmitDisabled}
         buttonTheme={BUTTON_THEMES.primary}
       >
         Save
       </Button>
+      <Tooltip
+        tooltipMessage="Save Capital Event and Create/Update Case"
+        showTooltip={showSubmitTooltip}
+        targetRef={submitTooltipRef}
+        testId="submit-button-tooltip"
+      />
     </SubmitButtonWrapper>
   );
 };

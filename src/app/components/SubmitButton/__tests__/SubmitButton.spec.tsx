@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
@@ -197,6 +196,23 @@ describe('SubmitButton', () => {
     expect(button).toBeDisabled();
 
     stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(true);
+  });
+
+  it('shows tooltip on hover when enabled and hides on mouse leave', () => {
+    renderWithTheme(<SubmitButton />);
+
+    expect(screen.queryByTestId('tooltip-submit-button-tooltip')).not.toBeInTheDocument();
+
+    const button = screen.getByTestId('cap-event-submit');
+
+    fireEvent.mouseEnter(button);
+
+    const tooltip = screen.getByTestId('tooltip-submit-button-tooltip');
+    expect(tooltip).toBeInTheDocument();
+    expect(tooltip).toHaveTextContent('Save Capital Event and Create/Update Case');
+
+    fireEvent.mouseLeave(button);
+    expect(screen.queryByTestId('tooltip-submit-button-tooltip')).not.toBeInTheDocument();
   });
 
   it('calls getAllocationBasisId for entity line items', async () => {

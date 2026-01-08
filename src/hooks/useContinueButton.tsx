@@ -5,7 +5,8 @@ import { getValidDate } from '@/utils/getValidDate';
 import { isRowEmpty } from '@/utils/isRowEmpty';
 import { isLineItemRowValid } from '@/utils/investment';
 
-const TOOLTIP_MESSAGE = 'Not all required fields are populated';
+const TOOLTIP_DISABLED_MESSAGE = 'Not all required fields are populated';
+const TOOLTIP_ENABLED_MESSAGE = 'Go to Preview Screen';
 
 const useContinueButton = () => {
   const isEntityRowValid = (row: LineItemRow): boolean => isLineItemRowValid(row);
@@ -62,7 +63,7 @@ const useContinueButton = () => {
     hasAttachmentErrors ||
     !allEntitiesFullyValid ||
     !capEventSettingsStore.isNoticeDateValid;
-  const tooltipMessage = isContinueDisabled ? TOOLTIP_MESSAGE : '';
+  const tooltipMessage = isContinueDisabled ? TOOLTIP_DISABLED_MESSAGE : TOOLTIP_ENABLED_MESSAGE;
 
   return { isContinueDisabled, tooltipMessage };
 };

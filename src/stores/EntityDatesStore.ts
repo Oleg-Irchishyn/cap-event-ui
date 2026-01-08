@@ -48,12 +48,6 @@ class EntityDatesStore {
     this.initialStateSnapshot = toJS(this.collectFields());
   }
 
-  cancelChanges() {
-    if (!this.initialStateSnapshot) return;
-
-    Object.assign(this, toJS(this.initialStateSnapshot));
-  }
-
   setNoticeDate(date: Date | null) {
     this.noticeDate = date;
     this.resetDifferentDatesState();
@@ -162,6 +156,12 @@ class EntityDatesStore {
 
   resetDifferentDatesState() {
     this.hasDifferentDates = false;
+  }
+
+  cancelChanges() {
+    if (!this.initialStateSnapshot) return;
+
+    Object.assign(this, toJS(this.initialStateSnapshot));
   }
 
   resetAllDates() {
