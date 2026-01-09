@@ -77,8 +77,12 @@ export const getOneLoginAuthUrl = async (
     state: state,
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
-    resource: process.env.NEXT_PUBLIC_ONELOGIN_RESOURCE ?? '',
   });
+
+  const resource = process.env.NEXT_PUBLIC_ONELOGIN_RESOURCE;
+  if (resource && resource.trim() !== '') {
+    params.set('resource', resource);
+  }
 
   // Add prompt=login to force authentication screen even if user has active session
   // This is important after logout when "remember my login" was checked
