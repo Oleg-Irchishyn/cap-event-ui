@@ -3,10 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Account = {
+    accountKey?: string;
+    accountName?: string;
     accountNo: string;
-    category?: string;
-    reason?: string;
-    description?: string;
-    insideCmnt?: boolean;
+    capitalCategory?: string;
+    callDistributionReason?: string;
+    defaultDescription?: string;
+    insideCommitment?: string;
+    fsLineItem?: string;
 };
 

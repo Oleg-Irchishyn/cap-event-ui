@@ -196,16 +196,13 @@ class PreviewScreenStore {
     const accountNo = this.findAccountNoForRow(row, accounts);
     if (!accountNo) return undefined;
     const optionalAccountFields = this.pickNonEmpty<Partial<ApiAccount>>({
-      category: row.capitalCategory,
-      reason: row.callDistributionReason,
-      description: row.defaultDescription,
-      // insideCmnt is boolean in backend model; map "Yes"/"No" (case-insensitive) to true/false
-      insideCmnt: (() => {
+      capitalCategory: row.capitalCategory,
+      callDistributionReason: row.callDistributionReason,
+      defaultDescription: row.defaultDescription,
+      insideCommitment: (() => {
         if (typeof row.insideCommitment !== 'string') return undefined;
         const normalized = row.insideCommitment.trim().toLowerCase();
-        if (normalized === 'yes') return true;
-        if (normalized === 'no') return false;
-        return undefined;
+        return normalized;
       })(),
     });
     const account = { accountNo, ...optionalAccountFields } as ApiAccount;

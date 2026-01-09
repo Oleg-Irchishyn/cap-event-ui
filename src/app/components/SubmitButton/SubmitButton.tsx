@@ -91,10 +91,10 @@ const SubmitButton = () => {
                   amount: fundGroupLineItem.amount,
                   account: {
                     accountNo: fundGroupLineItem.accountNo ?? '',
-                    category: fundGroupLineItem.capitalCategory,
-                    reason: fundGroupLineItem.callDistributionReason,
-                    description: fundGroupLineItem.defaultDescription,
-                    insideCmnt: fundGroupLineItem.insideCommitment === 'Yes',
+                    capitalCategory: fundGroupLineItem.capitalCategory,
+                    callDistributionReason: fundGroupLineItem.callDistributionReason,
+                    defaultDescription: fundGroupLineItem.defaultDescription,
+                    insideCommitment: fundGroupLineItem.insideCommitment?.toLowerCase(),
                   },
                 };
               }),
@@ -125,10 +125,10 @@ const SubmitButton = () => {
                   originAccountKey: entityLineItem.accountKey,
                   account: {
                     accountNo: entityLineItem.accountNo ?? '',
-                    category: entityLineItem.capitalCategory,
-                    reason: entityLineItem.callDistributionReason,
-                    description: entityLineItem.defaultDescription,
-                    insideCmnt: entityLineItem.insideCommitment === 'Yes',
+                    capitalCategory: entityLineItem.capitalCategory,
+                    callDistributionReason: entityLineItem.callDistributionReason,
+                    defaultDescription: entityLineItem.defaultDescription,
+                    insideCommitment: entityLineItem.insideCommitment?.toLowerCase(),
                   },
                   investment: {
                     id: investment?.id ?? '',

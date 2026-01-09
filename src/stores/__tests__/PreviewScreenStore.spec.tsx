@@ -180,10 +180,10 @@ describe('PreviewScreenStore', () => {
     expect(fg.account).toEqual(
       expect.objectContaining({
         accountNo: '0721',
-        category: 'Cont - Expense offsets',
-        reason: 'Test Reason 1',
-        description: 'Test Description 1',
-        insideCmnt: true,
+        capitalCategory: 'Cont - Expense offsets',
+        callDistributionReason: 'Test Reason 1',
+        defaultDescription: 'Test Description 1',
+        insideCommitment: 'yes',
       }),
     );
     // No explicit inheritance id provided in mock FG row -> FG should not set inheritanceId

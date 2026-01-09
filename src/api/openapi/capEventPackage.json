@@ -2260,20 +2260,29 @@
         "type": "object",
         "required": ["accountNo"],
         "properties": {
+          "accountKey": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
           "accountNo": {
             "type": "string"
           },
-          "category": {
+          "capitalCategory": {
             "type": "string"
           },
-          "reason": {
+          "callDistributionReason": {
             "type": "string"
           },
-          "description": {
+          "defaultDescription": {
             "type": "string"
           },
-          "insideCmnt": {
-            "type": "boolean"
+          "insideCommitment": {
+            "type": "string"
+          },
+          "fsLineItem": {
+            "type": "string"
           }
         }
       },

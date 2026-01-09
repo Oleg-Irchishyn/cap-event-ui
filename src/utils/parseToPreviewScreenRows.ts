@@ -14,7 +14,7 @@ export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => 
     return entries.map((inv, idx: number) => {
       // Account and investment information is stored within each InvestorEntry
       // For aggregated entries, these fields are null
-      const description = inv.account?.description ?? '';
+      const description = inv.account?.defaultDescription ?? '';
       const investmentTitle = inv.investment?.title ?? '';
       const investmentName = inv.investment?.name ?? '';
 
