@@ -49,7 +49,17 @@ export const getCategories = (accounts: Account[]) => {
 };
 
 export const getAllocationBasisOptions = (level?: string) => {
-  const allocationBasisToShow = capEventSettingsStore.allocationBasis
+  const allocationBasisBasedOnLevel =
+    level === LineItemTypes.group
+      ? capEventSettingsStore.allocationBasis.filter(
+          (item) =>
+            item.allocationId === ALLOCATION_BASIS_IDS.COMMITMENT ||
+            item.allocationId === ALLOCATION_BASIS_IDS.CONTRIBUTION_ALL ||
+            item.allocationId === ALLOCATION_BASIS_IDS.CONTRIBUTION_DEAL ||
+            item.allocationId === ALLOCATION_BASIS_IDS.UNFUNDED,
+        )
+      : capEventSettingsStore.allocationBasis;
+  const allocationBasisToShow = allocationBasisBasedOnLevel
     .filter((item) => item.allocationId !== ALLOCATION_BASIS_IDS.NON_DOMINANT)
     .map((item) => item.allocationName);
 
