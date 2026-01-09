@@ -36,6 +36,7 @@ envVars:
   NEXT_PUBLIC_ONELOGIN_CLIENT_ID: f26ed950-bcc1-013e-a074-19254478a6a5234580
   NEXT_PUBLIC_ONELOGIN_SUBDOMAIN: sandbox-gen2fund
   NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: https://dev.gen2fund.com/cap-event/auth/callback
+  NEXT_PUBLIC_ONELOGIN_RESOURCE: https://CapEvent-Gateweay-API
 
 # Use this to configure hostname for Ingress
 ingress:

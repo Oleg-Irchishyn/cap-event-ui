@@ -14,3 +14,5 @@ envVars:
   NEXT_PUBLIC_BACKEND_API: https://uat-cap.gen2fund.com/api/cap-event
   NEXT_PUBLIC_CAP_EVENT_PACKAGE_API: https://uat-cap.gen2fund.com/cap-event-package
   NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: https://uat-cap.gen2fund.com/cap-event/auth/callback
+  NEXT_PUBLIC_ONELOGIN_CLIENT_ID: bcc19340-cf66-013e-7b09-4d982454625e234580
+  NEXT_PUBLIC_ONELOGIN_RESOURCE: https://CapEvent-Gateweay-API-UAT
