@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.81](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.80&targetVersion=GTv0.0.81) (2026-01-09)
+
+
+### Features
+
+* [TASK-9188]: [FE] Implement Hide Save Draft + Rename Submit to Save ([60a9836](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/60a9836c2f2adedb2810522eab4a7617f8b9b4b1)), closes [#9112](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9112) [#9188](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9188) [#9603](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9603)
+* updated attachments validation ([99945de](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/99945de85b76df5fc44dffef1c688116c4c153fe)), closes [#9638](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9638)
+
 ### [0.0.80](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.79&targetVersion=GTv0.0.80) (2026-01-07)
 
 
