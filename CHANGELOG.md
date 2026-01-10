@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.82](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.81&targetVersion=GTv0.0.82) (2026-01-10)
+
+
+### Features
+
+* add gateway resource to onelogin ([ebbf49d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/ebbf49d9fd972840351158ab65c1c4406082a056)), closes [#9581](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9581)
+
+
+### Bug Fixes
+
+* add resource only if exist ([da124cf](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/da124cf7773b6eb436d694303286a609b79d0e51)), closes [#9581](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9581)
+* corrected account field names ([fa52ecc](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/fa52ecc65933f81c80c0da9b2a792bcef6f76899)), closes [#9624](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9624)
+* filter allocation basis for fund group ([606526f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/606526f5cb7213f41d977a4204adbb2763d16124)), closes [#9505](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9505)
+
 ### [0.0.81](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.80&targetVersion=GTv0.0.81) (2026-01-09)
 
 
