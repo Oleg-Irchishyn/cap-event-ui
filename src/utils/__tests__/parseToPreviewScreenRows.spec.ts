@@ -17,7 +17,7 @@ describe('parseToPreviewScreenRows', () => {
             investor: 'INV1',
             allocatedAmount: 100,
             isAggregated: true,
-            account: { description: 'Account Desc' },
+            account: { defaultDescription: 'Account Desc' },
             investment: { title: 'Investment T', name: 'Investment N' },
           },
           {

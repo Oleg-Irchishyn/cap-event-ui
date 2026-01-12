@@ -511,19 +511,14 @@ describe('PreviewScreenStore', () => {
       expect(unchanged).toEqual(basePayload as unknown as Record<string, unknown>);
     });
 
-    it('hasAggregatedLineItems reflects presence of aggregated items', () => {
-      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [];
+    it('hasAggregatedLineItems reflects presence of aggregated rows', () => {
+      (store as unknown as { rows: unknown[] }).rows = [];
       expect(store.hasAggregatedLineItems()).toBe(false);
 
-      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
-        { plInvestorEntries: [{ isAggregated: false }] },
-      ];
-      // filtered -> no aggregated
+      (store as unknown as { rows: unknown[] }).rows = [{ isAggregated: false }];
       expect(store.hasAggregatedLineItems()).toBe(false);
 
-      (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
-        { plInvestorEntries: [{ isAggregated: true }] },
-      ];
+      (store as unknown as { rows: unknown[] }).rows = [{ isAggregated: true }];
       expect(store.hasAggregatedLineItems()).toBe(true);
     });
   });

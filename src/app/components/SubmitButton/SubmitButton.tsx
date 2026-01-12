@@ -35,7 +35,8 @@ const SubmitButton = () => {
   const [showSubmitTooltip, setShowSubmitTooltip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isSubmitDisabled = isSubmitting || !previewScreenStore.hasAggregatedLineItems();
+  const isSubmitDisabled =
+    isSubmitting || previewScreenStore.isLoading || !previewScreenStore.hasAggregatedLineItems();
 
   const onShowTooltip = () => {
     if (!isSubmitDisabled) {

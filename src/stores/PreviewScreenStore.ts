@@ -453,9 +453,7 @@ class PreviewScreenStore {
   }
 
   public hasAggregatedLineItems(): boolean {
-    return this.getAggregatedLineItems().some(
-      (item) => Array.isArray(item.plInvestorEntries) && item.plInvestorEntries.length > 0,
-    );
+    return (Array.isArray(this.rows) ? this.rows : []).some((r) => !!r?.isAggregated);
   }
 
   async fetchDoc(

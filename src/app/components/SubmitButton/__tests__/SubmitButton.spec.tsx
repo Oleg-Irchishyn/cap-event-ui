@@ -96,6 +96,8 @@ jest.mock('@/stores', () => ({
     },
   },
   previewScreenStore: {
+    isLoading: false,
+    rows: [{ id: 'row-1', isAggregated: true }],
     hasAggregatedLineItems: jest.fn(() => true),
     withAggregatedLineItems: jest.fn((payload: unknown) => payload),
   },
@@ -107,6 +109,9 @@ const renderWithTheme = (ui: React.ReactElement) =>
 describe('SubmitButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    const stores = require('@/stores');
+    stores.previewScreenStore.isLoading = false;
+    stores.previewScreenStore.rows = [{ id: 'row-1', isAggregated: true }];
   });
 
   it('renders submit button correctly', () => {
@@ -188,14 +193,26 @@ describe('SubmitButton', () => {
 
   it('disables submit when aggregated line items are not ready', () => {
     const stores = require('@/stores');
-    stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(false);
+
+    stores.previewScreenStore.isLoading = false;
+    stores.previewScreenStore.rows = [];
+    stores.previewScreenStore.hasAggregatedLineItems.mockReturnValueOnce(false);
 
     renderWithTheme(<SubmitButton />);
 
     const button = screen.getByTestId('cap-event-submit');
     expect(button).toBeDisabled();
+  });
 
-    stores.previewScreenStore.hasAggregatedLineItems.mockReturnValue(true);
+  it('disables submit while preview data is loading (skeletons)', () => {
+    const stores = require('@/stores');
+    stores.previewScreenStore.isLoading = true;
+    stores.previewScreenStore.rows = [];
+
+    renderWithTheme(<SubmitButton />);
+
+    const button = screen.getByTestId('cap-event-submit');
+    expect(button).toBeDisabled();
   });
 
   it('shows tooltip on hover when enabled and hides on mouse leave', () => {
@@ -217,6 +234,8 @@ describe('SubmitButton', () => {
 
   it('calls getAllocationBasisId for entity line items', async () => {
     const stores = require('@/stores');
+    stores.previewScreenStore.isLoading = false;
+    stores.previewScreenStore.rows = [{ id: 'row-1', isAggregated: true }];
     stores.capEventSettingsStore.getAllocationBasisId.mockReturnValue('DS-CMNT');
     stores.capEventSettingsStore.entitiesLineItem = new Map([
       [
