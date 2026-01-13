@@ -30,7 +30,6 @@ export const ControlButton = styled.div(({ theme }) => ({
   cursor: 'pointer',
   justifySelf: 'flex-end',
   alignItems: 'center',
-  marginTop: '17px',
   fontSize: '14px',
   fontWeight: 500,
 

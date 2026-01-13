@@ -31,6 +31,79 @@ describe('useAccountsTableRowData', () => {
     expect(result[result.length - 1].id).not.toBe('total-row');
   });
 
+  it('total is empty when there is no amount', () => {
+    const rows = [
+      {
+        id: '1',
+        amount: 0,
+        investment: { id: '131231', name: 'jsgfjshf' },
+        allocationBasis: '',
+        capitalCategory: 'Cat',
+        callDistributionReason: '',
+        defaultDescription: '',
+        insideCommitment: '',
+      } as LineItemRow,
+    ];
+
+    render(<TestComponent level={LineItemTypes.entity} rows={rows} />);
+    const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+
+    expect(result).toHaveLength(2);
+    expect(result[1].amount).toBe('');
+  });
+
+  it('total is number when there is amount', () => {
+    const rows = [
+      {
+        id: '1',
+        amount: 100,
+        investment: { id: '131231', name: 'jsgfjshf' },
+        allocationBasis: '',
+        capitalCategory: 'Cat',
+        callDistributionReason: '',
+        defaultDescription: '',
+        insideCommitment: '',
+      } as LineItemRow,
+    ];
+
+    render(<TestComponent level={LineItemTypes.entity} rows={rows} />);
+    const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+
+    expect(result).toHaveLength(2);
+    expect(result[1].amount).toBe(100);
+  });
+
+  it('total is 0 when amount sum equals 0', () => {
+    const rows = [
+      {
+        id: '1',
+        amount: 100,
+        investment: { id: '131231', name: 'jsgfjshf' },
+        allocationBasis: '',
+        capitalCategory: 'Cat',
+        callDistributionReason: '',
+        defaultDescription: '',
+        insideCommitment: '',
+      } as LineItemRow,
+      {
+        id: '1',
+        amount: -100,
+        investment: { id: '131231', name: 'jsgfjshf' },
+        allocationBasis: '',
+        capitalCategory: 'Cat',
+        callDistributionReason: '',
+        defaultDescription: '',
+        insideCommitment: '',
+      } as LineItemRow,
+    ];
+
+    render(<TestComponent level={LineItemTypes.entity} rows={rows} />);
+    const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+
+    expect(result).toHaveLength(3);
+    expect(result[2].amount).toBe(0);
+  });
+
   it('appends total row with Net Contributions for positive total on entity level', () => {
     const rows = [
       {
