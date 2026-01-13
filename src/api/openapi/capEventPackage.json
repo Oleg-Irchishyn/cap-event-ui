@@ -2041,18 +2041,18 @@
             "$ref": "#/components/schemas/CapEventType"
           },
           "sponsor": {
-            "$ref": "#/components/schemas/Sponsor",
+            "$ref": "./common.json#/components/schemas/Sponsor",
             "type": "string"
           },
           "fundGroup": {
-            "$ref": "#/components/schemas/FundGroup",
+            "$ref": "./common.json#/components/schemas/FundGroup",
             "type": "string"
           },
           "entities": {
             "type": "array",
             "description": "The list with IDs of selected entities",
             "items": {
-              "$ref": "#/components/schemas/Entity"
+              "$ref": "./common.json#/components/schemas/Entity"
             }
           },
           "noticeDate": {
@@ -2129,17 +2129,17 @@
       },
       "LineItemBase": {
         "type": "object",
-        "required": ["entities","account", "investment", "allocationBasis","allocationBasisId", "amount"],
+        "required": ["entities","account", "allocationBasis","allocationBasisId", "amount"],
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
           "account": {
-            "$ref": "#/components/schemas/Account"
+            "$ref": "./common.json#/components/schemas/Account"
           },
           "investment": {
-            "$ref": "#/components/schemas/Investment"
+            "$ref": "./common.json#/components/schemas/Investment"
           },
           "allocationBasis": {
             "type": "string"
@@ -2181,7 +2181,7 @@
             "format": "uuid"
           },
           "entity": {
-            "$ref": "#/components/schemas/Entity"
+            "$ref": "./common.json#/components/schemas/Entity"
           },
           "noticeDate": {
             "type": "string",
@@ -2238,90 +2238,6 @@
           }
         ]
       },
-      "Investment": {
-        "type": "object",
-        "required": ["id"],
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          }
-        }
-      },
-      "Account": {
-        "type": "object",
-        "required": ["accountNo"],
-        "properties": {
-          "accountKey": {
-            "type": "string"
-          },
-          "accountName": {
-            "type": "string"
-          },
-          "accountNo": {
-            "type": "string"
-          },
-          "capitalCategory": {
-            "type": "string"
-          },
-          "callDistributionReason": {
-            "type": "string"
-          },
-          "defaultDescription": {
-            "type": "string"
-          },
-          "insideCommitment": {
-            "type": "string"
-          },
-          "fsLineItem": {
-            "type": "string"
-          }
-        }
-      },
-      "FundGroup": {
-        "type": "object",
-        "required": ["id"],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "Sponsor": {
-        "type": "object",
-        "required": ["id"],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "Entity": {
-        "type": "object",
-        "required": ["id"],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
       "CapEventAggregatedLineItem": {
         "type": "object",
         "properties": {
@@ -2330,7 +2246,7 @@
             "format": "uuid"
           },
           "entity": {
-            "$ref": "#/components/schemas/Entity"
+            "$ref": "./common.json#/components/schemas/Entity"
           },
           "dueDate": {
             "type": "string",
@@ -2350,10 +2266,10 @@
             "format": "uuid"
           },
           "account": {
-            "$ref": "#/components/schemas/Account"
+            "$ref": "./common.json#/components/schemas/Account"
           },
           "investment": {
-            "$ref": "#/components/schemas/Investment"
+            "$ref": "./common.json#/components/schemas/Investment"
           },
           "optOut": {
             "type": "boolean"
@@ -2529,6 +2445,16 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "$ref": "./common.json#/components/securitySchemes/bearerAuth"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

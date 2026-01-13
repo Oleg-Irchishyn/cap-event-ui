@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Entity } from './Entity';
+import type { CapEventEntityLineItem } from './CapEventEntityLineItem';
 import type { InvestorEntry } from './InvestorEntry';
 export type CapEventAggregatedLineItem = {
     id?: string;
-    entity?: Entity;
+    entity?: CapEventEntityLineItem['entity'];
     dueDate?: string;
     plInvestorEntries?: Array<InvestorEntry>;
 };

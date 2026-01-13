@@ -1,12 +1,15 @@
-import { Investment, InvestorEntry } from '@/clients/CapEventPackage';
+import type { InvestorEntry, LineItemBase } from '@/clients/CapEventPackage';
 import { Account } from '@/clients/ReferenceData';
+
+// Derived Investment type from generated LineItemBase model
+export type Investment = NonNullable<LineItemBase['investment']>;
 
 export type LineItemRow = {
   id: string;
   inheritanceId?: string;
   amount: number;
   fundGroupLineItemInheritanceId?: string;
-  investment: Investment;
+  investment?: Investment | string;
   allocationBasis: string;
   prDate?: Date;
   prFlag?: string;

@@ -2,12 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Account } from './Account';
-import type { Investment } from './Investment';
+import type { LineItemBase } from './LineItemBase';
 export type InvestorEntry = {
     id?: string;
-    account?: Account;
-    investment?: Investment;
+    account?: LineItemBase['account'];
+    investment?: LineItemBase['investment'];
     optOut?: boolean;
     readOnly?: boolean;
     rounded?: boolean;

@@ -12,6 +12,7 @@ import {
   FundGroup,
   Investment,
 } from '@/clients/ReferenceData';
+import type { Investment as LineItemInvestment } from '@/app/new/LineItems/types';
 import { prepareNewRow } from '@/utils/prepareNewRow';
 import { CapEventPackageApi, ReferenceDataApi } from '@/api';
 import { LineItemTypes, USER_PROVIDED_OPTION } from '@/app/new/LineItems/const';
@@ -213,10 +214,14 @@ class CapEventSettingsStore {
         const stateItem = fundGroupsStateAfterApply[index];
         const amountCheckBasedOnBasis =
           item.allocationBasis === USER_PROVIDED_OPTION ? false : item.amount !== stateItem.amount;
+        const leftInv = (item as { investment?: string | LineItemInvestment }).investment;
+        const rightInv = (stateItem as { investment?: string | LineItemInvestment }).investment;
+        const leftInvId = typeof leftInv === 'string' ? leftInv : String(leftInv?.id ?? '');
+        const rightInvId = typeof rightInv === 'string' ? rightInv : String(rightInv?.id ?? '');
         return (
           !stateItem ||
           amountCheckBasedOnBasis ||
-          item.investment.id !== stateItem.investment.id ||
+          leftInvId !== rightInvId ||
           item.allocationBasis !== stateItem.allocationBasis ||
           item.capitalCategory !== stateItem.capitalCategory ||
           item.defaultDescription !== stateItem.defaultDescription ||

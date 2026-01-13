@@ -1,4 +1,4 @@
-import { LineItemRow } from '@/app/new/LineItems/types';
+import { LineItemRow, Investment } from '@/app/new/LineItems/types';
 import { investmentMandatoryCategories } from '@/app/new/LineItems/const';
 import { NORMALIZE_DASHES_REGEX, NORMALIZE_SPACES_REGEX } from '@/const/regExps';
 
@@ -25,7 +25,9 @@ export const isLineItemRowValid = (row: LineItemRow): boolean => {
   const hasValidAmount = row.amount !== null && row.amount !== undefined && row.amount !== 0;
 
   const isInvestmentRequired = isInvestmentRequiredForCategory(row.capitalCategory);
-  const hasValidInvestment = !isInvestmentRequired || !!row.investment.id;
+  const inv = (row as { investment?: string | Investment }).investment;
+  const invId = typeof inv === 'string' ? inv.trim() : String(inv?.id ?? '').trim();
+  const hasValidInvestment = !isInvestmentRequired || !!invId;
 
   return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
 };
@@ -44,7 +46,9 @@ export const isFundGroupRowValid = (row: LineItemRow, userProvidedOptionLabel: s
     amountOptional || (row.amount !== null && row.amount !== undefined && row.amount !== 0);
 
   const isInvestmentRequired = isInvestmentRequiredForCategory(row.capitalCategory);
-  const hasValidInvestment = !isInvestmentRequired || !!row.investment.id;
+  const inv = (row as { investment?: string | Investment }).investment;
+  const invId = typeof inv === 'string' ? inv.trim() : String(inv?.id ?? '').trim();
+  const hasValidInvestment = !isInvestmentRequired || !!invId;
 
   return hasRequiredBaseFields && hasValidAmount && hasValidInvestment;
 };

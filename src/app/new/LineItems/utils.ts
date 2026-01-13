@@ -1,5 +1,5 @@
 import { Account } from '@/clients/ReferenceData';
-import { LineItemRow } from '@/app/new/LineItems/types';
+import { LineItemRow, Investment } from '@/app/new/LineItems/types';
 import { formatNumberToAmount } from '@/utils/formatNumberToAmount';
 
 export const getReasons = (selectedCategory: string, accounts: Account[]) => {
@@ -46,11 +46,18 @@ export const hasRequiredFieldsForPreview = (data: LineItemRow) => {
   );
 };
 
-export const isOtherRowEmpty = (data: LineItemRow) =>
-  data.accountName === '' &&
-  data.defaultDescription === '' &&
-  data.insideCommitment === '' &&
-  Object.keys(data.investment).length === 0;
+export const isOtherRowEmpty = (data: LineItemRow) => {
+  const inv = (data as { investment?: string | Investment }).investment;
+  const isInvestmentEmpty =
+    !inv || (typeof inv === 'string' ? inv.trim() === '' : Object.keys(inv ?? {}).length === 0);
+
+  return (
+    data.accountName === '' &&
+    data.defaultDescription === '' &&
+    data.insideCommitment === '' &&
+    isInvestmentEmpty
+  );
+};
 
 export const formatValue = (value: number | string, isTotalRowAmount: boolean = false) => {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;

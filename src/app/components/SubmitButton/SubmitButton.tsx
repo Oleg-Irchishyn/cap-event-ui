@@ -1,30 +1,30 @@
-import { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import Tooltip from '@/app/components/Tooltip';
+import type { Investment } from '@/app/new/LineItems/types';
+
+import { CapEventPackageApi } from '@/api';
+import { CapEvent, CapEventStatus, CapEventType } from '@/clients/CapEventPackage';
+import { ITEM_STATES } from '@/const/common';
+import { ROUTES } from '@/const/routes';
+import { useToast } from '@/providers/ToastProvider';
 
 import { capEventSettingsStore, entityDatesStore, previewScreenStore } from '@/stores';
-import {
-  CapEvent,
-  CapEventStatus,
-  CapEventType,
-  Entity,
-  FundGroup,
-  Sponsor,
-} from '@/clients/CapEventPackage';
-import { ITEM_STATES } from '@/const/common';
 import { formatDate } from '@/utils/formatDate';
-import { useToast } from '@/providers/ToastProvider';
-import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/const/routes';
-import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
-import { CapEventPackageApi } from '@/api';
-import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { isLineItemRowValid } from '@/utils/investment';
+import { isCapEventLineItemsFilled } from '@/utils/isFundGroupLineItemsFilled';
+import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { showErrorToast } from '@/utils/showErrorToast';
 
 import { SubmitButtonWrapper } from './styles';
+
+const isNamedObject = (v: unknown): v is { id?: unknown; name?: unknown } => {
+  if (typeof v !== 'object' || v === null) return false;
+  return 'id' in v || 'name' in v;
+};
 
 const SubmitButton = () => {
   const toast = useToast();
@@ -58,17 +58,39 @@ const SubmitButton = () => {
         (ent) => ent.state === ITEM_STATES.SELECTED,
       );
 
+      const selectedType = capEventSettingsStore.eventTypes.find(
+        (type) => type.state === ITEM_STATES.SELECTED,
+      ) as Partial<CapEventType> | undefined;
+      const selectedSponsorItem = capEventSettingsStore.sponsors.find(
+        (s) => s.state === ITEM_STATES.SELECTED,
+      );
+      const selectedFundGroupItem = capEventSettingsStore.fundGroups.find(
+        (g) => g.state === ITEM_STATES.SELECTED,
+      );
+      const selectedSponsor = isNamedObject(selectedSponsorItem) ? selectedSponsorItem : undefined;
+      const selectedFundGroup = isNamedObject(selectedFundGroupItem)
+        ? selectedFundGroupItem
+        : undefined;
+
       const requestBody: CapEvent = {
-        capEventType: capEventSettingsStore.eventTypes.find(
-          (type) => type.state === ITEM_STATES.SELECTED,
-        ) as CapEventType,
-        sponsor: capEventSettingsStore.sponsors.find(
-          (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
-        ) as Sponsor,
-        fundGroup: capEventSettingsStore.fundGroups.find(
-          (group) => group.state === ITEM_STATES.SELECTED,
-        ) as FundGroup,
-        entities: selectedEntities as Entity[],
+        capEventType: {
+          id: String(selectedType?.id ?? ''),
+          abbreviation: (selectedType as { abbreviation?: string })?.abbreviation,
+          name: (selectedType as { name?: string })?.name,
+          description: (selectedType as { description?: string })?.description,
+        },
+        sponsor: {
+          id: String(selectedSponsor?.id ?? ''),
+          name: selectedSponsor?.name,
+        } as unknown as CapEvent['sponsor'],
+        fundGroup: {
+          id: String(selectedFundGroup?.id ?? ''),
+          name: selectedFundGroup?.name,
+        } as unknown as CapEvent['fundGroup'],
+        entities: selectedEntities.map((ent) => ({
+          id: String(ent.id ?? ''),
+          name: ent.name,
+        })),
         noticeDate: formatDate(entityDatesStore.noticeDate),
         capEventFundGroupLineItems:
           selectedEntities.length < 2 ||
@@ -76,17 +98,22 @@ const SubmitButton = () => {
             ? []
             : capEventSettingsStore.fundGroupsStateAfterApply.map((fundGroupLineItem) => {
                 const investment = fundGroupLineItem.investment;
+                const invId =
+                  typeof investment === 'string' ? investment : String(investment?.id ?? '');
+                const invPayload = invId
+                  ? {
+                      id: invId,
+                      name: typeof investment === 'object' ? investment?.name : undefined,
+                      title: typeof investment === 'object' ? investment?.title : undefined,
+                      type: typeof investment === 'object' ? investment?.type : undefined,
+                    }
+                  : undefined;
                 const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
                   fundGroupLineItem.allocationBasis,
                 );
                 return {
                   inheritanceId: fundGroupLineItem.inheritanceId,
-                  investment: {
-                    id: investment?.id ?? '',
-                    name: investment?.name,
-                    title: investment?.title,
-                    type: investment?.type,
-                  },
+                  investment: invPayload ?? (null as unknown as Investment),
                   allocationBasisId,
                   allocationBasis: fundGroupLineItem.allocationBasis,
                   amount: fundGroupLineItem.amount,
@@ -111,6 +138,16 @@ const SubmitButton = () => {
               dueDate: formatDate(entityDatesStore.entityDates[key].dueDate),
               capEventLineItems: validLineItems.map((entityLineItem) => {
                 const investment = entityLineItem.investment;
+                const invId =
+                  typeof investment === 'string' ? investment : String(investment?.id ?? '');
+                const invPayload = invId
+                  ? {
+                      id: invId,
+                      name: typeof investment === 'object' ? investment?.name : undefined,
+                      title: typeof investment === 'object' ? investment?.title : undefined,
+                      type: typeof investment === 'object' ? investment?.type : undefined,
+                    }
+                  : undefined;
                 const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
                   entityLineItem.allocationBasis,
                 );
@@ -131,12 +168,7 @@ const SubmitButton = () => {
                     defaultDescription: entityLineItem.defaultDescription,
                     insideCommitment: entityLineItem.insideCommitment?.toLowerCase(),
                   },
-                  investment: {
-                    id: investment?.id ?? '',
-                    name: investment?.name,
-                    title: investment?.title,
-                    type: investment?.type,
-                  },
+                  investment: invPayload ?? (null as unknown as Investment),
                 };
               }),
             };

@@ -6,6 +6,7 @@ import { CapEventPackageApi } from '@/api';
 import Button, { BUTTON_THEMES } from '@/app/components/Button';
 import { getValidDate } from '@/utils/getValidDate';
 import { AllocationInput } from '@/clients/CapEventPackage';
+import type { Investment } from '@/app/new/LineItems/types';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { formatAmount } from '@/utils/formatAmount';
 
@@ -59,8 +60,9 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
           const allocationBasisId = capEventSettingsStore.getAllocationBasisId(
             previewEntityData.allocationBasis,
           );
+          const inv = (previewEntityData as { investment?: string | Investment }).investment;
           const investmentLabel =
-            (previewEntityData.investment?.title || previewEntityData.investment?.name) ?? '-';
+            typeof inv === 'string' ? inv : ((inv?.title || inv?.name) ?? '-');
           const amountLabel = formatAmount(previewEntityData.amount ?? 0);
           setAllocationPreviewMetaData({
             callDistributionReason: previewEntityData.callDistributionReason ?? '-',
@@ -107,10 +109,9 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
                     acc.insideCommitment === previewEntityData.insideCommitment,
                 )?.accountNo ??
                 '',
-              investmentId: previewEntityData.investment?.id ?? '',
+              investmentId: (typeof inv === 'string' ? inv : String(inv?.id ?? '')) ?? '',
               amount: previewEntityData.amount,
             };
-
             const data = await CapEventPackageApi.default.allocateLineItem(requestBody, sessionId);
             capEventSettingsStore.setAllocationPreviewModalData(data);
           }

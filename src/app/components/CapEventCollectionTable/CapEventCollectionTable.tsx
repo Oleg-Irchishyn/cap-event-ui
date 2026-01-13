@@ -10,6 +10,21 @@ import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import { TruncatedTextCell } from './TruncatedTextCell';
 import { formatAmount } from '@/utils/formatAmount';
 
+const formatNamedObject = (value: unknown): string => {
+  if (!value) return '-';
+  if (typeof value === 'string') {
+    const s = value.trim();
+    return s ?? '-';
+  }
+  if (typeof value === 'object') {
+    const { id, name } = value as { id?: string; name?: string };
+    const idStr = String(id ?? '').trim();
+    const nameStr = String(name ?? '').trim();
+    return idStr && nameStr ? `${idStr} - ${nameStr}` : '-';
+  }
+  return '-';
+};
+
 type Props = {
   rows: CapEvent[];
   testId?: string;
@@ -62,11 +77,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.sponsor &&
-        String(data.sponsor.id ?? '').trim() &&
-        String(data.sponsor.name ?? '').trim()
-        ? `${data.sponsor.id} - ${data.sponsor.name}`
-        : '-';
+      return formatNamedObject(data.sponsor as unknown);
     },
   },
   {
@@ -78,11 +89,7 @@ const capEventTableColumnDefs = (): ColDef[] => [
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data.fundGroup &&
-        String(data.fundGroup.id ?? '').trim() &&
-        String(data.fundGroup.name ?? '').trim()
-        ? `${data.fundGroup.id} - ${data.fundGroup.name}`
-        : '-';
+      return formatNamedObject(data.fundGroup as unknown);
     },
   },
   {

@@ -74,14 +74,8 @@ describe('CapEventCollectionTable', () => {
       name: 'Capital Call',
       abbreviation: 'CC',
     },
-    sponsor: {
-      id: 'sponsor-1',
-      name: 'Test Sponsor',
-    },
-    fundGroup: {
-      id: 'fund-1',
-      name: 'Test Fund Group',
-    },
+    sponsor: 'sponsor-1 - Test Sponsor' as unknown as CapEvent['sponsor'],
+    fundGroup: 'fund-1 - Test Fund Group' as unknown as CapEvent['fundGroup'],
     entities: [
       { id: 'entity-1', name: 'Entity 1' },
       { id: 'entity-2', name: 'Entity 2' },
@@ -222,5 +216,46 @@ describe('CapEventCollectionTable', () => {
       data: { createdAt: undefined } as unknown as CapEvent,
     });
     expect(formatMissing).toBe('-');
+  });
+
+  describe('formatNamedObject behavior via sponsor and fundGroup columns', () => {
+    const getCell = (rowIdx: number, field: string) =>
+      screen.getByTestId(`row-${rowIdx}`).querySelector(`[data-testid="cell-${field}"]`);
+
+    it('renders "-" for missing sponsor and fund group', async () => {
+      const mockEvents: CapEvent[] = [
+        createMockCapEvent({
+          sponsor: undefined as unknown as CapEvent['sponsor'],
+          fundGroup: undefined as unknown as CapEvent['fundGroup'],
+        }),
+      ];
+
+      render(<CapEventCollectionTable rows={mockEvents} testId="test-table" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('table-test-table')).toBeInTheDocument();
+      });
+
+      expect(getCell(0, 'sponsor')).toHaveTextContent('-');
+      expect(getCell(0, 'fundGroup')).toHaveTextContent('-');
+    });
+
+    it('renders string values as-is for sponsor and fund group', async () => {
+      const mockEvents: CapEvent[] = [
+        createMockCapEvent({
+          sponsor: 'SP1 - Test Sponsor' as unknown as CapEvent['sponsor'],
+          fundGroup: 'FG1 - Test FundGroup' as unknown as CapEvent['fundGroup'],
+        }),
+      ];
+
+      render(<CapEventCollectionTable rows={mockEvents} testId="test-table" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('table-test-table')).toBeInTheDocument();
+      });
+
+      expect(getCell(0, 'sponsor')).toHaveTextContent('SP1 - Test Sponsor');
+      expect(getCell(0, 'fundGroup')).toHaveTextContent('FG1 - Test FundGroup');
+    });
   });
 });

@@ -7,15 +7,11 @@ import {
   CapEventEntityLineItem,
   CapEventFundGroupLineItem,
   CapEventLineItem,
-  Investment as ApiInvestment,
-  Account as ApiAccount,
-  Entity as ApiEntity,
-  Sponsor as ApiSponsor,
-  FundGroup as ApiFundGroup,
   CapEventType as ApiCapEventType,
   CapEventAggregatedLineItem,
   InvestorDocumentInput,
 } from '@/clients/CapEventPackage';
+import { LineItemBase } from '@/clients/CapEventPackage';
 import { Account as RefAccount, Investment as RefInvestment } from '@/clients/ReferenceData';
 import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
 import type { PreviewScreenRow } from '@/app/preview-screen/types';
@@ -30,6 +26,13 @@ import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import RootStore from '@/stores/RootStore';
+
+// Local API type aliases derived from generated client models
+type ApiAccount = LineItemBase['account'];
+type ApiInvestment = NonNullable<LineItemBase['investment']>;
+type ApiEntity = CapEventEntityLineItem['entity'];
+type ApiSponsor = { id?: string; name?: string };
+type ApiFundGroup = { id?: string; name?: string };
 
 class PreviewScreenStore {
   root: RootStore;
@@ -167,7 +170,12 @@ class PreviewScreenStore {
     row: LineItemRow,
     investments: RefInvestment[],
   ): Partial<ApiInvestment> | undefined {
-    const id = row.investment?.id || '';
+    const rawInvestment = (
+      row as {
+        investment?: string | { id?: string | number | null };
+      }
+    ).investment;
+    const id = typeof rawInvestment === 'string' ? rawInvestment : String(rawInvestment?.id ?? '');
     if (!id) return undefined;
     const found = investments.find(
       (inv) => String(inv.id).toLowerCase() === String(id).toLowerCase(),
@@ -239,7 +247,7 @@ class PreviewScreenStore {
           ? { inheritanceId: explicitInheritanceId }
           : {}),
         account: base.account,
-        investment: base.investment ?? ('' as unknown as ApiInvestment),
+        investment: base.investment ?? (null as unknown as ApiInvestment),
         allocationBasis: base.allocationBasis,
         allocationBasisId,
         amount: base.amount,
@@ -286,7 +294,7 @@ class PreviewScreenStore {
         );
         capEventLineItems.push({
           account: base.account,
-          investment: base.investment ?? ('' as unknown as ApiInvestment),
+          investment: base.investment ?? (null as unknown as ApiInvestment),
           allocationBasis: base.allocationBasis,
           allocationBasisId,
           amount: base.amount,
@@ -364,9 +372,9 @@ class PreviewScreenStore {
     const totalAmount = this.computeTotalAmount(capEventEntityLineItems);
 
     const payload: CapEvent = {
-      sponsor: this.toApiSponsor(selectedSponsorItem)!,
+      sponsor: this.toApiSponsor(selectedSponsorItem)! as unknown as CapEvent['sponsor'],
       capEventType: this.toApiType(selectedTypeItem)!,
-      fundGroup: this.toApiFundGroup(selectedFundGroupItem)!,
+      fundGroup: this.toApiFundGroup(selectedFundGroupItem)! as unknown as CapEvent['fundGroup'],
       entities,
       noticeDate: noticeDateStr,
       status: 'DRAFT' as unknown as CapEvent['status'],
