@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.83](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.82&targetVersion=GTv0.0.83) (2026-01-13)
+
+
+### Bug Fixes
+
+* [TASK-9623]: [FE] Save button is enabled before preview is ready ([7ffa82c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/7ffa82c9ec12c548bfd92a879e6d8915015f77f6)), closes [#9570](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9570) [#9623](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9623)
+
 ### [0.0.82](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.81&targetVersion=GTv0.0.82) (2026-01-10)
 
 
