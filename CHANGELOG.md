@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.84](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.83&targetVersion=GTv0.0.84) (2026-01-14)
+
+
+### Bug Fixes
+
+* [Issue-9643]: [FE] MF Calculated Amount line items fields are empty and editable ([40e17a2](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/40e17a2629d7bb8fecc122d2c275da54cf213baa)), closes [#9643](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9643) [#9712](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9712)
+* [Issue-9716]: [FE] Fix process method to allow null investment ([a9eea82](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a9eea82c857ec78ddb2c45c191874d762546ac00)), closes [#9716](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9716)
+* total amount ([353a91a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/353a91af8dfb81bcd4fe226cec447ae1430a5896)), closes [#9145](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9145)
+
 ### [0.0.83](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.82&targetVersion=GTv0.0.83) (2026-01-13)
 
 
