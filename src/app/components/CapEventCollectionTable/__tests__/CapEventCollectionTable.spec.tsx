@@ -82,7 +82,7 @@ describe('CapEventCollectionTable', () => {
     ],
     noticeDate: '2024-01-01',
     totalAmount: 1000000,
-    createdAt: '2024-01-01T00:00:00Z',
+    modifiedAt: '2024-01-01T00:00:00Z',
     createdBy: 'John Doe',
     ...overrides,
   });
@@ -174,9 +174,9 @@ describe('CapEventCollectionTable', () => {
 
   it('configures Created At column with numeric valueGetter and display formatter', async () => {
     const mockEvents: CapEvent[] = [
-      createMockCapEvent({ id: '1', createdAt: '2024-01-01T00:00:00Z' }),
-      createMockCapEvent({ id: '2', createdAt: '2023-01-01T00:00:00Z' }),
-      createMockCapEvent({ id: '3', createdAt: undefined }),
+      createMockCapEvent({ id: '1', modifiedAt: '2024-01-01T00:00:00Z' }),
+      createMockCapEvent({ id: '2', modifiedAt: '2023-01-01T00:00:00Z' }),
+      createMockCapEvent({ id: '3', modifiedAt: undefined }),
     ];
 
     render(<CapEventCollectionTable rows={mockEvents} testId="test-table" />);
@@ -185,20 +185,20 @@ describe('CapEventCollectionTable', () => {
       expect(lastColumnDefs).not.toBeNull();
     });
 
-    const createdAtCol = lastColumnDefs!.find((c) => c.field === 'createdAt');
-    expect(createdAtCol).toBeTruthy();
-    expect(createdAtCol!.sortable).toBe(true);
-    expect(typeof createdAtCol!.valueGetter).toBe('function');
-    expect(typeof createdAtCol!.valueFormatter).toBe('function');
+    const modifiedAtCol = lastColumnDefs!.find((c) => c.field === 'modifiedAt');
+    expect(modifiedAtCol).toBeTruthy();
+    expect(modifiedAtCol!.sortable).toBe(true);
+    expect(typeof modifiedAtCol!.valueGetter).toBe('function');
+    expect(typeof modifiedAtCol!.valueFormatter).toBe('function');
 
-    const vNewer = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
-      data: { createdAt: '2024-01-01T00:00:00Z' },
+    const vNewer = (modifiedAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { modifiedAt: '2024-01-01T00:00:00Z' },
     } as unknown as ValueGetterParams);
-    const vOlder = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
-      data: { createdAt: '2023-01-01T00:00:00Z' },
+    const vOlder = (modifiedAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { modifiedAt: '2023-01-01T00:00:00Z' },
     } as unknown as ValueGetterParams);
-    const vMissing = (createdAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
-      data: { createdAt: undefined },
+    const vMissing = (modifiedAtCol!.valueGetter as (p: ValueGetterParams) => unknown)({
+      data: { modifiedAt: undefined },
     } as unknown as ValueGetterParams);
 
     expect(typeof vNewer).toBe('number');
@@ -206,14 +206,14 @@ describe('CapEventCollectionTable', () => {
     expect(vNewer as number).toBeGreaterThan(vOlder as number);
     expect(vMissing).toBeNull();
 
-    const formatWithDate = (createdAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
-      data: { createdAt: '2024-01-01T00:00:00Z' } as unknown as CapEvent,
+    const formatWithDate = (modifiedAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
+      data: { modifiedAt: '2024-01-01T00:00:00Z' } as unknown as CapEvent,
     });
     expect(typeof formatWithDate).toBe('string');
     expect(formatWithDate).not.toBe('-');
 
-    const formatMissing = (createdAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
-      data: { createdAt: undefined } as unknown as CapEvent,
+    const formatMissing = (modifiedAtCol!.valueFormatter as (p: { data: CapEvent }) => unknown)({
+      data: { modifiedAt: undefined } as unknown as CapEvent,
     });
     expect(formatMissing).toBe('-');
   });

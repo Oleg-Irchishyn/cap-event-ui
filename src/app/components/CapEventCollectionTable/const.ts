@@ -35,4 +35,8 @@ export const CAP_EVENT_COLLECTION_TABLE_CONFIG = {
     key: 'createdBy',
     title: 'Created By',
   },
+  MODIFIED_ON: {
+    key: 'modifiedAt',
+    title: 'Modified On',
+  },
 };

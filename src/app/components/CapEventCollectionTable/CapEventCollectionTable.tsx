@@ -119,8 +119,8 @@ const capEventTableColumnDefs = (): ColDef[] => [
     },
   },
   {
-    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.title,
-    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.CREATED_AT.key,
+    headerName: CAP_EVENT_COLLECTION_TABLE_CONFIG.MODIFIED_ON.title,
+    field: CAP_EVENT_COLLECTION_TABLE_CONFIG.MODIFIED_ON.key,
     flex: 1,
     sort: 'desc',
     sortIndex: 0,
@@ -129,11 +129,11 @@ const capEventTableColumnDefs = (): ColDef[] => [
     minWidth: 190,
     valueGetter: (params) => {
       const data = params.data as CapEvent;
-      return data?.createdAt ? new Date(data.createdAt).getTime() : null;
+      return data?.modifiedAt ? new Date(data.modifiedAt).getTime() : null;
     },
     valueFormatter: (params) => {
       const data = params.data as CapEvent;
-      return data?.createdAt ? new Date(data.createdAt).toLocaleDateString() : '-';
+      return data?.modifiedAt ? new Date(data.modifiedAt).toLocaleDateString() : '-';
     },
     maxWidth: 120,
   },
