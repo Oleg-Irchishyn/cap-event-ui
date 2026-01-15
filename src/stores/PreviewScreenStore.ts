@@ -447,10 +447,7 @@ class PreviewScreenStore {
       id: item?.id,
       entity: item?.entity,
       dueDate: item?.dueDate,
-      plInvestorEntries: (Array.isArray(item?.plInvestorEntries)
-        ? item.plInvestorEntries
-        : []
-      ).filter((e) => !!e && e.isAggregated),
+      plInvestorEntries: Array.isArray(item?.plInvestorEntries) ? item.plInvestorEntries : [],
     }));
   }
 

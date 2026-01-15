@@ -31,7 +31,6 @@ jest.mock('@/utils/sessionIdStorage', () => ({
   getStoredSessionId: jest.fn().mockReturnValue(''),
 }));
 
-// Mock stores used by PreviewScreenStore
 const mockCapEventSettingsStore = {
   getAllocationBasisId: jest.fn(),
   eventTypes: [
@@ -59,12 +58,12 @@ const mockCapEventSettingsStore = {
   investments: [{ id: '2200', title: '', name: 'IDB DEVELOPMENT CORP LTD NPV', type: '' }],
   fundGroupsLineItem: [
     {
-      id: 'row-temp-1', // not uuid -> store should generate uuid for payload
+      id: 'row-temp-1',
       capitalCategory: 'Cont - Expense offsets',
       callDistributionReason: 'Test Reason 1',
       defaultDescription: 'Test Description 1',
       insideCommitment: 'Yes',
-      investment: '', // optional for this category
+      investment: '',
       allocationBasis: 'commitment',
       amount: 100000,
     },
@@ -78,12 +77,11 @@ const mockCapEventSettingsStore = {
           callDistributionReason: 'Test Reason 1',
           defaultDescription: 'Test Description 1',
           insideCommitment: 'Yes',
-          investment: '', // optional
+          investment: '',
           allocationBasis: 'commitment',
           amount: 100000,
           fundGroupLineItemInheritanceId: 'row-temp-1',
           prFlag: 'Yes',
-          // prDate omitted -> will be taken from due date
         },
       ],
     ],
@@ -120,27 +118,22 @@ describe('PreviewScreenStore', () => {
     axiosPostMock.mockReset();
     (axios as unknown as { post: jest.Mock }).post = axiosPostMock as unknown as jest.Mock;
 
-    // Reset mock functions (month is 0-indexed: 10 = November)
     mockEntityDatesStore.getEntityNoticeDate.mockReturnValue(new Date(2025, 10, 17));
     mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
     mockEntityDatesStore.getEntityDueDateInputValidity.mockReturnValue(true);
     mockEntityDatesStore.getEntityNoticeDateInputValidity.mockReturnValue(true);
 
-    // Create RootStore instance
     rootStore = new RootStore();
 
-    // Replace child stores with mocks so PreviewScreenStore can access them via this.root.*
     rootStore.capEventSettingsStore =
       mockCapEventSettingsStore as unknown as typeof rootStore.capEventSettingsStore;
     rootStore.entityDatesStore =
       mockEntityDatesStore as unknown as typeof rootStore.entityDatesStore;
 
-    // Get PreviewScreenStore from the RootStore
     store = rootStore.previewScreenStore;
   });
 
   it('processPayload: when not enough data, shows toast and does not call API', async () => {
-    // Temporarily make entities invalid (no selected entities)
     const prevEntities = mockCapEventSettingsStore.fundEntities;
     (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities = [];
     const toast = { error: jest.fn() } as unknown as ToastApi;
@@ -152,7 +145,6 @@ describe('PreviewScreenStore', () => {
     expect(parseMock).not.toHaveBeenCalled();
     expect(result).toEqual([]);
 
-    // restore
     (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities =
       prevEntities;
   });
@@ -165,7 +157,6 @@ describe('PreviewScreenStore', () => {
 
     const result = await store.processPayload(toast);
 
-    // Assert API called with expected shape
     expect(processMock).toHaveBeenCalledTimes(1);
     const sentPayload = processMock.mock.calls[0][0];
     expect(sentPayload.sponsor.id).toBe('SP1');
@@ -186,10 +177,8 @@ describe('PreviewScreenStore', () => {
         insideCommitment: 'yes',
       }),
     );
-    // No explicit inheritance id provided in mock FG row -> FG should not set inheritanceId
     expect(fg.inheritanceId).toBeUndefined();
 
-    // entity line item should link to fund group via fundGroupLineItemInheritanceId and set pr fields
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.entity).toEqual(expect.objectContaining({ id: 'E1' }));
     expect(entityItem.noticeDate).toBe('2025-11-17');
@@ -204,7 +193,6 @@ describe('PreviewScreenStore', () => {
       }),
     );
 
-    // rows updated from parser
     expect(parseMock).toHaveBeenCalledWith(apiResponse);
     expect(result).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.rows).toEqual([{ id: 'r1' }, { id: 'r2' }]);
@@ -214,7 +202,6 @@ describe('PreviewScreenStore', () => {
   it('buildFundGroupLineItems: sets inheritanceId only when explicit value exists', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
-    // Add explicit inheritanceId to the single FG row
     (mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0] = {
       ...(mockCapEventSettingsStore.fundGroupsLineItem as Array<Record<string, unknown>>)[0],
       inheritanceId: 'FG-EXPLICIT-1',
@@ -327,7 +314,6 @@ describe('PreviewScreenStore', () => {
   it('fetchDoc success posts to investor document endpoint and returns blob', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
-    // Arrange: process response with entity and multiple investors
     const processResponse = [
       {
         entity: { id: 'E1', name: 'Entity 1' },
@@ -341,7 +327,6 @@ describe('PreviewScreenStore', () => {
     parseMock.mockReturnValueOnce([]);
     await store.processPayload(toast);
 
-    // Arrange axios POST blob response
     const blob = new (BlobCtor as new (...args: unknown[]) => unknown)(['x'], {
       type: 'application/octet-stream',
     } as unknown);
@@ -350,7 +335,6 @@ describe('PreviewScreenStore', () => {
       headers: { 'content-type': 'application/octet-stream' },
     });
 
-    // Call with aggregated row selecting INV1 of entity E1
     const result = await store.fetchDoc(
       {
         id: 'row1',
@@ -381,7 +365,6 @@ describe('PreviewScreenStore', () => {
         'Session-Id': '',
       }),
     );
-    // body must include capEvent and filtered lineItem with only INV1
     expect(body).toEqual(
       expect.objectContaining({
         capEvent: expect.any(Object),
@@ -397,14 +380,12 @@ describe('PreviewScreenStore', () => {
   it('fetchDoc json error surfaces toast and returns undefined', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
-    // Prepare process context
     processMock.mockResolvedValueOnce([
       { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
     ]);
     parseMock.mockReturnValueOnce([]);
     await store.processPayload(toast);
 
-    // Simulate JSON error response body with a .text() reader (matches store's parsing path)
     const errorBody = { text: async () => JSON.stringify({ message: 'Bad request' }) };
     axiosPostMock.mockResolvedValueOnce({
       data: errorBody,
@@ -430,7 +411,7 @@ describe('PreviewScreenStore', () => {
   });
 
   describe('aggregated line items helpers', () => {
-    it('getAggregatedLineItems filters only isAggregated entries and preserves entity/dueDate', () => {
+    it('getAggregatedLineItems returns all entries and preserves entity/dueDate', () => {
       const response = [
         {
           id: 'li-1',
@@ -460,11 +441,13 @@ describe('PreviewScreenStore', () => {
           id: 'li-1',
           entity: expect.objectContaining({ id: 'E1' }),
           dueDate: '2025-11-24',
-          plInvestorEntries: [expect.objectContaining({ customerId: 'INV1', isAggregated: true })],
+          plInvestorEntries: expect.arrayContaining([
+            expect.objectContaining({ customerId: 'INV1' }),
+            expect.objectContaining({ customerId: 'INV2' }),
+          ]),
         }),
       );
-      // first item should not include INV2 (isAggregated: false)
-      expect(aggregated[0].plInvestorEntries).toHaveLength(1);
+      expect(aggregated[0].plInvestorEntries).toHaveLength(2);
 
       expect(aggregated[1]).toEqual(
         expect.objectContaining({
@@ -521,5 +504,119 @@ describe('PreviewScreenStore', () => {
       (store as unknown as { rows: unknown[] }).rows = [{ isAggregated: true }];
       expect(store.hasAggregatedLineItems()).toBe(true);
     });
+  });
+
+  it('buildPayload returns payload when isDraft=true even without selected entities', () => {
+    const prevEntities = mockCapEventSettingsStore.fundEntities;
+    (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities = [];
+
+    const payload = store.buildPayload(true);
+
+    expect(payload).not.toBeNull();
+    expect(payload?.status).toBe('DRAFT');
+    expect(Array.isArray(payload?.entities)).toBe(true);
+    expect((payload?.entities || []).length).toBe(0);
+    expect(Array.isArray(payload?.capEventEntityLineItems)).toBe(true);
+    expect((payload?.capEventEntityLineItems || []).length).toBe(0);
+
+    (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities =
+      prevEntities;
+  });
+
+  it('fetchDoc rejects non-aggregated selection with a toast error', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+      { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
+    ];
+
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investorId: 'INV1',
+        entityId: 'E1',
+        isAggregated: false,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith(
+      'Please select an aggregated investor row to generate a document',
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('fetchDoc shows error when entity not found in last process response', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+      { entity: { id: 'E2', name: 'Entity 2' }, plInvestorEntries: [{ customerId: 'INV1' }] },
+    ];
+
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investorId: 'INV1',
+        entityId: 'E1',
+        isAggregated: true,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith(
+      'No processed data found for selected entity. Please re-run preview.',
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('fetchDoc shows error when no investor entry matches selected investorId', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+      {
+        entity: { id: 'E1', name: 'Entity 1' },
+        plInvestorEntries: [{ customerId: 'INV-ZZ' }],
+      },
+    ];
+
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investorId: 'INV1',
+        entityId: 'E1',
+        isAggregated: true,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith('No investor entries found for the selected investor');
+    expect(result).toBeUndefined();
+  });
+
+  it('fetchDoc JSON parse failure shows generic error and returns undefined', async () => {
+    const toast = { error: jest.fn() } as unknown as ToastApi;
+    (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
+      { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
+    ];
+
+    const errorBody = {
+      text: async () => {
+        throw new Error('reader failed');
+      },
+    };
+    axiosPostMock.mockResolvedValueOnce({
+      data: errorBody,
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const result = await store.fetchDoc(
+      {
+        id: 'row1',
+        investorId: 'INV1',
+        entityId: 'E1',
+        isAggregated: true,
+      } as unknown as PreviewScreenRow,
+      toast,
+    );
+
+    expect(toast.error).toHaveBeenCalledWith('Failed to generate investor document');
+    expect(result).toBeUndefined();
   });
 });
