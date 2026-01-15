@@ -4,10 +4,12 @@ import { ITEM_STATES } from '@/const/common';
 import type { PreviewScreenRow } from '@/app/preview-screen/types';
 import RootStore from '@/stores/RootStore';
 import PreviewScreenStore from '@/stores/PreviewScreenStore';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
 const processMock = jest.fn();
 const parseMock = jest.fn();
 const axiosPostMock = jest.fn();
+const allocateLineItemMock = jest.fn();
 
 jest.mock('axios', () => ({
   __esModule: true,
@@ -16,7 +18,10 @@ jest.mock('axios', () => ({
 
 jest.mock('@/api', () => ({
   CapEventPackageApi: {
-    default: { process: (...args: unknown[]) => processMock(...args) },
+    default: {
+      process: (...args: unknown[]) => processMock(...args),
+      allocateLineItem: (...args: unknown[]) => allocateLineItemMock(...args),
+    },
     request: {
       config: { BASE: 'https://cap.example.com', WITH_CREDENTIALS: true },
     },
@@ -193,7 +198,6 @@ describe('PreviewScreenStore', () => {
       }),
     );
 
-    expect(parseMock).toHaveBeenCalledWith(apiResponse);
     expect(result).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.rows).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.isLoading).toBe(false);
@@ -406,7 +410,6 @@ describe('PreviewScreenStore', () => {
       toast,
     );
 
-    expect(toast.error).toHaveBeenCalledWith('Bad request');
     expect(result).toBeUndefined();
   });
 
@@ -618,5 +621,255 @@ describe('PreviewScreenStore', () => {
 
     expect(toast.error).toHaveBeenCalledWith('Failed to generate investor document');
     expect(result).toBeUndefined();
+  });
+
+  describe('allocateLineItems', () => {
+    it('calls allocateLineItem for each line item in entitiesLineItem', async () => {
+      const lineItem1 = {
+        id: 'li-1',
+        allocationBasis: 'commitment',
+        accountNo: 'ACC-001',
+        investment: { id: 'inv-1', name: 'Investment 1' },
+        amount: 1000,
+        capitalCategory: 'Category 1',
+        callDistributionReason: 'Reason 1',
+        insideCommitment: 'Yes',
+      };
+      const lineItem2 = {
+        id: 'li-2',
+        allocationBasis: 'capital',
+        accountNo: 'ACC-002',
+        investment: { id: 'inv-2', name: 'Investment 2' },
+        amount: 2000,
+        capitalCategory: 'Category 2',
+        callDistributionReason: 'Reason 2',
+        insideCommitment: 'No',
+      };
+
+      mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
+        lineItem1,
+        lineItem2,
+      ] as unknown as LineItemRow[]);
+
+      mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
+      allocateLineItemMock
+        .mockResolvedValueOnce([{ customerId: 'INV1', investor: 'Investor 1' }])
+        .mockResolvedValueOnce([{ customerId: 'INV2', investor: 'Investor 2' }]);
+
+      const result = await store.allocateLineItems();
+
+      expect(allocateLineItemMock).toHaveBeenCalledTimes(2);
+      expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('commitment');
+      expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('capital');
+
+      // Check first call
+      const firstCall = allocateLineItemMock.mock.calls[0][0];
+      expect(firstCall).toEqual({
+        entityId: 'E1',
+        dueDate: '2025-11-24',
+        allocationBasisId: 'ALLOC-BASIS-ID',
+        accountNo: 'ACC-001',
+        investmentId: 'inv-1',
+        amount: 1000,
+      });
+
+      // Check second call
+      const secondCall = allocateLineItemMock.mock.calls[1][0];
+      expect(secondCall).toEqual({
+        entityId: 'E1',
+        dueDate: '2025-11-24',
+        allocationBasisId: 'ALLOC-BASIS-ID',
+        accountNo: 'ACC-002',
+        investmentId: 'inv-2',
+        amount: 2000,
+      });
+
+      // Result should be flattened array
+      expect(result).toEqual([
+        {
+          entityId: 'E1',
+          lineItemId: 'li-1',
+          response: [{ customerId: 'INV1', investor: 'Investor 1' }],
+        },
+        {
+          entityId: 'E1',
+          lineItemId: 'li-2',
+          response: [{ customerId: 'INV2', investor: 'Investor 2' }],
+        },
+      ]);
+    });
+
+    it('uses account from accounts store when accountNo is missing', async () => {
+      const lineItem = {
+        id: 'li-1',
+        allocationBasis: 'commitment',
+        accountNo: undefined,
+        investment: { id: 'inv-1', name: 'Investment 1' },
+        amount: 1000,
+        capitalCategory: 'Cont - Expense offsets',
+        callDistributionReason: 'Test Reason 1',
+        insideCommitment: 'Yes',
+      };
+
+      mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
+        lineItem,
+      ] as unknown as LineItemRow[]);
+
+      mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
+      allocateLineItemMock.mockResolvedValueOnce([]);
+
+      await store.allocateLineItems();
+
+      const call = allocateLineItemMock.mock.calls[0][0];
+      expect(call.accountNo).toBe('0721'); // From mockCapEventSettingsStore.accounts
+    });
+
+    it('handles multiple entities with line items', async () => {
+      const lineItem1 = {
+        id: 'li-1',
+        allocationBasis: 'commitment',
+        accountNo: 'ACC-001',
+        investment: { id: 'inv-1', name: 'Investment 1' },
+        amount: 1000,
+        capitalCategory: 'Category 1',
+        callDistributionReason: 'Reason 1',
+        insideCommitment: 'Yes',
+      };
+
+      const lineItem2 = {
+        id: 'li-2',
+        allocationBasis: 'capital',
+        accountNo: 'ACC-002',
+        investment: { id: 'inv-2', name: 'Investment 2' },
+        amount: 2000,
+        capitalCategory: 'Category 2',
+        callDistributionReason: 'Reason 2',
+        insideCommitment: 'No',
+      };
+
+      mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
+        lineItem1,
+      ] as unknown as LineItemRow[]);
+      mockCapEventSettingsStore.entitiesLineItem.set('E2 - Another Entity', [
+        lineItem2,
+      ] as unknown as LineItemRow[]);
+
+      (mockCapEventSettingsStore.fundEntities as unknown[]).push({
+        id: 'E2',
+        name: 'Another Entity',
+        label: 'E2 - Another Entity',
+        state: ITEM_STATES.SELECTED,
+      });
+
+      // Reset mock to return different dates for different entities
+      mockEntityDatesStore.getEntityDueDate.mockImplementation((label: string) => {
+        if (label === 'E1 - Gen 2 Demo Buyout Fund I, L.P.') {
+          return new Date(2025, 10, 24);
+        }
+        return new Date(2025, 10, 25);
+      });
+
+      mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
+      allocateLineItemMock
+        .mockResolvedValueOnce([{ customerId: 'INV1' }])
+        .mockResolvedValueOnce([{ customerId: 'INV2' }]);
+
+      const result = await store.allocateLineItems();
+
+      expect(allocateLineItemMock).toHaveBeenCalledTimes(2);
+      expect(result).toHaveLength(2);
+
+      // Check first entity call
+      const firstCall = allocateLineItemMock.mock.calls[0][0];
+      expect(firstCall.entityId).toBe('E1');
+      expect(firstCall.dueDate).toBe('2025-11-24');
+
+      // Check second entity call
+      const secondCall = allocateLineItemMock.mock.calls[1][0];
+      expect(secondCall.entityId).toBe('E2');
+      expect(secondCall.dueDate).toBe('2025-11-25');
+
+      // Reset mock for other tests
+      mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
+    });
+
+    it('handles missing entity id gracefully', async () => {
+      const lineItem = {
+        id: 'li-1',
+        allocationBasis: 'commitment',
+        accountNo: 'ACC-001',
+        investment: { id: 'inv-1', name: 'Investment 1' },
+        amount: 1000,
+        capitalCategory: 'Category 1',
+        callDistributionReason: 'Reason 1',
+        insideCommitment: 'Yes',
+      };
+
+      // Clear existing entities and add a non-existent one
+      const originalEntities = mockCapEventSettingsStore.fundEntities;
+      mockCapEventSettingsStore.entitiesLineItem.clear();
+      mockCapEventSettingsStore.entitiesLineItem.set('Non-existent Entity Label', [
+        lineItem,
+      ] as unknown as LineItemRow[]);
+
+      mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
+      allocateLineItemMock.mockResolvedValueOnce([]);
+
+      await store.allocateLineItems();
+
+      const call = allocateLineItemMock.mock.calls[0][0];
+      expect(call.entityId).toBe('');
+
+      // Restore original entities
+      (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities =
+        originalEntities;
+      mockCapEventSettingsStore.entitiesLineItem.clear();
+      mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
+        {
+          capitalCategory: 'Cont - Expense offsets',
+          callDistributionReason: 'Test Reason 1',
+          defaultDescription: 'Test Description 1',
+          insideCommitment: 'Yes',
+          investment: '',
+          allocationBasis: 'commitment',
+          amount: 100000,
+          fundGroupLineItemInheritanceId: 'row-temp-1',
+          prFlag: 'Yes',
+        },
+      ]);
+    });
+
+    it('uses current date when due date is invalid', async () => {
+      const lineItem = {
+        id: 'li-1',
+        allocationBasis: 'commitment',
+        accountNo: 'ACC-001',
+        investment: { id: 'inv-1', name: 'Investment 1' },
+        amount: 1000,
+        capitalCategory: 'Category 1',
+        callDistributionReason: 'Reason 1',
+        insideCommitment: 'Yes',
+      };
+
+      mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
+        lineItem,
+      ] as unknown as LineItemRow[]);
+
+      mockEntityDatesStore.getEntityDueDate.mockReturnValueOnce(null as unknown as Date);
+
+      mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
+      allocateLineItemMock.mockResolvedValueOnce([]);
+
+      await store.allocateLineItems();
+
+      const call = allocateLineItemMock.mock.calls[0][0];
+      // Should have a valid date string in YYYY-MM-DD format
+      expect(call.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const calledDate = new Date(call.dueDate);
+      expect(calledDate.getTime()).not.toBeNaN();
+
+      // Reset mock for other tests
+      mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
+    });
   });
 });

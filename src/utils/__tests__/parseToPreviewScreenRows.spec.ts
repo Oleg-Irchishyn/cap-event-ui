@@ -32,7 +32,9 @@ describe('parseToPreviewScreenRows', () => {
       },
     ];
 
-    const rows = parseToPreviewScreenRows(input as unknown);
+    const allocation = [{ lineItemId: 'mockId', entityId: 'E1', response: [{}] }];
+
+    const rows = parseToPreviewScreenRows(input as unknown, allocation);
     expect(rows).toHaveLength(2);
 
     expect(rows[0]).toEqual({
@@ -51,6 +53,10 @@ describe('parseToPreviewScreenRows', () => {
       commitment: 0,
       allocatedAmount: 100,
       isAggregated: true,
+      'mockId-allocatedAmount': '-',
+      'mockId-commitment': '-',
+      'mockId-investedCapital': '-',
+      'mockId-unfunded': '-',
     });
 
     expect(rows[1]).toEqual({
@@ -69,6 +75,10 @@ describe('parseToPreviewScreenRows', () => {
       commitment: 0,
       allocatedAmount: 0,
       isAggregated: false,
+      'mockId-allocatedAmount': '-',
+      'mockId-commitment': '-',
+      'mockId-investedCapital': '-',
+      'mockId-unfunded': '-',
     });
   });
 

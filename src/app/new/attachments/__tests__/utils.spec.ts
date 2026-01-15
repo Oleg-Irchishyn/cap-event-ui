@@ -5,7 +5,6 @@ import {
   MAX_ATTACHMENTS_NUMBER,
 } from '@/const/attachments';
 import { capEventSettingsStore } from '@/stores';
-import { baseFormats, extendedFormats } from '@/const/allowedFileFormats';
 import { validateFiles } from '../utils';
 import { Attachment, AttachmentType } from '../types';
 

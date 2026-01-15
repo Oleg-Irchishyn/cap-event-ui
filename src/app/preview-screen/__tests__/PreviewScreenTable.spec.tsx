@@ -1,87 +1,164 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
+import { LineItemRow } from '@/app/new/LineItems/types';
 
-jest.mock('@/app/components/ConfigurationTable', () => ({
-  __esModule: true,
-  default: (props: {
-    testId: string;
-    columnDefs: Array<{ headerName?: string }>;
-    rowData: Array<{ id?: string; investor?: string; customerId?: string }>;
-    noRowsText?: string;
-    getRowId?: (params: { data: unknown }) => string;
-    isLoading?: boolean;
-  }) => {
-    const sampleWithId = { id: 'row-1' };
-    const sampleComposed = { customerId: 'CUST001', investor: 'ABC' };
-    const computeId = (data: unknown) => {
-      if (typeof props.getRowId === 'function') {
-        return props.getRowId({ data });
-      }
-      const d = data as { id?: string };
-      return d?.id || `row-${JSON.stringify(data)}`;
-    };
-    const id1 = computeId(props.rowData[0] ?? sampleWithId);
-    const id2 = computeId(sampleComposed);
-    return (
-      <div>
-        <div data-testid="received-testid">{props.testId}</div>
-        <div data-testid="headers">{props.columnDefs.map((c) => c.headerName).join('|')}</div>
-        <div data-testid="rows-count">{props.rowData.length}</div>
-        <div data-testid="no-rows-text">{props.noRowsText || ''}</div>
-        <div data-testid="id-with-id">{id1}</div>
-        <div data-testid="id-composed">{id2}</div>
-      </div>
-    );
+jest.mock('ag-grid-react', () => {
+  return {
+    AgGridReact: ({ ...props }: { columnDefs: string; rowData: string; className: string }) => {
+      return (
+        <div
+          data-testid="ag-grid"
+          data-column-defs={JSON.stringify(props.columnDefs)}
+          data-row-data={JSON.stringify(props.rowData)}
+          data-is-top-grid={props.className?.includes('preview-top-grid') ? 'true' : 'false'}
+        >
+          <div className="ag-center-cols-viewport"></div>
+          <div className="ag-body-horizontal-scroll-viewport"></div>
+        </div>
+      );
+    },
+  };
+});
+
+const mockEntitiesLineItem = new Map<string, LineItemRow[]>();
+
+jest.mock('@/stores', () => ({
+  capEventSettingsStore: {
+    get entitiesLineItem() {
+      return mockEntitiesLineItem;
+    },
   },
 }));
 
+jest.mock('@/utils/getPreviewScreenColumnDefs', () => ({
+  getPreviewScreenColumnDefs: jest.fn(() => [
+    { headerName: 'Entity ID', field: 'entityId' },
+    { headerName: 'Entity Name', field: 'entityName' },
+  ]),
+  getDynamicColumnsDefs: jest.fn(() => [
+    { headerName: 'Allocation', field: 'allocation' },
+    { headerName: 'lineItem', field: 'lineItem' },
+  ]),
+  getTopDynamicColumnDefs: jest.fn(() => [
+    { headerName: 'Allocation', field: 'allocation' },
+    { headerName: 'lineItem', field: 'lineItem' },
+  ]),
+}));
+
+jest.mock('@/utils/definedColumnForAllocationPreview', () => ({
+  defineColumnForAllocationPreview: jest.fn((basis) => `field_${basis}`),
+}));
+
+jest.mock('@/utils/formatAmount', () => ({
+  formatAmount: jest.fn((amount) => `$${amount || 0}`),
+}));
+
+jest.mock('@/utils/prepareDataTestId', () => ({
+  prepareDataTestId: jest.fn((prefix, id) => `${prefix}-${id}`),
+}));
+
+jest.mock('@/app/components/SkeletonCellRenderer', () => ({
+  __esModule: true,
+  default: () => <div data-testid="skeleton-cell">Loading...</div>,
+}));
+
+const createMockLineItem = (overrides?: Partial<LineItemRow>): LineItemRow => ({
+  id: 'line-item-1',
+  amount: 1000,
+  capitalCategory: 'Category 1',
+  callDistributionReason: 'Reason 1',
+  defaultDescription: 'Description 1',
+  insideCommitment: 'Yes',
+  investment: { id: 'inv-1', name: 'Investment 1' },
+  allocationBasis: 'Basis 1',
+  accountNo: 'ACC-001',
+  prDate: new Date('2024-01-01'),
+  prFlag: 'Flag 1',
+  ...overrides,
+});
+
+const createMockRow = (overrides?: Partial<unknown>) => ({
+  id: 'row-1',
+  investor: 'Investor 1',
+  investorId: 'INV-1',
+  investorName: 'Investor Name 1',
+  entityId: 'E1',
+  entityName: 'Entity 1',
+  description: 'Description',
+  allocatedAmount: 5000,
+  commitment: 10000,
+  ...overrides,
+});
+
 describe('PreviewScreenTable', () => {
-  it('passes formatted testId and noRowsText to ConfigurationTable', () => {
-    render(<PreviewScreenTable rows={[]} testId="dist" />);
-    expect(screen.getByTestId('received-testid').textContent).toBe('table-dist');
-    expect(screen.getByTestId('no-rows-text').textContent).toBe('No Data to display');
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockEntitiesLineItem.clear();
   });
 
-  it('provides 3 columns with expected headers', () => {
-    render(<PreviewScreenTable rows={[]} testId="dist" />);
-    expect(screen.getByTestId('headers').textContent).toBe(
-      'Entity ID|Entity Name|Investor ID|Investor Name|Investor Type I|Investor Type II|Total Capital Commitment|Total Amount Due',
-    );
+  describe('Basic Rendering', () => {
+    it('renders table wrapper with correct testId', () => {
+      render(<PreviewScreenTable rows={[]} testId="test-table" />);
+      const wrapper = screen.getByTestId('table-wrapper-test-table');
+      expect(wrapper).toBeInTheDocument();
+    });
+
+    it('renders main grid with rows', () => {
+      const rows = [createMockRow()];
+      render(<PreviewScreenTable rows={rows} testId="test" />);
+
+      const grids = screen.getAllByTestId('ag-grid');
+      const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');
+
+      expect(mainGrid).toBeInTheDocument();
+    });
+
+    it('does not render top grid when no line items exist', () => {
+      const rows = [createMockRow()];
+      render(<PreviewScreenTable rows={rows} testId="test" />);
+
+      const grids = screen.getAllByTestId('ag-grid');
+      const topGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'true');
+
+      expect(topGrid).toBeUndefined();
+    });
   });
 
-  it('passes rows and stable getRowId implementation', () => {
-    const rows = [
-      {
-        id: 'A',
-        investor: 'INV A',
-        investorId: 'C1',
-        investorName: 'Investor A',
-        entityId: 'E1',
-        entityName: 'Entity 1',
-        description: 'Desc',
-        investmentTitle: 'Title',
-        investmentName: 'Name',
-        allocatedAmount: 1,
-        isAggregated: true,
-      },
-      {
-        investor: 'INV B',
-        investorId: 'C2',
-        investorName: 'Investor B',
-        entityId: 'E2',
-        entityName: 'Entity 2',
-        description: 'Desc 2',
-        investmentTitle: 'Title 2',
-        investmentName: 'Name 2',
-        allocatedAmount: 2,
-        isAggregated: true,
-      },
-    ];
-    render(<PreviewScreenTable rows={rows} testId="dist" />);
-    expect(screen.getByTestId('rows-count').textContent).toBe('2');
-    expect(screen.getByTestId('id-with-id').textContent).toBe('A');
-    expect(screen.getByTestId('id-composed').textContent).toBe(
-      'row-{"customerId":"CUST001","investor":"ABC"}',
-    );
+  describe('Dynamic Columns', () => {
+    it('generates dynamic columns based on line items', () => {
+      const lineItem1 = createMockLineItem({ id: 'li-1', allocationBasis: 'Basis 1' });
+      const lineItem2 = createMockLineItem({ id: 'li-2', allocationBasis: 'Basis 2' });
+      mockEntitiesLineItem.set('Entity 1', [lineItem1, lineItem2]);
+
+      const rows = [createMockRow()];
+      render(<PreviewScreenTable rows={rows} testId="test" />);
+
+      const grids = screen.getAllByTestId('ag-grid');
+      const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');
+
+      expect(mainGrid).toBeInTheDocument();
+      const columnDefs = JSON.parse(mainGrid?.getAttribute('data-column-defs') || '[]');
+      expect(columnDefs.length).toBeGreaterThan(2);
+    });
+  });
+
+  describe('Multiple Line Items', () => {
+    it('handles multiple line items per entity', () => {
+      const lineItem1 = createMockLineItem({ id: 'li-1', allocationBasis: 'Basis 1' });
+      const lineItem2 = createMockLineItem({ id: 'li-2', allocationBasis: 'Basis 2' });
+      mockEntitiesLineItem.set('Entity 1', [lineItem1, lineItem2]);
+
+      const rows = [createMockRow()];
+      render(<PreviewScreenTable rows={rows} testId="test" />);
+
+      const grids = screen.getAllByTestId('ag-grid');
+      const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');
+
+      expect(mainGrid).toBeInTheDocument();
+      const columnDefs = JSON.parse(mainGrid?.getAttribute('data-column-defs') || '[]');
+      expect(columnDefs.length).toBeGreaterThanOrEqual(6);
+    });
   });
 });

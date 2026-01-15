@@ -3,15 +3,17 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { CapEventPackageApi } from '@/api';
 import axios from 'axios';
 import {
+  AllocationInput,
   CapEvent,
+  CapEventAggregatedLineItem,
   CapEventEntityLineItem,
   CapEventFundGroupLineItem,
   CapEventLineItem,
   CapEventType as ApiCapEventType,
-  CapEventAggregatedLineItem,
   InvestorDocumentInput,
+  InvestorEntry,
+  LineItemBase,
 } from '@/clients/CapEventPackage';
-import { LineItemBase } from '@/clients/CapEventPackage';
 import { Account as RefAccount, Investment as RefInvestment } from '@/clients/ReferenceData';
 import { parseToPreviewScreenRows } from '@/utils/parseToPreviewScreenRows';
 import type { PreviewScreenRow } from '@/app/preview-screen/types';
@@ -412,13 +414,16 @@ class PreviewScreenStore {
           this.isLoading = true;
           this.rows = [];
         });
-        const response = await CapEventPackageApi.default.process(requestPayload, sessionId);
+        const [processResponse, allocationResponse] = await Promise.all([
+          CapEventPackageApi.default.process(requestPayload, sessionId),
+          this.allocateLineItems(),
+        ]);
         runInAction(() => {
           this.lastCapEvent = requestPayload;
-          this.lastProcessResponse = Array.isArray(response) ? response : [];
+          this.lastProcessResponse = Array.isArray(processResponse) ? processResponse : [];
         });
 
-        const parsed = parseToPreviewScreenRows(response);
+        const parsed = parseToPreviewScreenRows(processResponse, allocationResponse);
         runInAction(() => {
           this.rows = parsed;
         });
@@ -439,6 +444,64 @@ class PreviewScreenStore {
       }
     })();
     return this.inFlightProcess;
+  }
+
+  async allocateLineItems() {
+    const promises: Promise<{ entityId: string; lineItemId: string; response: InvestorEntry[] }>[] =
+      [];
+    const lineItemsEntries = [...this.root.capEventSettingsStore.entitiesLineItem.entries()];
+
+    lineItemsEntries.forEach(([entityLabel, lineItems]) => {
+      const entityId =
+        this.root.capEventSettingsStore.fundEntities.find((entity) => entity.label === entityLabel)
+          ?.id ?? '';
+      const validDueDate = getValidDate(this.root.entityDatesStore.getEntityDueDate(entityLabel));
+      const date = validDueDate ?? new Date();
+      const dueDate =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0');
+
+      lineItems.forEach((lineItem) => {
+        const allocationBasisId = this.root.capEventSettingsStore.getAllocationBasisId(
+          lineItem.allocationBasis,
+        );
+
+        const payload: AllocationInput = {
+          entityId,
+          dueDate: dueDate || '',
+          allocationBasisId,
+          accountNo:
+            lineItem.accountNo ??
+            this.root.capEventSettingsStore.accounts.find(
+              (acc) =>
+                acc.capitalCategory === lineItem.capitalCategory &&
+                acc.callDistributionReason === lineItem.callDistributionReason &&
+                acc.insideCommitment === lineItem.insideCommitment,
+            )?.accountNo ??
+            '',
+          investmentId:
+            typeof lineItem.investment === 'string'
+              ? lineItem.investment
+              : (lineItem.investment?.id ?? ''),
+          amount: lineItem.amount,
+        };
+
+        const allocatePromise = Promise.resolve(
+          CapEventPackageApi.default.allocateLineItem(payload),
+        ).then((response) => ({
+          entityId: entityId,
+          lineItemId: lineItem.id,
+          response: response,
+        }));
+
+        promises.push(allocatePromise);
+      });
+    });
+
+    return await Promise.all(promises);
   }
 
   public getAggregatedLineItems(): Array<CapEventAggregatedLineItem> {

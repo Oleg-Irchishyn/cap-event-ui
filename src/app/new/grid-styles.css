@@ -185,4 +185,52 @@
 /* Hide empty spacer column headers */
 .ag-theme-alpine .ag-hidden-header {
   visibility: hidden !important;
+}
+
+/* Dynamic column headers - primary color and multi-line support */
+.ag-theme-alpine .dynamic-column-header {
+  color: #0067A3 !important;
+}
+
+.ag-theme-alpine .dynamic-column-header .ag-header-cell-label {
+  color: #0067A3 !important;
+  white-space: pre-line !important;
+  line-height: 1.4 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+.ag-theme-alpine .dynamic-column-header .ag-header-cell-text {
+  color: #0067A3 !important;
+  text-align: right !important;
+  width: 100%;
+  display: block;
+}
+
+/* Hide horizontal scrollbar in top grid (rows above header) */
+.preview-top-grid .ag-body-horizontal-scroll {
+  display: none !important;
+}
+
+.preview-top-grid .ag-body-horizontal-scroll-viewport {
+  overflow-x: hidden !important;
+}
+
+/* Transparent background for top grid (rows above header) */
+.preview-top-grid .ag-root-wrapper,
+.preview-top-grid .ag-root,
+.preview-top-grid .ag-body-viewport,
+.preview-top-grid .ag-center-cols-viewport,
+.preview-top-grid .ag-center-cols-container {
+  background-color: transparent !important;
+}
+
+.preview-top-grid .ag-row {
+  background-color: transparent !important;
+}
+
+.preview-top-grid .ag-cell {
+  background-color: transparent !important;
 } 

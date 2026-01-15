@@ -98,6 +98,26 @@ const PreviewLoader = styled.span`
   `};
 `;
 
+const DynamicColumnsHeader = styled.div({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  width: '100%',
+});
+
+const ColumnHeaderWrapper = styled.div(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  textAlign: 'right',
+  lineHeight: '1.4',
+  maxHeight: 'calc(1.4em * 3)',
+  overflow: 'hidden',
+  color: theme.colors.textSecondary,
+  padding: '8px',
+  justifyContent: 'center',
+}));
+
 export {
   PreviewContainer,
   ModalCloseButton,
@@ -108,4 +128,6 @@ export {
   ModalWrapper,
   LoaderWrapper,
   PreviewLoader,
+  DynamicColumnsHeader,
+  ColumnHeaderWrapper,
 };

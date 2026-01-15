@@ -1,7 +1,10 @@
 import { PreviewScreenRow } from '@/app/preview-screen/types';
 import { CapEventAggregatedLineItem, InvestorEntry } from '@/clients/CapEventPackage';
 
-export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => {
+export const parseToPreviewScreenRows = (
+  items: unknown,
+  allocation: { entityId: string; lineItemId: string; response: InvestorEntry[] }[] = [],
+): PreviewScreenRow[] => {
   const array = (Array.isArray(items) ? items : []) as CapEventAggregatedLineItem[];
   return array.flatMap((item, itemIndex) => {
     const entityId = item?.entity?.id ?? '';
@@ -12,6 +15,12 @@ export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => 
       ? (item.plInvestorEntries as InvestorEntry[])
       : [];
     return entries.map((inv, idx: number) => {
+      const dataByEntity = allocation.find(
+        (allocationItem) => allocationItem.entityId === entityId,
+      );
+      const lineItemId = dataByEntity?.lineItemId;
+      const allocatedData = dataByEntity?.response.find((res) => res.customerId === inv.customerId);
+
       // Account and investment information is stored within each InvestorEntry
       // For aggregated entries, these fields are null
       const description = inv.account?.defaultDescription ?? '';
@@ -31,9 +40,13 @@ export const parseToPreviewScreenRows = (items: unknown): PreviewScreenRow[] => 
         investmentTitle,
         investmentName,
         dataPoints: inv.dataPoints,
-        commitment: inv.commitment ?? 0,
         allocatedAmount: inv.allocatedAmount || 0,
         isAggregated: inv.isAggregated || false,
+        commitment: inv?.commitment ?? 0,
+        [`${lineItemId}-commitment`]: allocatedData?.commitment ?? '-',
+        [`${lineItemId}-investedCapital`]: allocatedData?.investedCapital ?? '-',
+        [`${lineItemId}-unfunded`]: allocatedData?.unfunded ?? '-',
+        [`${lineItemId}-allocatedAmount`]: allocatedData?.allocatedAmount ?? '-',
       };
     });
   });
