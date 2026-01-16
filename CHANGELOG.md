@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.86](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.85&targetVersion=GTv0.0.86) (2026-01-16)
+
+
+### Features
+
+* extend preview table ([8916386](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/8916386db410f2689384d758cf058d3555de732b)), closes [#7540](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7540)
+
+
+### Bug Fixes
+
+* [Issue-9786]: [FE] Fix missing account and investment in aggregated line items ([8d10612](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/8d1061213f97a371a16c209c659cf0320af67dbc)), closes [#9786](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9786)
+
 ### [0.0.85](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.84&targetVersion=GTv0.0.85) (2026-01-15)
 
 
