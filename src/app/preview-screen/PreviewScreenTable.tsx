@@ -6,32 +6,20 @@ import { AgGridReact } from 'ag-grid-react';
 import {
   GridApi,
   GridReadyEvent,
-  ColDef,
   ColumnState,
   ColumnResizedEvent,
   BodyScrollEvent,
   ICellRendererParams,
 } from 'ag-grid-community';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import {
-  getPreviewScreenColumnDefs,
-  getDynamicColumnsDefs,
-  getTopDynamicColumnDefs,
-} from '@/utils/getPreviewScreenColumnDefs';
 import { TableWrapper } from '@/app/components/ConfigurationTable/styles';
 
-import { PreviewScreenRow, PreviewScreenTableProps } from './types';
-import { capEventSettingsStore } from '@/stores';
-import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
 import {
-  AMOUNT_FIELD,
-  COMMITMENT_FIELD,
-  TOTAL_AMOUNT_DUE_HEADER,
-  TOTAL_CAPITAL_COMMITMENT_HEADER,
-} from '@/const/previewScreen';
-
-const LINE_ITEMS_FIELDS = 'lineItemsFields';
-const GENERAL_INFO = 'generalInfo';
+  PreviewScreenRow,
+  PreviewScreenTableProps,
+  GENERAL_INFO,
+  LINE_ITEMS_FIELDS,
+} from './types';
 
 const AGAINST_COMMITMENT_TITLE = 'Against Commitment';
 const PR_DATE_TITLE = 'PR Date';
@@ -63,9 +51,10 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
   testId = 'preview-screen-table',
   isLoading = false,
   onRowClicked,
+  columnDefs,
+  topGridColumnDefs,
+  lineItems = [],
 }) => {
-  const lineItems = useMemo(() => [...capEventSettingsStore.entitiesLineItem], []);
-
   const topGridApiRef = useRef<GridApi | null>(null);
   const mainGridApiRef = useRef<GridApi | null>(null);
 
@@ -73,81 +62,6 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
   const mainGridContainerRef = useRef<HTMLDivElement | null>(null);
 
   const isSyncingRef = useRef(false);
-
-  const staticColumns = useMemo(() => getPreviewScreenColumnDefs(isLoading), [isLoading]);
-  const dynamicColumns = useMemo(
-    () => getDynamicColumnsDefs(lineItems, isLoading),
-    [isLoading, lineItems],
-  );
-
-  const topDynamicColumnDefs = useMemo(
-    () => getTopDynamicColumnDefs(lineItems, isLoading),
-    [isLoading, lineItems],
-  );
-
-  const columnDefs = useMemo(
-    () => [...staticColumns, ...dynamicColumns],
-    [staticColumns, dynamicColumns],
-  );
-
-  const topGridColumnDefs = useMemo(() => {
-    const combinedGeneralInfoColumn: ColDef = {
-      headerName: 'General Info',
-      field: GENERAL_INFO,
-      flex: 6.7,
-      sortable: false,
-      resizable: true,
-      cellRenderer: isLoading ? SkeletonCellRenderer : GeneralInfoCell,
-      cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
-    };
-
-    const combinedTitleColumn: ColDef = {
-      headerName: 'Titles',
-      field: LINE_ITEMS_FIELDS,
-      flex: 2.5,
-      sortable: false,
-      resizable: true,
-      cellStyle: { textAlign: 'right' },
-      cellRenderer: isLoading ? SkeletonCellRenderer : CombinedTitleCell,
-      cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
-    };
-
-    const totalCommitmentColumn: ColDef = {
-      headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
-      field: COMMITMENT_FIELD,
-      flex: 1.5,
-      sortable: false,
-      resizable: true,
-      minWidth: 100,
-      headerClass: 'ag-right-aligned-header',
-      cellStyle: { textAlign: 'right' },
-      valueGetter: () => '',
-      cellRendererSelector: () =>
-        isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
-    };
-
-    const totalAmountDueColumn: ColDef = {
-      headerName: TOTAL_AMOUNT_DUE_HEADER,
-      field: AMOUNT_FIELD,
-      flex: 1,
-      sortable: false,
-      resizable: true,
-      minWidth: 100,
-      headerClass: 'ag-right-aligned-header',
-      cellStyle: { textAlign: 'right' },
-      valueGetter: () => '',
-      cellRendererSelector: () =>
-        isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
-    };
-
-    return [
-      combinedGeneralInfoColumn,
-      combinedTitleColumn,
-      ...topDynamicColumnDefs,
-      totalCommitmentColumn,
-      totalAmountDueColumn,
-    ];
-  }, [topDynamicColumnDefs, isLoading]);
 
   const topGridRows = useMemo(() => {
     if (isLoading) {
@@ -159,7 +73,7 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
       );
     }
 
-    if (!Array.isArray(rows) || rows.length === 0) {
+    if (!Array.isArray(rows) || rows.length === 0 || lineItems.length === 0) {
       return [];
     }
 
@@ -388,6 +302,7 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
           <AgGridReact
             columnDefs={topGridColumnDefs}
             rowData={safeTopGridRows}
+            className="preview-top-grid"
             suppressClickEdit={true}
             localeText={localeText}
             rowSelection="multiple"
@@ -419,6 +334,7 @@ const PreviewScreenTable: FC<PreviewScreenTableProps> = ({
         <AgGridReact
           columnDefs={columnDefs}
           rowData={safeMainGridRows}
+          className="preview-main-grid"
           suppressClickEdit={true}
           onRowClicked={onRowClicked}
           rowClass={onRowClicked ? 'clickable-row' : ''}

@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
+import { PreviewScreenTableProps } from '@/app/preview-screen/types';
 import { LineItemRow } from '@/app/new/LineItems/types';
 
 jest.mock('ag-grid-react', () => {
@@ -92,6 +93,60 @@ const createMockRow = (overrides?: Partial<unknown>) => ({
   ...overrides,
 });
 
+const baseColumnDefs = [
+  { headerName: 'Entity ID', field: 'entityId' },
+  { headerName: 'Entity Name', field: 'entityName' },
+  { headerName: 'Investor Id', field: 'investorId' },
+  { headerName: 'Investor Name', field: 'investorName' },
+  { headerName: 'Investor type 1', field: 'investorType1' },
+  { headerName: 'Investor type 2', field: 'investorType2' },
+];
+
+const baseTopGridColumnDefs = [
+  { headerName: 'General Info', field: 'generalInfo' },
+  { headerName: 'Titles', field: 'lineItemsFields' },
+];
+
+const buildColumnDefs = (lineItems: [string, LineItemRow[]][]) => [
+  ...baseColumnDefs,
+  ...lineItems.flatMap(([, items]) =>
+    items.flatMap((item, idx) => [
+      {
+        headerName: `Line Item ${idx + 1} (${item.id}) Commitment`,
+        field: `${item.id}-commitment`,
+      },
+      {
+        headerName: `Line Item ${idx + 1} (${item.id}) Allocation`,
+        field: `${item.id}-allocation`,
+      },
+    ]),
+  ),
+];
+
+const buildTopColumnDefs = (lineItems: [string, LineItemRow[]][]) => [
+  ...baseTopGridColumnDefs,
+  ...lineItems.flatMap(([, items]) =>
+    items.map((item, idx) => ({
+      headerName: `Top ${idx + 1} (${item.id})`,
+      field: `${item.id}-title`,
+    })),
+  ),
+];
+
+const buildProps = (overrides: Partial<PreviewScreenTableProps> = {}): PreviewScreenTableProps => {
+  const lineItems = overrides.lineItems ?? [...mockEntitiesLineItem.entries()];
+
+  return {
+    rows: [],
+    testId: 'test',
+    isLoading: false,
+    columnDefs: overrides.columnDefs ?? buildColumnDefs(lineItems),
+    topGridColumnDefs: overrides.topGridColumnDefs ?? buildTopColumnDefs(lineItems),
+    lineItems,
+    ...overrides,
+  };
+};
+
 describe('PreviewScreenTable', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -100,14 +155,14 @@ describe('PreviewScreenTable', () => {
 
   describe('Basic Rendering', () => {
     it('renders table wrapper with correct testId', () => {
-      render(<PreviewScreenTable rows={[]} testId="test-table" />);
+      render(<PreviewScreenTable {...buildProps({ rows: [], testId: 'test-table' })} />);
       const wrapper = screen.getByTestId('table-wrapper-test-table');
       expect(wrapper).toBeInTheDocument();
     });
 
     it('renders main grid with rows', () => {
       const rows = [createMockRow()];
-      render(<PreviewScreenTable rows={rows} testId="test" />);
+      render(<PreviewScreenTable {...buildProps({ rows })} />);
 
       const grids = screen.getAllByTestId('ag-grid');
       const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');
@@ -117,7 +172,14 @@ describe('PreviewScreenTable', () => {
 
     it('does not render top grid when no line items exist', () => {
       const rows = [createMockRow()];
-      render(<PreviewScreenTable rows={rows} testId="test" />);
+      render(
+        <PreviewScreenTable
+          {...buildProps({
+            rows,
+            lineItems: [],
+          })}
+        />,
+      );
 
       const grids = screen.getAllByTestId('ag-grid');
       const topGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'true');
@@ -133,7 +195,7 @@ describe('PreviewScreenTable', () => {
       mockEntitiesLineItem.set('Entity 1', [lineItem1, lineItem2]);
 
       const rows = [createMockRow()];
-      render(<PreviewScreenTable rows={rows} testId="test" />);
+      render(<PreviewScreenTable {...buildProps({ rows })} />);
 
       const grids = screen.getAllByTestId('ag-grid');
       const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');
@@ -151,7 +213,7 @@ describe('PreviewScreenTable', () => {
       mockEntitiesLineItem.set('Entity 1', [lineItem1, lineItem2]);
 
       const rows = [createMockRow()];
-      render(<PreviewScreenTable rows={rows} testId="test" />);
+      render(<PreviewScreenTable {...buildProps({ rows })} />);
 
       const grids = screen.getAllByTestId('ag-grid');
       const mainGrid = grids.find((grid) => grid.getAttribute('data-is-top-grid') === 'false');

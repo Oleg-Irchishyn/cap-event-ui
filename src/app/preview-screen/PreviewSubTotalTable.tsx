@@ -1,11 +1,10 @@
 'use client';
 
 import { FC, useMemo, useCallback } from 'react';
-import { PostSortRowsParams } from 'ag-grid-community';
+import { ColDef, PostSortRowsParams } from 'ag-grid-community';
 import '@/app/new/grid-styles.css';
 import ConfigurationTable from '@/app/components/ConfigurationTable';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
-import { getPreviewSubTotalColumnDefs } from '@/utils/getPreviewScreenColumnDefs';
 
 import { SubTotalTableRow } from './types';
 import { AMOUNT_FIELD, COMMITMENT_FIELD, ENTITY_NAME_FIELD } from '@/const/previewScreen';
@@ -17,26 +16,41 @@ type Props = {
   rows: SubTotalTableRow[];
   testId?: string;
   isLoading?: boolean;
+  columnDefs: ColDef[];
 };
 
 const PreviewSubTotalTable: FC<Props> = ({
   rows,
   testId = 'preview-screen-table',
   isLoading = false,
+  columnDefs,
 }) => {
-  const columnDefs = useMemo(() => getPreviewSubTotalColumnDefs(isLoading), [isLoading]);
-
   const addTotalRow = (rows: SubTotalTableRow[]) => {
-    const commitmentAmount = rows.reduce((sum, row) => sum + (row.commitment || 0), 0);
-    const allocatedAmount = rows.reduce((sum, row) => sum + (row.allocatedAmount || 0), 0);
+    const totals = rows.reduce<Record<string, number>>(
+      (acc, row) => {
+        Object.entries(row).forEach(([key, value]) => {
+          if (key === 'id' || key === ENTITY_NAME_FIELD) return;
+          if (typeof value !== 'number' || Number.isNaN(value)) return;
 
-    const totalRow = {
+          acc[key] = (acc[key] ?? 0) + value;
+        });
+
+        return acc;
+      },
+      {
+        [COMMITMENT_FIELD]: 0,
+        [AMOUNT_FIELD]: 0,
+      },
+    );
+
+    const totalRow: SubTotalTableRow = {
       id: TOTAL_ROW_ID,
       [ENTITY_NAME_FIELD]: TOTAL_ROW_NAME,
-      [COMMITMENT_FIELD]: commitmentAmount,
-      [AMOUNT_FIELD]: allocatedAmount,
+      allocatedAmount: totals.allocatedAmount ?? 0,
+      commitment: totals[COMMITMENT_FIELD] ?? 0,
+      ...totals,
       isTotalRow: true,
-    } as const;
+    };
 
     return [...rows, totalRow];
   };
@@ -77,6 +91,7 @@ const PreviewSubTotalTable: FC<Props> = ({
       columnDefs={columnDefs}
       rowData={displayRows}
       isLoading={isLoading}
+      headerHeight={80}
       noRowsText="No Data to display"
       postSortRows={handlePostSortRows}
     />

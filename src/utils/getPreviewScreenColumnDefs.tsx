@@ -32,6 +32,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: ENTITY_ID_HEADER,
     field: ENTITY_ID_FIELD,
+    colId: ENTITY_ID_FIELD,
     flex: 1,
     sortable: true,
     resizable: true,
@@ -47,10 +48,12 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: ENTITY_NAME_HEADER,
     field: ENTITY_NAME_FIELD,
+    colId: ENTITY_NAME_FIELD,
     flex: 1,
     sortable: true,
     resizable: true,
     minWidth: 100,
+    initialWidth: 100,
     pinned: 'left',
     cellRendererSelector: () =>
       isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 60 } } : undefined,
@@ -59,6 +62,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: INVESTOR_ID_HEADER,
     field: INVESTOR_ID_FIELD,
+    colId: INVESTOR_ID_FIELD,
     flex: 1,
     sortable: true,
     resizable: true,
@@ -74,6 +78,7 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: INVESTOR_NAME_HEADER,
     field: INVESTOR_NAME_FIELD,
+    colId: INVESTOR_NAME_FIELD,
     flex: 1.5,
     sortable: true,
     resizable: true,
@@ -87,11 +92,13 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: INVESTOR_TYPE_I_HEADER,
     field: INVESTOR_TYPE_I_FIELD,
+    colId: INVESTOR_TYPE_I_FIELD,
     flex: 1,
     sortable: true,
     resizable: true,
     minWidth: 100,
     pinned: 'left',
+    initialWidth: 100,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_I_FIELD];
       return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_ONE_VALUE;
@@ -103,11 +110,13 @@ export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   {
     headerName: INVESTOR_TYPE_II_HEADER,
     field: INVESTOR_TYPE_II_FIELD,
+    colId: INVESTOR_TYPE_II_FIELD,
     flex: 1.2,
     sortable: true,
     resizable: true,
     minWidth: 100,
     pinned: 'left',
+    initialWidth: 100,
     valueGetter: (params) => {
       const value = params.data[INVESTOR_TYPE_II_FIELD];
       return value && String(value).trim() ? value : EMPTY_INVESTOR_TYPE_TWO_VALUE;
@@ -131,104 +140,18 @@ const nameCellRendererSelector = (params: ICellRendererParams, isLoading?: boole
   return undefined;
 };
 
-export const getPreviewSubTotalColumnDefs = (isLoading?: boolean): ColDef[] => [
+export const getPreviewSubTotalColumnDefs = (width: number, isLoading?: boolean): ColDef[] => [
   // Entity Name - aligns with column 2 from first table
   {
     headerName: ENTITY_NAME_HEADER,
     field: ENTITY_NAME_FIELD,
-    flex: 2,
+    flex: 1,
+    width: width,
     sortable: true,
     resizable: true,
+    pinned: 'left',
     cellRendererSelector: (params: ICellRendererParams) =>
       nameCellRendererSelector(params, isLoading),
-  },
-  // Empty spacer column to align with Entity ID column from first table
-  {
-    headerName: '',
-    flex: 1,
-    sortable: false,
-    resizable: false,
-    suppressHeaderMenuButton: true,
-    suppressMovable: true,
-    suppressSizeToFit: true,
-    cellStyle: { visibility: 'hidden' },
-    headerClass: 'ag-hidden-header',
-  },
-  // Empty spacer column to align with Investor ID column from first table
-  {
-    headerName: '',
-    flex: 1,
-    sortable: false,
-    resizable: false,
-    suppressHeaderMenuButton: true,
-    suppressMovable: true,
-    suppressSizeToFit: true,
-    cellStyle: { visibility: 'hidden' },
-    headerClass: 'ag-hidden-header',
-  },
-  // Empty spacer column to align with Investor Name column from first table
-  {
-    headerName: '',
-    flex: 1.5,
-    sortable: false,
-    resizable: false,
-    suppressHeaderMenuButton: true,
-    suppressMovable: true,
-    suppressSizeToFit: true,
-    cellStyle: { visibility: 'hidden' },
-    headerClass: 'ag-hidden-header',
-  },
-  // Empty spacer column to align with Investor Type I column from first table
-  {
-    headerName: '',
-    flex: 1,
-    sortable: false,
-    resizable: false,
-    suppressHeaderMenuButton: true,
-    suppressMovable: true,
-    suppressSizeToFit: true,
-    cellStyle: { visibility: 'hidden' },
-    headerClass: 'ag-hidden-header',
-  },
-  // Empty spacer column to align with Investor Type II column from first table
-  {
-    headerName: '',
-    flex: 1.2,
-    sortable: false,
-    resizable: false,
-    suppressHeaderMenuButton: true,
-    suppressMovable: true,
-    suppressSizeToFit: true,
-    cellStyle: { visibility: 'hidden' },
-    headerClass: 'ag-hidden-header',
-  },
-  // Total Capital Commitment - aligns with column 7 from first table
-  {
-    headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
-    field: COMMITMENT_FIELD,
-    flex: 1.5,
-    sortable: true,
-    resizable: true,
-    headerClass: 'ag-right-aligned-header',
-    valueGetter: (params) => {
-      return formatAmount(params.data.commitment);
-    },
-    cellStyle: { textAlign: 'right' },
-    cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
-  },
-  // Total Amount Due - aligns with column 8 from first table
-  {
-    headerName: TOTAL_AMOUNT_DUE_HEADER,
-    field: AMOUNT_FIELD,
-    flex: 1,
-    sortable: true,
-    resizable: true,
-    headerClass: 'ag-right-aligned-header',
-    valueGetter: (params) => {
-      return formatAmount(params.data.allocatedAmount);
-    },
-    cellStyle: { textAlign: 'right' },
-    cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
   },
 ];
 
@@ -280,10 +203,7 @@ export const getDynamicColumnsDefs = (
           whiteSpace: 'pre-line',
           lineHeight: '1.4',
         },
-        cellRendererSelector: () =>
-          isLoading
-            ? { component: SkeletonCellRenderer, params: { widthPercent: 70, textAlign: 'right' } }
-            : undefined,
+        cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
       },
       {
         colId: `${row.id}-lineItem`,
@@ -307,10 +227,7 @@ export const getDynamicColumnsDefs = (
           investmentTitle:
             typeof row.investment === 'string' ? row.investment : row.investment?.name,
         },
-        cellRendererSelector: () =>
-          isLoading
-            ? { component: SkeletonCellRenderer, params: { widthPercent: 70, textAlign: 'right' } }
-            : undefined,
+        cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
       },
     ]),
   );
@@ -330,10 +247,7 @@ export const getDynamicColumnsDefs = (
         return formatAmount(params.data.commitment);
       },
       cellStyle: { textAlign: 'right' },
-      cellRendererSelector: () =>
-        isLoading
-          ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
-          : undefined,
+      cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
     },
     // Total Amount Due
     {
@@ -348,10 +262,7 @@ export const getDynamicColumnsDefs = (
         return formatAmount(params.data.allocatedAmount);
       },
       cellStyle: { textAlign: 'right' },
-      cellRendererSelector: () =>
-        isLoading
-          ? { component: SkeletonCellRenderer, params: { widthPercent: 40, textAlign: 'end' } }
-          : undefined,
+      cellRendererSelector: (params) => amountCellRendererSelector(params, isLoading),
     },
   ];
 };

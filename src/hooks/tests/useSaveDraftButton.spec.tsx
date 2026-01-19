@@ -28,12 +28,17 @@ jest.mock('@/stores', () => {
 
 jest.mock('@/utils/isRowEmpty', () => ({
   isRowEmpty: jest.fn((item: LineItemRow) => {
+    const investmentId =
+      typeof item.investment === 'object' && item.investment !== null
+        ? (item.investment.id ?? '')
+        : '';
+
     return (
       item.capitalCategory === '' &&
       item.callDistributionReason === '' &&
       item.defaultDescription === '' &&
       item.insideCommitment === '' &&
-      item.investment?.id === '' &&
+      investmentId === '' &&
       item.allocationBasis === '' &&
       item.amount === 0
     );

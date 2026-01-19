@@ -33,13 +33,7 @@ describe('SortableItem', () => {
 
   it('renders Item with passed props', () => {
     renderWithTheme(
-      <SortableItem
-        id="id-1"
-        checked={false}
-        fileNumber={1}
-        fileName="file.pdf"
-        removeFile={jest.fn()}
-      />,
+      <SortableItem id="id-1" fileNumber={1} fileName="file.pdf" removeFile={jest.fn()} />,
     );
 
     expect(mockedItem).toHaveBeenCalled();
@@ -60,13 +54,7 @@ describe('SortableItem', () => {
     });
 
     renderWithTheme(
-      <SortableItem
-        id="id-2"
-        checked={false}
-        fileNumber={2}
-        fileName="file2.pdf"
-        removeFile={jest.fn()}
-      />,
+      <SortableItem id="id-2" fileNumber={2} fileName="file2.pdf" removeFile={jest.fn()} />,
     );
 
     const call = mockedItem.mock.calls[0][0];

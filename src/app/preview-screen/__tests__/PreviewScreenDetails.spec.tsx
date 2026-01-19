@@ -13,6 +13,9 @@ jest.mock('@/stores', () => ({
     fetchDoc: jest.fn(),
     isLoading: false,
   },
+  capEventSettingsStore: {
+    entitiesLineItem: [],
+  },
 }));
 
 jest.mock('@/app/preview-screen/PreviewScreenTable', () => ({

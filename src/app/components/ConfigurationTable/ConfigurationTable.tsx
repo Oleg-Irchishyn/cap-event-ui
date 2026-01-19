@@ -41,6 +41,7 @@ type Props<T> = {
   height?: number | string; // when provided, grid will use internal scroll with fixed container height
   pinnedBottomRowData?: T[];
   postSortRows?: (params: PostSortRowsParams) => void;
+  headerHeight?: number;
 };
 
 interface RowData {
@@ -69,6 +70,7 @@ const ConfigurationTable = <T,>({
   height,
   pinnedBottomRowData,
   postSortRows,
+  headerHeight,
 }: Props<T>) => {
   const defaultColDef = useMemo(
     () => ({
@@ -216,7 +218,7 @@ const ConfigurationTable = <T,>({
         animateRows={true}
         onDragStopped={onDragStopped}
         rowHeight={40}
-        headerHeight={40}
+        headerHeight={headerHeight ?? 40}
         onGridReady={(params: GridReadyEvent) => {
           setGridApi(params.api);
         }}

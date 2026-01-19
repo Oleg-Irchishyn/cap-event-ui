@@ -35,7 +35,7 @@ describe('parseToPreviewScreenRows', () => {
     const allocation = [{ lineItemId: 'mockId', entityId: 'E1', response: [{}] }];
 
     const rows = parseToPreviewScreenRows(input as unknown, allocation);
-    expect(rows).toHaveLength(2);
+    expect(rows).toHaveLength(1);
 
     expect(rows[0]).toEqual({
       id: 'E1-0-C1-INV1-0',
@@ -57,28 +57,7 @@ describe('parseToPreviewScreenRows', () => {
       'mockId-commitment': '-',
       'mockId-investedCapital': '-',
       'mockId-unfunded': '-',
-    });
-
-    expect(rows[1]).toEqual({
-      id: 'E1-0-C2--1',
-      investor: '',
-      investorId: 'C2',
-      investorName: '',
-      classID: '',
-      additionalInvestorType: '',
-      entityId: 'E1',
-      entityName: 'Entity One',
-      description: '',
-      investmentTitle: '',
-      investmentName: '',
-      dataPoints: undefined,
-      commitment: 0,
-      allocatedAmount: 0,
-      isAggregated: false,
-      'mockId-allocatedAmount': '-',
-      'mockId-commitment': '-',
-      'mockId-investedCapital': '-',
-      'mockId-unfunded': '-',
+      lineItemId: 'mockId',
     });
   });
 
@@ -100,21 +79,7 @@ describe('parseToPreviewScreenRows', () => {
     ];
 
     const rows = parseToPreviewScreenRows(input as unknown);
-    expect(rows).toHaveLength(1);
-    expect(rows[0].id).toBe('-0---0');
-    expect(rows[0].investor).toBe('');
-    expect(rows[0].investorId).toBe('');
-    expect(rows[0].investorName).toBe('');
-    expect(rows[0].classID).toBe('');
-    expect(rows[0].additionalInvestorType).toBe('');
-    expect(rows[0].entityId).toBe('');
-    expect(rows[0].entityName).toBe('');
-    expect(rows[0].description).toBe('');
-    expect(rows[0].investmentTitle).toBe('');
-    expect(rows[0].investmentName).toBe('');
-    expect(rows[0].dataPoints).toBe(undefined);
-    expect(rows[0].allocatedAmount).toBe(0);
-    expect(rows[0].isAggregated).toBe(false);
+    expect(rows).toHaveLength(0);
   });
 
   test('handles isAggregated field correctly', () => {
@@ -150,9 +115,7 @@ describe('parseToPreviewScreenRows', () => {
     ];
 
     const rows = parseToPreviewScreenRows(input as unknown);
-    expect(rows).toHaveLength(3);
+    expect(rows).toHaveLength(1);
     expect(rows[0].isAggregated).toBe(true);
-    expect(rows[1].isAggregated).toBe(false);
-    expect(rows[2].isAggregated).toBe(false); // defaults to false when missing
   });
 });

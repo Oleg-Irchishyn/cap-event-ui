@@ -14,7 +14,11 @@ export const parseToPreviewScreenRows = (
     const entries: InvestorEntry[] = Array.isArray(item && item.plInvestorEntries)
       ? (item.plInvestorEntries as InvestorEntry[])
       : [];
-    return entries.map((inv, idx: number) => {
+    return entries.flatMap((inv, idx: number) => {
+      if (!inv.isAggregated) {
+        return [];
+      }
+
       const dataByEntity = allocation.find(
         (allocationItem) => allocationItem.entityId === entityId,
       );
@@ -27,27 +31,30 @@ export const parseToPreviewScreenRows = (
       const investmentTitle = inv.investment?.title ?? '';
       const investmentName = inv.investment?.name ?? '';
 
-      return {
-        id: `${entityId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
-        investor: inv.investor ?? '',
-        investorId: inv.customerId ?? '',
-        investorName: inv.customerName ?? '',
-        classID: inv.classID ?? '',
-        additionalInvestorType: inv.additionalInvestorType ?? '',
-        entityId,
-        entityName,
-        description,
-        investmentTitle,
-        investmentName,
-        dataPoints: inv.dataPoints,
-        allocatedAmount: inv.allocatedAmount || 0,
-        isAggregated: inv.isAggregated || false,
-        commitment: inv?.commitment ?? 0,
-        [`${lineItemId}-commitment`]: allocatedData?.commitment ?? '-',
-        [`${lineItemId}-investedCapital`]: allocatedData?.investedCapital ?? '-',
-        [`${lineItemId}-unfunded`]: allocatedData?.unfunded ?? '-',
-        [`${lineItemId}-allocatedAmount`]: allocatedData?.allocatedAmount ?? '-',
-      };
+      return [
+        {
+          id: `${entityId}-${itemIndex}-${inv.customerId ?? ''}-${inv.investor ?? ''}-${idx}`,
+          investor: inv.investor ?? '',
+          investorId: inv.customerId ?? '',
+          investorName: inv.customerName ?? '',
+          classID: inv.classID ?? '',
+          additionalInvestorType: inv.additionalInvestorType ?? '',
+          entityId,
+          entityName,
+          description,
+          investmentTitle,
+          investmentName,
+          dataPoints: inv.dataPoints,
+          allocatedAmount: inv.allocatedAmount || 0,
+          isAggregated: inv.isAggregated || false,
+          commitment: inv?.commitment ?? 0,
+          [`${lineItemId}-commitment`]: allocatedData?.commitment ?? '-',
+          [`${lineItemId}-investedCapital`]: allocatedData?.investedCapital ?? '-',
+          [`${lineItemId}-unfunded`]: allocatedData?.unfunded ?? '-',
+          [`${lineItemId}-allocatedAmount`]: allocatedData?.allocatedAmount ?? '-',
+          lineItemId,
+        },
+      ];
     });
   });
 };

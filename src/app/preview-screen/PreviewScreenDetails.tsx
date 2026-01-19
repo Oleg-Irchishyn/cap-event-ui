@@ -1,19 +1,35 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { RowClickedEvent } from 'ag-grid-community';
+import { useEffect, useMemo, useState } from 'react';
+import { ColDef, RowClickedEvent } from 'ag-grid-community';
 import { observer } from 'mobx-react-lite';
 
-import { previewScreenStore } from '@/stores';
+import { capEventSettingsStore, previewScreenStore } from '@/stores';
 import { useToast } from '@/providers/ToastProvider';
 import BackgroundContainer from '@/app/components/BackgroundContainer';
 import PreviewScreenModal from '@/app/preview-screen/PreviewScreenModal';
-import PreviewScreenTable from '@/app/preview-screen/PreviewScreenTable';
+import PreviewScreenTable, {
+  CombinedTitleCell,
+  GeneralInfoCell,
+} from '@/app/preview-screen/PreviewScreenTable';
 import { Title, Wrapper } from '@/app/new/styles';
 import { prepareDataTestId } from '@/utils/prepareDataTestId';
 
-import { PreviewScreenRow, SubTotalTableRow } from './types';
+import { PreviewScreenRow, SubTotalTableRow, GENERAL_INFO, LINE_ITEMS_FIELDS } from './types';
 import PreviewSubTotalTable from '@/app/preview-screen/PreviewSubTotalTable';
+import {
+  getDynamicColumnsDefs,
+  getPreviewScreenColumnDefs,
+  getPreviewSubTotalColumnDefs,
+  getTopDynamicColumnDefs,
+} from '@/utils/getPreviewScreenColumnDefs';
+import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
+import {
+  AMOUNT_FIELD,
+  COMMITMENT_FIELD,
+  TOTAL_AMOUNT_DUE_HEADER,
+  TOTAL_CAPITAL_COMMITMENT_HEADER,
+} from '@/const/previewScreen';
 
 const PreviewScreenDetails = () => {
   const toast = useToast();
@@ -23,28 +39,47 @@ const PreviewScreenDetails = () => {
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [subTotalRows, setSubTotalRows] = useState<SubTotalTableRow[]>([]);
 
+  const toNumber = (value: unknown) => (typeof value === 'number' ? value : 0);
+
   useEffect(() => {
     const process = async () => {
       setRows([]);
       const newRows = await previewScreenStore.processPayload(toast);
       setRows(newRows);
-      const temp = newRows.reduce((acc, row) => {
+      const subTotalNewRows = newRows.reduce((acc, row) => {
         if (!row.isAggregated) return acc;
         const existing = acc.find((item) => item.entityName === row.entityName);
+        const allocatedCommitmentKey = `${row.lineItemId}-commitment`;
+        const allocatedContributionKey = `${row.lineItemId}-investedCapital`;
+        const allocatedUnfundedKey = `${row.lineItemId}-unfunded`;
+        const allocatedAmountKey = `${row.lineItemId}-allocatedAmount`;
+
         if (existing) {
-          existing.allocatedAmount += row.allocatedAmount ?? 0;
-          existing.commitment = (existing.commitment ?? 0) + (row.commitment ?? 0);
+          existing.allocatedAmount += toNumber(row.allocatedAmount);
+          existing.commitment = toNumber(existing.commitment) + toNumber(row.commitment);
+          existing[allocatedCommitmentKey] =
+            toNumber(existing[allocatedCommitmentKey]) + toNumber(row[allocatedCommitmentKey]);
+          existing[allocatedContributionKey] =
+            toNumber(existing[allocatedContributionKey]) + toNumber(row[allocatedContributionKey]);
+          existing[allocatedUnfundedKey] =
+            toNumber(existing[allocatedUnfundedKey]) + toNumber(row[allocatedUnfundedKey]);
+          existing[allocatedAmountKey] =
+            toNumber(existing[allocatedAmountKey]) + toNumber(row[allocatedAmountKey]);
         } else {
           acc.push({
             id: row.id,
             entityName: row.entityName,
-            allocatedAmount: row.allocatedAmount ?? 0,
-            commitment: row.commitment ?? 0,
+            allocatedAmount: toNumber(row.allocatedAmount),
+            commitment: toNumber(row.commitment),
+            [allocatedCommitmentKey]: toNumber(row[allocatedCommitmentKey]),
+            [allocatedContributionKey]: toNumber(row[allocatedContributionKey]),
+            [allocatedUnfundedKey]: toNumber(row[allocatedUnfundedKey]),
+            [allocatedAmountKey]: toNumber(row[allocatedAmountKey]),
           } as SubTotalTableRow);
         }
         return acc;
       }, [] as SubTotalTableRow[]);
-      setSubTotalRows(temp);
+      setSubTotalRows(subTotalNewRows);
     };
     process();
   }, [toast]);
@@ -68,6 +103,107 @@ const PreviewScreenDetails = () => {
     setNoticePreviewDoc(null);
   };
 
+  const lineItems = useMemo(
+    () =>
+      [...capEventSettingsStore.entitiesLineItem].sort(([aLabel], [bLabel]) => {
+        return (aLabel || '').localeCompare(bLabel || '', undefined, {
+          sensitivity: 'base',
+          numeric: true,
+        });
+      }),
+    [],
+  );
+
+  const isLoading = previewScreenStore.isLoading;
+
+  const dynamicColumns = useMemo(
+    () => getDynamicColumnsDefs(lineItems, isLoading),
+    [isLoading, lineItems],
+  );
+
+  const staticColumns = useMemo(() => getPreviewScreenColumnDefs(isLoading), [isLoading]);
+
+  const topDynamicColumnDefs = useMemo(
+    () => getTopDynamicColumnDefs(lineItems, isLoading),
+    [lineItems, isLoading],
+  );
+
+  const columnDefs = useMemo(
+    () => [...staticColumns, ...dynamicColumns],
+    [staticColumns, dynamicColumns],
+  );
+
+  const topGridColumnDefs = useMemo(() => {
+    const combinedGeneralInfoColumn: ColDef = {
+      headerName: 'General Info',
+      field: GENERAL_INFO,
+      flex: 6.7,
+      sortable: false,
+      resizable: true,
+      cellRenderer: isLoading ? SkeletonCellRenderer : GeneralInfoCell,
+      cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
+    };
+
+    const combinedTitleColumn: ColDef = {
+      headerName: 'Titles',
+      field: LINE_ITEMS_FIELDS,
+      flex: 2.5,
+      sortable: false,
+      resizable: true,
+      cellStyle: { textAlign: 'right' },
+      cellRenderer: isLoading ? SkeletonCellRenderer : CombinedTitleCell,
+      cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
+    };
+
+    const totalCommitmentColumn: ColDef = {
+      headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
+      field: COMMITMENT_FIELD,
+      flex: 1.5,
+      sortable: false,
+      resizable: true,
+      minWidth: 100,
+      headerClass: 'ag-right-aligned-header',
+      cellStyle: { textAlign: 'right' },
+      valueGetter: () => '',
+      cellRendererSelector: () =>
+        isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+    };
+
+    const totalAmountDueColumn: ColDef = {
+      headerName: TOTAL_AMOUNT_DUE_HEADER,
+      field: AMOUNT_FIELD,
+      flex: 1,
+      sortable: false,
+      resizable: true,
+      minWidth: 100,
+      headerClass: 'ag-right-aligned-header',
+      cellStyle: { textAlign: 'right' },
+      valueGetter: () => '',
+      cellRendererSelector: () =>
+        isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+    };
+
+    return [
+      combinedGeneralInfoColumn,
+      combinedTitleColumn,
+      ...topDynamicColumnDefs,
+      totalCommitmentColumn,
+      totalAmountDueColumn,
+    ];
+  }, [isLoading, topDynamicColumnDefs]);
+
+  // Sub-Total Table
+  const bigColumnWidth = useMemo(
+    () => getPreviewScreenColumnDefs()?.reduce((sum, col) => sum + (col?.initialWidth ?? 0), 0),
+    [],
+  );
+  const subTotalStaticColumns = useMemo(
+    () => getPreviewSubTotalColumnDefs(bigColumnWidth, isLoading),
+    [bigColumnWidth, isLoading],
+  );
+
+  const subTotalColumnDefs = [...subTotalStaticColumns, ...dynamicColumns];
+
   return (
     <>
       <BackgroundContainer testId={prepareDataTestId('background', 'preview-screen')}>
@@ -77,13 +213,17 @@ const PreviewScreenDetails = () => {
           <PreviewScreenTable
             testId={prepareDataTestId('table', 'preview-screen')}
             rows={rows}
-            isLoading={previewScreenStore.isLoading}
+            lineItems={lineItems}
+            columnDefs={columnDefs}
+            topGridColumnDefs={topGridColumnDefs}
+            isLoading={isLoading}
             onRowClicked={onRowClicked}
           />
           <PreviewSubTotalTable
             rows={subTotalRows}
+            columnDefs={subTotalColumnDefs}
             testId={prepareDataTestId('sub-total-table', 'preview-screen')}
-            isLoading={previewScreenStore.isLoading}
+            isLoading={isLoading}
           />
         </Wrapper>
       </BackgroundContainer>
