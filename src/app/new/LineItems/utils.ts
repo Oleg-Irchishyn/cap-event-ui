@@ -1,6 +1,7 @@
 import { Account } from '@/clients/ReferenceData';
 import { LineItemRow, Investment } from '@/app/new/LineItems/types';
 import { formatNumberToAmount } from '@/utils/formatNumberToAmount';
+import { MANUAL_UPLOAD } from './const';
 
 export const getReasons = (selectedCategory: string, accounts: Account[]) => {
   return Array.from(
@@ -42,7 +43,7 @@ export const hasRequiredFieldsForPreview = (data: LineItemRow) => {
     data.defaultDescription !== '' &&
     data.insideCommitment !== '' &&
     data.allocationBasis !== '' &&
-    data.amount !== 0
+    (data.allocationBasis === MANUAL_UPLOAD || data.amount !== 0)
   );
 };
 

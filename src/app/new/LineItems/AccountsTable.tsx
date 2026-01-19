@@ -20,6 +20,7 @@ import {
   AccountFieldIds,
   AccountFields,
   LineItemTypes,
+  MANUAL_UPLOAD,
   OtherAccountFields,
   TEXT_INPUT_MAX_LENGTH,
   USER_PROVIDED_OPTION,
@@ -158,6 +159,13 @@ const AccountsTable: FC<Props> = ({
       }
 
       if (level === LineItemTypes.entity) {
+        if (
+          params.colDef.field === AccountFields.amount &&
+          params.data.allocationBasis === MANUAL_UPLOAD
+        ) {
+          return false;
+        }
+
         const parentFundGroup = capEventSettingsStore.fundGroupsLineItem.find(
           (lineItem) => lineItem.id === params.data.fundGroupLineItemInheritanceId,
         );

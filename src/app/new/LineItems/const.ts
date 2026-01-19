@@ -87,6 +87,7 @@ export const LineItemTypes = {
 };
 
 export const USER_PROVIDED_OPTION = 'User-Provided';
+export const MANUAL_UPLOAD = 'Manual Upload';
 
 export const YesNoOptions = ['Yes', 'No'];
 
