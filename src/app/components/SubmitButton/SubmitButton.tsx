@@ -215,7 +215,7 @@ const SubmitButton = () => {
         Save
       </Button>
       <Tooltip
-        tooltipMessage="Save Capital Event and Create/Update Case"
+        tooltipMessage="Save/Update Capital Event and Create/Update Case"
         showTooltip={showSubmitTooltip}
         targetRef={submitTooltipRef}
         testId="submit-button-tooltip"

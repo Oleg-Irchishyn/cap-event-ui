@@ -26,6 +26,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
 import React, { FC } from 'react';
 import { ColumnHeaderWrapper, DynamicColumnsHeader } from '@/app/preview-screen/styles';
+import { CombinedTitleCell, GeneralInfoCell } from '@/app/preview-screen/PreviewScreenTable';
 import { PreviewScreenRow, SubTotalTableRow } from '@/app/preview-screen/types';
 
 export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
@@ -309,6 +310,70 @@ export const getTopDynamicColumnDefs = (
       },
     ]),
   );
+};
+
+export const getTopGridColumnDefs = (
+  lineItems: [string, LineItemRow[]][],
+  isLoading: boolean,
+): ColDef[] => {
+  const combinedGeneralInfoColumn: ColDef = {
+    headerName: 'General Info',
+    field: 'generalInfo',
+    flex: 6.7,
+    sortable: false,
+    resizable: true,
+    cellRenderer: isLoading ? SkeletonCellRenderer : GeneralInfoCell,
+    cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
+  };
+
+  const combinedTitleColumn: ColDef = {
+    headerName: 'Titles',
+    field: 'lineItemsFields',
+    flex: 2.5,
+    sortable: false,
+    resizable: true,
+    cellStyle: { textAlign: 'right' },
+    cellRenderer: isLoading ? SkeletonCellRenderer : CombinedTitleCell,
+    cellRendererParams: isLoading ? { widthPercent: 100 } : undefined,
+  };
+
+  const totalCommitmentColumn: ColDef = {
+    headerName: TOTAL_CAPITAL_COMMITMENT_HEADER,
+    field: COMMITMENT_FIELD,
+    flex: 1.5,
+    sortable: false,
+    resizable: true,
+    minWidth: 100,
+    headerClass: 'ag-right-aligned-header',
+    cellStyle: { textAlign: 'right' },
+    valueGetter: () => '',
+    cellRendererSelector: () =>
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+  };
+
+  const totalAmountDueColumn: ColDef = {
+    headerName: TOTAL_AMOUNT_DUE_HEADER,
+    field: AMOUNT_FIELD,
+    flex: 1,
+    sortable: false,
+    resizable: true,
+    minWidth: 100,
+    headerClass: 'ag-right-aligned-header',
+    cellStyle: { textAlign: 'right' },
+    valueGetter: () => '',
+    cellRendererSelector: () =>
+      isLoading ? { component: SkeletonCellRenderer, params: { widthPercent: 40 } } : undefined,
+  };
+
+  const dynamicTop = getTopDynamicColumnDefs(lineItems, isLoading);
+
+  return [
+    combinedGeneralInfoColumn,
+    combinedTitleColumn,
+    ...dynamicTop,
+    totalCommitmentColumn,
+    totalAmountDueColumn,
+  ];
 };
 
 const toNumber = (value: unknown) => (typeof value === 'number' ? value : 0);

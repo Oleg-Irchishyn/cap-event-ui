@@ -226,7 +226,7 @@ describe('SubmitButton', () => {
 
     const tooltip = screen.getByTestId('tooltip-submit-button-tooltip');
     expect(tooltip).toBeInTheDocument();
-    expect(tooltip).toHaveTextContent('Save Capital Event and Create/Update Case');
+    expect(tooltip).toHaveTextContent('Save/Update Capital Event and Create/Update Case');
 
     fireEvent.mouseLeave(button);
     expect(screen.queryByTestId('tooltip-submit-button-tooltip')).not.toBeInTheDocument();
