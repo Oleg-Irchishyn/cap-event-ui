@@ -10,6 +10,8 @@ export interface OneLoginConfig {
   subdomain: string; // e.g., "yourcompany" for https://yourcompany.onelogin.com
   redirectUri: string; // Must match the redirect URI configured in OneLogin app
   region?: 'us' | 'eu'; // OneLogin region, defaults to 'us'
+  scope: string;
+  resource: string;
 }
 
 export interface TokenResponse {
@@ -73,16 +75,12 @@ export const getOneLoginAuthUrl = async (
     client_id: config.clientId,
     redirect_uri: config.redirectUri,
     response_type: 'code',
-    scope: 'openid profile email',
+    scope: `openid profile email ${config.scope}`,
     state: state,
+    resource: config.resource,
     code_challenge: codeChallenge,
     code_challenge_method: 'S256',
   });
-
-  const resource = process.env.NEXT_PUBLIC_ONELOGIN_RESOURCE;
-  if (resource && resource.trim() !== '') {
-    params.set('resource', resource);
-  }
 
   // Add prompt=login to force authentication screen even if user has active session
   // This is important after logout when "remember my login" was checked
@@ -220,12 +218,14 @@ export const getOneLoginConfig = (): OneLoginConfig => {
   const clientId = process.env.NEXT_PUBLIC_ONELOGIN_CLIENT_ID;
   const subdomain = process.env.NEXT_PUBLIC_ONELOGIN_SUBDOMAIN;
   const redirectUri = process.env.NEXT_PUBLIC_ONELOGIN_REDIRECT_URI;
+  const scope = process.env.NEXT_PUBLIC_ONELOGIN_SCOPE;
+  const resource = process.env.NEXT_PUBLIC_ONELOGIN_RESOURCE;
   const region = (process.env.NEXT_PUBLIC_ONELOGIN_REGION as 'us' | 'eu' | undefined) || 'us';
 
-  if (!clientId || !subdomain || !redirectUri) {
+  if (!clientId || !subdomain || !redirectUri || !scope || !resource) {
     throw new Error(
       'Missing OneLogin configuration. Please set NEXT_PUBLIC_ONELOGIN_CLIENT_ID, ' +
-        'NEXT_PUBLIC_ONELOGIN_SUBDOMAIN, and NEXT_PUBLIC_ONELOGIN_REDIRECT_URI environment variables.',
+        'NEXT_PUBLIC_ONELOGIN_SUBDOMAIN, NEXT_PUBLIC_ONELOGIN_SCOPE, NEXT_PUBLIC_ONELOGIN_RESOURCE and NEXT_PUBLIC_ONELOGIN_REDIRECT_URI environment variables.',
     );
   }
 
@@ -234,5 +234,7 @@ export const getOneLoginConfig = (): OneLoginConfig => {
     subdomain,
     redirectUri,
     region,
+    scope,
+    resource,
   };
 };

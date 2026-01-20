@@ -24,13 +24,10 @@ export default function LoginPage() {
         // Check if we're coming from a logout (prompt_login=true in query params)
         // This forces OneLogin to show login screen even if "remember my login" was checked
         const promptLogin = searchParams.get('prompt_login') === 'true';
-        const authUrl = await getOneLoginAuthUrl(config, promptLogin);
-
         // Redirect to OneLogin SSO
-        window.location.href = authUrl;
+        window.location.href = await getOneLoginAuthUrl(config, promptLogin);
       } catch (error) {
         console.error('Failed to initiate OneLogin authentication:', error);
-        // You might want to show an error message to the user here
       }
     };
 

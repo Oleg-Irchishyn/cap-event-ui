@@ -10,6 +10,8 @@ describe('oneloginAuth', () => {
     subdomain: 'testcompany',
     redirectUri: 'http://localhost:3000/auth/callback',
     region: 'us',
+    resource: 'resource',
+    scope: 'cap-event',
   };
 
   beforeEach(() => {
@@ -80,6 +82,8 @@ describe('oneloginAuth', () => {
       NEXT_PUBLIC_ONELOGIN_SUBDOMAIN: 'testcompany',
       NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: 'http://localhost:3000/auth/callback',
       NEXT_PUBLIC_ONELOGIN_REGION: 'us',
+      NEXT_PUBLIC_ONELOGIN_RESOURCE: 'resource',
+      NEXT_PUBLIC_ONELOGIN_SCOPE: 'cap-event',
     } as unknown as ProcessEnv;
 
     const config = getOneLoginConfig();
@@ -88,6 +92,8 @@ describe('oneloginAuth', () => {
       subdomain: 'testcompany',
       redirectUri: 'http://localhost:3000/auth/callback',
       region: 'us',
+      scope: 'cap-event',
+      resource: 'resource',
     });
 
     process.env = originalEnv;
