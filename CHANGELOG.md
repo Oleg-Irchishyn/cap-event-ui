@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.87](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.86&targetVersion=GTv0.0.87) (2026-01-20)
+
+
+### Features
+
+* [9804] add onelogin resource to env variables ([f1aaa87](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f1aaa873fce8bb5c54f0fb33dcf24c1720de310d)), closes [#9804](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9804)
+* added Manual Upload logic ([129c85a](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/129c85a0acb0a9a1d6d7351aa6515b4e9212bdfb)), closes [#9718](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9718)
+* extend subtotal table ([2ecb38e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2ecb38e5aea466351029bb0b86448116604a7899)), closes [#9822](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9822)
+
 ### [0.0.86](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.85&targetVersion=GTv0.0.86) (2026-01-16)
 
 
