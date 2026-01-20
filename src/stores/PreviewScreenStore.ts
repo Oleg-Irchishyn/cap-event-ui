@@ -447,8 +447,16 @@ class PreviewScreenStore {
   }
 
   async allocateLineItems() {
+    const sessionId = getStoredSessionId() ?? '';
+
     const promises: Promise<{ entityId: string; lineItemId: string; response: InvestorEntry[] }>[] =
       [];
+    const mgmtFeePromises: Promise<{
+      entityId: string;
+      lineItemId: string;
+      response: InvestorEntry[];
+      isMgmtFee: boolean;
+    }>[] = [];
     const lineItemsEntries = [...this.root.capEventSettingsStore.entitiesLineItem.entries()];
 
     lineItemsEntries.forEach(([entityLabel, lineItems]) => {
@@ -468,6 +476,28 @@ class PreviewScreenStore {
         const allocationBasisId = this.root.capEventSettingsStore.getAllocationBasisId(
           lineItem.allocationBasis,
         );
+
+        if (lineItem.isMfLineItem) {
+          if (!lineItem.batchNo || !lineItem.originAccountKey) return;
+          const mgmtFeePromise = Promise.resolve(
+            CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
+              lineItem.batchNo,
+              lineItem.originAccountKey,
+              lineItem.allocationBasis,
+              allocationBasisId,
+              entityId,
+              sessionId,
+            ),
+          ).then((response) => ({
+            entityId: entityId,
+            lineItemId: lineItem.id,
+            isMgmtFee: true,
+            response: response,
+          }));
+
+          mgmtFeePromises.push(mgmtFeePromise);
+          return;
+        }
 
         const payload: AllocationInput = {
           entityId,
@@ -501,7 +531,7 @@ class PreviewScreenStore {
       });
     });
 
-    return await Promise.all(promises);
+    return await Promise.all([...promises, ...mgmtFeePromises]);
   }
 
   public getAggregatedLineItems(): Array<CapEventAggregatedLineItem> {

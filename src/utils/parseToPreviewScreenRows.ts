@@ -1,9 +1,16 @@
 import { PreviewScreenRow } from '@/app/preview-screen/types';
 import { CapEventAggregatedLineItem, InvestorEntry } from '@/clients/CapEventPackage';
 
+type AllocationItem = {
+  entityId: string;
+  lineItemId: string;
+  response: InvestorEntry[];
+  isMgmtFee?: boolean;
+};
+
 export const parseToPreviewScreenRows = (
   items: unknown,
-  allocation: { entityId: string; lineItemId: string; response: InvestorEntry[] }[] = [],
+  allocation: AllocationItem[] = [],
 ): PreviewScreenRow[] => {
   const array = (Array.isArray(items) ? items : []) as CapEventAggregatedLineItem[];
   return array.flatMap((item, itemIndex) => {
@@ -19,11 +26,37 @@ export const parseToPreviewScreenRows = (
         return [];
       }
 
-      const dataByEntity = allocation.find(
+      const entityAllocations = allocation.filter(
         (allocationItem) => allocationItem.entityId === entityId,
       );
-      const lineItemId = dataByEntity?.lineItemId;
-      const allocatedData = dataByEntity?.response.find((res) => res.customerId === inv.customerId);
+      const entityLineItemIds = entityAllocations
+        .filter((item) => !item.isMgmtFee && item.lineItemId)
+        .map((item) => item.lineItemId);
+
+      const allocationFields = entityAllocations.reduce<
+        Record<string, string | number | boolean | undefined>
+      >((acc, allocationItem) => {
+        const lineItemId = allocationItem.lineItemId;
+        if (!lineItemId) return acc;
+
+        const investorData = allocationItem.response.find(
+          (res) => res.customerId === inv.customerId,
+        );
+
+        if (allocationItem.isMgmtFee) {
+          acc[`${lineItemId}-mgmtFee`] = investorData?.managementFee ?? '-';
+          acc[`${lineItemId}-mgmtFee-allocatedAmount`] = investorData?.allocatedAmount ?? '-';
+          acc[`${lineItemId}-commitment`] = investorData?.commitment ?? '-';
+          acc[`${lineItemId}-allocatedAmount`] = investorData?.allocatedAmount ?? '-';
+          return acc;
+        }
+
+        acc[`${lineItemId}-commitment`] = investorData?.commitment ?? '-';
+        acc[`${lineItemId}-investedCapital`] = investorData?.investedCapital ?? '-';
+        acc[`${lineItemId}-unfunded`] = investorData?.unfunded ?? '-';
+        acc[`${lineItemId}-allocatedAmount`] = investorData?.allocatedAmount ?? '-';
+        return acc;
+      }, {});
 
       // Account and investment information is stored within each InvestorEntry
       // For aggregated entries, these fields are null
@@ -48,11 +81,8 @@ export const parseToPreviewScreenRows = (
           allocatedAmount: inv.allocatedAmount || 0,
           isAggregated: inv.isAggregated || false,
           commitment: inv?.commitment ?? 0,
-          [`${lineItemId}-commitment`]: allocatedData?.commitment ?? '-',
-          [`${lineItemId}-investedCapital`]: allocatedData?.investedCapital ?? '-',
-          [`${lineItemId}-unfunded`]: allocatedData?.unfunded ?? '-',
-          [`${lineItemId}-allocatedAmount`]: allocatedData?.allocatedAmount ?? '-',
-          lineItemId,
+          ...allocationFields,
+          lineItemIds: entityLineItemIds,
         },
       ];
     });

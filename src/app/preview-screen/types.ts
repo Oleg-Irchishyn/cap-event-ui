@@ -17,8 +17,8 @@ type PreviewScreenRow = {
   allocatedAmount: number;
   commitment?: number;
   isAggregated?: boolean;
-  lineItemId?: string;
-  [key: string]: string | number | boolean | undefined;
+  lineItemIds?: string[];
+  [key: string]: string | number | boolean | string[] | undefined;
 };
 
 interface PreviewScreenTableProps {

@@ -57,7 +57,7 @@ describe('parseToPreviewScreenRows', () => {
       'mockId-commitment': '-',
       'mockId-investedCapital': '-',
       'mockId-unfunded': '-',
-      lineItemId: 'mockId',
+      lineItemIds: ['mockId'],
     });
   });
 

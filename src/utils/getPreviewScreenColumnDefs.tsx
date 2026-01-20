@@ -26,6 +26,7 @@ import { LineItemRow } from '@/app/new/LineItems/types';
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
 import React, { FC } from 'react';
 import { ColumnHeaderWrapper, DynamicColumnsHeader } from '@/app/preview-screen/styles';
+import { PreviewScreenRow, SubTotalTableRow } from '@/app/preview-screen/types';
 
 export const getPreviewScreenColumnDefs = (isLoading?: boolean): ColDef[] => [
   // Entity ID
@@ -196,8 +197,11 @@ export const getDynamicColumnsDefs = (
         cellStyle: { textAlign: 'right', color: '#0067A3' },
         headerClass: 'dynamic-column-header',
         valueGetter: (params) => {
+          const isMgmtFeeAllocationBasis = row.allocationBasis === 'Management Fee';
           const field = defineColumnForAllocationPreview(row.allocationBasis);
-          return formatAmount(params.data[`${row.id}-${field}`]);
+          const fieldToShow = isMgmtFeeAllocationBasis ? 'mgmtFee' : field;
+          const value = params.data[`${row.id}-${fieldToShow}`];
+          return isNaN(value) ? value : formatAmount(params.data[`${row.id}-${fieldToShow}`]);
         },
         headerStyle: {
           whiteSpace: 'pre-line',
@@ -217,9 +221,10 @@ export const getDynamicColumnsDefs = (
         headerClass: 'dynamic-column-header',
         headerComponent: TruncatedThreeLineHeader,
         valueGetter: (params) => {
-          const amount = params.data[`${row.id}-allocatedAmount`];
+          const amount =
+            params.data[`${row.isMfLineItem ? `${row.id}-mgmtFee` : row.id}-allocatedAmount`];
           const calculatedAmount = params.data.trType === -1 ? amount * params.data.trType : amount;
-          return formatAmount(calculatedAmount);
+          return isNaN(amount) ? amount : formatAmount(calculatedAmount);
         },
         headerComponentParams: {
           defaultDescription: row.defaultDescription,
@@ -304,4 +309,75 @@ export const getTopDynamicColumnDefs = (
       },
     ]),
   );
+};
+
+const toNumber = (value: unknown) => (typeof value === 'number' ? value : 0);
+
+export const getSubTotalRows = (rows: PreviewScreenRow[]): SubTotalTableRow[] => {
+  return rows.reduce((acc, row) => {
+    if (!row.isAggregated) return acc;
+    const existing = acc.find((item) => item.entityName === row.entityName);
+    const lineItemIds =
+      Array.isArray(row.lineItemIds) && row.lineItemIds.length > 0
+        ? row.lineItemIds
+        : [
+            ...new Set(
+              Object.keys(row)
+                .map(
+                  (key) =>
+                    key.match(/^(.+)-(commitment|investedCapital|unfunded|allocatedAmount)$/)?.[1],
+                )
+                .filter(Boolean) as string[],
+            ),
+          ];
+    const mgmtFeeKeys = Object.keys(row).filter((key) => /-mgmtFee$/.test(key));
+
+    if (existing) {
+      existing.allocatedAmount += toNumber(row.allocatedAmount);
+      existing.commitment = toNumber(existing.commitment) + toNumber(row.commitment);
+      lineItemIds.forEach((lineItemId) => {
+        const allocatedCommitmentKey = `${lineItemId}-commitment`;
+        const allocatedContributionKey = `${lineItemId}-investedCapital`;
+        const allocatedUnfundedKey = `${lineItemId}-unfunded`;
+        const allocatedAmountKey = `${lineItemId}-allocatedAmount`;
+        existing[allocatedCommitmentKey] =
+          toNumber(existing[allocatedCommitmentKey]) + toNumber(row[allocatedCommitmentKey]);
+        existing[allocatedContributionKey] =
+          toNumber(existing[allocatedContributionKey]) + toNumber(row[allocatedContributionKey]);
+        existing[allocatedUnfundedKey] =
+          toNumber(existing[allocatedUnfundedKey]) + toNumber(row[allocatedUnfundedKey]);
+        existing[allocatedAmountKey] =
+          toNumber(existing[allocatedAmountKey]) + toNumber(row[allocatedAmountKey]);
+      });
+      mgmtFeeKeys.forEach((mgmtFeeKey) => {
+        existing[mgmtFeeKey] = toNumber(existing[mgmtFeeKey]) + toNumber(row[mgmtFeeKey]);
+        existing[`${mgmtFeeKey}-allocatedAmount`] =
+          toNumber(existing[`${mgmtFeeKey}-allocatedAmount`]) +
+          toNumber(row[`${mgmtFeeKey}-allocatedAmount`]);
+      });
+    } else {
+      const newItem: SubTotalTableRow = {
+        id: row.id,
+        entityName: row.entityName,
+        allocatedAmount: toNumber(row.allocatedAmount),
+        commitment: toNumber(row.commitment),
+      };
+      lineItemIds.forEach((lineItemId) => {
+        const allocatedCommitmentKey = `${lineItemId}-commitment`;
+        const allocatedContributionKey = `${lineItemId}-investedCapital`;
+        const allocatedUnfundedKey = `${lineItemId}-unfunded`;
+        const allocatedAmountKey = `${lineItemId}-allocatedAmount`;
+        newItem[allocatedCommitmentKey] = toNumber(row[allocatedCommitmentKey]);
+        newItem[allocatedContributionKey] = toNumber(row[allocatedContributionKey]);
+        newItem[allocatedUnfundedKey] = toNumber(row[allocatedUnfundedKey]);
+        newItem[allocatedAmountKey] = toNumber(row[allocatedAmountKey]);
+      });
+      mgmtFeeKeys.forEach((mgmtFeeKey) => {
+        newItem[mgmtFeeKey] = toNumber(row[mgmtFeeKey]);
+        newItem[`${mgmtFeeKey}-allocatedAmount`] = toNumber(row[`${mgmtFeeKey}-allocatedAmount`]);
+      });
+      acc.push(newItem);
+    }
+    return acc;
+  }, [] as SubTotalTableRow[]);
 };

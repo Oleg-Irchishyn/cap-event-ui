@@ -21,6 +21,7 @@ import {
   getDynamicColumnsDefs,
   getPreviewScreenColumnDefs,
   getPreviewSubTotalColumnDefs,
+  getSubTotalRows,
   getTopDynamicColumnDefs,
 } from '@/utils/getPreviewScreenColumnDefs';
 import SkeletonCellRenderer from '@/app/components/SkeletonCellRenderer';
@@ -39,46 +40,12 @@ const PreviewScreenDetails = () => {
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [subTotalRows, setSubTotalRows] = useState<SubTotalTableRow[]>([]);
 
-  const toNumber = (value: unknown) => (typeof value === 'number' ? value : 0);
-
   useEffect(() => {
     const process = async () => {
       setRows([]);
       const newRows = await previewScreenStore.processPayload(toast);
       setRows(newRows);
-      const subTotalNewRows = newRows.reduce((acc, row) => {
-        if (!row.isAggregated) return acc;
-        const existing = acc.find((item) => item.entityName === row.entityName);
-        const allocatedCommitmentKey = `${row.lineItemId}-commitment`;
-        const allocatedContributionKey = `${row.lineItemId}-investedCapital`;
-        const allocatedUnfundedKey = `${row.lineItemId}-unfunded`;
-        const allocatedAmountKey = `${row.lineItemId}-allocatedAmount`;
-
-        if (existing) {
-          existing.allocatedAmount += toNumber(row.allocatedAmount);
-          existing.commitment = toNumber(existing.commitment) + toNumber(row.commitment);
-          existing[allocatedCommitmentKey] =
-            toNumber(existing[allocatedCommitmentKey]) + toNumber(row[allocatedCommitmentKey]);
-          existing[allocatedContributionKey] =
-            toNumber(existing[allocatedContributionKey]) + toNumber(row[allocatedContributionKey]);
-          existing[allocatedUnfundedKey] =
-            toNumber(existing[allocatedUnfundedKey]) + toNumber(row[allocatedUnfundedKey]);
-          existing[allocatedAmountKey] =
-            toNumber(existing[allocatedAmountKey]) + toNumber(row[allocatedAmountKey]);
-        } else {
-          acc.push({
-            id: row.id,
-            entityName: row.entityName,
-            allocatedAmount: toNumber(row.allocatedAmount),
-            commitment: toNumber(row.commitment),
-            [allocatedCommitmentKey]: toNumber(row[allocatedCommitmentKey]),
-            [allocatedContributionKey]: toNumber(row[allocatedContributionKey]),
-            [allocatedUnfundedKey]: toNumber(row[allocatedUnfundedKey]),
-            [allocatedAmountKey]: toNumber(row[allocatedAmountKey]),
-          } as SubTotalTableRow);
-        }
-        return acc;
-      }, [] as SubTotalTableRow[]);
+      const subTotalNewRows = getSubTotalRows(newRows);
       setSubTotalRows(subTotalNewRows);
     };
     process();
