@@ -13,7 +13,6 @@ const FootnotesButton: FC<FootnotesButtonProps> = ({
   return (
     <Button
       testId="footnotes"
-      style={{ display: 'none' }}
       disabled={!isFootnotesButtonEnabled}
       disabledTooltipText={'No Notice Line Description available'}
       width="auto"

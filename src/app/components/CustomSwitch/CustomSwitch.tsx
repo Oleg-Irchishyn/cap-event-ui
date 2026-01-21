@@ -80,8 +80,7 @@ type Props = {
 
 const CustomSwitch: FC<Props> = ({ label, disabled, checked, onChange }) => {
   return (
-    // temporary hide the switch by adding style={{ display: 'none' }}
-    <Wrapper style={{ display: 'none' }}>
+    <Wrapper>
       <ThemeProvider theme={muiTheme}>
         <FormControlLabel
           label={label}
