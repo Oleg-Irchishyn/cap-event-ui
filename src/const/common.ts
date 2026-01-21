@@ -14,3 +14,8 @@ export const GENERAL_SETTINGS_FIELDS = {
   ENTITIES: 'Entity(ies)',
   NOTICE_DATE: 'Notice Date',
 };
+
+export const EVENT_TYPES = {
+  DISTRIBUTION: 'Distribution',
+  CAPITAL_CALL: 'Capital Call',
+};

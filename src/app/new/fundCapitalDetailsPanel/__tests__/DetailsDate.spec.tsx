@@ -44,7 +44,7 @@ jest.mock('@/app/components/DatePicker', () => {
 });
 
 jest.mock('@/stores', () => ({
-  capEventSettingsStore: { fundEntities: [] },
+  capEventSettingsStore: { fundEntities: [], eventTypes: [] },
   entityDatesStore: {
     getEntityNoticeDate: jest.fn(),
     getEntityDueDate: jest.fn(),

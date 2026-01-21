@@ -6,10 +6,11 @@ import DatePicker from '@/app/components/DatePicker';
 import { capEventSettingsStore, entityDatesStore } from '@/stores';
 import { parseValidDate } from '@/utils/datePickerUtils';
 import { PickerValue } from '@mui/x-date-pickers/internals';
-import { DATE_TYPES } from '@/const/dateTypes';
+import { DATE_TYPES, DUE_DATE_LABEL, WIRE_DATE_LABEL } from '@/const/dateTypes';
 import { theme } from '@/ui/globalStyles';
 import { datePickerStyles } from './style';
 import { DetailsDateProps } from './types';
+import { EVENT_TYPES, ITEM_STATES } from '@/const/common';
 
 const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDateChange }) => {
   const entityNoticeDate = entityDatesStore.getEntityNoticeDate(entityLabel);
@@ -112,7 +113,14 @@ const DetailsDate: FC<DetailsDateProps> = ({ entityLabel, dateType, testId, onDa
   };
 
   const getLabel = () => {
-    return dateType === DATE_TYPES.NOTICE ? 'Notice Date' : 'Due Date';
+    if (dateType === DATE_TYPES.NOTICE) return 'Notice Date';
+
+    const selectedEventType = capEventSettingsStore.eventTypes.find(
+      (event) => event.state === ITEM_STATES.SELECTED,
+    );
+    if (selectedEventType?.label === EVENT_TYPES.DISTRIBUTION) return WIRE_DATE_LABEL;
+
+    return DUE_DATE_LABEL;
   };
 
   const defaultValue = inputValue;
