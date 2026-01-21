@@ -31,7 +31,7 @@ describe('AllocationPreviewTable', () => {
   };
 
   test('renders placeholder rows when loading and rows empty', () => {
-    render(<AllocationPreviewTable {...defaultProps} isLoading={true} rows={[]} />);
+    render(<AllocationPreviewTable {...defaultProps} isLoading={true} rows={[]} searchValue="" />);
     expect(screen.getByTestId('table-allocation-preview-table')).toBeInTheDocument();
   });
 
@@ -40,18 +40,27 @@ describe('AllocationPreviewTable', () => {
       { is: 'row1', investor: 'Investor 1', amount: 100 },
       { is: 'row2', investor: 'Investor 2', amount: 200 },
     ];
-    render(<AllocationPreviewTable {...defaultProps} isLoading={false} rows={rows} />);
+    render(
+      <AllocationPreviewTable {...defaultProps} isLoading={false} rows={rows} searchValue="" />,
+    );
     expect(screen.getByTestId('table-allocation-preview-table')).toBeInTheDocument();
   });
 
   test('uses allocationBasis to define column defs', () => {
     const rows = [{ is: 'row1', investor: 'Investor 1', amount: 100 }];
-    render(<AllocationPreviewTable {...defaultProps} allocationBasis="commitment" rows={rows} />);
+    render(
+      <AllocationPreviewTable
+        {...defaultProps}
+        allocationBasis="commitment"
+        rows={rows}
+        searchValue=""
+      />,
+    );
     expect(screen.getByTestId('table-allocation-preview-table')).toBeInTheDocument();
   });
 
   test('allows overriding testid', () => {
-    render(<AllocationPreviewTable {...defaultProps} testId="custom-id" />);
+    render(<AllocationPreviewTable {...defaultProps} testId="custom-id" searchValue="" />);
     expect(screen.getByTestId('table-custom-id')).toBeInTheDocument();
   });
 
@@ -63,7 +72,14 @@ describe('AllocationPreviewTable', () => {
       '@/utils/getAllocationPreviewColumnDefs',
     );
 
-    render(<AllocationPreviewTable {...defaultProps} allocationBasis="commitment" rows={[]} />);
+    render(
+      <AllocationPreviewTable
+        {...defaultProps}
+        allocationBasis="commitment"
+        rows={[]}
+        searchValue=""
+      />,
+    );
 
     expect(defineColumnForAllocationPreview).toHaveBeenCalledWith('commitment');
     expect(getAllocationPreviewColumnDefs).toHaveBeenCalledWith('commitment', 'commitment', false);
@@ -73,7 +89,7 @@ describe('AllocationPreviewTable', () => {
     const ConfigurationTable = jest.requireMock('@/app/components/ConfigurationTable');
     ConfigurationTable.mockClear();
 
-    render(<AllocationPreviewTable {...defaultProps} isLoading={true} rows={[]} />);
+    render(<AllocationPreviewTable {...defaultProps} isLoading={true} rows={[]} searchValue="" />);
 
     const lastCallProps = ConfigurationTable.mock.calls[0][0];
     expect(Array.isArray(lastCallProps.rowData)).toBe(true);
@@ -95,7 +111,9 @@ describe('AllocationPreviewTable', () => {
       { allocatedAmount: 200, trType: -1, nav: 20, managementFee: 1 },
     ];
 
-    render(<AllocationPreviewTable rows={rows} isLoading={false} allocationBasis="nav" />);
+    render(
+      <AllocationPreviewTable rows={rows} isLoading={false} allocationBasis="nav" searchValue="" />,
+    );
 
     const lastCallProps = ConfigurationTable.mock.calls[0][0];
     expect(lastCallProps.pinnedBottomRowData).toBeTruthy();
@@ -113,10 +131,32 @@ describe('AllocationPreviewTable', () => {
     const ConfigurationTable = jest.requireMock('@/app/components/ConfigurationTable');
     ConfigurationTable.mockClear();
 
-    render(<AllocationPreviewTable {...defaultProps} isLoading={false} rows={[]} />);
+    render(<AllocationPreviewTable {...defaultProps} isLoading={false} rows={[]} searchValue="" />);
 
     const lastCallProps = ConfigurationTable.mock.calls[0][0];
     expect(lastCallProps.rowData).toEqual([]);
     expect(lastCallProps.pinnedBottomRowData).toBeUndefined();
+  });
+
+  test('filters by search text', () => {
+    const ConfigurationTable = jest.requireMock('@/app/components/ConfigurationTable');
+    ConfigurationTable.mockClear();
+
+    const rows = [
+      { is: 'row1', investor: 'Investor 1', allocatedAmount: 100 },
+      { is: 'row2', investor: 'Investor 2', allocatedAmount: 200 },
+    ];
+    render(
+      <AllocationPreviewTable
+        {...defaultProps}
+        allocationBasis="commitment"
+        rows={rows}
+        searchValue="200"
+      />,
+    );
+    const lastCallProps = ConfigurationTable.mock.calls[0][0];
+    expect(lastCallProps.rowData).toEqual([
+      { is: 'row2', investor: 'Investor 2', allocatedAmount: 200 },
+    ]);
   });
 });

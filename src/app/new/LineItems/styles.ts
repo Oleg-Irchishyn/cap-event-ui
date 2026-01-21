@@ -513,13 +513,19 @@ export const TotalItemsRow = styled.div({
   fontWeight: '400',
 });
 
+export const TopRowWrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+});
+
 export const AllocationPreviewMetaDataWrapper = styled.div({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'flex-start',
   alignItems: 'center',
   gap: '24px',
-  marginBottom: '32px',
 });
 
 export const AllocationPreviewMetaDataItem = styled.div({

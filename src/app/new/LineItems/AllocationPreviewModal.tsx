@@ -30,6 +30,7 @@ interface AllocationPreviewModalProps {
 const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) => {
   const [allocationBasis, setAllocationBasis] = useState<string>('');
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [allocationPreviewMetaData, setAllocationPreviewMetaData] =
     useState<AllocationPreviewMetaDataType | null>(null);
 
@@ -126,6 +127,14 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
     fetchTableData();
   }, [isModalOpen, sessionId, entityId]);
 
+  const handleSearchValueChange = (value: string) => {
+    setSearchValue(value);
+  };
+
+  const clearSearchValue = () => {
+    setSearchValue('');
+  };
+
   if (!isModalOpen) return null;
 
   const itemCount = capEventSettingsStore.allocationPreviewModalData.length;
@@ -147,8 +156,14 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
           </ModalButtonContainer>
         </ModalHeader>
         <ModalContent>
-          <AllocationPreviewMetaData allocationPreviewMetaData={allocationPreviewMetaData} />
+          <AllocationPreviewMetaData
+            searchValue={searchValue}
+            clearSearchValue={clearSearchValue}
+            onSearchValueChange={handleSearchValueChange}
+            allocationPreviewMetaData={allocationPreviewMetaData}
+          />
           <AllocationPreviewTable
+            searchValue={searchValue}
             isLoading={isDataLoading}
             allocationBasis={allocationBasis}
             rows={capEventSettingsStore.allocationPreviewModalData}

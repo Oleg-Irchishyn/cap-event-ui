@@ -9,9 +9,14 @@ import {
   AllocationPreviewMetaDataItem,
   AllocationPreviewMetaDataItemLabel,
   AllocationPreviewMetaDataItemValue,
+  TopRowWrapper,
 } from './styles';
+import SearchBox from '@/app/components/SearchBox';
 
 const AllocationPreviewMetaData: FC<AllocationPreviewMetaDataProps> = ({
+  searchValue,
+  clearSearchValue,
+  onSearchValueChange,
   allocationPreviewMetaData,
 }) => {
   const metaDataKeys = Object.keys(
@@ -19,27 +24,36 @@ const AllocationPreviewMetaData: FC<AllocationPreviewMetaDataProps> = ({
   ) as (keyof typeof ALLOCATION_PREVIEW_META_DATA_KEYS)[];
 
   return (
-    <AllocationPreviewMetaDataWrapper>
-      {metaDataKeys.map((key) => {
-        const value = allocationPreviewMetaData?.[key as keyof AllocationPreviewMetaDataType];
-        const displayValue =
-          key === ALLOCATION_PREVIEW_META_DATA_KEYS.txnCurrency
-            ? ((value as string) ?? 'USD')
-            : ((value as string) ?? '-');
-        return (
-          <AllocationPreviewMetaDataItem key={key}>
-            <TruncatedValueTooltip
-              text={ALLOCATION_PREVIEW_META_DATA_KEYS[key]}
-              Wrapper={AllocationPreviewMetaDataItemLabel}
-            />
-            <TruncatedValueTooltip
-              text={displayValue}
-              Wrapper={AllocationPreviewMetaDataItemValue}
-            />
-          </AllocationPreviewMetaDataItem>
-        );
-      })}
-    </AllocationPreviewMetaDataWrapper>
+    <TopRowWrapper>
+      <AllocationPreviewMetaDataWrapper>
+        {metaDataKeys.map((key) => {
+          const value = allocationPreviewMetaData?.[key as keyof AllocationPreviewMetaDataType];
+          const displayValue =
+            key === ALLOCATION_PREVIEW_META_DATA_KEYS.txnCurrency
+              ? ((value as string) ?? 'USD')
+              : ((value as string) ?? '-');
+          return (
+            <AllocationPreviewMetaDataItem key={key}>
+              <TruncatedValueTooltip
+                text={ALLOCATION_PREVIEW_META_DATA_KEYS[key]}
+                Wrapper={AllocationPreviewMetaDataItemLabel}
+              />
+              <TruncatedValueTooltip
+                text={displayValue}
+                Wrapper={AllocationPreviewMetaDataItemValue}
+              />
+            </AllocationPreviewMetaDataItem>
+          );
+        })}
+      </AllocationPreviewMetaDataWrapper>
+      <SearchBox
+        width={400}
+        testId="preview-modal-search"
+        searchText={searchValue}
+        searchCallback={onSearchValueChange}
+        clearCallbackHandler={clearSearchValue}
+      />
+    </TopRowWrapper>
   );
 };
 

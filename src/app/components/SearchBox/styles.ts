@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const SearchWrapper = styled.div<{ width?: number }>(({ theme }) => ({
+export const SearchWrapper = styled.div<{ width?: number }>(({ theme, width }) => ({
   position: 'relative',
   display: 'flex',
   justifyContent: 'center',
@@ -10,6 +10,7 @@ export const SearchWrapper = styled.div<{ width?: number }>(({ theme }) => ({
   border: `1px solid ${theme.colors.gray500}`,
   borderRadius: '4px',
   paddingLeft: '28px',
+  width: width ?? 'auto',
 
   '@media (max-width: 750px)': {
     width: '100%',

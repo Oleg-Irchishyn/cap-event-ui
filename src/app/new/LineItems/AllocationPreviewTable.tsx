@@ -15,11 +15,16 @@ import { getAllocationPreviewColumnDefs } from '@/utils/getAllocationPreviewColu
 import { defineColumnForAllocationPreview } from '@/utils/definedColumnForAllocationPreview';
 import { observer } from 'mobx-react-lite';
 import { InvestorEntry } from '@/clients/CapEventPackage';
-import { ALLOCATED_AMOUNT_FIELD, MANAGEMENT_FEE_FIELD } from '@/const/allocationPreview';
+import {
+  ALLOCATED_AMOUNT_FIELD,
+  EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE,
+  MANAGEMENT_FEE_FIELD,
+} from '@/const/allocationPreview';
 
 const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
   rows,
   isLoading,
+  searchValue,
   allocationBasis,
   testId = 'allocation-preview-table',
 }) => {
@@ -27,7 +32,19 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
 
   const displayRows = useMemo(() => {
     if (!isLoading || (Array.isArray(rows) && rows.length > 0)) {
-      return rows;
+      const rowsToDisplay = rows.filter(
+        (row) =>
+          row.customerId?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.customerName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.classID?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.additionalInvestorType?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          row.commitment?.toString().includes(searchValue.toLowerCase()) ||
+          row.allocatedAmount?.toString().includes(searchValue.toLowerCase()) ||
+          row.managementFee?.toString().includes(searchValue.toLowerCase()) ||
+          row.managementFeePercentage?.toString().includes(searchValue.toLowerCase()),
+      );
+      return rowsToDisplay;
     }
     const placeholderCount = 5;
     const placeholders: InvestorEntry[] = Array.from({ length: placeholderCount }).map(
@@ -62,7 +79,7 @@ const AllocationPreviewTable: FC<AllocationPreviewTableProps> = ({
       }),
     );
     return placeholders;
-  }, [isLoading, rows]);
+  }, [isLoading, rows, searchValue]);
 
   const columnDefs = useMemo(
     () => getAllocationPreviewColumnDefs(dynamicColumn, allocationBasis, isLoading),

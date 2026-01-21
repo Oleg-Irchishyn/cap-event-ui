@@ -22,6 +22,7 @@ export type AllocationPreviewTableProps = {
   rows: InvestorEntry[];
   testId?: string;
   isLoading?: boolean;
+  searchValue: string;
   allocationBasis: string;
 };
 
@@ -34,6 +35,9 @@ export type AllocationPreviewMetaDataType = {
 };
 
 export interface AllocationPreviewMetaDataProps {
+  searchValue: string;
+  clearSearchValue: () => void;
+  onSearchValueChange: (value: string) => void;
   allocationPreviewMetaData: AllocationPreviewMetaDataType | null;
 }
 
