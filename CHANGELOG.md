@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.88](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.87&targetVersion=GTv0.0.88) (2026-01-21)
+
+
+### Features
+
+* add mgmt fee support ([0763729](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0763729c71fdbb4d4fe072a74bc682d5a943ced1)), closes [#7541](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/7541)
+
+
+### Bug Fixes
+
+* [Issue-9903]: [FE] Incorrect tooltip text for Save button ([e025e6c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/e025e6cdeadaee3801a112c0a4efed4a6e4f1949)), closes [#9824](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9824) [#9903](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9903)
+
 ### [0.0.87](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.86&targetVersion=GTv0.0.87) (2026-01-20)
 
 
