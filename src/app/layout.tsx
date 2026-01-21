@@ -8,7 +8,7 @@ import { theme } from '@/ui/globalStyles';
 import { ibm_plex_sans } from '@/ui/fonts';
 import ToastProvider from '@/providers/ToastProvider';
 import { initializeSessionId } from '@/utils/sessionIdStorage';
-import { isAuthenticated } from '@/utils/tokenStorage';
+import { getAccessTokenWithRefresh } from '@/utils/tokenStorage';
 import { ROUTES } from '@/const/routes';
 import { Loader } from '@/app/new/LineItems/styles';
 
@@ -24,39 +24,46 @@ export default function RootLayout({
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
 
-  // Initialize sessionId on app load (from URL, storage, or endpoint)
+  // Initialize sessionId on app load (from URL or storage)
   useEffect(() => {
     initializeSessionId();
   }, []);
 
   // Check authentication for protected routes before rendering
   useEffect(() => {
-    const checkAuth = () => {
+    let isMounted = true;
+
+    const checkAuth = async () => {
       const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname?.startsWith(route));
 
       if (isPublicRoute) {
-        // Public routes can render immediately
+        if (!isMounted) return;
+        setShouldRenderChildren(true);
+        setIsAuthChecked(true);
+        return;
+      }
+
+      const token = await getAccessTokenWithRefresh();
+
+      if (!isMounted) return;
+
+      if (token) {
         setShouldRenderChildren(true);
         setIsAuthChecked(true);
       } else {
-        // For protected routes, check authentication
-        if (isAuthenticated()) {
-          setShouldRenderChildren(true);
-          setIsAuthChecked(true);
-        } else {
-          // Not authenticated, redirect to login
-          // Don't render children - will re-check when pathname changes to /login
-          setShouldRenderChildren(false);
-          setIsAuthChecked(true);
-          router.push(ROUTES.LOGIN.path);
-        }
+        setShouldRenderChildren(false);
+        setIsAuthChecked(true);
+        router.push(ROUTES.LOGIN.path);
       }
     };
 
-    // Reset auth check state when pathname changes
     setIsAuthChecked(false);
     setShouldRenderChildren(false);
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [pathname, router]);
 
   // Show loading state while checking authentication or when redirecting unauthenticated users

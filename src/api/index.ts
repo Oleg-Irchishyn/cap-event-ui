@@ -3,11 +3,11 @@ import { CapEventPackageClient } from '@/clients/CapEventPackage';
 import { TemplateLibraryClient } from '@/clients/TemplateLibrary';
 import { BoxConnectorClient } from '@/clients/BoxConnector';
 import { getSessionIdFromUrl } from '@/utils/getSessionIdFromUrl';
-import { getValidToken } from '@/utils/tokenStorage';
+import { getAccessTokenWithRefresh } from '@/utils/tokenStorage';
 
 const createHeadersWithSessionId = async (): Promise<Record<string, string>> => {
   const sessionId = getSessionIdFromUrl();
-  const bearerToken = getValidToken();
+  const bearerToken = await getAccessTokenWithRefresh();
   const headers: Record<string, string> = {};
 
   if (sessionId) {

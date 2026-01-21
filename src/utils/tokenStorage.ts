@@ -4,6 +4,7 @@
  * Manages storage and retrieval of bearer tokens from OneLogin authentication.
  * Uses sessionStorage for security (tokens are cleared when browser session ends).
  */
+import { getOneLoginConfig, refreshAccessToken } from './oneloginAuth';
 
 const TOKEN_KEY = 'onelogin_access_token';
 const REFRESH_TOKEN_KEY = 'onelogin_refresh_token';
@@ -114,6 +115,63 @@ export const getValidToken = (): string | null => {
   return token;
 };
 
+let refreshPromise: Promise<string | null> | null = null;
+
+/**
+ * Returns a valid access token, refreshing with the stored refresh token if needed.
+ * Clears stored tokens and returns null when refresh fails.
+ */
+export const getAccessTokenWithRefresh = async (): Promise<string | null> => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const currentToken = getStoredToken();
+  if (currentToken && !isTokenExpired()) {
+    return currentToken;
+  }
+
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  const refreshToken = getStoredRefreshToken();
+  if (!refreshToken) {
+    clearTokens();
+    return null;
+  }
+
+  refreshPromise = (async () => {
+    try {
+      const config = getOneLoginConfig();
+      const tokenResponse = await refreshAccessToken(refreshToken, config);
+
+      if (!tokenResponse?.access_token || !tokenResponse.expires_in) {
+        throw new Error('Invalid token refresh response');
+      }
+
+      const nextRefreshToken = tokenResponse.refresh_token ?? refreshToken;
+
+      storeToken(
+        tokenResponse.access_token,
+        tokenResponse.expires_in,
+        nextRefreshToken,
+        tokenResponse.id_token,
+      );
+
+      return tokenResponse.access_token;
+    } catch (error) {
+      console.error('Failed to refresh access token:', error);
+      clearTokens();
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
+
 /**
  * Retrieves the stored ID token
  */
@@ -137,11 +195,4 @@ export const clearTokens = (): void => {
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
   sessionStorage.removeItem(ID_TOKEN_KEY);
-};
-
-/**
- * Checks if user is authenticated (has a valid token)
- */
-export const isAuthenticated = (): boolean => {
-  return getValidToken() !== null;
 };

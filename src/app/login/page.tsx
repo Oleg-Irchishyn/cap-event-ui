@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getOneLoginAuthUrl, getOneLoginConfig } from '@/utils/oneloginAuth';
-import { isAuthenticated } from '@/utils/tokenStorage';
+import { getAccessTokenWithRefresh } from '@/utils/tokenStorage';
 import { ROUTES } from '@/const/routes';
 import { useEffect } from 'react';
 import { Loader } from '@/app/new/LineItems/styles';
@@ -13,8 +13,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     const handleLogin = async () => {
-      // If already authenticated, redirect to main page
-      if (isAuthenticated()) {
+      const token = await getAccessTokenWithRefresh();
+
+      if (token) {
         router.push(ROUTES.MAIN.path);
         return;
       }
