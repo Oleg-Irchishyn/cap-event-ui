@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.89](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.88&targetVersion=GTv0.0.89) (2026-01-22)
+
+
+### Features
+
+* add refresh token functionality ([4115604](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4115604b9ef81c807a217a9eac298e9a9dbca444)), closes [#10021](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10021)
+* added search field to Allocation Preview ([2e3dc7e](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/2e3dc7e37b911509ba8352a52b783194aec12994)), closes [#6579](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/6579)
+* dynamic field label ([0ed1187](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/0ed1187e6b8f9d22199eea1ab9e3c20beb033104)), closes [#10023](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10023)
+
+
+### Bug Fixes
+
+* [NO-TASK]: [FE] enable Footnotes and Other Table on new page ([78af37f](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/78af37fee9158d051b2bb70379bda413e4bee772)), closes [#9824](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/9824)
+
 ### [0.0.88](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.87&targetVersion=GTv0.0.88) (2026-01-21)
 
 
