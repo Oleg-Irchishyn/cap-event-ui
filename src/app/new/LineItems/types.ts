@@ -22,7 +22,6 @@ export type AllocationPreviewTableProps = {
   rows: InvestorEntry[];
   testId?: string;
   isLoading?: boolean;
-  searchValue: string;
   allocationBasis: string;
 };
 

@@ -22,6 +22,7 @@ import AllocationPreviewTable from './AllocationPreviewTable';
 import { AllocationPreviewMetaDataType } from './types';
 import AllocationPreviewMetaData from './AllocationPreviewMetaData';
 import { Title } from '../styles';
+import { EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE } from '@/const/allocationPreview';
 
 interface AllocationPreviewModalProps {
   entityId: string;
@@ -137,7 +138,20 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
 
   if (!isModalOpen) return null;
 
-  const itemCount = capEventSettingsStore.allocationPreviewModalData.length;
+  const rowsToDisplay = capEventSettingsStore.allocationPreviewModalData.filter(
+    (row) =>
+      row.customerId?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.customerName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.classID?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      EMPTY_INVESTOR_CLASS_ID_FIELD_VALUE.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.additionalInvestorType?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.commitment?.toString().includes(searchValue.toLowerCase()) ||
+      row.allocatedAmount?.toString().includes(searchValue.toLowerCase()) ||
+      row.managementFee?.toString().includes(searchValue.toLowerCase()) ||
+      row.managementFeePercentage?.toString().includes(searchValue.toLowerCase()),
+  );
+
+  const itemCount = rowsToDisplay.length;
 
   return (
     <ModalWrapper>
@@ -163,10 +177,9 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
             allocationPreviewMetaData={allocationPreviewMetaData}
           />
           <AllocationPreviewTable
-            searchValue={searchValue}
             isLoading={isDataLoading}
             allocationBasis={allocationBasis}
-            rows={capEventSettingsStore.allocationPreviewModalData}
+            rows={rowsToDisplay}
           />
         </ModalContent>
         {!isDataLoading && itemCount > 0 && (
