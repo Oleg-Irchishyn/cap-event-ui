@@ -41,12 +41,12 @@ describe('getAllocationPreviewColumnDefs', () => {
     // 3) Investor Type I
     expect(cols[2].headerName).toBe(INVESTOR_CLASS_ID_HEADER);
     expect(cols[2].field).toBe(INVESTOR_CLASS_ID_FIELD);
-    expect(cols[2].sortable).toBe(false);
+    expect(cols[2].sortable).toBe(true);
 
     // 4) Investor Type II
     expect(cols[3].headerName).toBe(INVESTOR_ADDITIONAL_TYPE_HEADER);
     expect(cols[3].field).toBe(INVESTOR_ADDITIONAL_TYPE_FIELD);
-    expect(cols[3].sortable).toBe(false);
+    expect(cols[3].sortable).toBe(true);
 
     // 5) Dynamic column uses passed in fieldName and allocationBasis label
     expect(cols[4].headerName).toBe(INVESTED_CAPITAL);
@@ -55,7 +55,7 @@ describe('getAllocationPreviewColumnDefs', () => {
     // 6) Allocated Amount
     expect(cols[5].headerName).toBe(ALLOCATED_AMOUNT_HEADER);
     expect(cols[5].field).toBe(ALLOCATED_AMOUNT_FIELD);
-    expect(cols[5].sortable).toBe(false);
+    expect(cols[5].sortable).toBe(true);
   });
 
   it('inserts Management Fee columns when allocationBasis is Management Fee', () => {

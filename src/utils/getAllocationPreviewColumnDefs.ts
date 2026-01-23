@@ -64,7 +64,7 @@ export const getAllocationPreviewColumnDefs = (
       headerName: INVESTOR_CLASS_ID_HEADER,
       field: INVESTOR_CLASS_ID_FIELD,
       flex: 2,
-      sortable: false,
+      sortable: true,
       valueGetter: (params) => {
         if (params.node?.rowPinned) return '';
         const value = params.data[INVESTOR_CLASS_ID_FIELD];
@@ -77,7 +77,7 @@ export const getAllocationPreviewColumnDefs = (
       headerName: INVESTOR_ADDITIONAL_TYPE_HEADER,
       field: INVESTOR_ADDITIONAL_TYPE_FIELD,
       flex: 1.5,
-      sortable: false,
+      sortable: true,
       valueGetter: (params) => {
         if (params.node?.rowPinned) return '';
         const value = params.data[INVESTOR_ADDITIONAL_TYPE_FIELD];
@@ -105,7 +105,7 @@ export const getAllocationPreviewColumnDefs = (
       headerName: ALLOCATED_AMOUNT_HEADER,
       field: ALLOCATED_AMOUNT_FIELD,
       flex: 1.5,
-      sortable: false,
+      sortable: true,
       headerClass: 'ag-right-aligned-header',
       valueGetter: (params) => {
         const calculatedAmount =

@@ -1,6 +1,7 @@
 import {
   getPreviewScreenColumnDefs,
   getTopGridColumnDefs,
+  TruncatedThreeLineHeader,
 } from '@/utils/getPreviewScreenColumnDefs';
 import {
   ENTITY_ID_HEADER,
@@ -152,5 +153,67 @@ describe('getTopGridColumnDefs', () => {
     const cols = getTopGridColumnDefs(lineItems as unknown as [string, LineItemRow[]][], true);
     expect(cols[0].cellRenderer).toBeDefined();
     expect(cols[1].cellRenderer).toBeDefined();
+  });
+});
+
+describe('getDynamicColumnsDefs and TruncatedThreeLineHeader', () => {
+  const lineItems: [string, LineItemRow[]][] = [
+    [
+      'Entity 1',
+      [
+        {
+          id: 'li-1',
+          defaultDescription: 'Test Description',
+          callDistributionReason: 'Test Reason',
+          investment: { name: 'Test Investment' },
+          allocationBasis: 'Capital Commitment',
+          isMfLineItem: false,
+        } as LineItemRow,
+      ],
+    ],
+  ];
+
+  it('sets TruncatedThreeLineHeader as headerComponent for line item columns', () => {
+    const cols = getTopGridColumnDefs(lineItems, false);
+
+    const lineItemColumn = cols.find((c) => c.colId === 'li-1-lineItem');
+
+    expect(lineItemColumn).toBeDefined();
+    expect(lineItemColumn?.headerComponent).toBe(TruncatedThreeLineHeader);
+  });
+
+  it('passes correct headerComponentParams to TruncatedThreeLineHeader', () => {
+    const cols = getTopGridColumnDefs(lineItems, false);
+
+    const lineItemColumn = cols.find((c) => c.colId === 'li-1-lineItem');
+
+    expect(lineItemColumn?.headerComponentParams).toEqual({
+      defaultDescription: 'Test Description',
+      callDistributionReason: 'Test Reason',
+      investmentTitle: 'Test Investment',
+    });
+  });
+
+  it('handles investment as string in headerComponentParams', () => {
+    const lineItemsWithStringInvestment: [string, LineItemRow[]][] = [
+      [
+        'Entity 1',
+        [
+          {
+            id: 'li-2',
+            defaultDescription: 'Desc',
+            callDistributionReason: 'Reason',
+            investment: 'String Investment Name',
+            allocationBasis: 'Capital Commitment',
+            isMfLineItem: false,
+          } as LineItemRow,
+        ],
+      ],
+    ];
+
+    const cols = getTopGridColumnDefs(lineItemsWithStringInvestment, false);
+    const lineItemColumn = cols.find((c) => c.colId === 'li-2-lineItem');
+
+    expect(lineItemColumn?.headerComponentParams?.investmentTitle).toBe('String Investment Name');
   });
 });

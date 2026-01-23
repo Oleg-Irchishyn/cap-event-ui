@@ -116,6 +116,7 @@ const ColumnHeaderWrapper = styled.div(({ theme }) => ({
   color: theme.colors.textSecondary,
   padding: '8px',
   justifyContent: 'center',
+  cursor: 'pointer',
 }));
 
 export {

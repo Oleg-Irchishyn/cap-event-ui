@@ -157,7 +157,7 @@ export const getPreviewSubTotalColumnDefs = (width: number, isLoading?: boolean)
   },
 ];
 
-export const TruncatedThreeLineHeader: FC<IHeaderParams> = ({ column }) => {
+export const TruncatedThreeLineHeader: FC<IHeaderParams> = ({ column, progressSort }) => {
   const params = column?.getColDef().headerComponentParams as
     | {
         defaultDescription?: string;
@@ -170,8 +170,12 @@ export const TruncatedThreeLineHeader: FC<IHeaderParams> = ({ column }) => {
   const callDistributionReason = params?.callDistributionReason ?? '';
   const investmentTitle = params?.investmentTitle ?? '';
 
+  const onSortClicked = (event: React.MouseEvent<HTMLElement>) => {
+    progressSort(event.shiftKey);
+  };
+
   return (
-    <ColumnHeaderWrapper>
+    <ColumnHeaderWrapper onClick={onSortClicked}>
       <DynamicColumnsHeader title={defaultDescription}>{defaultDescription}</DynamicColumnsHeader>
       <DynamicColumnsHeader title={callDistributionReason}>
         {callDistributionReason}
@@ -294,7 +298,7 @@ export const getTopDynamicColumnDefs = (
         colId: `${row.id}-lineItem`,
         field: row.id,
         flex: 1.5,
-        sortable: false,
+        sortable: true,
         resizable: true,
         minWidth: 190,
         cellStyle: { textAlign: 'right' },
