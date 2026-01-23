@@ -28,6 +28,7 @@ import { uuidv4 } from '@/utils/uuid';
 import { isLineItemRowValid } from '@/utils/investment';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import RootStore from '@/stores/RootStore';
+import { getAccessTokenWithRefresh } from '@/utils/tokenStorage';
 
 // Local API type aliases derived from generated client models
 type ApiAccount = LineItemBase['account'];
@@ -601,6 +602,7 @@ class PreviewScreenStore {
       };
 
       const sessionId = getStoredSessionId() ?? '';
+      const bearerToken = await getAccessTokenWithRefresh();
       const base = CapEventPackageApi.request.config.BASE ?? '';
       const url = `${base}/cap-events/investors/document`;
 
@@ -610,6 +612,7 @@ class PreviewScreenStore {
           Accept: 'application/octet-stream, application/json',
           'Content-Type': 'application/json',
           'Session-Id': sessionId,
+          Authorization: `Bearer ${bearerToken}`,
         },
         withCredentials: CapEventPackageApi.request.config.WITH_CREDENTIALS ?? false,
       });
