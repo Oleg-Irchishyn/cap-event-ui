@@ -27,7 +27,9 @@ jest.mock('@/app/new/LineItems/AccountsTable', () => ({
 }));
 
 jest.mock('@/app/new/styles', () => ({
+  HeaderWrapper: ({ children }: PropsWithChildren) => <div>{children}</div>,
   Title: ({ children }: PropsWithChildren) => <h1>{children}</h1>,
+  TotalValue: ({ children }: PropsWithChildren) => <div>{children}</div>,
 }));
 
 jest.mock('@/api', () => ({
@@ -36,6 +38,16 @@ jest.mock('@/api', () => ({
     investments: { getInvestments: jest.fn().mockResolvedValue([]) },
   },
 }));
+
+jest.mock('@/hooks/useAccountsTableRowData', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(() => [
+      { id: '1', capitalCategory: 'Category', amount: 100 },
+      { id: 'total-row', capitalCategory: 'Total', amount: 100 },
+    ]),
+  };
+});
 
 jest.mock('@/stores', () => ({
   entityDatesStore: {
@@ -51,11 +63,34 @@ jest.mock('@/stores', () => ({
     setFundGroups: jest.fn(),
     setFundEntities: jest.fn(),
     setNoticeDate: jest.fn(),
+    setFundGroupsLineItem: jest.fn(),
+    entitiesLineItem: new Map(),
+    fundGroupsLineItem: [],
   },
 }));
 
 const renderWithTheme = (component: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+};
+
+const mockCapEventSettingsStore = capEventSettingsStore as unknown as {
+  isGeneralSettingsEmpty: jest.Mock;
+  hasMultipleEntitiesChosen: boolean;
+  isNoticeDateValid: boolean;
+  setEventTypes: jest.Mock;
+  setSponsors: jest.Mock;
+  setFundGroups: jest.Mock;
+  setFundEntities: jest.Mock;
+  setNoticeDate: jest.Mock;
+  setFundGroupsLineItem: jest.Mock;
+  entitiesLineItem: Map<string, unknown>;
+  fundGroupsLineItem: unknown[];
+  noticeDate: Date | null;
+};
+
+const mockEntityDatesStore = entityDatesStore as unknown as {
+  noticeDate: Date | null;
+  hasDifferentDates: boolean;
 };
 
 describe('FundGroupLineItems', () => {
@@ -96,8 +131,6 @@ describe('FundGroupLineItems', () => {
 
       const tableWrapper = screen.getByTestId('fund-group-account-table');
       expect(container).toContainElement(tableWrapper);
-
-      expect(container.children).toHaveLength(2);
     });
   });
 
@@ -142,25 +175,33 @@ describe('FundGroupLineItems', () => {
     beforeEach(() => {
       jest.clearAllMocks();
 
-      capEventSettingsStore.setEventTypes([]);
-      capEventSettingsStore.setSponsors([]);
-      capEventSettingsStore.setFundGroups([]);
-      capEventSettingsStore.setFundEntities([]);
+      mockCapEventSettingsStore.setEventTypes([]);
+      mockCapEventSettingsStore.setSponsors([]);
+      mockCapEventSettingsStore.setFundGroups([]);
+      mockCapEventSettingsStore.setFundEntities([]);
+      mockCapEventSettingsStore.setFundGroupsLineItem([]);
 
-      capEventSettingsStore.noticeDate = null;
+      mockCapEventSettingsStore.noticeDate = null;
+      mockCapEventSettingsStore.fundGroupsLineItem = [];
+      mockCapEventSettingsStore.entitiesLineItem = new Map();
 
-      entityDatesStore.noticeDate = null;
-      entityDatesStore.hasDifferentDates = false;
+      mockEntityDatesStore.noticeDate = null;
+      mockEntityDatesStore.hasDifferentDates = false;
     });
 
     it('renders disabled AccountTable when only one entity is selected', () => {
-      capEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setFundEntities([{ label: 'entity1', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setNoticeDate(new Date());
+      mockCapEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setFundEntities([
+        { label: 'entity1', state: ITEM_STATES.SELECTED },
+      ]);
+      mockCapEventSettingsStore.setNoticeDate(new Date());
+      mockCapEventSettingsStore.hasMultipleEntitiesChosen = false;
+      mockCapEventSettingsStore.isGeneralSettingsEmpty = jest.fn(() => false);
+      mockCapEventSettingsStore.isNoticeDateValid = true;
 
-      render(<FundGroupLineItems />);
+      renderWithTheme(<FundGroupLineItems />);
 
       expect(screen.getByTestId('fund-group-account-table')).toHaveTextContent(
         'AccountsTable disabled',
@@ -168,21 +209,22 @@ describe('FundGroupLineItems', () => {
     });
 
     it('renders enabled AccountTable when setting valid and multiple entities are chosen', () => {
-      entityDatesStore.noticeDate = new Date();
-      entityDatesStore.hasDifferentDates = false;
+      mockEntityDatesStore.noticeDate = new Date();
+      mockEntityDatesStore.hasDifferentDates = false;
 
-      capEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
-      capEventSettingsStore.setFundEntities([
+      mockCapEventSettingsStore.setEventTypes([{ label: 'evt', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setSponsors([{ label: 'tpl', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setFundGroups([{ label: 'fg', state: ITEM_STATES.SELECTED }]);
+      mockCapEventSettingsStore.setFundEntities([
         { label: 'entity1', state: ITEM_STATES.SELECTED },
         { label: 'entity2', state: ITEM_STATES.SELECTED },
       ]);
-      capEventSettingsStore.setNoticeDate(new Date());
+      mockCapEventSettingsStore.setNoticeDate(new Date());
+      mockCapEventSettingsStore.hasMultipleEntitiesChosen = true;
+      mockCapEventSettingsStore.isNoticeDateValid = true;
+      mockCapEventSettingsStore.isGeneralSettingsEmpty = jest.fn(() => false);
 
-      jest.spyOn(capEventSettingsStore, 'isGeneralSettingsEmpty').mockReturnValue(false);
-
-      render(<FundGroupLineItems />);
+      renderWithTheme(<FundGroupLineItems />);
 
       expect(screen.getByTestId('fund-group-account-table')).toHaveTextContent(
         'AccountsTable enabled',

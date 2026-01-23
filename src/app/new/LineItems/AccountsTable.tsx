@@ -673,7 +673,7 @@ const AccountsTable: FC<Props> = ({
         })
       : entityColumnDef({ accounts, isMultiLineItems, editableCallback, entityKey });
 
-  const tableData = useAccountsTableRowData(level, lineItems);
+  const tableData = useAccountsTableRowData(lineItems);
 
   const handlePostSortRows = useCallback((params: PostSortRowsParams) => {
     const { nodes } = params;

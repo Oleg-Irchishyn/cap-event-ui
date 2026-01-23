@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AccountFields, LineItemTypes } from '@/app/new/LineItems/const';
+import { AccountFields } from '@/app/new/LineItems/const';
 import { LineItemRow } from '@/app/new/LineItems/types';
 
 const NET_CONTRIBUTIONS_LABEL = 'Net Contributions';
@@ -15,13 +15,8 @@ const getTotalLabel = (total: number | string) => {
   return NET_ZERO_LABEL;
 };
 
-export const useAccountsTableRowData = (
-  level: string | undefined,
-  lineItems: LineItemRow[] = [],
-) => {
+export const useAccountsTableRowData = (lineItems: LineItemRow[] = []) => {
   const tableData = useMemo(() => {
-    if (level !== LineItemTypes.entity) return lineItems || [];
-
     const validRows = lineItems?.filter((row) => row.id !== TOTAL_ROW_ID) || [];
     const isAnyAmountFilled = validRows.some((row) => row.capitalCategory && row.amount);
     const totalAmount = isAnyAmountFilled
@@ -38,7 +33,7 @@ export const useAccountsTableRowData = (
     } as const;
 
     return [...validRows, totalRow];
-  }, [level, lineItems]);
+  }, [lineItems]);
 
   return tableData;
 };

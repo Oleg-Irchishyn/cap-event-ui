@@ -4,13 +4,13 @@ import useAccountsTableRowData from '@/hooks/useAccountsTableRowData';
 import { LineItemRow } from '@/app/new/LineItems/types';
 import { LineItemTypes } from '@/app/new/LineItems/const';
 
-const TestComponent = ({ level, rows }: { level?: string; rows?: LineItemRow[] }) => {
-  const data = useAccountsTableRowData(level, rows);
+const TestComponent = ({ rows }: { level?: string; rows?: LineItemRow[] }) => {
+  const data = useAccountsTableRowData(rows);
   return <div data-testid="out">{JSON.stringify(data)}</div>;
 };
 
 describe('useAccountsTableRowData', () => {
-  it('returns original rows for non-entity level', () => {
+  it('returns rows with total row appended for any level', () => {
     const rows = [
       {
         id: '1',
@@ -26,9 +26,10 @@ describe('useAccountsTableRowData', () => {
 
     render(<TestComponent level={LineItemTypes.group} rows={rows} />);
     const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(2);
     expect(result[0].id).toBe('1');
-    expect(result[result.length - 1].id).not.toBe('total-row');
+    expect(result[result.length - 1].id).toBe('total-row');
+    expect(result[result.length - 1].amount).toBe(10);
   });
 
   it('total is empty when there is no amount', () => {

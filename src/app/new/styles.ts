@@ -1,11 +1,20 @@
 import styled from 'styled-components';
 
+export const HeaderWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+});
+
 export const Title = styled.div(({ theme }) => ({
   display: 'flex',
   fontSize: '16px',
   fontWeight: 500,
   color: theme.colors.primary,
 }));
+
+export const TotalValue = styled.div({
+  fontWeight: 'bold',
+});
 
 export const Container = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.lightGray,
