@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.91](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.90&targetVersion=GTv0.0.91) (2026-01-24)
+
+
+### Features
+
+* added total to Fund Groups ([666be04](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/666be0498046ae6042644b7ce59cc90effd1b3f0)), closes [#10072](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10072)
+* turned on sorting on some columns ([4baafed](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/4baafed9f2aad107e895ad20882f2ad197d537ce)), closes [#10057](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10057)
+
+
+### Bug Fixes
+
+* add token to document request ([b22d6c5](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/b22d6c59f3639dfcb702b01e752ef5957ec75886)), closes [#10021](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10021)
+
 ### [0.0.90](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.89&targetVersion=GTv0.0.90) (2026-01-23)
 
 
