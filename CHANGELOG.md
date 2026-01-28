@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.92](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.91&targetVersion=GTv0.0.92) (2026-01-28)
+
+
+### Features
+
+* [TASK-10081]: [FE] Cover components with Unit Tets ([a87cd5d](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/a87cd5d472604e589b66ebf42d84a14418a1d0af)), closes [#10081](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10081)
+
 ### [0.0.91](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.90&targetVersion=GTv0.0.91) (2026-01-24)
 
 
