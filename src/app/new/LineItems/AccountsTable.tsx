@@ -43,9 +43,8 @@ import { DropdownItemType } from '@/app/components/Dropdown/Dropdown';
 import { Entity } from '@/clients/ReferenceData';
 import { formatDate } from '@/utils/formatDate';
 import { ALLOCATION_BASIS_IDS } from '@/const/allocationBasisOptions';
-import { useToast } from '@/providers/ToastProvider';
-import { ApiError } from '@/clients/CapEventPackage';
 import { getStoredSessionId } from '@/utils/sessionIdStorage';
+import { showErrorToast } from '@/utils/showErrorToast';
 
 const getCellKey = (rowId: string, columnId: string) => `${rowId}-${columnId}`;
 
@@ -112,7 +111,6 @@ const AccountsTable: FC<Props> = ({
   onOtherDragStopped,
 }) => {
   const [isAllocationApplying, setIsAllocationApplying] = useState(false);
-  const toast = useToast();
   const accounts = capEventSettingsStore.accounts;
   const editableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
   const otherEditableCellRef = useRef<{ [key: string]: boolean }>({ '0-0': true });
@@ -474,18 +472,18 @@ const AccountsTable: FC<Props> = ({
     try {
       return await Promise.all(
         commitmentFundGroups.map((fundGroupItem) => {
-          return CapEventPackageApi.default.allocateEntities(
-            getAllocateEntitiesRequestBody(
+          return CapEventPackageApi.default.allocateEntities({
+            fundGroupAllocationInput: getAllocateEntitiesRequestBody(
               selectedEntities,
               fundGroupItem.allocationBasis,
               fundGroupItem.amount,
             ),
             sessionId,
-          );
+          });
         }),
       );
     } catch (error) {
-      if (error instanceof ApiError) toast.error(error.body?.message);
+      showErrorToast(error);
       console.error('Error allocating entities:', error);
     }
   };
@@ -513,7 +511,7 @@ const AccountsTable: FC<Props> = ({
       const commitmentAllocations =
         commitmentFundGroups.map((fgItem, idx) => ({
           id: fgItem.id,
-          allocations: allocatedEntitiesAmount?.[idx] ?? {},
+          allocations: (allocatedEntitiesAmount?.[idx] ?? {}) as { [key: string]: number },
         })) ?? [];
 
       selectedEntities.forEach((entity, index) => {

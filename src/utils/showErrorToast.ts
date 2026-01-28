@@ -8,7 +8,6 @@ const extractErrorMessage = (error: unknown): string => {
 
   // Handle Error instances
   if (error instanceof Error) {
-    // Check if it's an ApiError with a body message
     if ('body' in error && error.body && typeof error.body === 'object') {
       const apiError = error as { body?: { message?: string }; status?: number; message?: string };
       if (apiError.status === 401) {

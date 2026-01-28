@@ -101,7 +101,9 @@ const GeneralSettings = () => {
       if (capEventSettingsStore.eventTypes.length > 0) {
         return;
       }
-      const eventTypes = await CapEventPackageApi.default.getCapEventTypes();
+      const eventTypes = await CapEventPackageApi.default
+        .getCapEventTypes()
+        .then((res) => res.data);
       capEventSettingsStore.setEventTypes(prepareEventType(eventTypes));
     } catch (error) {
       console.error(error);
@@ -111,10 +113,12 @@ const GeneralSettings = () => {
   const getFundGroups = async (sponsorId: string) => {
     try {
       setIsLoadingFundGroups(true);
-      const fundGroups = await ReferenceDataApi.fundGroups.searchFundGroupsBySponsor(
-        sponsorId,
-        sessionId,
-      );
+      const fundGroups = await ReferenceDataApi.fundGroups
+        .searchFundGroupsBySponsor({
+          sponsorId,
+          sessionId,
+        })
+        .then((res) => res.data);
       capEventSettingsStore.setFundGroups(prepareFundGroups(fundGroups));
     } catch (error) {
       showErrorToast(error);
@@ -130,7 +134,7 @@ const GeneralSettings = () => {
       if (capEventSettingsStore.sponsors.length > 0) {
         return;
       }
-      const sponsors = await ReferenceDataApi.sponsors.getSponsors();
+      const sponsors = await ReferenceDataApi.sponsors.getSponsors().then((res) => res.data);
       capEventSettingsStore.setSponsors(prepareSponsors(sponsors));
     } catch (error) {
       console.error(error);
@@ -140,12 +144,14 @@ const GeneralSettings = () => {
   const updateFundEntities = async (id: string) => {
     try {
       setIsLoadingFundEntities(true);
-      const entitiesRelatedToGroup = await ReferenceDataApi.entities.getEntitiesByFundGroup(
-        id,
-        sessionId,
-        ['ACTIVE'],
-        ['ADMIN', 'ELIMINATION'],
-      );
+      const entitiesRelatedToGroup = await ReferenceDataApi.entities
+        .getEntitiesByFundGroup({
+          fundGroupId: id,
+          sessionId,
+          statuses: ['ACTIVE'],
+          typesToExclude: ['ADMIN', 'ELIMINATION'],
+        })
+        .then((res) => res.data);
       const preparedEntities = prepareFundEntities(entitiesRelatedToGroup);
 
       // Preserve existing selections when updating fund entities

@@ -73,7 +73,7 @@ describe('SaveDraftButton', () => {
       ...(x as object),
       aggregated: true,
     }));
-    mockCreateDraft.mockResolvedValue({ ok: true });
+    mockCreateDraft.mockResolvedValue({ data: { ok: true } });
 
     renderWithTheme(<SaveDraftButton />);
     const button = screen.getByTestId('save-draft');
@@ -81,7 +81,9 @@ describe('SaveDraftButton', () => {
 
     await waitFor(() => {
       expect(mockCreateDraft).toHaveBeenCalledTimes(1);
-      expect(mockCreateDraft).toHaveBeenCalledWith({ foo: 'bar', aggregated: true });
+      expect(mockCreateDraft).toHaveBeenCalledWith({
+        capEventDraft: { foo: 'bar', aggregated: true },
+      });
       expect(mockToast.success).toHaveBeenCalledWith('Successfully Saved');
       expect(mockPush).toHaveBeenCalled();
     });

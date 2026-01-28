@@ -175,6 +175,7 @@ export const DateCellWrapper = styled.div(({ theme }) => ({
 export const TableControls = styled.div({
   display: 'flex',
   justifyContent: 'flex-end',
+  alignItems: 'center',
   gap: '16px',
 });
 

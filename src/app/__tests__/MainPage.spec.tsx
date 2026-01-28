@@ -4,8 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
 import Page from '../page';
 import { ROUTES } from '@/const/routes';
-import { ApiError } from '@/clients/CapEventPackage';
-import type { ApiResult } from '@/clients/CapEventPackage/core/ApiResult';
 
 const mockPush = jest.fn();
 const mockError = jest.fn();
@@ -59,7 +57,7 @@ describe('Page', () => {
   });
 
   it('renders page title and buttons', async () => {
-    getCapEventList.mockResolvedValue([]);
+    getCapEventList.mockResolvedValue({ data: [] });
 
     renderWithTheme(<Page />);
 
@@ -69,7 +67,7 @@ describe('Page', () => {
   });
 
   it('navigates to new cap event page when button is clicked', async () => {
-    getCapEventList.mockResolvedValue([]);
+    getCapEventList.mockResolvedValue({ data: [] });
 
     renderWithTheme(<Page />);
 
@@ -86,24 +84,19 @@ describe('Page', () => {
       { id: '1', name: 'Event 1' },
       { id: '2', name: 'Event 2' },
     ];
-    getCapEventList.mockResolvedValue(mockEvents);
+    getCapEventList.mockResolvedValue({ data: mockEvents });
 
     renderWithTheme(<Page />);
 
     await waitFor(() => {
-      expect(getCapEventList).toHaveBeenCalledWith('sponsor-1', undefined, 'test-session-id');
+      expect(getCapEventList).toHaveBeenCalledWith({
+        sponsorId: 'sponsor-1',
+      });
     });
   });
 
   it('handles API errors and shows toast message', async () => {
-    const apiResult: ApiResult = {
-      url: '/api/events',
-      status: 500,
-      statusText: 'Internal Server Error',
-      body: {} as Record<string, unknown>,
-      ok: false,
-    };
-    const apiError = new ApiError({ method: 'GET', url: '/api/events' }, apiResult, 'API Error');
+    const apiError = new Error('API Error');
     getCapEventList.mockRejectedValue(apiError);
 
     renderWithTheme(<Page />);
@@ -114,7 +107,7 @@ describe('Page', () => {
   });
 
   it('calls logout when logout button is clicked', async () => {
-    getCapEventList.mockResolvedValue([]);
+    getCapEventList.mockResolvedValue({ data: [] });
 
     renderWithTheme(<Page />);
 

@@ -10,6 +10,7 @@ const processMock = jest.fn();
 const parseMock = jest.fn();
 const axiosPostMock = jest.fn();
 const allocateLineItemMock = jest.fn();
+const getAllocatedMgmtFeeJournalEntriesMock = jest.fn();
 
 jest.mock('axios', () => ({
   __esModule: true,
@@ -21,6 +22,8 @@ jest.mock('@/api', () => ({
     default: {
       process: (...args: unknown[]) => processMock(...args),
       allocateLineItem: (...args: unknown[]) => allocateLineItemMock(...args),
+      getAllocatedMgmtFeeJournalEntries: (...args: unknown[]) =>
+        getAllocatedMgmtFeeJournalEntriesMock(...args),
     },
     request: {
       config: { BASE: 'https://cap.example.com', WITH_CREDENTIALS: true },
@@ -34,6 +37,10 @@ jest.mock('@/utils/parseToPreviewScreenRows', () => ({
 
 jest.mock('@/utils/sessionIdStorage', () => ({
   getStoredSessionId: jest.fn().mockReturnValue(''),
+}));
+
+jest.mock('@/utils/tokenStorage', () => ({
+  getAccessTokenWithRefresh: jest.fn().mockResolvedValue('mock-token'),
 }));
 
 const mockCapEventSettingsStore = {
@@ -78,6 +85,7 @@ const mockCapEventSettingsStore = {
       'E1 - Gen 2 Demo Buyout Fund I, L.P.',
       [
         {
+          id: 'test-line-item-1',
           capitalCategory: 'Cont - Expense offsets',
           callDistributionReason: 'Test Reason 1',
           defaultDescription: 'Test Description 1',
@@ -101,7 +109,6 @@ const mockEntityDatesStore: {
   getEntityDueDateInputValidity: jest.Mock;
   getEntityNoticeDateInputValidity: jest.Mock;
 } = {
-  // Create dates in local timezone to avoid timezone issues (month is 0-indexed: 10 = November)
   noticeDate: new Date(2025, 10, 17),
   getEntityNoticeDate: jest.fn(() => new Date(2025, 10, 17)),
   getEntityDueDate: jest.fn(() => new Date(2025, 10, 24)),
@@ -121,7 +128,13 @@ describe('PreviewScreenStore', () => {
     jest.resetModules();
     jest.clearAllMocks();
     axiosPostMock.mockReset();
+    getAllocatedMgmtFeeJournalEntriesMock.mockReset();
     (axios as unknown as { post: jest.Mock }).post = axiosPostMock as unknown as jest.Mock;
+
+    allocateLineItemMock.mockResolvedValue({ data: [] });
+    getAllocatedMgmtFeeJournalEntriesMock.mockResolvedValue({ data: [] });
+
+    mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('');
 
     mockEntityDatesStore.getEntityNoticeDate.mockReturnValue(new Date(2025, 10, 17));
     mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
@@ -156,14 +169,17 @@ describe('PreviewScreenStore', () => {
 
   it('processPayload success: builds payload from stores, calls API once, updates rows', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
-    const apiResponse = [{ data: 'response' }];
+    const apiResponse = { data: [{ id: 'response' }] };
     processMock.mockResolvedValueOnce(apiResponse);
     parseMock.mockReturnValueOnce([{ id: 'r1' }, { id: 'r2' }]);
 
     const result = await store.processPayload(toast);
 
     expect(processMock).toHaveBeenCalledTimes(1);
-    const sentPayload = processMock.mock.calls[0][0];
+    const requestParams = processMock.mock.calls[0][0];
+    expect(requestParams).toHaveProperty('capEvent');
+    expect(requestParams).toHaveProperty('sessionId');
+    const sentPayload = requestParams.capEvent;
     expect(sentPayload.sponsor.id).toBe('SP1');
     expect(sentPayload.capEventType.id).toBe('TYPE1');
     expect(sentPayload.fundGroup.id).toBe('FG1');
@@ -198,6 +214,7 @@ describe('PreviewScreenStore', () => {
       }),
     );
 
+    expect(parseMock).toHaveBeenCalledTimes(1);
     expect(result).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.rows).toEqual([{ id: 'r1' }, { id: 'r2' }]);
     expect(store.isLoading).toBe(false);
@@ -211,12 +228,14 @@ describe('PreviewScreenStore', () => {
       inheritanceId: 'FG-EXPLICIT-1',
     };
 
-    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    processMock.mockResolvedValueOnce({ data: [{ id: 'response' }] });
+    allocateLineItemMock.mockResolvedValue({ data: [] });
     parseMock.mockReturnValueOnce([]);
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][0];
+    const requestParams = processMock.mock.calls[0][0];
+    const sentPayload = requestParams.capEvent;
     const fg = (sentPayload.capEventFundGroupLineItems || [])[0];
     expect(fg.inheritanceId).toBe('FG-EXPLICIT-1');
   });
@@ -237,12 +256,14 @@ describe('PreviewScreenStore', () => {
       fundGroupLineItemInheritanceId: 'FG-EXPLICIT-2',
     };
 
-    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    processMock.mockResolvedValueOnce({ data: [{ id: 'response' }] });
+    allocateLineItemMock.mockResolvedValue({ data: [] });
     parseMock.mockReturnValueOnce([]);
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][0];
+    const requestParams = processMock.mock.calls[0][0];
+    const sentPayload = requestParams.capEvent;
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.capEventLineItems[0]).toEqual(
       expect.objectContaining({
@@ -259,12 +280,14 @@ describe('PreviewScreenStore', () => {
     ) as Array<Record<string, unknown>>;
     delete entityRows[0].fundGroupLineItemInheritanceId;
 
-    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    processMock.mockResolvedValueOnce({ data: [{ id: 'response' }] });
+    allocateLineItemMock.mockResolvedValue({ data: [] });
     parseMock.mockReturnValueOnce([]);
 
     await store.processPayload(toast);
 
-    const sentPayload = processMock.mock.calls[0][0];
+    const requestParams = processMock.mock.calls[0][0];
+    const sentPayload = requestParams.capEvent;
     const entityItem = sentPayload.capEventEntityLineItems[0];
     expect(entityItem.capEventLineItems[0].fundGroupLineItemInheritanceId).toBeUndefined();
   });
@@ -272,13 +295,15 @@ describe('PreviewScreenStore', () => {
   it('calls getAllocationBasisId for fund group and entity line items', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
     mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('DS-CMNT');
-    processMock.mockResolvedValueOnce([{ data: 'response' }]);
+    processMock.mockResolvedValueOnce({ data: [{ id: 'response' }] });
+    allocateLineItemMock.mockResolvedValue({ data: [] });
     parseMock.mockReturnValueOnce([]);
 
     await store.processPayload(toast);
 
     expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('commitment');
-    const sentPayload = processMock.mock.calls[0][0];
+    const requestParams = processMock.mock.calls[0][0];
+    const sentPayload = requestParams.capEvent;
     expect(sentPayload.capEventFundGroupLineItems[0]).toHaveProperty(
       'allocationBasisId',
       'DS-CMNT',
@@ -291,7 +316,7 @@ describe('PreviewScreenStore', () => {
 
   it('processPayload concurrent calls use in-flight guard and call API only once', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
-    processMock.mockResolvedValueOnce([{ any: 'response' }]);
+    processMock.mockResolvedValueOnce({ data: [{ any: 'response' }] });
     parseMock.mockReturnValue([{ id: 'r1' }]);
 
     const p1 = store.processPayload(toast);
@@ -327,7 +352,7 @@ describe('PreviewScreenStore', () => {
         ],
       },
     ];
-    processMock.mockResolvedValueOnce(processResponse);
+    processMock.mockResolvedValueOnce({ data: processResponse });
     parseMock.mockReturnValueOnce([]);
     await store.processPayload(toast);
 
@@ -384,9 +409,11 @@ describe('PreviewScreenStore', () => {
   it('fetchDoc json error surfaces toast and returns undefined', async () => {
     const toast = { error: jest.fn() } as unknown as ToastApi;
 
-    processMock.mockResolvedValueOnce([
-      { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
-    ]);
+    processMock.mockResolvedValueOnce({
+      data: [
+        { entity: { id: 'E1', name: 'Entity 1' }, plInvestorEntries: [{ customerId: 'INV1' }] },
+      ],
+    });
     parseMock.mockReturnValueOnce([]);
     await store.processPayload(toast);
 
@@ -463,7 +490,6 @@ describe('PreviewScreenStore', () => {
     });
 
     it('withAggregatedLineItems merges aggregated items into payload only when present', () => {
-      // with aggregated present
       (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [
         {
           id: 'x',
@@ -488,7 +514,6 @@ describe('PreviewScreenStore', () => {
       );
       expect((merged.capEventAggregatedLineItems as unknown[]).length).toBe(1);
 
-      // when aggregated are empty -> returns original payload
       (store as unknown as { lastProcessResponse: unknown[] }).lastProcessResponse = [];
       const unchanged = store.withAggregatedLineItems(basePayload) as unknown as Record<
         string,
@@ -649,12 +674,12 @@ describe('PreviewScreenStore', () => {
       mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
         lineItem1,
         lineItem2,
-      ] as unknown as LineItemRow[]);
+      ] as unknown as Record<string, unknown>[]);
 
       mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
       allocateLineItemMock
-        .mockResolvedValueOnce([{ customerId: 'INV1', investor: 'Investor 1' }])
-        .mockResolvedValueOnce([{ customerId: 'INV2', investor: 'Investor 2' }]);
+        .mockResolvedValueOnce({ data: [{ customerId: 'INV1', investor: 'Investor 1' }] })
+        .mockResolvedValueOnce({ data: [{ customerId: 'INV2', investor: 'Investor 2' }] });
 
       const result = await store.allocateLineItems();
 
@@ -662,9 +687,10 @@ describe('PreviewScreenStore', () => {
       expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('commitment');
       expect(mockCapEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('capital');
 
-      // Check first call
       const firstCall = allocateLineItemMock.mock.calls[0][0];
-      expect(firstCall).toEqual({
+      expect(firstCall).toHaveProperty('allocationInput');
+      expect(firstCall).toHaveProperty('sessionId');
+      expect(firstCall.allocationInput).toEqual({
         entityId: 'E1',
         dueDate: '2025-11-24',
         allocationBasisId: 'ALLOC-BASIS-ID',
@@ -673,9 +699,10 @@ describe('PreviewScreenStore', () => {
         amount: 1000,
       });
 
-      // Check second call
       const secondCall = allocateLineItemMock.mock.calls[1][0];
-      expect(secondCall).toEqual({
+      expect(secondCall).toHaveProperty('allocationInput');
+      expect(secondCall).toHaveProperty('sessionId');
+      expect(secondCall.allocationInput).toEqual({
         entityId: 'E1',
         dueDate: '2025-11-24',
         allocationBasisId: 'ALLOC-BASIS-ID',
@@ -684,7 +711,6 @@ describe('PreviewScreenStore', () => {
         amount: 2000,
       });
 
-      // Result should be flattened array
       expect(result).toEqual([
         {
           entityId: 'E1',
@@ -712,16 +738,17 @@ describe('PreviewScreenStore', () => {
       };
 
       mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
-        lineItem,
-      ] as unknown as LineItemRow[]);
+        lineItem as unknown as Record<string, unknown>,
+      ]);
 
       mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
-      allocateLineItemMock.mockResolvedValueOnce([]);
+      allocateLineItemMock.mockResolvedValueOnce({ data: [] });
 
       await store.allocateLineItems();
 
       const call = allocateLineItemMock.mock.calls[0][0];
-      expect(call.accountNo).toBe('0721'); // From mockCapEventSettingsStore.accounts
+      expect(call).toHaveProperty('allocationInput');
+      expect(call.allocationInput.accountNo).toBe('0721');
     });
 
     it('handles multiple entities with line items', async () => {
@@ -748,11 +775,11 @@ describe('PreviewScreenStore', () => {
       };
 
       mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
-        lineItem1,
-      ] as unknown as LineItemRow[]);
+        lineItem1 as unknown as Record<string, unknown>,
+      ]);
       mockCapEventSettingsStore.entitiesLineItem.set('E2 - Another Entity', [
-        lineItem2,
-      ] as unknown as LineItemRow[]);
+        lineItem2 as unknown as Record<string, unknown>,
+      ]);
 
       (mockCapEventSettingsStore.fundEntities as unknown[]).push({
         id: 'E2',
@@ -761,7 +788,6 @@ describe('PreviewScreenStore', () => {
         state: ITEM_STATES.SELECTED,
       });
 
-      // Reset mock to return different dates for different entities
       mockEntityDatesStore.getEntityDueDate.mockImplementation((label: string) => {
         if (label === 'E1 - Gen 2 Demo Buyout Fund I, L.P.') {
           return new Date(2025, 10, 24);
@@ -771,25 +797,24 @@ describe('PreviewScreenStore', () => {
 
       mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
       allocateLineItemMock
-        .mockResolvedValueOnce([{ customerId: 'INV1' }])
-        .mockResolvedValueOnce([{ customerId: 'INV2' }]);
+        .mockResolvedValueOnce({ data: [{ customerId: 'INV1' }] })
+        .mockResolvedValueOnce({ data: [{ customerId: 'INV2' }] });
 
       const result = await store.allocateLineItems();
 
       expect(allocateLineItemMock).toHaveBeenCalledTimes(2);
       expect(result).toHaveLength(2);
 
-      // Check first entity call
       const firstCall = allocateLineItemMock.mock.calls[0][0];
-      expect(firstCall.entityId).toBe('E1');
-      expect(firstCall.dueDate).toBe('2025-11-24');
+      expect(firstCall).toHaveProperty('allocationInput');
+      expect(firstCall.allocationInput.entityId).toBe('E1');
+      expect(firstCall.allocationInput.dueDate).toBe('2025-11-24');
 
-      // Check second entity call
       const secondCall = allocateLineItemMock.mock.calls[1][0];
-      expect(secondCall.entityId).toBe('E2');
-      expect(secondCall.dueDate).toBe('2025-11-25');
+      expect(secondCall).toHaveProperty('allocationInput');
+      expect(secondCall.allocationInput.entityId).toBe('E2');
+      expect(secondCall.allocationInput.dueDate).toBe('2025-11-25');
 
-      // Reset mock for other tests
       mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
     });
 
@@ -805,22 +830,19 @@ describe('PreviewScreenStore', () => {
         insideCommitment: 'Yes',
       };
 
-      // Clear existing entities and add a non-existent one
       const originalEntities = mockCapEventSettingsStore.fundEntities;
       mockCapEventSettingsStore.entitiesLineItem.clear();
-      mockCapEventSettingsStore.entitiesLineItem.set('Non-existent Entity Label', [
-        lineItem,
-      ] as unknown as LineItemRow[]);
+      mockCapEventSettingsStore.entitiesLineItem.set('Non-existent Entity Label', [lineItem]);
 
       mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
-      allocateLineItemMock.mockResolvedValueOnce([]);
+      allocateLineItemMock.mockResolvedValueOnce({ data: [] });
 
       await store.allocateLineItems();
 
       const call = allocateLineItemMock.mock.calls[0][0];
-      expect(call.entityId).toBe('');
+      expect(call).toHaveProperty('allocationInput');
+      expect(call.allocationInput.entityId).toBe('');
 
-      // Restore original entities
       (mockCapEventSettingsStore as unknown as { fundEntities: unknown[] }).fundEntities =
         originalEntities;
       mockCapEventSettingsStore.entitiesLineItem.clear();
@@ -852,23 +874,22 @@ describe('PreviewScreenStore', () => {
       };
 
       mockCapEventSettingsStore.entitiesLineItem.set('E1 - Gen 2 Demo Buyout Fund I, L.P.', [
-        lineItem,
-      ] as unknown as LineItemRow[]);
+        lineItem as unknown as Record<string, unknown>,
+      ]);
 
-      mockEntityDatesStore.getEntityDueDate.mockReturnValueOnce(null as unknown as Date);
+      mockEntityDatesStore.getEntityDueDate.mockReturnValueOnce(null);
 
       mockCapEventSettingsStore.getAllocationBasisId.mockReturnValue('ALLOC-BASIS-ID');
-      allocateLineItemMock.mockResolvedValueOnce([]);
+      allocateLineItemMock.mockResolvedValueOnce({ data: [] });
 
       await store.allocateLineItems();
 
       const call = allocateLineItemMock.mock.calls[0][0];
-      // Should have a valid date string in YYYY-MM-DD format
-      expect(call.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      const calledDate = new Date(call.dueDate);
+      expect(call).toHaveProperty('allocationInput');
+      expect(call.allocationInput.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const calledDate = new Date(call.allocationInput.dueDate);
       expect(calledDate.getTime()).not.toBeNaN();
 
-      // Reset mock for other tests
       mockEntityDatesStore.getEntityDueDate.mockReturnValue(new Date(2025, 10, 24));
     });
   });

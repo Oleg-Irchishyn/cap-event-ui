@@ -78,14 +78,16 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
             const { batchNo, originAccountKey } = previewEntityData;
 
             if (batchNo !== undefined && originAccountKey !== undefined) {
-              const data = await CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
-                batchNo,
-                originAccountKey,
-                previewEntityData.allocationBasis,
-                allocationBasisId,
-                entityId,
-                sessionId,
-              );
+              const data = await CapEventPackageApi.default
+                .getAllocatedMgmtFeeJournalEntries({
+                  batchNo,
+                  accountKey: originAccountKey,
+                  allocationBasis: previewEntityData.allocationBasis,
+                  allocationBasisId,
+                  entityId,
+                  sessionId,
+                })
+                .then((res) => res.data);
               capEventSettingsStore.setAllocationPreviewModalData(data);
             }
           } else {
@@ -114,7 +116,9 @@ const AllocationPreviewModal: FC<AllocationPreviewModalProps> = ({ entityId }) =
               investmentId: (typeof inv === 'string' ? inv : String(inv?.id ?? '')) ?? '',
               amount: previewEntityData.amount,
             };
-            const data = await CapEventPackageApi.default.allocateLineItem(requestBody, sessionId);
+            const data = await CapEventPackageApi.default
+              .allocateLineItem({ allocationInput: requestBody, sessionId })
+              .then((res) => res.data);
             capEventSettingsStore.setAllocationPreviewModalData(data);
           }
         }

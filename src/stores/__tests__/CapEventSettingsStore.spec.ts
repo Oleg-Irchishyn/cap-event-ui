@@ -905,25 +905,25 @@ describe('CapEventSettingsStore', () => {
           allocationId: 'ID1',
           allocationName: 'Active Basis 1',
           type: 'Type1',
-          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+          allocationBasisStatus: AllocationBasisStatus.Active,
         },
         {
           allocationId: 'ID2',
           allocationName: 'Inactive Basis',
           type: 'Type2',
-          allocationBasisStatus: AllocationBasisStatus.INACTIVE,
+          allocationBasisStatus: AllocationBasisStatus.Inactive,
         },
         {
           allocationId: 'ID3',
           allocationName: 'Active Basis 2',
           type: 'Type3',
-          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+          allocationBasisStatus: AllocationBasisStatus.Active,
         },
       ];
 
       ReferenceDataApi.allocationBases.getAllocationBases = jest
         .fn()
-        .mockResolvedValue(mockAllocationBases);
+        .mockResolvedValue({ data: mockAllocationBases });
 
       await store.fetchAllocationBasis();
 
@@ -932,7 +932,7 @@ describe('CapEventSettingsStore', () => {
       expect(store.allocationBasis[1].allocationId).toBe('ID3');
       expect(
         store.allocationBasis.every(
-          (ab) => ab.allocationBasisStatus === AllocationBasisStatus.ACTIVE,
+          (ab) => ab.allocationBasisStatus === AllocationBasisStatus.Active,
         ),
       ).toBe(true);
     });
@@ -947,7 +947,7 @@ describe('CapEventSettingsStore', () => {
           allocationId: mockedAllocationBasisId,
           allocationName: allocationBasisName,
           type: 'Custom',
-          allocationBasisStatus: AllocationBasisStatus.ACTIVE,
+          allocationBasisStatus: AllocationBasisStatus.Active,
         },
       ];
       const allocationBasisId = store.getAllocationBasisId(allocationBasisName);

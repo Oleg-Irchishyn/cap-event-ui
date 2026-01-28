@@ -49,7 +49,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -70,7 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -87,7 +87,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -308,7 +308,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -329,7 +329,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -346,7 +346,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -489,10 +489,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -506,7 +506,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -576,7 +576,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -597,7 +597,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -653,7 +653,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -670,7 +670,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -708,7 +708,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -729,7 +729,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -746,7 +746,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -826,7 +826,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -847,7 +847,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -864,7 +864,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1055,7 +1055,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1076,10 +1076,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1093,7 +1093,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -1110,7 +1110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1242,7 +1242,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1263,10 +1263,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1280,7 +1280,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -1297,7 +1297,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1413,10 +1413,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1430,7 +1430,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1520,7 +1520,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1541,10 +1541,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1558,7 +1558,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1686,7 +1686,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1707,10 +1707,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1724,7 +1724,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1811,7 +1811,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1832,10 +1832,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1849,7 +1849,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1909,7 +1909,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1930,7 +1930,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -1947,7 +1947,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1980,44 +1980,6 @@
           },
           "description": {
             "type": "string"
-          }
-        }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "description": "Error response with message",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "enum": ["VALIDATION_ERROR", "RESOURCE_NOT_FOUND", "INTERNAL_SERVER_ERROR", "ALLOCATION_ERROR", "CLIENT_ERROR", "UNAUTHORIZED"]
-          },
-          "message": {
-            "type": "string"
-          },
-          "details": {
-            "type": "array",
-            "items": {
-              "title": "ErrorDetail",
-              "type": "object",
-              "properties": {
-                "field": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "timestamp": {
-            "type": "string"
-          },
-          "requestId": {
-            "type": "string",
-            "format": "uuid"
           }
         }
       },

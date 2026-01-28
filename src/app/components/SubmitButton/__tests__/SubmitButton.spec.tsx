@@ -124,7 +124,7 @@ describe('SubmitButton', () => {
   });
 
   it('calls API and shows success toast when submission is successful', async () => {
-    mockSubmit.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
+    mockSubmit.mockResolvedValue({ data: { status: CapEventStatus.Submitted } });
 
     renderWithTheme(<SubmitButton />);
 
@@ -136,7 +136,10 @@ describe('SubmitButton', () => {
       expect(mockToast.success).toHaveBeenCalledWith('Successfully Saved');
     });
 
-    const requestBody = mockSubmit.mock.calls[0][0];
+    const requestParams = mockSubmit.mock.calls[0][0];
+    expect(requestParams).toHaveProperty('capEvent');
+    expect(requestParams).toHaveProperty('sessionId');
+    const requestBody = requestParams.capEvent;
     expect(requestBody).toHaveProperty('capEventType');
     expect(requestBody).toHaveProperty('sponsor');
     expect(requestBody).toHaveProperty('fundGroup');
@@ -184,7 +187,7 @@ describe('SubmitButton', () => {
     fireEvent.click(button);
     expect(mockSubmit).toHaveBeenCalledTimes(1);
 
-    resolvePromise({ status: CapEventStatus.SUBMITTED });
+    resolvePromise({ data: { status: CapEventStatus.Submitted } });
 
     await waitFor(() => {
       expect(button).not.toBeDisabled();
@@ -257,7 +260,7 @@ describe('SubmitButton', () => {
         ],
       ],
     ]);
-    mockSubmit.mockResolvedValue({ status: CapEventStatus.SUBMITTED });
+    mockSubmit.mockResolvedValue({ data: { status: CapEventStatus.Submitted } });
 
     renderWithTheme(<SubmitButton />);
 
@@ -269,7 +272,9 @@ describe('SubmitButton', () => {
     });
 
     expect(stores.capEventSettingsStore.getAllocationBasisId).toHaveBeenCalledWith('Basis1');
-    const requestBody = mockSubmit.mock.calls[0][0];
+    const requestParams = mockSubmit.mock.calls[0][0];
+    expect(requestParams).toHaveProperty('capEvent');
+    const requestBody = requestParams.capEvent;
     expect(requestBody.capEventEntityLineItems[0].capEventLineItems[0]).toHaveProperty(
       'allocationBasisId',
       'DS-CMNT',

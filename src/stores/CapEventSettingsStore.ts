@@ -148,10 +148,11 @@ class CapEventSettingsStore {
   *fetchAllocationBasis() {
     try {
       const sessionId = getStoredSessionId() ?? '';
-      const allocationBases: AllocationBasis[] =
-        yield ReferenceDataApi.allocationBases.getAllocationBases(sessionId);
+      const allocationBases: AllocationBasis[] = yield ReferenceDataApi.allocationBases
+        .getAllocationBases({ sessionId })
+        .then((res) => res.data);
       this.allocationBasis = allocationBases.filter(
-        (item) => item.allocationBasisStatus === AllocationBasisStatus.ACTIVE,
+        (item) => item.allocationBasisStatus === AllocationBasisStatus.Active,
       );
     } catch (error) {
       showErrorToast(error);
@@ -169,10 +170,10 @@ class CapEventSettingsStore {
 
   *fetchMgmtJournalEntries(entityIds: string[]) {
     const sessionId = getStoredSessionId() ?? '';
-    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries(
+    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries({
       entityIds,
       sessionId,
-    );
+    });
   }
 
   isGeneralSettingsEmpty(
@@ -261,12 +262,14 @@ class CapEventSettingsStore {
   ) {
     try {
       const sessionId = getStoredSessionId();
-      const accounts: Account[] = await ReferenceDataApi.accounts.getAccounts(
-        sponsorId,
-        fsGroupings,
-        capitalCategories,
-        sessionId,
-      );
+      const accounts: Account[] = await ReferenceDataApi.accounts
+        .getAccounts({
+          sponsorId,
+          fsGroupings,
+          capitalCategories,
+          sessionId,
+        })
+        .then((res) => res.data);
       return accounts;
     } catch (error) {
       showErrorToast(error);
@@ -279,7 +282,9 @@ class CapEventSettingsStore {
     try {
       const sessionId = getStoredSessionId() ?? '';
       this.areInvestmentsLoading = true;
-      this.investments = yield ReferenceDataApi.investments.getInvestments(sessionId);
+      this.investments = yield ReferenceDataApi.investments
+        .getInvestments({ sessionId })
+        .then((res) => res.data);
     } catch (error) {
       showErrorToast(error);
       console.error(error);

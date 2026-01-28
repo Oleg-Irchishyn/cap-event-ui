@@ -53,9 +53,9 @@ const DuplicateRowCell: FC<ICellRendererParams> = (props) => {
       Object.entries(props.data as Record<string, unknown>).filter(
         ([key]) => !EXCLUDED_KEYS.includes(key),
       ),
-    );
+    ) as unknown as Partial<LineItemRow>;
 
-    const duplicatedRow = { ...(rest as LineItemRow), id: newId } as LineItemRow;
+    const duplicatedRow = { ...rest, id: newId } as LineItemRow;
 
     const key = entityKey || '';
     const currentRows =

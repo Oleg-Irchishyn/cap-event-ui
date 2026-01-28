@@ -19,9 +19,9 @@ const SaveDraftButton = () => {
       if (payload) {
         const requestWithAggregatedLineItems = previewScreenStore.withAggregatedLineItems(payload);
 
-        const response = await CapEventPackageApi.default.createDraft(
-          requestWithAggregatedLineItems,
-        );
+        const response = await CapEventPackageApi.default
+          .createDraft({ capEventDraft: requestWithAggregatedLineItems })
+          .then((res) => res.data);
         if (response) {
           toast.success('Successfully Saved');
           router.push(ROUTES.MAIN.path);

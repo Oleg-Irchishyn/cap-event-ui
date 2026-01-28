@@ -1,0 +1,23 @@
+# CeBoxItem
+
+The common information about box item.
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**id** | **string** | The id of the item to access in the box service. | [optional] [default to undefined]
+**info** | [**CeBoxItemInfo**](CeBoxItemInfo.md) |  | [optional] [default to undefined]
+
+## Example
+
+```typescript
+import { CeBoxItem } from './api';
+
+const instance: CeBoxItem = {
+    id,
+    info,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

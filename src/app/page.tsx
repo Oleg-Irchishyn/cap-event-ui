@@ -16,10 +16,9 @@ import { useState, useEffect } from 'react';
 import { Title } from '@/app/new/styles';
 import { capEventSettingsStore } from '@/stores';
 import { ITEM_STATES } from '@/const/common';
-import { ApiError, CapEvent } from '@/clients/CapEventPackage';
+import { CapEvent } from '@/clients/CapEventPackage';
 import { useToast } from '@/providers/ToastProvider';
 import { CapEventPackageApi } from '@/api';
-import { getStoredSessionId } from '@/utils/sessionIdStorage';
 import { logout } from '@/utils/logout';
 
 export default function Page() {
@@ -37,17 +36,16 @@ export default function Page() {
         const selectedSponsorId = capEventSettingsStore.sponsors.find(
           (sponsor) => sponsor.state === ITEM_STATES.SELECTED,
         )?.id;
-        const sessionId = getStoredSessionId();
 
-        const capEvents = await CapEventPackageApi.default.getCapEventList(
-          selectedSponsorId,
-          undefined,
-          sessionId,
-        );
+        const capEvents = await CapEventPackageApi.default
+          .getCapEventList({
+            sponsorId: selectedSponsorId,
+          })
+          .then((res) => res.data);
         setEvents(capEvents);
       } catch (error) {
         console.error(error);
-        if (error instanceof ApiError) toast.error(error?.message);
+        if (error instanceof Error) toast.error(error?.message);
       } finally {
         setIsListLoading(false);
       }

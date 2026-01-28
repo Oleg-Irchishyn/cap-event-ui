@@ -133,7 +133,7 @@ describe('ManagementFeeDetails', () => {
       },
     );
 
-    mockApi.mockResolvedValue([]);
+    mockApi.mockResolvedValue({ data: [] });
   });
 
   it('renders with default "No" option and hides MF dropdown', () => {
@@ -181,36 +181,38 @@ describe('ManagementFeeDetails', () => {
     mockStore.includeMFOption['entity-1'] = 'Yes';
     mockStore.entitiesLineItem.set('entity-1', []);
 
-    mockApi.mockResolvedValueOnce([
-      {
-        id: 'mf-1',
-        prDate: '2025-01-15',
-        prFlag: true,
-        account: {
-          accountNo: '6000',
-          capitalCategory: 'Mgmt Fee',
-          callDistributionReason: 'Management Fee',
-          defaultDescription: 'Mgmt Fee Accrual',
-          insideCommitment: 'yes',
+    mockApi.mockResolvedValueOnce({
+      data: [
+        {
+          id: 'mf-1',
+          prDate: '2025-01-15',
+          prFlag: true,
+          account: {
+            accountNo: '6000',
+            capitalCategory: 'Mgmt Fee',
+            callDistributionReason: 'Management Fee',
+            defaultDescription: 'Mgmt Fee Accrual',
+            insideCommitment: 'yes',
+          },
+          investment: { id: 'inv-1', name: 'INV 1' },
+          originAccountKey: 'key-1',
         },
-        investment: { id: 'inv-1', name: 'INV 1' },
-        originAccountKey: 'key-1',
-      },
-      {
-        id: 'mf-2',
-        prDate: '2025-02-15',
-        prFlag: false,
-        account: {
-          accountNo: '6001',
-          capitalCategory: 'Mgmt Fee',
-          callDistributionReason: 'Management Fee',
-          defaultDescription: 'Mgmt Fee Accrual 2',
-          insideCommitment: 'no',
+        {
+          id: 'mf-2',
+          prDate: '2025-02-15',
+          prFlag: false,
+          account: {
+            accountNo: '6001',
+            capitalCategory: 'Mgmt Fee',
+            callDistributionReason: 'Management Fee',
+            defaultDescription: 'Mgmt Fee Accrual 2',
+            insideCommitment: 'no',
+          },
+          investment: { id: 'inv-2', name: 'INV 2' },
+          originAccountKey: 'key-2',
         },
-        investment: { id: 'inv-2', name: 'INV 2' },
-        originAccountKey: 'key-2',
-      },
-    ]);
+      ],
+    });
 
     renderWithTheme(<ManagementFeeDetails {...defaultProps} />);
 
@@ -221,6 +223,14 @@ describe('ManagementFeeDetails', () => {
     const firstEntry = await waitFor(() => screen.getByText('Description: Q1 Management Fee'));
     await act(async () => {
       fireEvent.click(firstEntry);
+    });
+
+    await waitFor(() => {
+      expect(mockApi).toHaveBeenCalledWith({
+        batchNo: 123,
+        entityId: 'entity-1',
+        sessionId: 'session-123',
+      });
     });
 
     await waitFor(() => {

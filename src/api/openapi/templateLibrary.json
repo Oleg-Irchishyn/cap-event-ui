@@ -101,10 +101,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -118,7 +118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -135,7 +135,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -181,7 +181,7 @@
                   "newTemplate": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Template file to upload"
+                    "description": "Template file to upload (only .dotx files are accepted)"
                   }
                 },
                 "required": ["sponsorId", "sponsorName", "newTemplate"]
@@ -201,11 +201,11 @@
             }
           },
           "400": {
-            "description": "Bad request - invalid or missing parameters",
+            "description": "Bad request - invalid or missing parameters, or invalid file format (only .dotx files are accepted)",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -215,7 +215,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -225,7 +225,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -235,7 +235,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -245,7 +245,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -255,7 +255,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -277,33 +277,57 @@
               "type":"string"
             },
             "required": true,
-            "description": "ID of the template whichi should be updated."
+            "description": "ID of the template which should be updated."
           }
         ],
         "requestBody": {
           "content": {
-            "application/octet-stream": {
+            "multipart/form-data": {
               "schema": {
-                "type": "string",
-                "format": "binary"
+                "type": "object",
+                "properties": {
+                  "newTemplate": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Template file to upload (only .dotx files are accepted)"
+                  }
+                },
+                "required": ["newTemplate"]
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Returns information about the successfully uploaded template.",
+          "204": {
+            "description": "Returns 204 status code on success.",
             "content": {}
+          },
+          "400": {
+            "description": "Bad request - invalid or missing parameters, or invalid file format (only .dotx files are accepted)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "reason": "BAD_REQUEST",
+                  "message": "Missing required parameter: sponsorId or eventTypeId",
+                  "details": [],
+                  "timestamp": "2025-08-26T10:56:00Z",
+                  "requestId": "req-12345-abc"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized - authentication required",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -317,7 +341,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -334,7 +358,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -363,6 +387,15 @@
               "format": "uuid"
             },
             "description": "ID of the template"
+          },
+          {
+            "name": "Session-Id",
+            "in": "header",
+            "description": "Session identifier used to resolve Sponsor ID in case of it's absence",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -403,7 +436,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "BAD_REQUEST",
@@ -420,10 +453,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -437,7 +470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -454,10 +487,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "NOT_FOUND",
+                  "reason": "RESOURCE_NOT_FOUND",
                   "message": "No templates found for the given sponsorId and eventTypeId",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -471,7 +504,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -538,10 +571,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -555,7 +588,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -572,10 +605,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "NOT_FOUND",
+                  "reason": "RESOURCE_NOT_FOUND",
                   "message": "No template found for the provided parameters and no default template available",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -589,7 +622,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -638,10 +671,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -655,7 +688,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -672,7 +705,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -761,7 +794,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "BAD_REQUEST",
@@ -778,10 +811,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication credentials were not provided or are invalid",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -795,7 +828,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "FORBIDDEN",
@@ -812,10 +845,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "NOT_FOUND",
+                  "reason": "RESOURCE_NOT_FOUND",
                   "message": "No templates found for the given sponsorId and eventTypeId",
                   "details": [],
                   "timestamp": "2025-08-26T10:56:00Z",
@@ -829,7 +862,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -852,7 +885,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -955,27 +988,6 @@
           }
         }
       },
-      "Sponsor": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NamedObject"
-          }
-        ]
-      },
-      "FundGroup": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NamedObject"
-          }
-        ]
-      },
-      "Entity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/NamedObject"
-          }
-        ]
-      },
       "Template": {
         "type": "object",
         "description": "The information about template in the system.",
@@ -995,13 +1007,13 @@
             "$ref": "#/components/schemas/Template"
           },
           "sponsor": {
-            "$ref": "#/components/schemas/Sponsor"
+            "$ref": "./common.json#/components/schemas/Sponsor"
           },
           "fundGroup": {
-            "$ref": "#/components/schemas/FundGroup"
+            "$ref": "./common.json#/components/schemas/FundGroup"
           },
           "entity": {
-            "$ref": "#/components/schemas/Entity"
+            "$ref": "./common.json#/components/schemas/Entity"
           },
           "createdBy": {
             "type": "string",
@@ -1015,53 +1027,24 @@
             "type": "string",
             "enum": ["Active", "Inactive"],
             "description": "The status of the template."
+          },
+          "templateName": {
+            "type": "string",
+            "description": "Name of template."
           }
         },
         "required": ["id"]
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "description": "Object that represents errors details",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "enum": ["VALIDATION_ERROR", "NOT_FOUND", "INTERNAL_SERVER_ERROR", "UNAUTHORIZED", "FORBIDDEN", "BAD_REQUEST", "CONFLICT"],
-            "description": "Error reason code"
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message describing what went wrong"
-          },
-          "details": {
-            "type": "array",
-            "items": {
-              "title": "ErrorDetail",
-              "type": "object",
-              "properties": {
-                "field": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              }
-            },
-            "description": "Array of error details"
-          },
-          "timestamp": {
-            "type": "string",
-            "description": "Error timestamp"
-          },
-          "requestId": {
-            "type": "string",
-            "description": "Request id"
-          }
-        },
-        "required": ["reason", "message", "details", "timestamp", "requestId"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "$ref": "./common.json#/components/securitySchemes/bearerAuth"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

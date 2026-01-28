@@ -95,11 +95,13 @@ const ManagementFeeDetails: FC<Props> = ({ entityId, entityLabel }) => {
       capEventSettingsStore.setSelectedMFItemBatchNo(entityId, item?.batchNo);
       let mgmtFeeLineItems: CapEventLineItem[] = [];
       try {
-        mgmtFeeLineItems = await CapEventPackageApi.default.getMgmtFeeLineItems(
-          Number(item.batchNo),
-          entityId,
-          sessionId,
-        );
+        mgmtFeeLineItems = await CapEventPackageApi.default
+          .getMgmtFeeLineItems({
+            batchNo: Number(item.batchNo),
+            entityId,
+            sessionId,
+          })
+          .then((res) => res.data);
       } catch (error) {
         toast.error('Error getting mgmt fee line item');
         console.error(error);

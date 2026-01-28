@@ -77,7 +77,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FundGroup"
+                    "$ref": "./common.json#/components/schemas/FundGroup"
                   }
                 },
                 "examples": {
@@ -102,7 +102,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -119,10 +119,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -136,7 +136,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -153,7 +153,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -230,7 +230,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Entity"
+                    "$ref": "./common.json#/components/schemas/Entity"
                   }
                 },
                 "examples": {
@@ -245,9 +245,17 @@
                         "mfBasis": "10123",
                         "mfPercent": "0.02",
                         "mfStartDate": "12/17/2025",
+                        "mfStepDownDate": "12/19/2025",
+                        "mfPercentPostInvPeriod": "0.01",
                         "allocationBasis": {
                           "allocationId": "DS-CMNT",
                           "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        },
+                        "allocationBasisPostInvPeriod": {
+                          "allocationId": "DS-CNTRAll",
+                          "allocationName": "Contribution All",
                           "type": "Standard",
                           "allocationBasisStatus": "Active"
                         }
@@ -261,10 +269,18 @@
                         "mfBasis": "1234",
                         "mfPercent": "0.01",
                         "mfStartDate": "12/17/2025",
+                        "mfStepDownDate": "12/19/2025",
+                        "mfPercentPostInvPeriod": "0.01",
                         "yearFractionApproach": "90/360",
                         "allocationBasis": {
                           "allocationId": "DS-CMNT",
                           "allocationName": "Commitment",
+                          "type": "Standard",
+                          "allocationBasisStatus": "Active"
+                        },
+                        "allocationBasisPostInvPeriod": {
+                          "allocationId": "DS-CNTRAll",
+                          "allocationName": "Contribution All",
                           "type": "Standard",
                           "allocationBasisStatus": "Active"
                         }
@@ -280,7 +296,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -297,10 +313,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -314,7 +330,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -331,7 +347,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -409,7 +425,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Account"
+                    "$ref": "./common.json#/components/schemas/Account"
                   }
                 },
                 "examples": {
@@ -442,10 +458,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -459,7 +475,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -476,7 +492,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -524,7 +540,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Account"
+                  "$ref": "./common.json#/components/schemas/Account"
                 },
                 "examples": {
                   "example": {
@@ -546,10 +562,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -563,7 +579,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "RESOURCE_NOT_FOUND",
@@ -580,7 +596,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -660,10 +676,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -737,7 +753,7 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Investment" }
+                  "items": { "$ref": "./common.json#/components/schemas/Investment" }
                 },
                 "examples": {
                   "example": {
@@ -765,7 +781,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -786,10 +802,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -803,7 +819,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -832,7 +848,7 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Sponsor" }
+                  "items": { "$ref": "./common.json#/components/schemas/Sponsor" }
                 },
                 "examples": {
                   "example": {
@@ -860,7 +876,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -964,7 +980,9 @@
                             "mfBasisDateDefault": null,
                             "yearFractionApproach": null,
                             "mfPercent": null,
-                            "mfStartDate": null
+                            "mfStartDate": null,
+                            "mfStepDownDate": null,
+                            "mfPercentPostInvPeriod": null
                           },
                           "exchangeRate": null,
                           "classId": null,
@@ -995,7 +1013,9 @@
                             "mfBasisDateDefault": null,
                             "yearFractionApproach": null,
                             "mfPercent": null,
-                            "mfStartDate": null
+                            "mfStartDate": null,
+                            "mfStepDownDate": null,
+                            "mfPercentPostInvPeriod": null
                           },
                           "exchangeRate": null,
                           "classId": null,
@@ -1017,7 +1037,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1034,10 +1054,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1051,7 +1071,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1220,7 +1240,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1237,10 +1257,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1254,7 +1274,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1403,7 +1423,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1420,10 +1440,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1437,7 +1457,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1552,7 +1572,9 @@
                           "mfBasisDateDefault": null,
                           "yearFractionApproach": null,
                           "mfPercent": null,
-                          "mfStartDate": null
+                          "mfStartDate": null,
+                          "mfStepDownDate": null,
+                          "mfPercentPostInvPeriod": null
                         },
                         "exchangeRate": 1,
                         "classId": "",
@@ -1595,7 +1617,9 @@
                           "mfBasisDateDefault": null,
                           "yearFractionApproach": null,
                           "mfPercent": null,
-                          "mfStartDate": null
+                          "mfStartDate": null,
+                          "mfStepDownDate": null,
+                          "mfPercentPostInvPeriod": null
                         },
                         "exchangeRate": 1,
                         "classId": "",
@@ -1615,7 +1639,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1632,10 +1656,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1649,7 +1673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1690,7 +1714,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AllocationBasis"
+                    "$ref": "./common.json#/components/schemas/AllocationBasis"
                   }
                 },
                 "examples": {
@@ -1713,10 +1737,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1730,7 +1754,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1798,7 +1822,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "VALIDATION_ERROR",
@@ -1815,10 +1839,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "reason": "UNAUTHORIZED",
+                  "reason": "ACCESS_DENIED",
                   "message": "Authentication failed",
                   "details": null,
                   "timestamp": "2025-11-27T09:35:50.834945200Z",
@@ -1832,7 +1856,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "./common.json#/components/schemas/ErrorResponse"
                 },
                 "example": {
                   "reason": "INTERNAL_SERVER_ERROR",
@@ -1850,40 +1874,6 @@
   },
   "components": {
     "schemas": {
-      "Sponsor": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string", "example": "1" },
-          "name": { "type": "string", "example": "Golder Dev Test" },
-          "status": {
-            "type": "string",
-            "enum": [
-              "NEW",
-              "PROSPECT",
-              "ONBOARDING_TRANSITION",
-              "PENDING_CS_APPROVAL",
-              "PENDING_QC_LEGAL_APPROVAL",
-              "QC_REJECTED",
-              "LEGAL_REJECTED",
-              "IT_PROCESSING",
-              "ACTIVE",
-              "NEVER_LAUNCHED",
-              "OFFBOARDING",
-              "INACTIVE",
-              "PENDING_CS_APPROVAL_OFFBOARDING",
-              "IT_PROCESSING_OFFBOARDING"
-            ],
-            "example":  "ACTIVE"
-          },
-          "salesforceId": {
-            "type": "string"
-          },
-          "companyIds": {
-            "type": "array",
-            "items": { "type": "string" }
-          }
-        }
-      },
       "Query": {
         "type": "object",
         "properties": {
@@ -1908,118 +1898,15 @@
           "type": "string"
         }
       },
-      "FundGroup": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "FG001"
-          },
-          "name": {
-            "type": "string",
-            "example": "Global Equity"
-          }
-        }
-      },
-      "Entity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "F001"
-          },
-          "name": {
-            "type": "string",
-            "example": "International Growth Fund"
-          },
-          "dueDateDays": {
-            "type": "string"
-          },
-          "dueDateType": {
-            "type": "string"
-          },
-          "mfBasis": {
-            "type": "string",
-            "deprecated": true
-          },
-          "allocationBasis": {
-            "$ref": "#/components/schemas/AllocationBasis"
-          },
-          "mfBasisDateDefault": {
-            "type": "string"
-          },
-          "yearFractionApproach": {
-            "type": "string"
-          },
-          "mfPercent": {
-            "type": "string",
-            "example": "0.02"
-          },
-          "mfStartDate": {
-            "type": "string",
-            "example": "12/17/2025"
-          }
-        }
-      },
-      "Account": {
-        "type": "object",
-        "properties": {
-          "accountKey": {
-            "type": "string"
-          },
-          "accountName": {
-            "type": "string"
-          },
-          "accountNo": {
-            "type": "string"
-          },
-          "capitalCategory": {
-            "type": "string"
-          },
-          "callDistributionReason": {
-            "type": "string"
-          },
-          "defaultDescription": {
-            "type": "string"
-          },
-          "insideCommitment": {
-            "type": "string"
-          },
-          "fsLineItem": {
-            "type": "string"
-          }
-        }
-      },
-      "Investment": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier of the investment"
-          },
-          "name": {
-            "type": "string",
-            "description": "Short name of the investment"
-          },
-          "title": {
-            "type": "string",
-            "description": "Full descriptive title of the investment"
-          },
-          "type": {
-            "type": "string",
-            "description": "Type of the investment"
-          }
-        }
-      },
       "JournalEntry": {
         "type": "object",
         "description": "Journal entry",
         "properties": {
           "account": {
-            "$ref": "#/components/schemas/Account"
+            "$ref": "./common.json#/components/schemas/Account"
           },
           "investment": {
-            "$ref": "#/components/schemas/Investment"
+            "$ref": "./common.json#/components/schemas/Investment"
           },
           "prDate": {
             "type": "string"
@@ -2055,7 +1942,7 @@
             "description": "Batch number"
           },
           "entity": {
-            "$ref": "#/components/schemas/Entity"
+            "$ref": "./common.json#/components/schemas/Entity"
           },
           "exchangeRate": {
             "type": "number"
@@ -2079,36 +1966,6 @@
           }
         }
       },
-      "AllocationBasisStatus": {
-        "type": "string",
-        "enum": [
-          "Active",
-          "Inactive"
-        ]
-      },
-      "AllocationBasis": {
-        "type": "object",
-        "properties": {
-          "allocationId": {
-            "type": "string"
-          },
-          "allocationName": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "allocationBasisStatus": {
-            "$ref": "#/components/schemas/AllocationBasisStatus"
-          }
-        },
-        "example": {
-          "allocationId": "DS-CMNT",
-          "allocationName": "Commitment",
-          "type": "dynamic",
-          "allocationBasisStatus": "Active"
-        }
-      },
       "InvestorAttribute": {
         "type": "object",
         "properties": {
@@ -2116,75 +1973,17 @@
             "type": "string"
           }
         }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "description": "Error response with message",
-        "properties": {
-          "reason": {
-            "type": "string",
-            "enum": [
-              "VALIDATION_ERROR",
-              "RESOURCE_NOT_FOUND",
-              "INTERNAL_SERVER_ERROR",
-              "ACCESS_DENIED",
-              "UNAUTHORIZED"
-            ]
-          },
-          "message": {
-            "type": "string"
-          },
-          "details": {
-            "type": "array",
-            "items": {
-              "title": "ErrorDetail",
-              "type": "object",
-              "properties": {
-                "field": {
-                  "type": "string"
-                },
-                "reason": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "timestamp": {
-            "type": "string"
-          },
-          "requestId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
       }
     },
     "securitySchemes": {
-      "PrincipalHeader": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "principal"
-      },
-      "ClientIdHeader": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "client_id"
-      },
-      "ClientSecretHeader": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "client_secret"
+      "bearerAuth": {
+        "$ref": "./common.json#/components/securitySchemes/bearerAuth"
       }
     }
   },
   "security": [
     {
-      "PrincipalHeader": [],
-      "ClientIdHeader": [],
-      "ClientSecretHeader": []
+      "bearerAuth": []
     }
   ]
 }

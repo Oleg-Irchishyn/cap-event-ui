@@ -95,6 +95,10 @@ jest.mock('@/api', () => {
   };
 });
 
+jest.mock('@/utils/sessionIdStorage', () => ({
+  getStoredSessionId: jest.fn().mockReturnValue(''),
+}));
+
 jest.mock('@/stores', () => {
   type Item = { label: string; id?: string; state?: string };
   const capEventSettingsStore = {
@@ -159,15 +163,21 @@ describe('GeneralSettings', () => {
     (ReferenceDataApi.fundGroups.searchFundGroupsBySponsor as jest.Mock).mockResolvedValue([
       { id: 'FG1', name: 'Group 1' },
     ]);
-    (ReferenceDataApi.entities.getEntitiesByFundGroup as jest.Mock).mockResolvedValue([]);
+    (ReferenceDataApi.entities.getEntitiesByFundGroup as jest.Mock).mockResolvedValue({
+      data: [],
+    });
   });
 
   it('fetches event types and sponsors on mount', async () => {
+    (ReferenceDataApi.sponsors.getSponsors as jest.Mock).mockResolvedValue({
+      data: [{ name: 'Sponsor 1' }],
+    });
+
     renderWithTheme(<GeneralSettings />);
     await waitFor(() => expect(CapEventPackageApi.default.getCapEventTypes).toHaveBeenCalled());
     await waitFor(() => expect(ReferenceDataApi.sponsors.getSponsors).toHaveBeenCalled());
     expect(capEventSettingsStore.setEventTypes).toHaveBeenCalled();
-    expect(capEventSettingsStore.setSponsors).toHaveBeenCalled();
+    await waitFor(() => expect(capEventSettingsStore.setSponsors).toHaveBeenCalled());
   });
 
   it('selecting event type confirms when enabled', async () => {
@@ -240,12 +250,12 @@ describe('GeneralSettings', () => {
     expect(capEventSettingsStore.resetOnFundGroupChange).toHaveBeenCalled();
     expect(capEventSettingsStore.setFundEntities).toHaveBeenCalledWith([]);
     await waitFor(() =>
-      expect(ReferenceDataApi.entities.getEntitiesByFundGroup).toHaveBeenCalledWith(
-        'EVT1',
-        expect.any(String),
-        ['ACTIVE'],
-        ['ADMIN', 'ELIMINATION'],
-      ),
+      expect(ReferenceDataApi.entities.getEntitiesByFundGroup).toHaveBeenCalledWith({
+        fundGroupId: 'EVT1',
+        sessionId: expect.any(String),
+        statuses: ['ACTIVE'],
+        typesToExclude: ['ADMIN', 'ELIMINATION'],
+      }),
     );
   });
 
@@ -253,7 +263,9 @@ describe('GeneralSettings', () => {
     confirmationHook.isConfirmationModalEnabled = true;
     (confirmationHook.confirmFieldChange as jest.Mock).mockResolvedValue(true);
 
-    (ReferenceDataApi.sponsors.getSponsors as jest.Mock).mockResolvedValue([{ name: 'Sponsor A' }]);
+    (ReferenceDataApi.sponsors.getSponsors as jest.Mock).mockResolvedValue({
+      data: [{ name: 'Sponsor A' }],
+    });
 
     renderWithTheme(<GeneralSettings />);
 

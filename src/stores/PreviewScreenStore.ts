@@ -125,7 +125,7 @@ class PreviewScreenStore {
     return isLineItemRowValid(row);
   };
 
-  private pickNonEmpty<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  private pickNonEmpty<T extends object>(obj: T): Partial<T> {
     return Object.fromEntries(
       Object.entries(obj).filter(
         ([, v]) => v !== undefined && v !== null && !(typeof v === 'string' && v.trim() === ''),
@@ -416,7 +416,9 @@ class PreviewScreenStore {
           this.rows = [];
         });
         const [processResponse, allocationResponse] = await Promise.all([
-          CapEventPackageApi.default.process(requestPayload, sessionId),
+          CapEventPackageApi.default
+            .process({ capEvent: requestPayload, sessionId })
+            .then((res) => res.data),
           this.allocateLineItems(),
         ]);
         runInAction(() => {
@@ -481,14 +483,16 @@ class PreviewScreenStore {
         if (lineItem.isMfLineItem) {
           if (!lineItem.batchNo || !lineItem.originAccountKey) return;
           const mgmtFeePromise = Promise.resolve(
-            CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries(
-              lineItem.batchNo,
-              lineItem.originAccountKey,
-              lineItem.allocationBasis,
-              allocationBasisId,
-              entityId,
-              sessionId,
-            ),
+            CapEventPackageApi.default
+              .getAllocatedMgmtFeeJournalEntries({
+                batchNo: lineItem.batchNo,
+                accountKey: lineItem.originAccountKey,
+                allocationBasis: lineItem.allocationBasis,
+                allocationBasisId,
+                entityId,
+                sessionId,
+              })
+              .then((res) => res.data),
           ).then((response) => ({
             entityId: entityId,
             lineItemId: lineItem.id,
@@ -521,7 +525,9 @@ class PreviewScreenStore {
         };
 
         const allocatePromise = Promise.resolve(
-          CapEventPackageApi.default.allocateLineItem(payload),
+          CapEventPackageApi.default
+            .allocateLineItem({ allocationInput: payload, sessionId })
+            .then((res) => res.data),
         ).then((response) => ({
           entityId: entityId,
           lineItemId: lineItem.id,

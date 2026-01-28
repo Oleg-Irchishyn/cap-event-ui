@@ -90,22 +90,21 @@ describe('AllocationPreviewModal', () => {
       ],
     ]);
 
-    (CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries as jest.Mock).mockResolvedValue([
-      { id: 1 },
-      { id: 2 },
-    ]);
+    (CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries as jest.Mock).mockResolvedValue({
+      data: [{ id: 1 }, { id: 2 }],
+    });
 
     renderWithTheme(<AllocationPreviewModal entityId="E1" />);
 
     await waitFor(() =>
-      expect(CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries).toHaveBeenCalledWith(
-        7,
-        101,
-        'Commitment',
-        'DS-CMNT',
-        'E1',
-        'SID',
-      ),
+      expect(CapEventPackageApi.default.getAllocatedMgmtFeeJournalEntries).toHaveBeenCalledWith({
+        batchNo: 7,
+        accountKey: 101,
+        allocationBasis: 'Commitment',
+        allocationBasisId: 'DS-CMNT',
+        entityId: 'E1',
+        sessionId: 'SID',
+      }),
     );
 
     await waitFor(() =>
@@ -117,7 +116,6 @@ describe('AllocationPreviewModal', () => {
     const { capEventSettingsStore, entityDatesStore } = jest.requireMock('@/stores');
     const { CapEventPackageApi } = jest.requireMock('@/api');
 
-    // Arrange store for non-MF scenario
     capEventSettingsStore.isAllocationPreviewModalOpen = true;
     capEventSettingsStore.allocationPreviewModalTitle = '123 - Fund ABC';
     capEventSettingsStore.allocationPreviewModaLineItemId = 'E1';
@@ -137,15 +135,16 @@ describe('AllocationPreviewModal', () => {
       ],
     ]);
 
-    // Create date in local timezone to avoid timezone issues (month is 0-indexed: 1 = February)
     (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date(2025, 1, 3));
-    (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue([{ id: 1 }]);
+    (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue({
+      data: [{ id: 1 }],
+    });
 
     renderWithTheme(<AllocationPreviewModal entityId="123" />);
 
     await waitFor(() =>
-      expect(CapEventPackageApi.default.allocateLineItem).toHaveBeenCalledWith(
-        {
+      expect(CapEventPackageApi.default.allocateLineItem).toHaveBeenCalledWith({
+        allocationInput: {
           entityId: '123',
           dueDate: '2025-02-03',
           allocationBasisId: 'DS-CMNT',
@@ -153,8 +152,8 @@ describe('AllocationPreviewModal', () => {
           investmentId: 'INV1',
           amount: 5000,
         },
-        'SID',
-      ),
+        sessionId: 'SID',
+      }),
     );
 
     await waitFor(() =>
@@ -186,7 +185,7 @@ describe('AllocationPreviewModal', () => {
     ]);
 
     (entityDatesStore.getEntityDueDate as jest.Mock).mockReturnValue(new Date(2025, 0, 1));
-    (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue([]);
+    (CapEventPackageApi.default.allocateLineItem as jest.Mock).mockResolvedValue({ data: [] });
 
     renderWithTheme(<AllocationPreviewModal entityId="ENT1" />);
 

@@ -179,12 +179,14 @@ const SubmitButton = () => {
       const requestWithAggregatedLineItems =
         previewScreenStore.withAggregatedLineItems(requestBody);
 
-      const response = await CapEventPackageApi.default.submit(
-        requestWithAggregatedLineItems,
-        sessionId,
-      );
+      const response = await CapEventPackageApi.default
+        .submit({
+          capEvent: requestWithAggregatedLineItems,
+          sessionId,
+        })
+        .then((res) => res.data);
 
-      if (response.status === CapEventStatus.SUBMITTED) {
+      if (response.status === CapEventStatus.Submitted) {
         // Reset selections and dates when leaving the preview screen, till we don't have local data base
         capEventSettingsStore.resetStore();
         entityDatesStore.resetAllDates();
