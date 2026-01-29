@@ -172,4 +172,117 @@ describe('useAccountsTableRowData', () => {
     expect(totalRow.amount).toBe(-200);
     expect(totalRow.capitalCategory).toBe('Net Distributions');
   });
+
+  describe('total amount rounding to 2 decimal places', () => {
+    it('rounds total to 2 decimals when floating-point sum produces extra digits', () => {
+      const rows = [
+        {
+          id: '1',
+          amount: 30000,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+        {
+          id: '2',
+          amount: 30000,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+        {
+          id: '3',
+          amount: 15000.01,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+      ];
+
+      render(<TestComponent rows={rows} />);
+      const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+      const totalRow = result[result.length - 1];
+      expect(totalRow.amount).toBe(75000.01);
+    });
+
+    it('rounds positive total with more than 2 decimal places', () => {
+      const rows = [
+        {
+          id: '1',
+          amount: 10.126,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+      ];
+
+      render(<TestComponent rows={rows} />);
+      const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+      const totalRow = result[result.length - 1];
+      expect(totalRow.amount).toBe(10.13);
+    });
+
+    it('rounds negative total to 2 decimal places', () => {
+      const rows = [
+        {
+          id: '1',
+          amount: -100.556,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+      ];
+
+      render(<TestComponent rows={rows} />);
+      const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+      const totalRow = result[result.length - 1];
+      expect(totalRow.amount).toBe(-100.56);
+      expect(totalRow.capitalCategory).toBe('Net Distributions');
+    });
+
+    it('keeps integer totals unchanged', () => {
+      const rows = [
+        {
+          id: '1',
+          amount: 25,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+        {
+          id: '2',
+          amount: 75,
+          investment: {},
+          allocationBasis: '',
+          capitalCategory: 'Cat',
+          callDistributionReason: '',
+          defaultDescription: '',
+          insideCommitment: '',
+        } as LineItemRow,
+      ];
+
+      render(<TestComponent rows={rows} />);
+      const result = JSON.parse(screen.getByTestId('out').textContent || '[]');
+      const totalRow = result[result.length - 1];
+      expect(totalRow.amount).toBe(100);
+    });
+  });
 });

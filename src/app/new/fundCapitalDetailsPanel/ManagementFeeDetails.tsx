@@ -24,6 +24,7 @@ const prepareMgmtEntryOptions = (
 
     return {
       ...item,
+      id: String(item.batchNo),
       state: item.batchNo === selectedBatchNo ? ITEM_STATES.SELECTED : ITEM_STATES.OPTIONAL,
       label: item.amount?.toLocaleString() ?? '',
       displayName: `${item.amount?.toLocaleString()} (${formatedDate})`,

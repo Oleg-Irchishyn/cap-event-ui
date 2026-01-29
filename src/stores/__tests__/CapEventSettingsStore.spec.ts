@@ -27,8 +27,10 @@ jest.mock('@/api', () => ({
   },
   CapEventPackageApi: {
     default: {
-      getMgmtFeeJournalEntries: jest.fn().mockReturnValue({
-        testId: [],
+      getMgmtFeeJournalEntries: jest.fn().mockResolvedValue({
+        data: {
+          testId: [],
+        },
       }),
     },
   },

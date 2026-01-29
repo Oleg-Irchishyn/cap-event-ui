@@ -170,10 +170,13 @@ class CapEventSettingsStore {
 
   *fetchMgmtJournalEntries(entityIds: string[]) {
     const sessionId = getStoredSessionId() ?? '';
-    this.mgmtJournalEntries = yield CapEventPackageApi.default.getMgmtFeeJournalEntries({
-      entityIds,
-      sessionId,
-    });
+    const response: Record<string, MgmtFeeJournalEntry[]> = yield CapEventPackageApi.default
+      .getMgmtFeeJournalEntries({
+        entityIds,
+        sessionId,
+      })
+      .then((res) => res.data);
+    this.mgmtJournalEntries = response ?? {};
   }
 
   isGeneralSettingsEmpty(

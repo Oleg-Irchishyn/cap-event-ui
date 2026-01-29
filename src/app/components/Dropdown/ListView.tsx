@@ -112,7 +112,7 @@ const ListView = <T,>({
       <>
         {sortedItems.map((item) => (
           <ListItem
-            key={item.label}
+            key={item.id ?? item.label}
             item={item}
             checkbox={checkbox}
             withDescription={withDescription}

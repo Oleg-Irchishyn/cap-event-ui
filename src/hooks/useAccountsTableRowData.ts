@@ -8,6 +8,11 @@ const NET_ZERO_LABEL = 'Net Zero';
 const TOTAL_LABEL = 'Total';
 const TOTAL_ROW_ID = 'total-row';
 
+const AMOUNT_DECIMAL_PLACES = 2;
+
+const roundToDecimalPlaces = (value: number, decimals: number): number =>
+  Math.round(value * 10 ** decimals) / 10 ** decimals;
+
 const getTotalLabel = (total: number | string) => {
   if (typeof total === 'string') return TOTAL_LABEL;
   if (total > 0) return NET_CONTRIBUTIONS_LABEL;
@@ -19,9 +24,13 @@ export const useAccountsTableRowData = (lineItems: LineItemRow[] = []) => {
   const tableData = useMemo(() => {
     const validRows = lineItems?.filter((row) => row.id !== TOTAL_ROW_ID) || [];
     const isAnyAmountFilled = validRows.some((row) => row.capitalCategory && row.amount);
-    const totalAmount = isAnyAmountFilled
+    const rawTotal = isAnyAmountFilled
       ? validRows.reduce((sum, row) => sum + (row.amount || 0), 0)
       : '';
+    const totalAmount =
+      typeof rawTotal === 'number'
+        ? roundToDecimalPlaces(rawTotal, AMOUNT_DECIMAL_PLACES)
+        : rawTotal;
 
     const totalLabel = getTotalLabel(totalAmount);
 
