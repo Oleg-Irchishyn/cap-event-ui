@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.93](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.92&targetVersion=GTv0.0.93) (2026-01-29)
+
+
+### Features
+
+* [TASK-10047]: [FE] Make ErrorResponse as common model ([9cd71c9](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/9cd71c9734346c940ac76e47334b75e049735d1c)), closes [#10047](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10047)
+
 ### [0.0.92](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.91&targetVersion=GTv0.0.92) (2026-01-28)
 
 
