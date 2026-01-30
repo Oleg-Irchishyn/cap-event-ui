@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.94](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.93&targetVersion=GTv0.0.94) (2026-01-30)
+
+
+### Bug Fixes
+
+* [Issue-10165]: [FE] MF Line Items are showing 'No Data available' ([5e6ec8c](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/5e6ec8cbb3835ded2884fead4e4c63464d7ea971)), closes [#10164](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10164) [#10165](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/10165)
+
 ### [0.0.93](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.92&targetVersion=GTv0.0.93) (2026-01-29)
 
 
