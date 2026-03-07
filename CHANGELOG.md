@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.95](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.94&targetVersion=GTv0.0.95) (2026-03-07)
+
+
+### Features
+
+* [TASK-11860]: [FE]: Configure Directory Access Limitaions for Claude Code ([f51d630](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/commit/f51d63042952ef6b06c932af515401ef4bcb7308)), closes [#11861](https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui/issues/11861)
+
 ### [0.0.94](https://dev.azure.com/gen2fundprod/Development/_git/pnl-allocations-fe/branchCompare?baseVersion=GTv0.0.93&targetVersion=GTv0.0.94) (2026-01-30)
 
 
