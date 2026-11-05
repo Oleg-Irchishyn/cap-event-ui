@@ -1,4 +1,9 @@
-import { exchangeCodeForToken, getOneLoginConfig, OneLoginConfig } from '../oneloginAuth';
+import {
+  exchangeCodeForToken,
+  getOneLoginBaseUrl,
+  getOneLoginConfig,
+  OneLoginConfig,
+} from '../oneloginAuth';
 import ProcessEnv = NodeJS.ProcessEnv;
 
 // Mock fetch
@@ -92,9 +97,43 @@ describe('oneloginAuth', () => {
       subdomain: 'testcompany',
       redirectUri: 'http://localhost:3000/auth/callback',
       region: 'us',
+      baseUrl: undefined,
       scope: 'cap-event',
       resource: 'resource',
     });
+
+    process.env = originalEnv;
+  });
+
+  describe('getOneLoginBaseUrl', () => {
+    it('builds the onelogin.com url from the subdomain by default', () => {
+      expect(getOneLoginBaseUrl(mockConfig)).toBe('https://testcompany.onelogin.com');
+    });
+
+    it('builds the onelogin.eu url for the eu region', () => {
+      expect(getOneLoginBaseUrl({ ...mockConfig, region: 'eu' })).toBe(
+        'https://testcompany.onelogin.eu',
+      );
+    });
+
+    it('prefers baseUrl and strips trailing slashes (local fake provider)', () => {
+      expect(getOneLoginBaseUrl({ ...mockConfig, baseUrl: 'http://localhost:4000//' })).toBe(
+        'http://localhost:4000',
+      );
+    });
+  });
+
+  it('accepts NEXT_PUBLIC_ONELOGIN_BASE_URL instead of a subdomain', () => {
+    const originalEnv = process.env;
+    process.env = {
+      NEXT_PUBLIC_ONELOGIN_CLIENT_ID: 'test-client-id',
+      NEXT_PUBLIC_ONELOGIN_BASE_URL: 'http://localhost:4000',
+      NEXT_PUBLIC_ONELOGIN_REDIRECT_URI: 'http://localhost:3000/auth/callback',
+      NEXT_PUBLIC_ONELOGIN_RESOURCE: 'resource',
+      NEXT_PUBLIC_ONELOGIN_SCOPE: 'cap-event',
+    } as unknown as ProcessEnv;
+
+    expect(getOneLoginConfig().baseUrl).toBe('http://localhost:4000');
 
     process.env = originalEnv;
   });

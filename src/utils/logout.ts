@@ -1,6 +1,6 @@
 import { clearTokens, getStoredIdToken } from './tokenStorage';
 import { clearStoredSessionId } from './sessionIdStorage';
-import { getOneLoginConfig } from './oneloginAuth';
+import { getOneLoginBaseUrl, getOneLoginConfig } from './oneloginAuth';
 import { ROUTES } from '@/const/routes';
 
 /**
@@ -15,11 +15,7 @@ export const logout = async (): Promise<void> => {
 
   try {
     const config = getOneLoginConfig();
-    const region = config.region ?? 'us';
-    const baseUrl =
-      region === 'eu'
-        ? `https://${config.subdomain}.onelogin.eu`
-        : `https://${config.subdomain}.onelogin.com`;
+    const baseUrl = getOneLoginBaseUrl(config);
 
     const logoutUrl = new URL(`${baseUrl}/oidc/2/logout`);
 
