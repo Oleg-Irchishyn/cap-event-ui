@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import StyledComponentsRegistry from '@/lib/registry';
 import { ThemeProvider } from 'styled-components';
+import { IrchishynThemeProvider } from '@oleg-irchishyn/irchishyn-ui-library';
 import { theme } from '@/ui/globalStyles';
 import { ibm_plex_sans } from '@/ui/fonts';
 import ToastProvider from '@/providers/ToastProvider';
@@ -36,7 +37,11 @@ export default function RootLayout({
     const checkAuth = async () => {
       const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname?.startsWith(route));
 
-      if (isPublicRoute) {
+      // Local development only: skip the OneLogin check (never active in production builds)
+      const isAuthDisabled =
+        process.env.NODE_ENV !== 'production' && process.env.NEXT_PUBLIC_AUTH_DISABLED === 'true';
+
+      if (isPublicRoute || isAuthDisabled) {
         if (!isMounted) return;
         setShouldRenderChildren(true);
         setIsAuthChecked(true);
@@ -97,7 +102,9 @@ export default function RootLayout({
       <body className={`${ibm_plex_sans.className} ${ibm_plex_sans.variable}`}>
         <StyledComponentsRegistry>
           <ThemeProvider theme={theme}>
-            <ToastProvider>{children}</ToastProvider>
+            <IrchishynThemeProvider cssBaseline={false}>
+              <ToastProvider>{children}</ToastProvider>
+            </IrchishynThemeProvider>
           </ThemeProvider>
         </StyledComponentsRegistry>
       </body>

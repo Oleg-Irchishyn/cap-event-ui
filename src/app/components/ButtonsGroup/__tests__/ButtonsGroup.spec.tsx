@@ -76,7 +76,7 @@ describe('ButtonsGroup', () => {
   it('renders all buttons', () => {
     renderWithTheme(<ButtonsGroup />);
 
-    expect(screen.getByTestId('cancel')).toBeInTheDocument();
+    expect(screen.getByText('Cancel').closest('button') as HTMLElement).toBeInTheDocument();
     expect(screen.getByTestId('footnotes')).toBeInTheDocument();
     expect(screen.getByTestId('delete')).toBeInTheDocument();
     expect(screen.getByTestId('save-draft')).toBeInTheDocument();
@@ -86,7 +86,7 @@ describe('ButtonsGroup', () => {
   it('has disabled buttons by default', () => {
     renderWithTheme(<ButtonsGroup />);
 
-    expect(screen.getByTestId('cancel')).toBeDisabled();
+    expect(screen.getByText('Cancel').closest('button') as HTMLElement).toBeDisabled();
     expect(screen.getByTestId('delete')).toBeDisabled();
     expect(screen.getByTestId('save-draft')).toBeDisabled();
     expect(screen.getByTestId('preview-screen')).toBeDisabled();
@@ -153,7 +153,7 @@ describe('ButtonsGroup', () => {
 
       renderWithTheme(<ButtonsGroup />);
 
-      expect(screen.getByTestId('cancel')).not.toBeDisabled();
+      expect(screen.getByText('Cancel').closest('button') as HTMLElement).not.toBeDisabled();
     });
 
     it('disables Cancel when snapshot exists and no changes', () => {
@@ -169,7 +169,7 @@ describe('ButtonsGroup', () => {
 
       renderWithTheme(<ButtonsGroup />);
 
-      expect(screen.getByTestId('cancel')).toBeDisabled();
+      expect(screen.getByText('Cancel').closest('button') as HTMLElement).toBeDisabled();
     });
 
     it('enables Cancel when snapshot exists and there are changes', () => {
@@ -185,7 +185,7 @@ describe('ButtonsGroup', () => {
 
       renderWithTheme(<ButtonsGroup />);
 
-      expect(screen.getByTestId('cancel')).not.toBeDisabled();
+      expect(screen.getByText('Cancel').closest('button') as HTMLElement).not.toBeDisabled();
     });
   });
 });
