@@ -75,7 +75,10 @@ export default function RootLayout({
   if (!isAuthChecked || !shouldRenderChildren) {
     return (
       <html lang="en">
-        <body className={`${ibm_plex_sans.className} ${ibm_plex_sans.variable}`}>
+        <body
+          className={`${ibm_plex_sans.className} ${ibm_plex_sans.variable}`}
+          suppressHydrationWarning
+        >
           <StyledComponentsRegistry>
             <ThemeProvider theme={theme}>
               <div
@@ -99,7 +102,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${ibm_plex_sans.className} ${ibm_plex_sans.variable}`}>
+      <body
+        className={`${ibm_plex_sans.className} ${ibm_plex_sans.variable}`}
+        suppressHydrationWarning
+      >
         <StyledComponentsRegistry>
           <ThemeProvider theme={theme}>
             <IrchishynThemeProvider cssBaseline={false}>
