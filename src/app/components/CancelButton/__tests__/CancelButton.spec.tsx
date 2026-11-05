@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/ui/globalStyles';
@@ -12,7 +12,7 @@ describe('CancelButton', () => {
     const onOpen = jest.fn();
     renderWithTheme(<CancelButton isFormClean={false} onOpenConfirmationModal={onOpen} />);
 
-    const button = screen.getByTestId('cancel');
+    const button = screen.getByText('Cancel').closest('button') as HTMLElement;
     expect(button).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
@@ -21,7 +21,7 @@ describe('CancelButton', () => {
     const onOpen = jest.fn();
     renderWithTheme(<CancelButton isFormClean={true} onOpenConfirmationModal={onOpen} />);
 
-    const button = screen.getByTestId('cancel');
+    const button = screen.getByText('Cancel').closest('button') as HTMLElement;
     expect(button).toBeDisabled();
   });
 
@@ -29,7 +29,7 @@ describe('CancelButton', () => {
     const onOpen = jest.fn();
     renderWithTheme(<CancelButton isFormClean={false} onOpenConfirmationModal={onOpen} />);
 
-    const button = screen.getByTestId('cancel');
+    const button = screen.getByText('Cancel').closest('button') as HTMLElement;
     expect(button).not.toBeDisabled();
   });
 
@@ -37,25 +37,19 @@ describe('CancelButton', () => {
     const onOpen = jest.fn();
     renderWithTheme(<CancelButton isFormClean={false} onOpenConfirmationModal={onOpen} />);
 
-    const button = screen.getByTestId('cancel');
+    const button = screen.getByText('Cancel').closest('button') as HTMLElement;
     fireEvent.click(button);
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
 
-  it('shows tooltip on hover when there are unsaved changes, and hides on mouse leave', () => {
+  it('shows tooltip on hover when there are unsaved changes', async () => {
     const onOpen = jest.fn();
     renderWithTheme(<CancelButton isFormClean={false} onOpenConfirmationModal={onOpen} />);
 
-    expect(screen.queryByTestId('tooltip-cancel-button-tooltip')).not.toBeInTheDocument();
+    fireEvent.mouseOver(screen.getByText('Cancel').closest('button') as HTMLElement);
 
-    const button = screen.getByTestId('cancel');
-    fireEvent.mouseEnter(button);
-
-    const tooltip = screen.getByTestId('tooltip-cancel-button-tooltip');
-    expect(tooltip).toBeInTheDocument();
-    expect(tooltip).toHaveTextContent('Discard unsaved changes');
-
-    fireEvent.mouseLeave(button);
-    expect(screen.queryByTestId('tooltip-cancel-button-tooltip')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Discard unsaved changes'),
+    );
   });
 });

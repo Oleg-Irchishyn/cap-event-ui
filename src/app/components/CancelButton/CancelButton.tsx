@@ -1,6 +1,5 @@
-import { FC, useRef, useState } from 'react';
-import Button, { BUTTON_THEMES } from '@/app/components/Button';
-import Tooltip from '@/app/components/Tooltip';
+import { FC } from 'react';
+import { ActionButton } from '@oleg-irchishyn/irchishyn-ui-library';
 
 import { CancelButtonWrapper } from './styles';
 
@@ -9,43 +8,16 @@ interface CancelButtonProps {
   onOpenConfirmationModal: () => void;
 }
 
-const CancelButton: FC<CancelButtonProps> = ({ isFormClean, onOpenConfirmationModal }) => {
-  const cancelTooltipRef = useRef<HTMLDivElement | null>(null);
-  const [showCancelTooltip, setShowCancelTooltip] = useState(false);
-
-  const onShowTooltip = () => {
-    if (!isFormClean) {
-      setShowCancelTooltip(true);
-    }
-  };
-
-  const onHideTooltip = () => {
-    setShowCancelTooltip(false);
-  };
-
-  return (
-    <CancelButtonWrapper
-      ref={cancelTooltipRef}
-      onMouseEnter={onShowTooltip}
-      onMouseLeave={onHideTooltip}
-    >
-      <Button
-        testId="cancel"
-        disabled={isFormClean}
-        width="auto"
-        onClick={onOpenConfirmationModal}
-        buttonTheme={BUTTON_THEMES.secondary}
-      >
-        Cancel
-      </Button>
-      <Tooltip
-        tooltipMessage="Discard unsaved changes"
-        showTooltip={showCancelTooltip}
-        targetRef={cancelTooltipRef}
-        testId="cancel-button-tooltip"
-      />
-    </CancelButtonWrapper>
-  );
-};
+const CancelButton: FC<CancelButtonProps> = ({ isFormClean, onOpenConfirmationModal }) => (
+  <CancelButtonWrapper>
+    <ActionButton
+      variant="secondary"
+      label="Cancel"
+      disabled={isFormClean}
+      onClick={onOpenConfirmationModal}
+      tooltip={isFormClean ? undefined : 'Discard unsaved changes'}
+    />
+  </CancelButtonWrapper>
+);
 
 export default CancelButton;

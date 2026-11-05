@@ -91,4 +91,24 @@ describe('RootLayout', () => {
 
     expect(screen.queryByText('Test Content')).not.toBeInTheDocument();
   });
+  describe('NEXT_PUBLIC_AUTH_DISABLED', () => {
+    const original = process.env.NEXT_PUBLIC_AUTH_DISABLED;
+
+    afterEach(() => {
+      if (original === undefined) delete process.env.NEXT_PUBLIC_AUTH_DISABLED;
+      else process.env.NEXT_PUBLIC_AUTH_DISABLED = original;
+    });
+
+    it('renders children without a token and does not redirect when auth is disabled', async () => {
+      process.env.NEXT_PUBLIC_AUTH_DISABLED = 'true';
+      getAccessTokenWithRefresh.mockResolvedValue(null);
+
+      renderLayout(<div>Test Content</div>);
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Content')).toBeInTheDocument();
+      });
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+  });
 });
