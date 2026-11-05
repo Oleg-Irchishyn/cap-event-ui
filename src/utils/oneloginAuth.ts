@@ -10,6 +10,7 @@ export interface OneLoginConfig {
   subdomain: string; // e.g., "yourcompany" for https://yourcompany.onelogin.com
   redirectUri: string; // Must match the redirect URI configured in OneLogin app
   region?: 'us' | 'eu'; // OneLogin region, defaults to 'us'
+  baseUrl?: string; // Optional override of the whole OIDC host (e.g. a local fake provider)
   scope: string;
   resource: string;
 }
@@ -21,6 +22,20 @@ export interface TokenResponse {
   refresh_token?: string;
   id_token?: string;
 }
+
+/**
+ * Returns the OneLogin base URL. NEXT_PUBLIC_ONELOGIN_BASE_URL (config.baseUrl) wins,
+ * which lets local development point at a fake OIDC provider instead of onelogin.com.
+ */
+export const getOneLoginBaseUrl = (config: OneLoginConfig): string => {
+  if (config.baseUrl) {
+    return config.baseUrl.replace(/[/]+$/, '');
+  }
+
+  return config.region === 'eu'
+    ? `https://${config.subdomain}.onelogin.eu`
+    : `https://${config.subdomain}.onelogin.com`;
+};
 
 /**
  * Generates a random state parameter for OAuth flow to prevent CSRF attacks
@@ -65,11 +80,7 @@ export const getOneLoginAuthUrl = async (
     sessionStorage.setItem('onelogin_code_verifier', codeVerifier);
   }
 
-  const region = config.region ?? 'us';
-  const baseUrl =
-    region === 'eu'
-      ? `https://${config.subdomain}.onelogin.eu`
-      : `https://${config.subdomain}.onelogin.com`;
+  const baseUrl = getOneLoginBaseUrl(config);
 
   const params = new URLSearchParams({
     client_id: config.clientId,
@@ -105,11 +116,7 @@ export const exchangeCodeForToken = async (
     throw new Error('Code verifier not found. Please restart the login process.');
   }
 
-  const region = config.region ?? 'us';
-  const baseUrl =
-    region === 'eu'
-      ? `https://${config.subdomain}.onelogin.eu`
-      : `https://${config.subdomain}.onelogin.com`;
+  const baseUrl = getOneLoginBaseUrl(config);
 
   const tokenUrl = `${baseUrl}/oidc/2/token`;
 
@@ -181,11 +188,7 @@ export const refreshAccessToken = async (
   refreshToken: string,
   config: OneLoginConfig,
 ): Promise<TokenResponse> => {
-  const region = config.region ?? 'us';
-  const baseUrl =
-    region === 'eu'
-      ? `https://${config.subdomain}.onelogin.eu`
-      : `https://${config.subdomain}.onelogin.com`;
+  const baseUrl = getOneLoginBaseUrl(config);
 
   const tokenUrl = `${baseUrl}/oidc/2/token`;
 
@@ -221,19 +224,21 @@ export const getOneLoginConfig = (): OneLoginConfig => {
   const scope = process.env.NEXT_PUBLIC_ONELOGIN_SCOPE;
   const resource = process.env.NEXT_PUBLIC_ONELOGIN_RESOURCE;
   const region = (process.env.NEXT_PUBLIC_ONELOGIN_REGION as 'us' | 'eu' | undefined) || 'us';
+  const baseUrl = process.env.NEXT_PUBLIC_ONELOGIN_BASE_URL;
 
-  if (!clientId || !subdomain || !redirectUri || !scope || !resource) {
+  if (!clientId || (!subdomain && !baseUrl) || !redirectUri || !scope || !resource) {
     throw new Error(
       'Missing OneLogin configuration. Please set NEXT_PUBLIC_ONELOGIN_CLIENT_ID, ' +
-        'NEXT_PUBLIC_ONELOGIN_SUBDOMAIN, NEXT_PUBLIC_ONELOGIN_SCOPE, NEXT_PUBLIC_ONELOGIN_RESOURCE and NEXT_PUBLIC_ONELOGIN_REDIRECT_URI environment variables.',
+        'NEXT_PUBLIC_ONELOGIN_SUBDOMAIN (or NEXT_PUBLIC_ONELOGIN_BASE_URL), NEXT_PUBLIC_ONELOGIN_SCOPE, NEXT_PUBLIC_ONELOGIN_RESOURCE and NEXT_PUBLIC_ONELOGIN_REDIRECT_URI environment variables.',
     );
   }
 
   return {
     clientId,
-    subdomain,
+    subdomain: subdomain ?? '',
     redirectUri,
     region,
+    baseUrl,
     scope,
     resource,
   };
