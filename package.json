@@ -1,5 +1,5 @@
 {
-  "name": "cap-call",
+  "name": "cap-event-ui",
   "version": "0.0.95",
   "private": true,
   "scripts": {
@@ -11,13 +11,6 @@
     "test": "jest",
     "test:ci": "jest --ci --collectCoverage",
     "test:watch": "jest --watch",
-    "drop": "npx standard-version --release-as patch",
-    "drop-manual": "npx standard-version --release-as patch --skip.commit --skip.tag",
-    "candidate": "npx standard-version --prerelease rc",
-    "candidate-manual": "npx standard-version --prerelease rc --skip.commit --skip.tag",
-    "release": "npx standard-version --release-as patch --prerelease release",
-    "release-manual": "npx standard-version --release-as patch --prerelease release --skip.commit --skip.tag",
-    "minor": "npx standard-version --release-as minor",
     "generate:api": "node scripts/generate-apis.ts"
   },
   "dependencies": {
@@ -27,6 +20,7 @@
     "@mui/material": "^7.3.0",
     "@mui/styled-engine-sc": "^7.3.0",
     "@mui/x-date-pickers": "^8.9.2",
+    "@oleg-irchishyn/irchishyn-ui-library": "^2.0.2",
     "ag-grid-community": "^34.1.2",
     "ag-grid-react": "^34.1.2",
     "axios": "^1.9.0",
@@ -64,6 +58,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://dev.azure.com/gen2fundprod/Development/_git/cap-event-ui"
+    "url": "git+https://github.com/Oleg-Irchishyn/cap-event-ui.git"
   }
 }

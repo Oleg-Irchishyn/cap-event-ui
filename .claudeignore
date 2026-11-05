@@ -8,13 +8,6 @@
 dist/
 build/
 
-# Helm / Kubernetes (infra configs with potential secrets)
-helm/
-
-# CI/CD pipelines
-azure-pipelines.yml
-.azuredevops/
-
 # Third-party content (prompt injection risk)
 node_modules/
 
